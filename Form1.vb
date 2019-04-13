@@ -155,6 +155,7 @@ Public Class Form1
         Dim msg As String = InputBox("新的提醒标签：", "添加")
         If msg <> "" Then
             ListView.Items.Add(msg.Trim())
+            SaveList()
         End If
     End Sub
 
@@ -165,6 +166,7 @@ Public Class Form1
             Dim ok As Integer = MsgBox("确定删除提醒标签 """ & ListView.SelectedItem & """ 吗？", MsgBoxStyle.OkCancel, "删除")
             If (ok = vbOK) Then
                 ListView.Items.RemoveAt(SelectItem)
+                SaveList()
             End If
         End If
     End Sub
@@ -175,6 +177,7 @@ Public Class Form1
             Dim newstr As String = InputBox("修改提醒标签 """ & ListView.SelectedItem & """ 为：", "修改", ListView.SelectedItem)
             If newstr <> "" Then
                 ListView.Items(SelectItem) = newstr.Trim()
+                SaveList()
             End If
         End If
     End Sub

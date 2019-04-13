@@ -174,7 +174,7 @@ Public Class Form1
         If (ListView.SelectedItem IsNot Nothing) Then
             Dim newstr As String = InputBox("修改提醒标签 """ & ListView.SelectedItem & """ 为：", "修改", ListView.SelectedItem)
             If newstr <> "" Then
-                ListView.Items(ListView.SelectedIndex) = newstr.Trim()
+                ListView.Items(SelectItem) = newstr.Trim()
             End If
         End If
     End Sub

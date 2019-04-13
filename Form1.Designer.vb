@@ -45,7 +45,7 @@ Partial Class Form1
         Me.ButtonRemoveItem.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.ButtonRemoveItem.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonRemoveItem.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
-        Me.ButtonRemoveItem.Location = New System.Drawing.Point(176, 88)
+        Me.ButtonRemoveItem.Location = New System.Drawing.Point(103, 88)
         Me.ButtonRemoveItem.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ButtonRemoveItem.Name = "ButtonRemoveItem"
         Me.ButtonRemoveItem.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
@@ -59,7 +59,7 @@ Partial Class Form1
         Me.ButtonAddItem.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.ButtonAddItem.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonAddItem.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
-        Me.ButtonAddItem.Location = New System.Drawing.Point(153, 88)
+        Me.ButtonAddItem.Location = New System.Drawing.Point(80, 88)
         Me.ButtonAddItem.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ButtonAddItem.Name = "ButtonAddItem"
         Me.ButtonAddItem.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
@@ -92,7 +92,7 @@ Partial Class Form1
         Me.ListView.ItemHeight = 17
         Me.ListView.Location = New System.Drawing.Point(0, 0)
         Me.ListView.Name = "ListView"
-        Me.ListView.Size = New System.Drawing.Size(200, 89)
+        Me.ListView.Size = New System.Drawing.Size(127, 89)
         Me.ListView.TabIndex = 0
         '
         'ButtonCloseForm
@@ -130,7 +130,7 @@ Partial Class Form1
         Me.NumericUpDown1.Location = New System.Drawing.Point(46, 88)
         Me.NumericUpDown1.Minimum = New Decimal(New Integer() {5, 0, 0, 0})
         Me.NumericUpDown1.Name = "NumericUpDown1"
-        Me.NumericUpDown1.Size = New System.Drawing.Size(45, 23)
+        Me.NumericUpDown1.Size = New System.Drawing.Size(35, 23)
         Me.NumericUpDown1.TabIndex = 3
         Me.NumericUpDown1.Value = New Decimal(New Integer() {8, 0, 0, 0})
         Me.NumericUpDown1.Visible = False
@@ -161,7 +161,7 @@ Partial Class Form1
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.DarkRed
-        Me.ClientSize = New System.Drawing.Size(200, 112)
+        Me.ClientSize = New System.Drawing.Size(127, 112)
         Me.Controls.Add(Me.ListView)
         Me.Controls.Add(Me.ButtonChangeHeight)
         Me.Controls.Add(Me.ButtonCloseForm)
@@ -175,7 +175,7 @@ Partial Class Form1
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(150, 112)
+        Me.MinimumSize = New System.Drawing.Size(127, 112)
         Me.Name = "Form1"
         Me.Opacity = 0.0R
         Me.ShowIcon = False

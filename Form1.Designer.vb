@@ -34,7 +34,6 @@ Partial Class Form1
         Me.TimerShowForm = New System.Windows.Forms.Timer(Me.components)
         Me.TimerEndForm = New System.Windows.Forms.Timer(Me.components)
         Me.TimerMouseIn = New System.Windows.Forms.Timer(Me.components)
-        Me.TimerMouseOutWait = New System.Windows.Forms.Timer(Me.components)
         Me.TimerMouseOut = New System.Windows.Forms.Timer(Me.components)
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -89,7 +88,6 @@ Partial Class Form1
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ListView.FormattingEnabled = True
         Me.ListView.ItemHeight = 17
-        Me.ListView.Items.AddRange(New Object() {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"})
         Me.ListView.Location = New System.Drawing.Point(0, 0)
         Me.ListView.Name = "ListView"
         Me.ListView.Size = New System.Drawing.Size(200, 89)
@@ -147,10 +145,6 @@ Partial Class Form1
         '
         Me.TimerMouseIn.Interval = 10
         '
-        'TimerMouseOutWait
-        '
-        Me.TimerMouseOutWait.Interval = 10
-        '
         'TimerMouseOut
         '
         Me.TimerMouseOut.Interval = 10
@@ -196,7 +190,6 @@ Partial Class Form1
     Friend WithEvents TimerShowForm As System.Windows.Forms.Timer
     Friend WithEvents TimerEndForm As System.Windows.Forms.Timer
     Friend WithEvents TimerMouseIn As System.Windows.Forms.Timer
-    Friend WithEvents TimerMouseOutWait As System.Windows.Forms.Timer
     Friend WithEvents TimerMouseOut As System.Windows.Forms.Timer
 
 End Class

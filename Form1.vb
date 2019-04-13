@@ -1,4 +1,7 @@
-﻿Public Class Form1
+﻿Imports System.IO
+Imports System.Text
+
+Public Class Form1
 
     Declare Sub mouse_event Lib "user32" (ByVal dwFlags As Integer, ByVal dx As Integer, ByVal dy As Integer, ByVal cButtons As Integer, ByVal dwExtraInfo As Integer)
     Private Declare Function SetCursorPos Lib "user32" (ByVal x As Long, ByVal y As Long) As Long
@@ -14,6 +17,7 @@
         MOUSEEVENTF_MOVE = &H1          '指针移动
     End Enum
 
+#Region "PosMove"
     Private PushDownMouseInScreen As Point
     Private PushDownWindowPos As Point
     Private PushDownWindowSize As Point
@@ -54,96 +58,17 @@
     Private Sub ButtonFocus_Handle(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonAddItem.MouseDown, ButtonRemoveItem.MouseDown, ButtonCloseForm.MouseDown, ButtonChangeHeight.MouseDown
         LabelFocus.Select()
     End Sub
+#End Region
 
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#Region "TimerShow"
 
-    Dim SelectItem As Integer
-    Private Sub ButtonAddItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonAddItem.Click
-        Dim msg As String = InputBox("新的提醒标签：", "添加")
-        If msg <> "" Then
-            ListView.Items.Add(msg.Trim())
-        End If
-    End Sub
-
-    Private Sub ButtonRemoveItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonRemoveItem.Click
-        If (ListView.SelectedItem IsNot Nothing) Then
-            Dim ok As Integer = MsgBox("确定删除提醒标签 """ & ListView.SelectedItem & """ 吗？", MsgBoxStyle.OkCancel, "删除")
-            If (ok = vbOK) Then
-                ListView.Items.RemoveAt(SelectItem)
-            End If
-        End If
-    End Sub
-
-    Private Sub ListView_DoubleClick(sender As Object, e As System.EventArgs) Handles ListView.DoubleClick
-        If (ListView.SelectedItem IsNot Nothing) Then
-            Dim newstr As String = InputBox("修改提醒标签 """ & ListView.SelectedItem & """ 为：", "修改", ListView.SelectedItem)
-            If newstr <> "" Then
-                ListView.Items(ListView.SelectedIndex) = newstr.Trim()
-            End If
-        End If
-    End Sub
-
-    Private Sub ListView_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles ListView.SelectedIndexChanged
-        ButtonRemoveItem.Enabled = ListView.SelectedItem IsNot Nothing
-    End Sub
-
-    Private Sub ListView_MouseClick(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseClick
-        If ListView.IndexFromPoint(e.X, e.Y) = -1 Then
-            ListView.ClearSelected()
-        End If
-    End Sub
-
-    Private Const AppName As String = "DesktopTips"
-    Private Const Section As String = "FormPosSize"
-
-    Private Sub Form1_Deactivate(sender As Object, e As System.EventArgs) Handles Me.Deactivate
-        SelectItem = ListView.SelectedIndex
-        ListView.ClearSelected()
-    End Sub
-
-    Private Sub Form1_FormClosed(sender As Object, e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
-        SaveSetting(AppName, Section, "Top", Me.Top)
-        SaveSetting(AppName, Section, "Left", Me.Left)
-        SaveSetting(AppName, Section, "Height", Me.Height)
-        SaveSetting(AppName, Section, "Width", Me.Width)
-    End Sub
-
-    Private Sub Form1_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
-        Me.Top = GetSetting(AppName, Section, "Top", 20)
-        Me.Left = GetSetting(AppName, Section, "Left", 20)
-        Me.Height = GetSetting(AppName, Section, "Height", 163)
-        Me.Width = GetSetting(AppName, Section, "Width", 200)
-        NumericUpDown1.Value = (Me.Height - 27) \ 17
-        ButtonRemoveItem.Enabled = False
-    End Sub
-
-    Private Sub ButtonCloseForm_Click(sender As System.Object, e As System.EventArgs) Handles ButtonCloseForm.Click
-        TimerEndForm.Enabled = True
-    End Sub
-
-    Private Sub NumericUpDown1_ValueChanged(sender As System.Object, e As System.EventArgs) Handles NumericUpDown1.ValueChanged
-        Dim MoveY As Integer
-        If Me.Height < NumericUpDown1.Value * 17 + 27 Then
-            MoveY = 10
-        ElseIf Me.Height > NumericUpDown1.Value * 17 + 27 Then
-            MoveY = -10
-        End If
-        Me.Height = NumericUpDown1.Value * 17 + 27
-        mouse_event(MouseEvent.MOUSEEVENTF_MOVE, 0, MoveY, 0, 0)
-    End Sub
-
-    Private Sub ButtonChangeHeight_Click(sender As System.Object, e As System.EventArgs) Handles ButtonChangeHeight.Click
-        ButtonChangeHeight.Checked = Not ButtonChangeHeight.Checked
-        NumericUpDown1.Visible = ButtonChangeHeight.Checked
-    End Sub
-
+    Private Const MaxOpacity As Double = 0.75
     Private Sub TimerShowForm_Tick(sender As System.Object, e As System.EventArgs) Handles TimerShowForm.Tick
         Me.Opacity += 0.08
         Me.Top += 1
-        If Me.Opacity >= 0.6 Then
+        If Me.Opacity >= MaxOpacity Then
             TimerShowForm.Enabled = False
+            Me.Opacity = MaxOpacity
         End If
     End Sub
 
@@ -159,6 +84,12 @@
         End If
     End Sub
 
+    Private Sub ButtonCloseForm_Click(sender As System.Object, e As System.EventArgs) Handles ButtonCloseForm.Click
+        TimerEndForm.Enabled = True
+    End Sub
+
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''
+
     Private Sub TimerMouseIn_Tick(sender As System.Object, e As System.EventArgs) Handles TimerMouseIn.Tick
         Me.Opacity += 0.02
         If Me.Opacity >= 1 Then
@@ -169,22 +100,11 @@
         End If
     End Sub
 
-    'Private Sub TimerMouseOutWait_Tick(sender As System.Object, e As System.EventArgs) Handles TimerMouseOutWait.Tick
-    '    If TimerMouseIn.Enabled = True Then
-    '        TimerMouseIn.Enabled = False
-    '    End If
-    '    MouseLeaveCnt += 1
-    '    If MouseLeaveCnt > 90 Then
-    '        TimerMouseOut.Enabled = True
-    '        TimerMouseOutWait.Enabled = False
-    '    End If
-    'End Sub
-
     Private Sub TimerMouseOut_Tick(sender As System.Object, e As System.EventArgs) Handles TimerMouseOut.Tick
         Me.Opacity -= 0.02
-        If Me.Opacity <= 0.6 Then
+        If Me.Opacity <= MaxOpacity Then
             TimerMouseOut.Enabled = False
-            Me.Opacity = 0.6
+            Me.Opacity = MaxOpacity
         End If
         If TimerMouseIn.Enabled = True Then
             TimerMouseIn.Enabled = False
@@ -200,4 +120,126 @@
         MouseLeaveCnt = 0
         TimerMouseOut.Enabled = True
     End Sub
+
+#End Region
+
+#Region "Setting"
+
+    Private Const AppName As String = "DesktopTips"
+    Private Const Section As String = "FormPosSize"
+
+    Private Sub Form1_FormClosed(sender As Object, e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
+        SaveList()
+
+        SaveSetting(AppName, Section, "Top", Me.Top)
+        SaveSetting(AppName, Section, "Left", Me.Left)
+        SaveSetting(AppName, Section, "Height", Me.Height)
+        SaveSetting(AppName, Section, "Width", Me.Width)
+    End Sub
+
+    Private Sub Form1_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+        Me.Top = GetSetting(AppName, Section, "Top", 20)
+        Me.Left = GetSetting(AppName, Section, "Left", 20)
+        Me.Height = GetSetting(AppName, Section, "Height", 163)
+        Me.Width = GetSetting(AppName, Section, "Width", 200)
+        NumericUpDown1.Value = (Me.Height - 27) \ 17
+        ButtonRemoveItem.Enabled = False
+
+        LoadList()
+    End Sub
+
+#End Region
+
+    ' 增
+    Private Sub ButtonAddItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonAddItem.Click
+        Dim msg As String = InputBox("新的提醒标签：", "添加")
+        If msg <> "" Then
+            ListView.Items.Add(msg.Trim())
+        End If
+    End Sub
+
+    Dim SelectItem As Integer
+    ' 删
+    Private Sub ButtonRemoveItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonRemoveItem.Click
+        If (ListView.SelectedItem IsNot Nothing) Then
+            Dim ok As Integer = MsgBox("确定删除提醒标签 """ & ListView.SelectedItem & """ 吗？", MsgBoxStyle.OkCancel, "删除")
+            If (ok = vbOK) Then
+                ListView.Items.RemoveAt(SelectItem)
+            End If
+        End If
+    End Sub
+
+    ' 改
+    Private Sub ListView_DoubleClick(sender As Object, e As System.EventArgs) Handles ListView.DoubleClick
+        If (ListView.SelectedItem IsNot Nothing) Then
+            Dim newstr As String = InputBox("修改提醒标签 """ & ListView.SelectedItem & """ 为：", "修改", ListView.SelectedItem)
+            If newstr <> "" Then
+                ListView.Items(ListView.SelectedIndex) = newstr.Trim()
+            End If
+        End If
+    End Sub
+
+    ' 选择
+    Private Sub ListView_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles ListView.SelectedIndexChanged
+        ButtonRemoveItem.Enabled = ListView.SelectedItem IsNot Nothing
+    End Sub
+
+    ' 焦点
+    Private Sub Form1_Deactivate(sender As Object, e As System.EventArgs) Handles Me.Deactivate
+        SelectItem = ListView.SelectedIndex
+        ListView.ClearSelected()
+    End Sub
+
+    ' 焦点
+    Private Sub ListView_MouseClick(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseClick
+        If ListView.IndexFromPoint(e.X, e.Y) = -1 Then
+            ListView.ClearSelected()
+        End If
+    End Sub
+
+    ' 大小
+    Private Sub NumericUpDown1_ValueChanged(sender As System.Object, e As System.EventArgs) Handles NumericUpDown1.ValueChanged
+        Dim MoveY As Integer
+        If Me.Height < NumericUpDown1.Value * 17 + 27 Then
+            MoveY = 10
+        ElseIf Me.Height > NumericUpDown1.Value * 17 + 27 Then
+            MoveY = -10
+        End If
+        Me.Height = NumericUpDown1.Value * 17 + 27
+        mouse_event(MouseEvent.MOUSEEVENTF_MOVE, 0, MoveY, 0, 0)
+    End Sub
+
+    ' 显示大小
+    Private Sub ButtonChangeHeight_Click(sender As System.Object, e As System.EventArgs) Handles ButtonChangeHeight.Click
+        ButtonChangeHeight.Checked = Not ButtonChangeHeight.Checked
+        NumericUpDown1.Visible = ButtonChangeHeight.Checked
+    End Sub
+
+    ' 文件 IO
+    Private Sub SaveList()
+        Dim Buf As StringBuilder = New StringBuilder
+        Buf.Append(ListView.Items.Count)
+        For Each item As String In ListView.Items
+            Buf.Append(vbNewLine & item.ToString())
+        Next
+        Dim Myw As New FileStream("SavedItem.dat", FileMode.Create)
+        Dim MyBytes As Byte() = New UTF8Encoding().GetBytes(Buf.ToString())
+        Dim MyB_Write As BinaryWriter = New BinaryWriter(Myw)
+        MyB_Write.Write(MyBytes, 0, MyBytes.Length)
+        Myw.Close()
+    End Sub
+
+    Private Sub LoadList()
+        If File.Exists("SavedItem.dat") Then
+
+            Dim reader As TextReader = File.OpenText("SavedItem.dat")
+            Dim Count As Integer = Convert.ToInt32(reader.ReadLine())
+            For i = 1 To Count
+                ListView.Items.Add(reader.ReadLine())
+            Next
+            reader.Close()
+        End If
+    End Sub
+
+
 End Class

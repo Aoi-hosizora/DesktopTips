@@ -216,13 +216,19 @@ Public Class Form1
     End Sub
 
     ' 文件 IO
+    Private FileDir As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "/DesktopTips"
+    Private FileName As String = FileDir & "/SavedItem.dat"
+
     Private Sub SaveList()
         Dim Buf As StringBuilder = New StringBuilder
         Buf.Append(ListView.Items.Count)
         For Each item As String In ListView.Items
             Buf.Append(vbNewLine & item.ToString())
         Next
-        Dim Myw As New FileStream("SavedItem.dat", FileMode.Create)
+        If Not Directory.Exists(FileDir) Then
+            Directory.CreateDirectory(FileDir)
+        End If
+        Dim Myw As New FileStream(FileName, FileMode.Create)
         Dim MyBytes As Byte() = New UTF8Encoding().GetBytes(Buf.ToString())
         Dim MyB_Write As BinaryWriter = New BinaryWriter(Myw)
         MyB_Write.Write(MyBytes, 0, MyBytes.Length)
@@ -230,9 +236,8 @@ Public Class Form1
     End Sub
 
     Private Sub LoadList()
-        If File.Exists("SavedItem.dat") Then
-
-            Dim reader As TextReader = File.OpenText("SavedItem.dat")
+        If File.Exists(FileName) Then
+            Dim reader As TextReader = File.OpenText(FileName)
             Dim Count As Integer = Convert.ToInt32(reader.ReadLine())
             For i = 1 To Count
                 ListView.Items.Add(reader.ReadLine())
@@ -242,4 +247,9 @@ Public Class Form1
     End Sub
 
 
+    Private Sub ButtonChangeHeight_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonChangeHeight.MouseUp
+        If e.Button = Windows.Forms.MouseButtons.Right Then
+            MsgBox("文件保存在： %userprofile%\AppData\Roaming\DesktopTips\SavedItem.dat 内。", MsgBoxStyle.Information, "提醒")
+        End If
+    End Sub
 End Class

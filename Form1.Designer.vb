@@ -23,6 +23,7 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
         Me.ButtonRemoveItem = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonAddItem = New DevComponents.DotNetBar.ButtonX()
         Me.StyleManager1 = New DevComponents.DotNetBar.StyleManager(Me.components)
@@ -35,6 +36,7 @@ Partial Class Form1
         Me.TimerEndForm = New System.Windows.Forms.Timer(Me.components)
         Me.TimerMouseIn = New System.Windows.Forms.Timer(Me.components)
         Me.TimerMouseOut = New System.Windows.Forms.Timer(Me.components)
+        Me.SuperTooltip = New DevComponents.DotNetBar.SuperTooltip()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -118,6 +120,7 @@ Partial Class Form1
         Me.ButtonChangeHeight.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
         Me.ButtonChangeHeight.Size = New System.Drawing.Size(24, 23)
         Me.ButtonChangeHeight.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
+        Me.SuperTooltip.SetSuperTooltip(Me.ButtonChangeHeight, New DevComponents.DotNetBar.SuperTooltipInfo("设置", "", "左键设置列表显示行高，右键打开更多帮助。", Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(180, 68)))
         Me.ButtonChangeHeight.TabIndex = 1
         Me.ButtonChangeHeight.Text = "≡"
         '
@@ -149,6 +152,10 @@ Partial Class Form1
         '
         Me.TimerMouseOut.Interval = 10
         '
+        'SuperTooltip
+        '
+        Me.SuperTooltip.DefaultFont = New System.Drawing.Font("Microsoft YaHei UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
@@ -164,6 +171,7 @@ Partial Class Form1
         Me.Controls.Add(Me.NumericUpDown1)
         Me.Font = New System.Drawing.Font("Microsoft YaHei UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
@@ -191,5 +199,6 @@ Partial Class Form1
     Friend WithEvents TimerEndForm As System.Windows.Forms.Timer
     Friend WithEvents TimerMouseIn As System.Windows.Forms.Timer
     Friend WithEvents TimerMouseOut As System.Windows.Forms.Timer
+    Friend WithEvents SuperTooltip As DevComponents.DotNetBar.SuperTooltip
 
 End Class

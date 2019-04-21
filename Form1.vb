@@ -219,8 +219,8 @@ Public Class Form1
     End Sub
 
     ' 文件 IO
-    Private FileDir As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "/DesktopTips"
-    Private FileName As String = FileDir & "/SavedItem.dat"
+    Private FileDir As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\DesktopTips"
+    Private FileName As String = FileDir & "\SavedItem.dat"
 
     Private Sub SaveList()
         Dim Buf As StringBuilder = New StringBuilder
@@ -252,7 +252,18 @@ Public Class Form1
 
     Private Sub ButtonChangeHeight_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonChangeHeight.MouseUp
         If e.Button = Windows.Forms.MouseButtons.Right Then
-            MsgBox("文件保存在： %userprofile%\AppData\Roaming\DesktopTips\SavedItem.dat 内。", MsgBoxStyle.Information, "提醒")
+            'DevComponents.DotNetBar.MessageBoxEx.Show
+            Dim msg As String = "文件保存在： " & vbCr & """" & FileName & """ 内，" & vbCr & "是否打开该文件夹？"
+            Dim re As Integer = _
+                MessageBox.Show(msg, "提醒", _
+                                MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
+            If re = vbOK Then
+                'Dim path As String = FileDir
+                'Process.Start(path)
+                'C:\Users\Windows 10\AppData\Roaming\DesktopTips\SavedItem.dat
+
+                System.Diagnostics.Process.Start("explorer.exe", "/select,""" & FileName & """")
+            End If
         End If
     End Sub
 End Class

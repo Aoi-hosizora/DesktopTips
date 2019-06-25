@@ -90,7 +90,7 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub ButtonCloseForm_Click(sender As System.Object, e As System.EventArgs) Handles ButtonCloseForm.Click
+    Private Sub ButtonCloseForm_Click(sender As System.Object, e As System.EventArgs) Handles ButtonCloseForm.Click, PopMenuButtonExit.Click
         TimerEndForm.Enabled = True
     End Sub
 
@@ -322,10 +322,6 @@ Public Class Form1
         Me.TopMost = sender.checked
     End Sub
 
-    Private Sub ListPopMenu_Click(sender As System.Object, e As System.EventArgs) Handles ListPopMenu.Click
-
-    End Sub
-
     Private Sub PopMenuButtonViewFile_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonViewFile.Click
         If File.Exists(FileName) Then
             Dim reader As TextReader = File.OpenText(FileName)
@@ -335,13 +331,17 @@ Public Class Form1
             Dim WinSize As Size = New Size(500, 300)
             Dim TextSize As Size = New Size(WinSize.Width - 16, WinSize.Height - 39)
 
-            Dim TextBox As New TextBox With {.Text = Content, .ReadOnly = True, .Multiline = True, _
-                                             .Size = TextSize, .BackColor = Color.White, .ScrollBars = ScrollBars.Both, .Font = New System.Drawing.Font("Microsoft YaHei UI", 9.0!), _
+            Dim TextBox As New TextBox With {.Text = Content, .ReadOnly = True, .Multiline = True, .ScrollBars = ScrollBars.Both, .WordWrap = False, _
+                                             .Size = TextSize, .BackColor = Color.White, .Font = New System.Drawing.Font("Microsoft YaHei UI", 9.0!), _
                                              .Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top}
 
-            Dim Win As New Form With {.FormBorderStyle = Windows.Forms.FormBorderStyle.Sizable, .Text = "浏览文件", .Size = WinSize}
+            Dim Win As New Form With {.FormBorderStyle = Windows.Forms.FormBorderStyle.Sizable, .Text = "浏览文件", .Size = WinSize, .TopMost = True}
             Win.Controls.Add(TextBox)
-            Win.Show()
+            Win.Show(Me)
+
+            Win.Top = Me.Top
+            Win.Left = Me.Left - WinSize.Width - 15
+            TextBox.Select(0, 0)
 
         End If
     End Sub

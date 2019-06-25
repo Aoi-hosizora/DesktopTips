@@ -58,9 +58,10 @@ Partial Class Form1
         Me.PopMenuButtonRemoveItem = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonEditItem = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonOpenFile = New DevComponents.DotNetBar.ButtonItem()
+        Me.PopMenuButtonViewFile = New DevComponents.DotNetBar.ButtonItem()
         Me.PopupMenuLabelItemWindow = New DevComponents.DotNetBar.LabelItem()
         Me.PopMenuButtonWinTop = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopMenuButtonViewFile = New DevComponents.DotNetBar.ButtonItem()
+        Me.PopMenuButtonExit = New DevComponents.DotNetBar.ButtonItem()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ContextMenuBar1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -200,7 +201,7 @@ Partial Class Form1
         '
         Me.ListPopMenu.AutoExpandOnClick = True
         Me.ListPopMenu.Name = "ListPopMenu"
-        Me.ListPopMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.PopupMenuLabelItemList, Me.PopMenuButtonMoveUp, Me.PopMenuButtonMoveDown, Me.PopMenuButtonMoveTop, Me.PopMenuButtonAddItem, Me.PopMenuButtonRemoveItem, Me.PopMenuButtonEditItem, Me.PopMenuButtonOpenFile, Me.PopMenuButtonViewFile, Me.PopupMenuLabelItemWindow, Me.PopMenuButtonWinTop})
+        Me.ListPopMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.PopupMenuLabelItemList, Me.PopMenuButtonMoveUp, Me.PopMenuButtonMoveDown, Me.PopMenuButtonMoveTop, Me.PopMenuButtonAddItem, Me.PopMenuButtonRemoveItem, Me.PopMenuButtonEditItem, Me.PopMenuButtonOpenFile, Me.PopMenuButtonViewFile, Me.PopupMenuLabelItemWindow, Me.PopMenuButtonWinTop, Me.PopMenuButtonExit})
         Me.ListPopMenu.Text = "ListPopMenu"
         '
         'PopupMenuLabelItemList
@@ -259,6 +260,11 @@ Partial Class Form1
         Me.PopMenuButtonOpenFile.Name = "PopMenuButtonOpenFile"
         Me.PopMenuButtonOpenFile.Text = "打开文件所在位置(&O)"
         '
+        'PopMenuButtonViewFile
+        '
+        Me.PopMenuButtonViewFile.Name = "PopMenuButtonViewFile"
+        Me.PopMenuButtonViewFile.Text = "浏览文件(&V)"
+        '
         'PopupMenuLabelItemWindow
         '
         Me.PopupMenuLabelItemWindow.BackColor = System.Drawing.Color.FromArgb(CType(CType(221, Byte), Integer), CType(CType(231, Byte), Integer), CType(CType(238, Byte), Integer))
@@ -277,10 +283,10 @@ Partial Class Form1
         Me.PopMenuButtonWinTop.Name = "PopMenuButtonWinTop"
         Me.PopMenuButtonWinTop.Text = "窗口置顶(&W)"
         '
-        'PopMenuButtonViewFile
+        'PopMenuButtonExit
         '
-        Me.PopMenuButtonViewFile.Name = "PopMenuButtonViewFile"
-        Me.PopMenuButtonViewFile.Text = "浏览文件(&V)"
+        Me.PopMenuButtonExit.Name = "PopMenuButtonExit"
+        Me.PopMenuButtonExit.Text = "退出(&E)"
         '
         'Form1
         '
@@ -341,5 +347,6 @@ Partial Class Form1
     Friend WithEvents PopupMenuLabelItemWindow As DevComponents.DotNetBar.LabelItem
     Friend WithEvents PopMenuButtonEditItem As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents PopMenuButtonViewFile As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents PopMenuButtonExit As DevComponents.DotNetBar.ButtonItem
 
 End Class

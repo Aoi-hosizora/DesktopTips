@@ -123,6 +123,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon_157.ico" />
+    <None Include="Resources\112_Minus_Grey_16x16_72.png" />
+    <None Include="Resources\112_Plus_Green_16x16_72.png" />
+    <None Include="Resources\112_DownArrowLong_Blue_16x16_72.png" />
+    <None Include="Resources\112_UpArrowLong_Orange_16x16_72.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

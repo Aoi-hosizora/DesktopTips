@@ -35,7 +35,7 @@ Public Class Form1
 
     Private Sub ListView_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseMove
 
-        If e.X > Me.Width - 10 Or IsChangeSize = True Then
+        If e.X > sender.Width - 25 Or IsChangeSize = True Then
             Me.Cursor = Cursors.SizeWE
             If IsMouseDown Then
                 IsChangeSize = True
@@ -53,6 +53,12 @@ Public Class Form1
     Private Sub ListView_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseUp
         IsMouseDown = False
         IsChangeSize = False
+
+        ' 实现右键同时选择
+        Dim idx As Integer = ListView.IndexFromPoint(e.X, e.Y)
+        If e.Button = Windows.Forms.MouseButtons.Right And idx <> -1 Then
+            ListView.SetSelected(idx, True)
+        End If
     End Sub
 
     Private Sub ButtonFocus_Handle(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonAddItem.MouseDown, ButtonRemoveItem.MouseDown, ButtonCloseForm.MouseDown, ButtonChangeHeight.MouseDown
@@ -151,7 +157,7 @@ Public Class Form1
 #End Region
 
     ' 增
-    Private Sub ButtonAddItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonAddItem.Click
+    Private Sub ButtonAddItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonAddItem.Click, PopMenuButtonAddItem.Click
         Dim msg As String = InputBox("新的提醒标签：", "添加")
         If msg <> "" Then
             ListView.Items.Add(msg.Trim())
@@ -161,7 +167,7 @@ Public Class Form1
 
     Dim SelectItem As Integer
     ' 删
-    Private Sub ButtonRemoveItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonRemoveItem.Click
+    Private Sub ButtonRemoveItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonRemoveItem.Click, PopMenuButtonRemoveItem.Click
         If (ListView.SelectedItem IsNot Nothing) Then
             Dim ok As Integer = MsgBox("确定删除提醒标签 """ & ListView.SelectedItem & """ 吗？", MsgBoxStyle.OkCancel, "删除")
             If (ok = vbOK) Then
@@ -172,7 +178,7 @@ Public Class Form1
     End Sub
 
     ' 改
-    Private Sub ListView_DoubleClick(sender As Object, e As System.EventArgs) Handles ListView.DoubleClick
+    Private Sub ListView_DoubleClick(sender As Object, e As System.EventArgs) Handles ListView.DoubleClick, PopMenuButtonEditItem.Click
         If (ListView.SelectedItem IsNot Nothing) Then
             Dim newstr As String = InputBox("修改提醒标签 """ & ListView.SelectedItem & """ 为：", "修改", ListView.SelectedItem)
             If newstr <> "" Then
@@ -249,7 +255,6 @@ Public Class Form1
         End If
     End Sub
 
-
     Private Sub ButtonChangeHeight_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonChangeHeight.MouseUp
         If e.Button = Windows.Forms.MouseButtons.Right Then
             'DevComponents.DotNetBar.MessageBoxEx.Show
@@ -257,13 +262,87 @@ Public Class Form1
             Dim re As Integer = _
                 MessageBox.Show(msg, "提醒", _
                                 MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
-            If re = vbOK Then
-                'Dim path As String = FileDir
-                'Process.Start(path)
-                'C:\Users\Windows 10\AppData\Roaming\DesktopTips\SavedItem.dat
 
-                System.Diagnostics.Process.Start("explorer.exe", "/select,""" & FileName & """")
+            If re = vbOK Then
+                PopMenuButtonOpenFile_Click(Me.PopMenuButtonOpenFile, New System.EventArgs)
             End If
+        End If
+    End Sub
+
+    ' 打开文件所在位置
+    Private Sub PopMenuButtonOpenFile_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonOpenFile.Click
+        'Dim path As String = FileDir
+        'Process.Start(path)
+        'C:\Users\Windows 10\AppData\Roaming\DesktopTips\SavedItem.dat
+
+        System.Diagnostics.Process.Start("explorer.exe", "/select,""" & FileName & """")
+    End Sub
+
+    Private Sub Form1_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles Me.MouseMove
+        'Console.WriteLine(e.X & ", " & e.Y)
+    End Sub
+
+    ' 置顶
+    Private Sub PopMenuButtonMoveTop_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonMoveTop.Click
+        Dim currIdx As Integer = ListView.SelectedIndex
+        Dim currItem As Object = ListView.SelectedItem
+        ListView.Items.Remove(currItem)
+        ListView.Items.Insert(0, currItem)
+        ListView.SetSelected(0, True)
+        SaveList()
+    End Sub
+
+    ' 上移
+    Private Sub PopMenuButtonMoveUp_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonMoveUp.Click
+        Dim currIdx As Integer = ListView.SelectedIndex
+        If currIdx >= 1 Then
+            Dim currItem As Object = ListView.SelectedItem
+            ListView.Items.Remove(currItem)
+            ListView.Items.Insert(currIdx - 1, currItem)
+            ListView.SetSelected(currIdx - 1, True)
+            SaveList()
+        End If
+    End Sub
+
+    ' 下移
+    Private Sub PopMenuButtonMoveDown_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonMoveDown.Click
+        Dim currIdx As Integer = ListView.SelectedIndex
+        If currIdx <= ListView.Items.Count() - 2 Then
+            Dim currItem As Object = ListView.SelectedItem
+            ListView.Items.Remove(currItem)
+            ListView.Items.Insert(currIdx + 1, currItem)
+            ListView.SetSelected(currIdx + 1, True)
+            SaveList()
+        End If
+    End Sub
+
+    ' TopMost
+    Private Sub PopMenuButtonWinTop_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonWinTop.Click
+        sender.checked = Not sender.checked
+        Me.TopMost = sender.checked
+    End Sub
+
+    Private Sub ListPopMenu_Click(sender As System.Object, e As System.EventArgs) Handles ListPopMenu.Click
+
+    End Sub
+
+    Private Sub PopMenuButtonViewFile_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonViewFile.Click
+        If File.Exists(FileName) Then
+            Dim reader As TextReader = File.OpenText(FileName)
+            Dim Content As String = reader.ReadToEnd()
+            reader.Close()
+
+            Dim WinSize As Size = New Size(500, 300)
+            Dim TextSize As Size = New Size(WinSize.Width - 16, WinSize.Height - 39)
+
+            Dim TextBox As New TextBox With {.Text = Content, .ReadOnly = True, .Multiline = True, _
+                                             .Size = TextSize, .BackColor = Color.White, .ScrollBars = ScrollBars.Both, .Font = New System.Drawing.Font("Microsoft YaHei UI", 9.0!), _
+                                             .Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top}
+
+            Dim Win As New Form With {.FormBorderStyle = Windows.Forms.FormBorderStyle.Sizable, .Text = "浏览文件", .Size = WinSize}
+            Win.Controls.Add(TextBox)
+            Win.Show()
+
         End If
     End Sub
 End Class

@@ -18,5 +18,16 @@ Private FileName As String = FileDir & "\SavedItem.dat"
 ' C:\Users\xxx\AppData\Roaming\DesktopTips\SavedItem.dat
 ```
 
++ 文件格式记录
+	+ 列表内容 + 高亮判断：`RESTful，GraphQL，APIJSON,,,0`
+
+```vb
+If HighItems.Contains(item) Then
+    Buf.Append(vbNewLine & item.ToString() & MagicSign & "1")
+Else
+    Buf.Append(vbNewLine & item.ToString() & MagicSign & "0")
+End If
+```
+
 ### 截图
 ![ScreenShot](ScreenShot.jpg)

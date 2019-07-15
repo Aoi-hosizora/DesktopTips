@@ -159,6 +159,10 @@ Public Class Form1
     ' 增
     Private Sub ButtonAddItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonAddItem.Click, PopMenuButtonAddItem.Click
         Dim msg As String = InputBox("新的提醒标签：", "添加")
+        While msg.Contains(MagicSign)
+            MsgBox("字符错误，不允许使用 """ + MagicSign + """ 内置字符。", MsgBoxStyle.Critical, "错误")
+            msg = InputBox("新的提醒标签：", "添加")
+        End While
         If msg <> "" Then
             ListView.Items.Add(msg.Trim())
             SaveList()
@@ -171,6 +175,11 @@ Public Class Form1
         If (ListView.SelectedItem IsNot Nothing) Then
             Dim ok As Integer = MsgBox("确定删除提醒标签 """ & ListView.SelectedItem & """ 吗？", MsgBoxStyle.OkCancel, "删除")
             If (ok = vbOK) Then
+
+                If HighItems.Contains(ListView.Items(SelectItem)) Then
+                    HighItems.Remove(ListView.Items(SelectItem))
+                End If
+
                 ListView.Items.RemoveAt(SelectItem)
                 SaveList()
             End If
@@ -181,7 +190,17 @@ Public Class Form1
     Private Sub ListView_DoubleClick(sender As Object, e As System.EventArgs) Handles ListView.DoubleClick, PopMenuButtonEditItem.Click
         If (ListView.SelectedItem IsNot Nothing) Then
             Dim newstr As String = InputBox("修改提醒标签 """ & ListView.SelectedItem & """ 为：", "修改", ListView.SelectedItem)
+            If newstr.Contains(MagicSign) Then
+                MsgBox("字符错误，不允许使用 """ + MagicSign + """ 内置字符。", MsgBoxStyle.Critical, "错误")
+                Return
+            End If
             If newstr <> "" Then
+
+                If HighItems.Contains(ListView.Items(SelectItem)) Then
+                    HighItems.Remove(ListView.Items(SelectItem))
+                    HighItems.Add(newstr)
+                End If
+
                 ListView.Items(SelectItem) = newstr.Trim()
                 SaveList()
             End If
@@ -191,6 +210,12 @@ Public Class Form1
     ' 选择
     Private Sub ListView_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles ListView.SelectedIndexChanged
         ButtonRemoveItem.Enabled = ListView.SelectedItem IsNot Nothing
+        If HighItems.Contains(ListView.SelectedItem) Then
+            PopMenuButtonHighLight.Checked = True
+        Else
+            PopMenuButtonHighLight.Checked = False
+        End If
+        ListView.Refresh()
     End Sub
 
     ' 焦点
@@ -227,12 +252,18 @@ Public Class Form1
     ' 文件 IO
     Private FileDir As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\DesktopTips"
     Private FileName As String = FileDir & "\SavedItem.dat"
+    Private HighItems As List(Of String) = New List(Of String)
+    Private MagicSign As String = ",,,"
 
     Private Sub SaveList()
         Dim Buf As StringBuilder = New StringBuilder
         Buf.Append(ListView.Items.Count)
         For Each item As String In ListView.Items
-            Buf.Append(vbNewLine & item.ToString())
+            If HighItems.Contains(item) Then
+                Buf.Append(vbNewLine & item.ToString() & MagicSign & "1")
+            Else
+                Buf.Append(vbNewLine & item.ToString() & MagicSign & "0")
+            End If
         Next
         If Not Directory.Exists(FileDir) Then
             Directory.CreateDirectory(FileDir)
@@ -249,7 +280,16 @@ Public Class Form1
             Dim reader As TextReader = File.OpenText(FileName)
             Dim Count As Integer = Convert.ToInt32(reader.ReadLine())
             For i = 1 To Count
-                ListView.Items.Add(reader.ReadLine())
+                Dim OneLine As String = reader.ReadLine()
+                Dim ItemStrs As String() = OneLine.Split(MagicSign)
+                ' Console.WriteLine(OneLine & "|" & ItemStrs.Length & "|" & ItemStrs(0) & "|" & ItemStrs(1) & "|" & ItemStrs(2) & "|" & ItemStrs(3))
+                ListView.Items.Add(ItemStrs(0))
+                If ItemStrs.Length >= 2 Then ' 不短路
+                    ' TODO 3??? split
+                    If ItemStrs(3).Equals("1") Then
+                        HighItems.Add(ItemStrs(0))
+                    End If
+                End If
             Next
             reader.Close()
         End If
@@ -322,6 +362,7 @@ Public Class Form1
         Me.TopMost = sender.checked
     End Sub
 
+    ' 浏览文件
     Private Sub PopMenuButtonViewFile_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonViewFile.Click
         If File.Exists(FileName) Then
             Dim reader As TextReader = File.OpenText(FileName)
@@ -344,5 +385,38 @@ Public Class Form1
             TextBox.Select(0, 0)
 
         End If
+    End Sub
+
+    ' 高亮
+    Private Sub PopMenuButtonHighLight_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonHighLight.Click
+        If HighItems.Contains(ListView.SelectedItem) Then
+            HighItems.Remove(ListView.SelectedItem)
+        Else
+            HighItems.Add(ListView.SelectedItem)
+        End If
+        SaveList()
+        ListView.Refresh()
+    End Sub
+
+    ' 重写绘制
+    Private Sub ListView_DrawItem(sender As Object, e As System.Windows.Forms.DrawItemEventArgs) Handles ListView.DrawItem
+
+        e.DrawBackground()
+        e.DrawFocusRectangle()
+        Dim NowItem As String = ListView.Items(e.Index).ToString
+        Dim ColoredBrush As SolidBrush = New SolidBrush(Color.Black)
+
+        If HighItems.Contains(NowItem) Then
+            ColoredBrush = New SolidBrush(Color.Red)
+        Else
+            ColoredBrush = New SolidBrush(e.ForeColor)
+        End If
+
+        e.Graphics.DrawString(NowItem, e.Font, ColoredBrush, e.Bounds, StringFormat.GenericDefault)
+
+    End Sub
+
+    Private Sub ListPopMenu_Click(sender As System.Object, e As System.EventArgs) Handles ListPopMenu.Click
+
     End Sub
 End Class

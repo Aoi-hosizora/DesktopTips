@@ -362,6 +362,24 @@ Public Class Form1
         Me.TopMost = sender.checked
     End Sub
 
+    ' 显示文本窗体
+    Private Sub ShowForm(ByVal Title As String, ByVal Content As String)
+        Dim WinSize As Size = New Size(500, 300)
+        Dim TextSize As Size = New Size(WinSize.Width - 16, WinSize.Height - 39)
+
+        Dim TextBox As New TextBox With {.Text = Content, .ReadOnly = True, .Multiline = True, .ScrollBars = ScrollBars.Both, .WordWrap = False, _
+                                         .Size = TextSize, .BackColor = Color.White, .Font = New System.Drawing.Font("Microsoft YaHei UI", 9.0!), _
+                                         .Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top}
+
+        Dim Win As New Form With {.FormBorderStyle = Windows.Forms.FormBorderStyle.Sizable, .Text = Title, .Size = WinSize, .TopMost = True}
+        Win.Controls.Add(TextBox)
+        Win.Show(Me)
+
+        Win.Top = Me.Top
+        Win.Left = Me.Left - WinSize.Width - 15
+        TextBox.Select(0, 0)
+    End Sub
+
     ' 浏览文件
     Private Sub PopMenuButtonViewFile_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonViewFile.Click
         If File.Exists(FileName) Then
@@ -369,20 +387,7 @@ Public Class Form1
             Dim Content As String = reader.ReadToEnd()
             reader.Close()
 
-            Dim WinSize As Size = New Size(500, 300)
-            Dim TextSize As Size = New Size(WinSize.Width - 16, WinSize.Height - 39)
-
-            Dim TextBox As New TextBox With {.Text = Content, .ReadOnly = True, .Multiline = True, .ScrollBars = ScrollBars.Both, .WordWrap = False, _
-                                             .Size = TextSize, .BackColor = Color.White, .Font = New System.Drawing.Font("Microsoft YaHei UI", 9.0!), _
-                                             .Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top}
-
-            Dim Win As New Form With {.FormBorderStyle = Windows.Forms.FormBorderStyle.Sizable, .Text = "浏览文件", .Size = WinSize, .TopMost = True}
-            Win.Controls.Add(TextBox)
-            Win.Show(Me)
-
-            Win.Top = Me.Top
-            Win.Left = Me.Left - WinSize.Width - 15
-            TextBox.Select(0, 0)
+            ShowForm("浏览文件", Content)
 
         End If
     End Sub
@@ -416,7 +421,12 @@ Public Class Form1
 
     End Sub
 
-    Private Sub ListPopMenu_Click(sender As System.Object, e As System.EventArgs) Handles ListPopMenu.Click
-
+    ' 显示高亮部分
+    Private Sub PopMenuButtonHighLightList_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonHighLightList.Click
+        Dim Content As New StringBuilder
+        For Each Item As String In HighItems
+            Content.AppendLine(Item)
+        Next
+        ShowForm("查看高亮", Content.ToString)
     End Sub
 End Class

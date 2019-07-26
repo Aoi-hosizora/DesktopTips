@@ -55,6 +55,7 @@ Partial Class Form1
         Me.PopMenuButtonMoveDown = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonMoveTop = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonHighLight = New DevComponents.DotNetBar.ButtonItem()
+        Me.PopMenuButtonHighLightList = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonAddItem = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonRemoveItem = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonEditItem = New DevComponents.DotNetBar.ButtonItem()
@@ -203,7 +204,7 @@ Partial Class Form1
         '
         Me.ListPopMenu.AutoExpandOnClick = True
         Me.ListPopMenu.Name = "ListPopMenu"
-        Me.ListPopMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.PopupMenuLabelItemList, Me.PopMenuButtonMoveUp, Me.PopMenuButtonMoveDown, Me.PopMenuButtonMoveTop, Me.PopMenuButtonHighLight, Me.PopMenuButtonAddItem, Me.PopMenuButtonRemoveItem, Me.PopMenuButtonEditItem, Me.PopMenuButtonOpenFile, Me.PopMenuButtonViewFile, Me.PopupMenuLabelItemWindow, Me.PopMenuButtonWinTop, Me.PopMenuButtonExit})
+        Me.ListPopMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.PopupMenuLabelItemList, Me.PopMenuButtonMoveUp, Me.PopMenuButtonMoveDown, Me.PopMenuButtonMoveTop, Me.PopMenuButtonHighLight, Me.PopMenuButtonHighLightList, Me.PopMenuButtonAddItem, Me.PopMenuButtonRemoveItem, Me.PopMenuButtonEditItem, Me.PopMenuButtonOpenFile, Me.PopMenuButtonViewFile, Me.PopupMenuLabelItemWindow, Me.PopMenuButtonWinTop, Me.PopMenuButtonExit})
         Me.ListPopMenu.Text = "ListPopMenu"
         '
         'PopupMenuLabelItemList
@@ -241,9 +242,15 @@ Partial Class Form1
         '
         'PopMenuButtonHighLight
         '
+        Me.PopMenuButtonHighLight.BeginGroup = True
         Me.PopMenuButtonHighLight.Name = "PopMenuButtonHighLight"
         Me.PopMenuButtonHighLight.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlH)
         Me.PopMenuButtonHighLight.Text = "高亮(&H)"
+        '
+        'PopMenuButtonHighLightList
+        '
+        Me.PopMenuButtonHighLightList.Name = "PopMenuButtonHighLightList"
+        Me.PopMenuButtonHighLightList.Text = "查看高亮(&L)"
         '
         'PopMenuButtonAddItem
         '
@@ -359,5 +366,6 @@ Partial Class Form1
     Friend WithEvents PopMenuButtonViewFile As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents PopMenuButtonExit As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents PopMenuButtonHighLight As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents PopMenuButtonHighLightList As DevComponents.DotNetBar.ButtonItem
 
 End Class

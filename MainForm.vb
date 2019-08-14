@@ -167,27 +167,32 @@ Public Class MainForm
 #Region "Setting"
 
     Private Const AppName As String = "DesktopTips"
-    Private Const Section As String = "FormPosSize"
+    Private Const PosSection As String = "PosSize"
+    Private Const FormSection As String = "FormSize"
 
     Private Sub MainForm_FormClosed(sender As Object, e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
         SaveList()
 
-        SaveSetting(AppName, Section, "Top", Me.Top)
-        SaveSetting(AppName, Section, "Left", Me.Left)
-        SaveSetting(AppName, Section, "Height", Me.Height)
-        SaveSetting(AppName, Section, "Width", Me.Width)
-        SaveSetting(AppName, Section, "Opacity", MaxOpacity)
+        SaveSetting(AppName, PosSection, "Top", Me.Top)
+        SaveSetting(AppName, PosSection, "Left", Me.Left)
+        SaveSetting(AppName, PosSection, "Height", Me.Height)
+        SaveSetting(AppName, PosSection, "Width", Me.Width)
+        SaveSetting(AppName, FormSection, "Opacity", MaxOpacity)
+        SaveSetting(AppName, FormSection, "TopMost", Me.TopMost)
     End Sub
 
     Private Sub MainForm_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
-        Me.Top = GetSetting(AppName, Section, "Top", 20)
-        Me.Left = GetSetting(AppName, Section, "Left", 20)
-        Me.Height = GetSetting(AppName, Section, "Height", 163)
-        Me.Width = GetSetting(AppName, Section, "Width", 200)
-        MaxOpacity = GetSetting(AppName, Section, "Opacity", 0.6)
+        Me.Top = GetSetting(AppName, PosSection, "Top", 20)
+        Me.Left = GetSetting(AppName, PosSection, "Left", 20)
+        Me.Height = GetSetting(AppName, PosSection, "Height", 163)
+        Me.Width = GetSetting(AppName, PosSection, "Width", 200)
+        MaxOpacity = GetSetting(AppName, FormSection, "Opacity", 0.6)
+        Me.TopMost = GetSetting(AppName, FormSection, "TopMost", False)
 
         NumericUpDownListCnt.Value = (Me.Height - 27) \ 17
         ButtonRemoveItem.Enabled = False
+
+        PopMenuButtonWinTop.Checked = Me.TopMost
 
         SetupMouseEnterLeave()
         LoadList()
@@ -428,17 +433,17 @@ Public Class MainForm
     End Sub
 
     ' 显示文本窗体
-    Private Sub ShowForm(ByVal Title As String, ByVal Content As String)
+    Private Sub ShowForm(ByVal Title As String, ByVal Content As String, ByVal TextColor As Color)
         Dim WinSize As Size = New Size(500, 300)
         Dim TextSize As Size = New Size(WinSize.Width - 16, WinSize.Height - 39)
 
         Dim TextBox As New TextBox With {.Text = Content, .ReadOnly = True, .Multiline = True, .ScrollBars = ScrollBars.Both, .WordWrap = False, _
-                                         .Size = TextSize, .BackColor = Color.White, .Font = New System.Drawing.Font("Microsoft YaHei UI", 9.0!), _
+                                         .Size = TextSize, .BackColor = Color.White, .ForeColor = TextColor, .Font = New System.Drawing.Font("Microsoft YaHei UI", 9.0!), _
                                          .Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top}
 
         Dim Win As New Form With {.FormBorderStyle = Windows.Forms.FormBorderStyle.Sizable, .Text = Title, .Size = WinSize, .TopMost = True}
         Win.Controls.Add(TextBox)
-        Win.Show(Me)
+        Win.Show()
 
         Win.Top = Me.Top
         Win.Left = Me.Left - WinSize.Width - 15
@@ -449,13 +454,14 @@ Public Class MainForm
     Private Sub PopMenuButtonViewFile_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonViewFile.Click
         If File.Exists(FileName) Then
             Dim reader As TextReader = File.OpenText(FileName)
+            Dim Count As Integer = CInt(reader.ReadLine)
             Dim Content As String = reader.ReadToEnd()
             reader.Close()
 
             ' 清除 ,,,
             Content = Content.Replace(HighLightedSign, "")
             Content = Content.Replace(UnHighLightSign, "")
-            ShowForm("浏览文件", Content)
+            ShowForm("浏览文件 (共 " & Count & " 项)", Content, Color.Black)
         End If
     End Sub
 
@@ -494,7 +500,7 @@ Public Class MainForm
         For Each Item As String In HighItems
             Content.AppendLine(Item)
         Next
-        ShowForm("查看高亮", Content.ToString)
+        ShowForm("查看高亮 (共 " & HighItems.Count & " 项)", Content.ToString, Color.Red)
     End Sub
 
 #Region "Opacity"

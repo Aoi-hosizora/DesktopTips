@@ -49,7 +49,7 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Icon_157.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\Icon_157.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevComponents.DotNetBar2, Version=10.8.0.0, Culture=neutral, PublicKeyToken=c39c3242a43eee2b, processorArchitecture=MSIL" />
@@ -122,7 +122,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Icon_157.ico" />
+    <Content Include="Resources\Icon_157.ico" />
     <None Include="Resources\112_Minus_Grey_16x16_72.png" />
     <None Include="Resources\112_Plus_Green_16x16_72.png" />
     <None Include="Resources\112_DownArrowLong_Blue_16x16_72.png" />

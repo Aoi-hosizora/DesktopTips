@@ -1,7 +1,7 @@
 ﻿Imports System.IO
 Imports System.Text
 
-Public Class Form1
+Public Class MainForm
 
     Declare Sub mouse_event Lib "user32" (ByVal dwFlags As Integer, ByVal dx As Integer, ByVal dy As Integer, ByVal cButtons As Integer, ByVal dwExtraInfo As Integer)
     Private Declare Function SetCursorPos Lib "user32" (ByVal x As Long, ByVal y As Long) As Long
@@ -18,6 +18,7 @@ Public Class Form1
     End Enum
 
 #Region "PosMove"
+
     Private PushDownMouseInScreen As Point
     Private PushDownWindowPos As Point
     Private PushDownWindowSize As Point
@@ -34,7 +35,6 @@ Public Class Form1
     End Sub
 
     Private Sub ListView_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseMove
-
         If e.X > sender.Width - 25 Or IsChangeSize = True Then
             Me.Cursor = Cursors.SizeWE
             If IsMouseDown Then
@@ -53,24 +53,27 @@ Public Class Form1
     Private Sub ListView_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseUp
         IsMouseDown = False
         IsChangeSize = False
-
-        ' 实现右键同时选择
-        Dim idx As Integer = ListView.IndexFromPoint(e.X, e.Y)
-        If e.Button = Windows.Forms.MouseButtons.Right And idx <> -1 Then
-            ListView.SetSelected(idx, True)
-        End If
     End Sub
 
-    Private Sub ButtonFocus_Handle(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonAddItem.MouseDown, ButtonRemoveItem.MouseDown, ButtonCloseForm.MouseDown, ButtonChangeHeight.MouseDown
-        LabelFocus.Select()
-    End Sub
 #End Region
 
-#Region "TimerShow"
+#Region "Show End Act DAct"
 
-    Private Const MaxOpacity As Double = 0.75
+    ''' <summary>
+    ''' 透明度
+    ''' </summary>
+    Private MaxOpacity As Double = 0.75
+    ''' <summary>
+    ''' 透明速度
+    ''' </summary>
+    Private Const OpacitySpeed As Double = 0.08
+
+    '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    '''''''''''''''''''''''''''''''''''''''''''''' Load / End Form ''''''''''''''''''''''''''''''''''''''''''''''
+    '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
     Private Sub TimerShowForm_Tick(sender As System.Object, e As System.EventArgs) Handles TimerShowForm.Tick
-        Me.Opacity += 0.08
+        Me.Opacity += OpacitySpeed
         Me.Top += 1
         If Me.Opacity >= MaxOpacity Then
             TimerShowForm.Enabled = False
@@ -79,7 +82,7 @@ Public Class Form1
     End Sub
 
     Private Sub TimerEndForm_Tick(sender As System.Object, e As System.EventArgs) Handles TimerEndForm.Tick
-        Me.Opacity -= 0.08
+        Me.Opacity -= OpacitySpeed
         Me.Top -= 1
         If Me.Opacity <= 0 Then
             TimerEndForm.Enabled = False
@@ -94,36 +97,34 @@ Public Class Form1
         TimerEndForm.Enabled = True
     End Sub
 
-    ''''''''''''''''''''''''''''''''''''''''''''''''''''
+    '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    '''''''''''''''''''''''''''''''''''''''''''''' Act / DAct Form ''''''''''''''''''''''''''''''''''''''''''''''
+    '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
     Private Sub TimerMouseIn_Tick(sender As System.Object, e As System.EventArgs) Handles TimerMouseIn.Tick
         Me.Opacity += 0.02
         If Me.Opacity >= 1 Then
+            TimerMouseIn.Stop()
             TimerMouseIn.Enabled = False
-        End If
-        If TimerMouseOut.Enabled = True Then
-            TimerMouseOut.Enabled = False
         End If
     End Sub
 
     Private Sub TimerMouseOut_Tick(sender As System.Object, e As System.EventArgs) Handles TimerMouseOut.Tick
         Me.Opacity -= 0.02
         If Me.Opacity <= MaxOpacity Then
-            TimerMouseOut.Enabled = False
             Me.Opacity = MaxOpacity
-        End If
-        If TimerMouseIn.Enabled = True Then
-            TimerMouseIn.Enabled = False
+            TimerMouseOut.Stop()
+            TimerMouseOut.Enabled = False
         End If
     End Sub
 
     Private Sub ListView_MouseEnter(sender As Object, e As System.EventArgs) Handles ListView.MouseEnter
+        TimerMouseOut.Enabled = False
         TimerMouseIn.Enabled = True
     End Sub
 
-    Private MouseLeaveCnt As Integer
     Private Sub ListView_MouseLeave(sender As Object, e As System.EventArgs) Handles ListView.MouseLeave
-        MouseLeaveCnt = 0
+        TimerMouseIn.Enabled = False
         TimerMouseOut.Enabled = True
     End Sub
 
@@ -134,24 +135,113 @@ Public Class Form1
     Private Const AppName As String = "DesktopTips"
     Private Const Section As String = "FormPosSize"
 
-    Private Sub Form1_FormClosed(sender As Object, e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
+    Private Sub MainForm_FormClosed(sender As Object, e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
         SaveList()
 
         SaveSetting(AppName, Section, "Top", Me.Top)
         SaveSetting(AppName, Section, "Left", Me.Left)
         SaveSetting(AppName, Section, "Height", Me.Height)
         SaveSetting(AppName, Section, "Width", Me.Width)
+        SaveSetting(AppName, Section, "Opacity", MaxOpacity)
     End Sub
 
-    Private Sub Form1_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+    Private Sub MainForm_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         Me.Top = GetSetting(AppName, Section, "Top", 20)
         Me.Left = GetSetting(AppName, Section, "Left", 20)
         Me.Height = GetSetting(AppName, Section, "Height", 163)
         Me.Width = GetSetting(AppName, Section, "Width", 200)
+        MaxOpacity = GetSetting(AppName, Section, "Opacity", 0.6)
+
         NumericUpDown1.Value = (Me.Height - 27) \ 17
         ButtonRemoveItem.Enabled = False
 
         LoadList()
+        FormOpacity_Load()
+    End Sub
+
+#End Region
+
+#Region "FileIO"
+
+    ' 文件 IO
+    Private FileDir As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\DesktopTips"
+    Private FileName As String = FileDir & "\SavedItem.dat"
+    Private HighItems As List(Of String) = New List(Of String)
+
+    Private MagicSign As String = ",,,"
+    Private HighLightedSign As String = MagicSign & "1"
+    Private UnHighLightSign As String = MagicSign & "0"
+
+
+    Private Sub SaveList()
+        Dim Buf As StringBuilder = New StringBuilder
+        Buf.Append(ListView.Items.Count)
+        For Each item As String In ListView.Items
+            If HighItems.Contains(item) Then
+                Buf.Append(vbNewLine & item.ToString() & HighLightedSign)
+            Else
+                Buf.Append(vbNewLine & item.ToString() & UnHighLightSign)
+            End If
+        Next
+        If Not Directory.Exists(FileDir) Then
+            Directory.CreateDirectory(FileDir)
+        End If
+        Dim Myw As New FileStream(FileName, FileMode.Create)
+        Dim MyBytes As Byte() = New UTF8Encoding().GetBytes(Buf.ToString())
+        Dim MyB_Write As BinaryWriter = New BinaryWriter(Myw)
+        MyB_Write.Write(MyBytes, 0, MyBytes.Length)
+        Myw.Close()
+    End Sub
+
+    Private Sub LoadList()
+        If File.Exists(FileName) Then
+            Dim reader As TextReader = File.OpenText(FileName)
+            Dim Count As Integer = Convert.ToInt32(reader.ReadLine())
+            For i = 1 To Count
+                Dim OneLine As String = reader.ReadLine()
+                Dim ItemStrs As String() = OneLine.Split(MagicSign)
+                ' Console.WriteLine(OneLine & "|" & ItemStrs.Length & "|" & ItemStrs(0) & "|" & ItemStrs(1) & "|" & ItemStrs(2) & "|" & ItemStrs(3))
+                ListView.Items.Add(ItemStrs(0))
+                If ItemStrs.Length >= 2 Then ' 不短路
+                    ' TODO 3??? split
+                    If ItemStrs(3).Equals("1") Then
+                        HighItems.Add(ItemStrs(0))
+                    End If
+                End If
+            Next
+            reader.Close()
+        End If
+    End Sub
+
+#End Region
+
+#Region "List Sel"
+
+    Dim SelectItem As Integer
+
+    ' 焦点
+    Private Sub MainForm_Deactivate(sender As Object, e As System.EventArgs) Handles Me.Deactivate
+        SelectItem = ListView.SelectedIndex
+        ListView.ClearSelected()
+    End Sub
+
+    ' 焦点
+    Private Sub ListView_MouseClick(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseClick
+        If ListView.IndexFromPoint(e.X, e.Y) = -1 Then
+            ListView.ClearSelected()
+        End If
+    End Sub
+
+    Private Sub ListView_RightMouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseUp
+        ' 实现右键同时选择
+        Dim idx As Integer = ListView.IndexFromPoint(e.X, e.Y)
+        If e.Button = Windows.Forms.MouseButtons.Right And idx <> -1 Then
+            ListView.SetSelected(idx, True)
+        End If
+    End Sub
+
+    Private Sub ButtonFocus_Handle(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonAddItem.MouseDown, ButtonRemoveItem.MouseDown, ButtonCloseForm.MouseDown, ButtonChangeHeight.MouseDown
+        LabelFocus.Select()
     End Sub
 
 #End Region
@@ -169,7 +259,6 @@ Public Class Form1
         End If
     End Sub
 
-    Dim SelectItem As Integer
     ' 删
     Private Sub ButtonRemoveItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonRemoveItem.Click, PopMenuButtonRemoveItem.Click
         If (ListView.SelectedItem IsNot Nothing) Then
@@ -218,19 +307,6 @@ Public Class Form1
         ListView.Refresh()
     End Sub
 
-    ' 焦点
-    Private Sub Form1_Deactivate(sender As Object, e As System.EventArgs) Handles Me.Deactivate
-        SelectItem = ListView.SelectedIndex
-        ListView.ClearSelected()
-    End Sub
-
-    ' 焦点
-    Private Sub ListView_MouseClick(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseClick
-        If ListView.IndexFromPoint(e.X, e.Y) = -1 Then
-            ListView.ClearSelected()
-        End If
-    End Sub
-
     ' 大小
     Private Sub NumericUpDown1_ValueChanged(sender As System.Object, e As System.EventArgs) Handles NumericUpDown1.ValueChanged
         Dim MoveY As Integer
@@ -247,52 +323,6 @@ Public Class Form1
     Private Sub ButtonChangeHeight_Click(sender As System.Object, e As System.EventArgs) Handles ButtonChangeHeight.Click
         ButtonChangeHeight.Checked = Not ButtonChangeHeight.Checked
         NumericUpDown1.Visible = ButtonChangeHeight.Checked
-    End Sub
-
-    ' 文件 IO
-    Private FileDir As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\DesktopTips"
-    Private FileName As String = FileDir & "\SavedItem.dat"
-    Private HighItems As List(Of String) = New List(Of String)
-    Private MagicSign As String = ",,,"
-
-    Private Sub SaveList()
-        Dim Buf As StringBuilder = New StringBuilder
-        Buf.Append(ListView.Items.Count)
-        For Each item As String In ListView.Items
-            If HighItems.Contains(item) Then
-                Buf.Append(vbNewLine & item.ToString() & MagicSign & "1")
-            Else
-                Buf.Append(vbNewLine & item.ToString() & MagicSign & "0")
-            End If
-        Next
-        If Not Directory.Exists(FileDir) Then
-            Directory.CreateDirectory(FileDir)
-        End If
-        Dim Myw As New FileStream(FileName, FileMode.Create)
-        Dim MyBytes As Byte() = New UTF8Encoding().GetBytes(Buf.ToString())
-        Dim MyB_Write As BinaryWriter = New BinaryWriter(Myw)
-        MyB_Write.Write(MyBytes, 0, MyBytes.Length)
-        Myw.Close()
-    End Sub
-
-    Private Sub LoadList()
-        If File.Exists(FileName) Then
-            Dim reader As TextReader = File.OpenText(FileName)
-            Dim Count As Integer = Convert.ToInt32(reader.ReadLine())
-            For i = 1 To Count
-                Dim OneLine As String = reader.ReadLine()
-                Dim ItemStrs As String() = OneLine.Split(MagicSign)
-                ' Console.WriteLine(OneLine & "|" & ItemStrs.Length & "|" & ItemStrs(0) & "|" & ItemStrs(1) & "|" & ItemStrs(2) & "|" & ItemStrs(3))
-                ListView.Items.Add(ItemStrs(0))
-                If ItemStrs.Length >= 2 Then ' 不短路
-                    ' TODO 3??? split
-                    If ItemStrs(3).Equals("1") Then
-                        HighItems.Add(ItemStrs(0))
-                    End If
-                End If
-            Next
-            reader.Close()
-        End If
     End Sub
 
     Private Sub ButtonChangeHeight_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonChangeHeight.MouseUp
@@ -318,7 +348,7 @@ Public Class Form1
         System.Diagnostics.Process.Start("explorer.exe", "/select,""" & FileName & """")
     End Sub
 
-    Private Sub Form1_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles Me.MouseMove
+    Private Sub MainForm_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles Me.MouseMove
         'Console.WriteLine(e.X & ", " & e.Y)
     End Sub
 
@@ -387,8 +417,10 @@ Public Class Form1
             Dim Content As String = reader.ReadToEnd()
             reader.Close()
 
+            ' 清除 ,,,
+            Content = Content.Replace(HighLightedSign, "")
+            Content = Content.Replace(UnHighLightSign, "")
             ShowForm("浏览文件", Content)
-
         End If
     End Sub
 
@@ -429,4 +461,48 @@ Public Class Form1
         Next
         ShowForm("查看高亮", Content.ToString)
     End Sub
+
+#Region "Opacity"
+
+    Dim ops() As Double = {0.2, 0.4, 0.6, 0.7, 0.8, 1.0}
+    Dim opBtns(ops.Length - 1) As DevComponents.DotNetBar.ButtonItem
+
+    ''' <summary>
+    ''' 动态添加透明度
+    ''' </summary>
+    Private Sub FormOpacity_Load()
+        For i = 0 To ops.Length - 1
+            opBtns(i) = New DevComponents.DotNetBar.ButtonItem With { _
+                .Name = "PopMenuButtonOpacity" & CInt(ops(i) * 100), _
+                .Tag = ops(i), _
+                .Text = CInt(ops(i) * 100) & "%"
+            }
+
+            AddHandler opBtns(i).Click, AddressOf PopMenuButtonOpacity_Click
+            Me.PopMenuButtonOpacity.SubItems.Add(opBtns(i))
+
+            If MaxOpacity = opBtns(i).Tag Then
+                opBtns(i).Checked = True
+            End If
+        Next
+    End Sub
+
+    Private Sub PopMenuButtonOpacity_Click(sender As System.Object, e As System.EventArgs)
+
+        Dim btn As DevComponents.DotNetBar.ButtonItem = CType(sender, DevComponents.DotNetBar.ButtonItem)
+
+        MaxOpacity = CDbl(btn.Tag())
+
+        For Each btnS In opBtns
+            btnS.Checked = False
+        Next
+
+        btn.Checked = True
+
+        TimerMouseOut.Enabled = True
+        TimerMouseOut.Start()
+    End Sub
+
+#End Region
+
 End Class

@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class Form1
+Partial Class MainForm
     Inherits System.Windows.Forms.Form
 
     'Form 重写 Dispose，以清理组件列表。
@@ -34,7 +34,7 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         Me.ButtonRemoveItem = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonAddItem = New DevComponents.DotNetBar.ButtonX()
         Me.StyleManager1 = New DevComponents.DotNetBar.StyleManager(Me.components)
@@ -62,6 +62,7 @@ Partial Class Form1
         Me.PopMenuButtonOpenFile = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonViewFile = New DevComponents.DotNetBar.ButtonItem()
         Me.PopupMenuLabelItemWindow = New DevComponents.DotNetBar.LabelItem()
+        Me.PopMenuButtonOpacity = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonWinTop = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonExit = New DevComponents.DotNetBar.ButtonItem()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -204,7 +205,7 @@ Partial Class Form1
         '
         Me.ListPopMenu.AutoExpandOnClick = True
         Me.ListPopMenu.Name = "ListPopMenu"
-        Me.ListPopMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.PopupMenuLabelItemList, Me.PopMenuButtonMoveUp, Me.PopMenuButtonMoveDown, Me.PopMenuButtonMoveTop, Me.PopMenuButtonHighLight, Me.PopMenuButtonHighLightList, Me.PopMenuButtonAddItem, Me.PopMenuButtonRemoveItem, Me.PopMenuButtonEditItem, Me.PopMenuButtonOpenFile, Me.PopMenuButtonViewFile, Me.PopupMenuLabelItemWindow, Me.PopMenuButtonWinTop, Me.PopMenuButtonExit})
+        Me.ListPopMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.PopupMenuLabelItemList, Me.PopMenuButtonMoveUp, Me.PopMenuButtonMoveDown, Me.PopMenuButtonMoveTop, Me.PopMenuButtonHighLight, Me.PopMenuButtonHighLightList, Me.PopMenuButtonAddItem, Me.PopMenuButtonRemoveItem, Me.PopMenuButtonEditItem, Me.PopMenuButtonOpenFile, Me.PopMenuButtonViewFile, Me.PopupMenuLabelItemWindow, Me.PopMenuButtonOpacity, Me.PopMenuButtonWinTop, Me.PopMenuButtonExit})
         Me.ListPopMenu.Text = "ListPopMenu"
         '
         'PopupMenuLabelItemList
@@ -295,6 +296,11 @@ Partial Class Form1
         Me.PopupMenuLabelItemWindow.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
         Me.PopupMenuLabelItemWindow.Text = "窗口"
         '
+        'PopMenuButtonOpacity
+        '
+        Me.PopMenuButtonOpacity.Name = "PopMenuButtonOpacity"
+        Me.PopMenuButtonOpacity.Text = "不透明度(&P)"
+        '
         'PopMenuButtonWinTop
         '
         Me.PopMenuButtonWinTop.Name = "PopMenuButtonWinTop"
@@ -305,7 +311,7 @@ Partial Class Form1
         Me.PopMenuButtonExit.Name = "PopMenuButtonExit"
         Me.PopMenuButtonExit.Text = "退出(&E)"
         '
-        'Form1
+        'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -326,7 +332,7 @@ Partial Class Form1
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.MinimumSize = New System.Drawing.Size(127, 112)
-        Me.Name = "Form1"
+        Me.Name = "MainForm"
         Me.Opacity = 0.0R
         Me.ShowIcon = False
         Me.ShowInTaskbar = False
@@ -367,5 +373,6 @@ Partial Class Form1
     Friend WithEvents PopMenuButtonExit As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents PopMenuButtonHighLight As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents PopMenuButtonHighLightList As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents PopMenuButtonOpacity As DevComponents.DotNetBar.ButtonItem
 
 End Class

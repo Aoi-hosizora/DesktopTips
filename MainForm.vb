@@ -118,14 +118,48 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub ListView_MouseEnter(sender As Object, e As System.EventArgs) Handles ListView.MouseEnter
-        TimerMouseOut.Enabled = False
-        TimerMouseIn.Enabled = True
+    ''' <summary>
+    ''' 设置移入移出事件
+    ''' </summary>
+    Private Sub SetupMouseEnterLeave()
+        AddHandler Me.MouseMove, AddressOf FormMouseMove
+        AddHandler Me.MouseLeave, AddressOf FormMouseLeave
+        For Each Ctrl As Control In Me.Controls
+            AddHandler Ctrl.MouseMove, AddressOf FormMouseMove
+            AddHandler Ctrl.MouseLeave, AddressOf FormMouseLeave
+        Next
     End Sub
 
-    Private Sub ListView_MouseLeave(sender As Object, e As System.EventArgs) Handles ListView.MouseLeave
-        TimerMouseIn.Enabled = False
-        TimerMouseOut.Enabled = True
+    ''' <summary>
+    ''' 鼠标移动
+    ''' </summary>
+    Private Sub FormMouseMove(sender As Object, e As System.EventArgs)
+        If Cursor.Position.X >= Me.Left And Cursor.Position.X <= Me.Right And _
+            Cursor.Position.Y >= Me.Top And Cursor.Position.Y <= Me.Bottom Then
+            TimerMouseOut.Stop()
+            TimerMouseOut.Enabled = False
+            TimerMouseIn.Enabled = True
+            TimerMouseIn.Start()
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 鼠标移出，并且没有popup
+    ''' </summary>
+    Private Sub FormMouseLeave(sender As Object, e As System.EventArgs)
+        If ListPopMenu.PopupControl Is Nothing Then
+            TimerMouseIn.Stop()
+            TimerMouseIn.Enabled = False
+            TimerMouseOut.Enabled = True
+            TimerMouseOut.Start()
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Popup 关闭，不能使用 Close
+    ''' </summary>
+    Private Sub ListPopMenu_PopupFinalized(sender As Object, e As System.EventArgs) Handles ListPopMenu.PopupFinalized
+        FormMouseLeave(sender, e)
     End Sub
 
 #End Region
@@ -152,9 +186,10 @@ Public Class MainForm
         Me.Width = GetSetting(AppName, Section, "Width", 200)
         MaxOpacity = GetSetting(AppName, Section, "Opacity", 0.6)
 
-        NumericUpDown1.Value = (Me.Height - 27) \ 17
+        NumericUpDownListCnt.Value = (Me.Height - 27) \ 17
         ButtonRemoveItem.Enabled = False
 
+        SetupMouseEnterLeave()
         LoadList()
         FormOpacity_Load()
     End Sub
@@ -308,21 +343,21 @@ Public Class MainForm
     End Sub
 
     ' 大小
-    Private Sub NumericUpDown1_ValueChanged(sender As System.Object, e As System.EventArgs) Handles NumericUpDown1.ValueChanged
+    Private Sub NumericUpDown1_ValueChanged(sender As System.Object, e As System.EventArgs) Handles NumericUpDownListCnt.ValueChanged
         Dim MoveY As Integer
-        If Me.Height < NumericUpDown1.Value * 17 + 27 Then
+        If Me.Height < NumericUpDownListCnt.Value * 17 + 27 Then
             MoveY = 10
-        ElseIf Me.Height > NumericUpDown1.Value * 17 + 27 Then
+        ElseIf Me.Height > NumericUpDownListCnt.Value * 17 + 27 Then
             MoveY = -10
         End If
-        Me.Height = NumericUpDown1.Value * 17 + 27
+        Me.Height = NumericUpDownListCnt.Value * 17 + 27
         mouse_event(MouseEvent.MOUSEEVENTF_MOVE, 0, MoveY, 0, 0)
     End Sub
 
     ' 显示大小
     Private Sub ButtonChangeHeight_Click(sender As System.Object, e As System.EventArgs) Handles ButtonChangeHeight.Click
         ButtonChangeHeight.Checked = Not ButtonChangeHeight.Checked
-        NumericUpDown1.Visible = ButtonChangeHeight.Checked
+        NumericUpDownListCnt.Visible = ButtonChangeHeight.Checked
     End Sub
 
     Private Sub ButtonChangeHeight_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonChangeHeight.MouseUp

@@ -42,7 +42,7 @@ Partial Class MainForm
         Me.ListView = New System.Windows.Forms.ListBox()
         Me.ButtonCloseForm = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonChangeHeight = New DevComponents.DotNetBar.ButtonX()
-        Me.NumericUpDown1 = New System.Windows.Forms.NumericUpDown()
+        Me.NumericUpDownListCnt = New System.Windows.Forms.NumericUpDown()
         Me.TimerShowForm = New System.Windows.Forms.Timer(Me.components)
         Me.TimerEndForm = New System.Windows.Forms.Timer(Me.components)
         Me.TimerMouseIn = New System.Windows.Forms.Timer(Me.components)
@@ -59,13 +59,14 @@ Partial Class MainForm
         Me.PopMenuButtonAddItem = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonRemoveItem = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonEditItem = New DevComponents.DotNetBar.ButtonItem()
+        Me.PopupMenuLabelItemFile = New DevComponents.DotNetBar.LabelItem()
         Me.PopMenuButtonOpenFile = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonViewFile = New DevComponents.DotNetBar.ButtonItem()
         Me.PopupMenuLabelItemWindow = New DevComponents.DotNetBar.LabelItem()
         Me.PopMenuButtonOpacity = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonWinTop = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonExit = New DevComponents.DotNetBar.ButtonItem()
-        CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.NumericUpDownListCnt, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ContextMenuBar1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -137,6 +138,7 @@ Partial Class MainForm
         Me.ButtonCloseForm.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
         Me.ButtonCloseForm.Size = New System.Drawing.Size(24, 23)
         Me.ButtonCloseForm.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
+        Me.SuperTooltip.SetSuperTooltip(Me.ButtonCloseForm, New DevComponents.DotNetBar.SuperTooltipInfo("退出", "", "退出程序，保存数据。", Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(180, 68)))
         Me.ButtonCloseForm.TabIndex = 1
         Me.ButtonCloseForm.Text = "×"
         '
@@ -151,20 +153,20 @@ Partial Class MainForm
         Me.ButtonChangeHeight.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
         Me.ButtonChangeHeight.Size = New System.Drawing.Size(24, 23)
         Me.ButtonChangeHeight.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
-        Me.SuperTooltip.SetSuperTooltip(Me.ButtonChangeHeight, New DevComponents.DotNetBar.SuperTooltipInfo("设置", "", "左键设置列表显示行高，右键打开更多帮助。", Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(180, 68)))
+        Me.SuperTooltip.SetSuperTooltip(Me.ButtonChangeHeight, New DevComponents.DotNetBar.SuperTooltipInfo("设置", "", "左键设置列表显示行高，右键打开文件所在路径。", Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(180, 68)))
         Me.ButtonChangeHeight.TabIndex = 1
         Me.ButtonChangeHeight.Text = "≡"
         '
-        'NumericUpDown1
+        'NumericUpDownListCnt
         '
-        Me.NumericUpDown1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.NumericUpDown1.Location = New System.Drawing.Point(46, 88)
-        Me.NumericUpDown1.Minimum = New Decimal(New Integer() {5, 0, 0, 0})
-        Me.NumericUpDown1.Name = "NumericUpDown1"
-        Me.NumericUpDown1.Size = New System.Drawing.Size(35, 23)
-        Me.NumericUpDown1.TabIndex = 3
-        Me.NumericUpDown1.Value = New Decimal(New Integer() {8, 0, 0, 0})
-        Me.NumericUpDown1.Visible = False
+        Me.NumericUpDownListCnt.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.NumericUpDownListCnt.Location = New System.Drawing.Point(46, 88)
+        Me.NumericUpDownListCnt.Minimum = New Decimal(New Integer() {5, 0, 0, 0})
+        Me.NumericUpDownListCnt.Name = "NumericUpDownListCnt"
+        Me.NumericUpDownListCnt.Size = New System.Drawing.Size(35, 23)
+        Me.NumericUpDownListCnt.TabIndex = 3
+        Me.NumericUpDownListCnt.Value = New Decimal(New Integer() {8, 0, 0, 0})
+        Me.NumericUpDownListCnt.Visible = False
         '
         'TimerShowForm
         '
@@ -192,9 +194,9 @@ Partial Class MainForm
         Me.ContextMenuBar1.AntiAlias = True
         Me.ContextMenuBar1.Font = New System.Drawing.Font("Yu Gothic UI", 9.0!)
         Me.ContextMenuBar1.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopMenu})
-        Me.ContextMenuBar1.Location = New System.Drawing.Point(36, 43)
+        Me.ContextMenuBar1.Location = New System.Drawing.Point(14, 30)
         Me.ContextMenuBar1.Name = "ContextMenuBar1"
-        Me.ContextMenuBar1.Size = New System.Drawing.Size(75, 27)
+        Me.ContextMenuBar1.Size = New System.Drawing.Size(126, 27)
         Me.ContextMenuBar1.Stretch = True
         Me.ContextMenuBar1.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
         Me.ContextMenuBar1.TabIndex = 4
@@ -205,7 +207,7 @@ Partial Class MainForm
         '
         Me.ListPopMenu.AutoExpandOnClick = True
         Me.ListPopMenu.Name = "ListPopMenu"
-        Me.ListPopMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.PopupMenuLabelItemList, Me.PopMenuButtonMoveUp, Me.PopMenuButtonMoveDown, Me.PopMenuButtonMoveTop, Me.PopMenuButtonHighLight, Me.PopMenuButtonHighLightList, Me.PopMenuButtonAddItem, Me.PopMenuButtonRemoveItem, Me.PopMenuButtonEditItem, Me.PopMenuButtonOpenFile, Me.PopMenuButtonViewFile, Me.PopupMenuLabelItemWindow, Me.PopMenuButtonOpacity, Me.PopMenuButtonWinTop, Me.PopMenuButtonExit})
+        Me.ListPopMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.PopupMenuLabelItemList, Me.PopMenuButtonMoveUp, Me.PopMenuButtonMoveDown, Me.PopMenuButtonMoveTop, Me.PopMenuButtonHighLight, Me.PopMenuButtonHighLightList, Me.PopMenuButtonAddItem, Me.PopMenuButtonRemoveItem, Me.PopMenuButtonEditItem, Me.PopupMenuLabelItemFile, Me.PopMenuButtonOpenFile, Me.PopMenuButtonViewFile, Me.PopupMenuLabelItemWindow, Me.PopMenuButtonOpacity, Me.PopMenuButtonWinTop, Me.PopMenuButtonExit})
         Me.ListPopMenu.Text = "ListPopMenu"
         '
         'PopupMenuLabelItemList
@@ -273,6 +275,19 @@ Partial Class MainForm
         Me.PopMenuButtonEditItem.Name = "PopMenuButtonEditItem"
         Me.PopMenuButtonEditItem.Text = "编辑(&E)"
         '
+        'PopupMenuLabelItemFile
+        '
+        Me.PopupMenuLabelItemFile.BackColor = System.Drawing.Color.FromArgb(CType(CType(221, Byte), Integer), CType(CType(231, Byte), Integer), CType(CType(238, Byte), Integer))
+        Me.PopupMenuLabelItemFile.BorderSide = DevComponents.DotNetBar.eBorderSide.Bottom
+        Me.PopupMenuLabelItemFile.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
+        Me.PopupMenuLabelItemFile.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
+        Me.PopupMenuLabelItemFile.Name = "PopupMenuLabelItemFile"
+        Me.PopupMenuLabelItemFile.PaddingBottom = 1
+        Me.PopupMenuLabelItemFile.PaddingLeft = 10
+        Me.PopupMenuLabelItemFile.PaddingTop = 1
+        Me.PopupMenuLabelItemFile.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
+        Me.PopupMenuLabelItemFile.Text = "文件"
+        '
         'PopMenuButtonOpenFile
         '
         Me.PopMenuButtonOpenFile.Name = "PopMenuButtonOpenFile"
@@ -324,7 +339,7 @@ Partial Class MainForm
         Me.Controls.Add(Me.ButtonAddItem)
         Me.Controls.Add(Me.ButtonRemoveItem)
         Me.Controls.Add(Me.LabelFocus)
-        Me.Controls.Add(Me.NumericUpDown1)
+        Me.Controls.Add(Me.NumericUpDownListCnt)
         Me.Font = New System.Drawing.Font("Microsoft YaHei UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
@@ -338,7 +353,7 @@ Partial Class MainForm
         Me.ShowInTaskbar = False
         Me.Text = "DesktopTips"
         Me.TransparencyKey = System.Drawing.Color.DarkRed
-        CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.NumericUpDownListCnt, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ContextMenuBar1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -351,7 +366,7 @@ Partial Class MainForm
     Friend WithEvents ListView As System.Windows.Forms.ListBox
     Friend WithEvents ButtonCloseForm As DevComponents.DotNetBar.ButtonX
     Friend WithEvents ButtonChangeHeight As DevComponents.DotNetBar.ButtonX
-    Friend WithEvents NumericUpDown1 As System.Windows.Forms.NumericUpDown
+    Friend WithEvents NumericUpDownListCnt As System.Windows.Forms.NumericUpDown
     Friend WithEvents TimerShowForm As System.Windows.Forms.Timer
     Friend WithEvents TimerEndForm As System.Windows.Forms.Timer
     Friend WithEvents TimerMouseIn As System.Windows.Forms.Timer
@@ -374,5 +389,6 @@ Partial Class MainForm
     Friend WithEvents PopMenuButtonHighLight As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents PopMenuButtonHighLightList As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents PopMenuButtonOpacity As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents PopupMenuLabelItemFile As DevComponents.DotNetBar.LabelItem
 
 End Class

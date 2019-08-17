@@ -63,9 +63,13 @@ Partial Class MainForm
         Me.PopMenuButtonOpenFile = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonViewFile = New DevComponents.DotNetBar.ButtonItem()
         Me.PopupMenuLabelItemWindow = New DevComponents.DotNetBar.LabelItem()
+        Me.PopMenuButtonListHeight = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonOpacity = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonWinTop = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonExit = New DevComponents.DotNetBar.ButtonItem()
+        Me.ButtonItemUp = New DevComponents.DotNetBar.ButtonX()
+        Me.ButtonItemDown = New DevComponents.DotNetBar.ButtonX()
+        Me.VScrollBarAdv1 = New DevComponents.DotNetBar.VScrollBarAdv()
         CType(Me.NumericUpDownListCnt, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ContextMenuBar1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -75,7 +79,7 @@ Partial Class MainForm
         Me.ButtonRemoveItem.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.ButtonRemoveItem.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonRemoveItem.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
-        Me.ButtonRemoveItem.Location = New System.Drawing.Point(103, 88)
+        Me.ButtonRemoveItem.Location = New System.Drawing.Point(103, 105)
         Me.ButtonRemoveItem.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ButtonRemoveItem.Name = "ButtonRemoveItem"
         Me.ButtonRemoveItem.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
@@ -89,7 +93,7 @@ Partial Class MainForm
         Me.ButtonAddItem.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.ButtonAddItem.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonAddItem.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
-        Me.ButtonAddItem.Location = New System.Drawing.Point(80, 88)
+        Me.ButtonAddItem.Location = New System.Drawing.Point(80, 105)
         Me.ButtonAddItem.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ButtonAddItem.Name = "ButtonAddItem"
         Me.ButtonAddItem.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
@@ -100,6 +104,7 @@ Partial Class MainForm
         '
         'StyleManager1
         '
+        Me.StyleManager1.ManagerColorTint = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer))
         Me.StyleManager1.ManagerStyle = DevComponents.DotNetBar.eStyle.Office2007Blue
         Me.StyleManager1.MetroColorParameters = New DevComponents.DotNetBar.Metro.ColorTables.MetroColorGeneratorParameters(System.Drawing.Color.White, System.Drawing.Color.FromArgb(CType(CType(43, Byte), Integer), CType(CType(87, Byte), Integer), CType(CType(154, Byte), Integer)))
         '
@@ -124,7 +129,7 @@ Partial Class MainForm
         Me.ListView.ItemHeight = 17
         Me.ListView.Location = New System.Drawing.Point(0, 0)
         Me.ListView.Name = "ListView"
-        Me.ListView.Size = New System.Drawing.Size(127, 89)
+        Me.ListView.Size = New System.Drawing.Size(127, 106)
         Me.ListView.TabIndex = 0
         '
         'ButtonCloseForm
@@ -132,7 +137,7 @@ Partial Class MainForm
         Me.ButtonCloseForm.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.ButtonCloseForm.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ButtonCloseForm.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
-        Me.ButtonCloseForm.Location = New System.Drawing.Point(0, 88)
+        Me.ButtonCloseForm.Location = New System.Drawing.Point(0, 105)
         Me.ButtonCloseForm.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ButtonCloseForm.Name = "ButtonCloseForm"
         Me.ButtonCloseForm.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
@@ -147,20 +152,20 @@ Partial Class MainForm
         Me.ButtonChangeHeight.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.ButtonChangeHeight.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ButtonChangeHeight.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
-        Me.ButtonChangeHeight.Location = New System.Drawing.Point(23, 88)
+        Me.ButtonChangeHeight.Location = New System.Drawing.Point(23, 105)
         Me.ButtonChangeHeight.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ButtonChangeHeight.Name = "ButtonChangeHeight"
         Me.ButtonChangeHeight.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
         Me.ButtonChangeHeight.Size = New System.Drawing.Size(24, 23)
         Me.ButtonChangeHeight.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
-        Me.SuperTooltip.SetSuperTooltip(Me.ButtonChangeHeight, New DevComponents.DotNetBar.SuperTooltipInfo("设置", "", "左键设置列表显示行高，右键打开文件所在路径。", Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(180, 68)))
+        Me.SuperTooltip.SetSuperTooltip(Me.ButtonChangeHeight, New DevComponents.DotNetBar.SuperTooltipInfo("设置", "", "左键单击显示弹出菜单，右键点击显示设置列表高度。", Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(180, 68)))
         Me.ButtonChangeHeight.TabIndex = 1
         Me.ButtonChangeHeight.Text = "≡"
         '
         'NumericUpDownListCnt
         '
         Me.NumericUpDownListCnt.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.NumericUpDownListCnt.Location = New System.Drawing.Point(46, 88)
+        Me.NumericUpDownListCnt.Location = New System.Drawing.Point(46, 105)
         Me.NumericUpDownListCnt.Minimum = New Decimal(New Integer() {5, 0, 0, 0})
         Me.NumericUpDownListCnt.Name = "NumericUpDownListCnt"
         Me.NumericUpDownListCnt.Size = New System.Drawing.Size(35, 23)
@@ -207,7 +212,7 @@ Partial Class MainForm
         '
         Me.ListPopMenu.AutoExpandOnClick = True
         Me.ListPopMenu.Name = "ListPopMenu"
-        Me.ListPopMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.PopupMenuLabelItemList, Me.PopMenuButtonMoveUp, Me.PopMenuButtonMoveDown, Me.PopMenuButtonMoveTop, Me.PopMenuButtonHighLight, Me.PopMenuButtonHighLightList, Me.PopMenuButtonAddItem, Me.PopMenuButtonRemoveItem, Me.PopMenuButtonEditItem, Me.PopupMenuLabelItemFile, Me.PopMenuButtonOpenFile, Me.PopMenuButtonViewFile, Me.PopupMenuLabelItemWindow, Me.PopMenuButtonOpacity, Me.PopMenuButtonWinTop, Me.PopMenuButtonExit})
+        Me.ListPopMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.PopupMenuLabelItemList, Me.PopMenuButtonMoveUp, Me.PopMenuButtonMoveDown, Me.PopMenuButtonMoveTop, Me.PopMenuButtonHighLight, Me.PopMenuButtonHighLightList, Me.PopMenuButtonAddItem, Me.PopMenuButtonRemoveItem, Me.PopMenuButtonEditItem, Me.PopupMenuLabelItemFile, Me.PopMenuButtonOpenFile, Me.PopMenuButtonViewFile, Me.PopupMenuLabelItemWindow, Me.PopMenuButtonListHeight, Me.PopMenuButtonOpacity, Me.PopMenuButtonWinTop, Me.PopMenuButtonExit})
         Me.ListPopMenu.Text = "ListPopMenu"
         '
         'PopupMenuLabelItemList
@@ -311,6 +316,12 @@ Partial Class MainForm
         Me.PopupMenuLabelItemWindow.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
         Me.PopupMenuLabelItemWindow.Text = "窗口"
         '
+        'PopMenuButtonListHeight
+        '
+        Me.PopMenuButtonListHeight.AutoCheckOnClick = True
+        Me.PopMenuButtonListHeight.Name = "PopMenuButtonListHeight"
+        Me.PopMenuButtonListHeight.Text = "列表高度设置(&E)"
+        '
         'PopMenuButtonOpacity
         '
         Me.PopMenuButtonOpacity.Name = "PopMenuButtonOpacity"
@@ -326,12 +337,48 @@ Partial Class MainForm
         Me.PopMenuButtonExit.Name = "PopMenuButtonExit"
         Me.PopMenuButtonExit.Text = "退出(&E)"
         '
+        'ButtonItemUp
+        '
+        Me.ButtonItemUp.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
+        Me.ButtonItemUp.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
+        Me.ButtonItemUp.Font = New System.Drawing.Font("Yu Gothic UI Semibold", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
+        Me.ButtonItemUp.Location = New System.Drawing.Point(95, 64)
+        Me.ButtonItemUp.Name = "ButtonItemUp"
+        Me.ButtonItemUp.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
+        Me.ButtonItemUp.Size = New System.Drawing.Size(17, 17)
+        Me.ButtonItemUp.TabIndex = 5
+        Me.ButtonItemUp.Tag = "True"
+        Me.ButtonItemUp.Text = "↑"
+        '
+        'ButtonItemDown
+        '
+        Me.ButtonItemDown.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
+        Me.ButtonItemDown.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
+        Me.ButtonItemDown.Font = New System.Drawing.Font("Yu Gothic UI Semibold", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
+        Me.ButtonItemDown.Location = New System.Drawing.Point(46, 64)
+        Me.ButtonItemDown.Name = "ButtonItemDown"
+        Me.ButtonItemDown.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
+        Me.ButtonItemDown.Size = New System.Drawing.Size(17, 17)
+        Me.ButtonItemDown.TabIndex = 6
+        Me.ButtonItemDown.Tag = "True"
+        Me.ButtonItemDown.Text = "↓"
+        '
+        'VScrollBarAdv1
+        '
+        Me.VScrollBarAdv1.Location = New System.Drawing.Point(55, 11)
+        Me.VScrollBarAdv1.Name = "VScrollBarAdv1"
+        Me.VScrollBarAdv1.Size = New System.Drawing.Size(19, 129)
+        Me.VScrollBarAdv1.TabIndex = 7
+        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.DarkRed
-        Me.ClientSize = New System.Drawing.Size(127, 112)
+        Me.ClientSize = New System.Drawing.Size(127, 129)
+        Me.Controls.Add(Me.VScrollBarAdv1)
+        Me.Controls.Add(Me.ButtonItemDown)
+        Me.Controls.Add(Me.ButtonItemUp)
         Me.Controls.Add(Me.ContextMenuBar1)
         Me.Controls.Add(Me.ListView)
         Me.Controls.Add(Me.ButtonChangeHeight)
@@ -390,5 +437,9 @@ Partial Class MainForm
     Friend WithEvents PopMenuButtonHighLightList As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents PopMenuButtonOpacity As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents PopupMenuLabelItemFile As DevComponents.DotNetBar.LabelItem
+    Friend WithEvents PopMenuButtonListHeight As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ButtonItemUp As DevComponents.DotNetBar.ButtonX
+    Friend WithEvents ButtonItemDown As DevComponents.DotNetBar.ButtonX
+    Friend WithEvents VScrollBarAdv1 As DevComponents.DotNetBar.VScrollBarAdv
 
 End Class

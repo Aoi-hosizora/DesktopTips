@@ -28,10 +28,12 @@ Public Class MainForm
     Private Sub ListView_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseDown
         If e.Button = Windows.Forms.MouseButtons.Left Then
             IsMouseDown = True
+            SetSelectedItemButtonShow(ListView.GetItemRectangle(ListView.SelectedIndex))
         End If
         PushDownMouseInScreen = Cursor.Position
         PushDownWindowPos = New Point(Me.Left, Me.Top)
         PushDownWindowSize = New Point(Me.Width, Me.Height)
+
     End Sub
 
     Private Sub ListView_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseMove
@@ -195,8 +197,21 @@ Public Class MainForm
         PopMenuButtonWinTop.Checked = Me.TopMost
 
         SetupMouseEnterLeave()
+        SetupUpDownButtonsPos()
         LoadList()
         FormOpacity_Load()
+
+    End Sub
+
+    Private Sub SetupUpDownButtonsPos()
+        Dim height As Integer = ListView.ItemHeight
+        ButtonItemUp.Visible = False
+        ButtonItemUp.Height = height
+        ButtonItemUp.Width = height
+
+        ButtonItemDown.Visible = False
+        ButtonItemDown.Height = height
+        ButtonItemDown.Width = height
     End Sub
 
 #End Region
@@ -280,7 +295,9 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub ButtonFocus_Handle(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonAddItem.MouseDown, ButtonRemoveItem.MouseDown, ButtonCloseForm.MouseDown, ButtonChangeHeight.MouseDown
+    Private Sub ButtonFocus_Handle(sender As Object, e As System.Windows.Forms.MouseEventArgs) _
+        Handles ButtonAddItem.MouseDown, ButtonRemoveItem.MouseDown, ButtonCloseForm.MouseDown, ButtonChangeHeight.MouseDown, ButtonItemUp.MouseDown, ButtonItemDown.MouseDown
+
         LabelFocus.Select()
     End Sub
 
@@ -345,37 +362,74 @@ Public Class MainForm
             PopMenuButtonHighLight.Checked = False
         End If
         ListView.Refresh()
+
+        If ListView.SelectedItem IsNot Nothing Then
+            SetSelectedItemButtonShow(ListView.GetItemRectangle(ListView.SelectedIndex))
+        Else
+            SetSelectedItemButtonHide()
+        End If
+
+        ButtonItemUp.Enabled = Not ListView.SelectedIndex = 0
+        PopMenuButtonMoveUp.Enabled = Not ListView.SelectedIndex = 0
+        PopMenuButtonMoveTop.Enabled = Not ListView.SelectedIndex = 0
+
+        ButtonItemDown.Enabled = Not ListView.SelectedIndex = ListView.Items.Count() - 1
+        PopMenuButtonMoveDown.Enabled = Not ListView.SelectedIndex = ListView.Items.Count() - 1
+
+    End Sub
+
+    Private Sub ListView_MouseWheel(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseWheel
+        SetSelectedItemButtonHide()
+    End Sub
+
+    ''' <summary>
+    ''' 点击项，显示按钮
+    ''' </summary>
+    ''' <param name="rect">ListView.GetItemRectangle(ListView.SelectedIndex)</param>
+    Private Sub SetSelectedItemButtonShow(ByVal rect As Rectangle)
+        rect.Offset(ListView.Location)
+        rect.Offset(2, 2)
+
+        ButtonItemDown.Top = rect.Top
+        ButtonItemDown.Left = rect.Left + rect.Width - ButtonItemDown.Width
+        ButtonItemDown.Visible = True
+
+        ButtonItemUp.Top = rect.Top
+        ButtonItemUp.Left = rect.Left + rect.Width - 2 * ButtonItemUp.Width
+        ButtonItemUp.Visible = True
+
+    End Sub
+
+    ''' <summary>
+    ''' 隐藏按钮
+    ''' </summary>
+    Private Sub SetSelectedItemButtonHide()
+
+        ButtonItemUp.Visible = False
+        ButtonItemDown.Visible = False
     End Sub
 
     ' 大小
     Private Sub NumericUpDown1_ValueChanged(sender As System.Object, e As System.EventArgs) Handles NumericUpDownListCnt.ValueChanged
         Dim MoveY As Integer
-        If Me.Height < NumericUpDownListCnt.Value * 17 + 27 Then
+        If Me.Height < NumericUpDownListCnt.Value * ListView.ItemHeight + 27 Then
             MoveY = 10
-        ElseIf Me.Height > NumericUpDownListCnt.Value * 17 + 27 Then
+        ElseIf Me.Height > NumericUpDownListCnt.Value * ListView.ItemHeight + 27 Then
             MoveY = -10
         End If
-        Me.Height = NumericUpDownListCnt.Value * 17 + 27
+        Me.Height = NumericUpDownListCnt.Value * ListView.ItemHeight + 27
         mouse_event(MouseEvent.MOUSEEVENTF_MOVE, 0, MoveY, 0, 0)
     End Sub
 
-    ' 显示大小
+    ' 显示弹出菜单
     Private Sub ButtonChangeHeight_Click(sender As System.Object, e As System.EventArgs) Handles ButtonChangeHeight.Click
-        ButtonChangeHeight.Checked = Not ButtonChangeHeight.Checked
-        NumericUpDownListCnt.Visible = ButtonChangeHeight.Checked
+        ListPopMenu.Popup(Me.Left + sender.Left, Me.Top + sender.Top + sender.Height - 1)
     End Sub
 
     Private Sub ButtonChangeHeight_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonChangeHeight.MouseUp
         If e.Button = Windows.Forms.MouseButtons.Right Then
-            'DevComponents.DotNetBar.MessageBoxEx.Show
-            Dim msg As String = "文件保存在： " & vbCr & """" & FileName & """ 内，" & vbCr & "是否打开该文件夹？"
-            Dim re As Integer = _
-                MessageBox.Show(msg, "提醒", _
-                                MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
-
-            If re = vbOK Then
-                PopMenuButtonOpenFile_Click(Me.PopMenuButtonOpenFile, New System.EventArgs)
-            End If
+            PopMenuButtonListHeight.Checked = Not PopMenuButtonListHeight.Checked
+            PopMenuButtonListHeight_Click(sender, New System.EventArgs)
         End If
     End Sub
 
@@ -403,7 +457,7 @@ Public Class MainForm
     End Sub
 
     ' 上移
-    Private Sub PopMenuButtonMoveUp_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonMoveUp.Click
+    Private Sub MoveUp_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonMoveUp.Click, ButtonItemUp.Click
         Dim currIdx As Integer = ListView.SelectedIndex
         If currIdx >= 1 Then
             Dim currItem As Object = ListView.SelectedItem
@@ -411,11 +465,15 @@ Public Class MainForm
             ListView.Items.Insert(currIdx - 1, currItem)
             ListView.SetSelected(currIdx - 1, True)
             SaveList()
+
+            If sender.Tag = "True" Then
+                mouse_event(MouseEvent.MOUSEEVENTF_MOVE, 0, -10, 0, 0)
+            End If
         End If
     End Sub
 
     ' 下移
-    Private Sub PopMenuButtonMoveDown_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonMoveDown.Click
+    Private Sub MoveDown_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonMoveDown.Click, ButtonItemDown.Click
         Dim currIdx As Integer = ListView.SelectedIndex
         If currIdx <= ListView.Items.Count() - 2 Then
             Dim currItem As Object = ListView.SelectedItem
@@ -423,6 +481,10 @@ Public Class MainForm
             ListView.Items.Insert(currIdx + 1, currItem)
             ListView.SetSelected(currIdx + 1, True)
             SaveList()
+
+            If sender.Tag = "True" Then
+                mouse_event(MouseEvent.MOUSEEVENTF_MOVE, 0, 10, 0, 0)
+            End If
         End If
     End Sub
 
@@ -546,4 +608,7 @@ Public Class MainForm
 
 #End Region
 
+    Private Sub PopMenuButtonListHeight_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonListHeight.Click
+        NumericUpDownListCnt.Visible = PopMenuButtonListHeight.Checked
+    End Sub
 End Class

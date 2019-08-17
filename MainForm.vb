@@ -30,6 +30,7 @@ Public Class MainForm
             IsMouseDown = True
             SetSelectedItemButtonShow(ListView.GetItemRectangle(ListView.SelectedIndex))
         End If
+
         PushDownMouseInScreen = Cursor.Position
         PushDownWindowPos = New Point(Me.Left, Me.Top)
         PushDownWindowSize = New Point(Me.Width, Me.Height)
@@ -78,8 +79,8 @@ Public Class MainForm
         Me.Opacity += OpacitySpeed
         Me.Top += 1
         If Me.Opacity >= MaxOpacity Then
-            TimerShowForm.Enabled = False
             Me.Opacity = MaxOpacity
+            TimerShowForm.Enabled = False
         End If
     End Sub
 
@@ -87,15 +88,20 @@ Public Class MainForm
         Me.Opacity -= OpacitySpeed
         Me.Top -= 1
         If Me.Opacity <= 0 Then
-            TimerEndForm.Enabled = False
+            Me.Top = Me.Top + (1 / OpacitySpeed)
             Me.Close()
-        End If
-        If TimerShowForm.Enabled = True Then
-            TimerShowForm.Enabled = False
+            TimerEndForm.Enabled = False
         End If
     End Sub
 
     Private Sub ButtonCloseForm_Click(sender As System.Object, e As System.EventArgs) Handles ButtonCloseForm.Click, PopMenuButtonExit.Click
+        TimerMouseIn.Interval = 10000
+        TimerMouseIn.Stop()
+        TimerMouseIn.Enabled = False
+        TimerMouseOut.Interval = 10000
+        TimerMouseOut.Stop()
+        TimerMouseOut.Enabled = False
+
         TimerEndForm.Enabled = True
     End Sub
 
@@ -104,7 +110,7 @@ Public Class MainForm
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
     Private Sub TimerMouseIn_Tick(sender As System.Object, e As System.EventArgs) Handles TimerMouseIn.Tick
-        Me.Opacity += 0.02
+        Me.Opacity += 0.05
         If Me.Opacity >= 1 Then
             TimerMouseIn.Stop()
             TimerMouseIn.Enabled = False
@@ -194,8 +200,13 @@ Public Class MainForm
         NumericUpDownListCnt.Value = (Me.Height - 27) \ 17
         ButtonRemoveItem.Enabled = False
 
+        Me.Top = Me.Top - (MaxOpacity / OpacitySpeed)
+        TimerShowForm.Enabled = True
+        TimerShowForm.Start()
+
         PopMenuButtonWinTop.Checked = Me.TopMost
 
+        ListView.Items.Clear()
         SetupMouseEnterLeave()
         SetupUpDownButtonsPos()
         LoadList()
@@ -378,6 +389,15 @@ Public Class MainForm
 
     End Sub
 
+    ' 滚动条获得焦点
+    ' Me.Left + ListView.Left + ListView.Width - 20
+    Private Sub ListView_MouseCaptureChanged(sender As Object, e As System.EventArgs) Handles ListView.MouseCaptureChanged
+        If Cursor.Position.X > Me.Left + ListView.Left + ListView.Width - 20 Then
+            SetSelectedItemButtonHide()
+        End If
+    End Sub
+
+    ' 滚动
     Private Sub ListView_MouseWheel(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseWheel
         SetSelectedItemButtonHide()
     End Sub
@@ -610,5 +630,20 @@ Public Class MainForm
 
     Private Sub PopMenuButtonListHeight_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonListHeight.Click
         NumericUpDownListCnt.Visible = PopMenuButtonListHeight.Checked
+    End Sub
+
+    Private Sub ListPopMenu_PopupOpen(sender As Object, e As DevComponents.DotNetBar.PopupOpenEventArgs) Handles ListPopMenu.PopupOpen
+        e.Cancel = True
+        PopupMenuLabelSelItem.Visible = ListView.SelectedIndex <> -1
+        PopupMenuLabelSelItemText.Visible = ListView.SelectedIndex <> -1
+        If ListView.SelectedIndex <> -1 Then
+            PopupMenuLabelSelItemText.Text = ListView.SelectedItem
+        End If
+        e.Cancel = False
+        ListPopMenu.Refresh()
+    End Sub
+
+    Private Sub ListPopMenu_Click(sender As System.Object, e As System.EventArgs) Handles ListPopMenu.Click
+
     End Sub
 End Class

@@ -53,14 +53,7 @@ Partial Class MainForm
         Me.PopupMenuLabelSelItem = New DevComponents.DotNetBar.LabelItem()
         Me.PopupMenuLabelSelItemText = New DevComponents.DotNetBar.LabelItem()
         Me.PopupMenuLabelItemList = New DevComponents.DotNetBar.LabelItem()
-        Me.PopMenuButtonMoveUp = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopMenuButtonMoveDown = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopMenuButtonMoveTop = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopMenuButtonHighLight = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonHighLightList = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopMenuButtonAddItem = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopMenuButtonRemoveItem = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopMenuButtonEditItem = New DevComponents.DotNetBar.ButtonItem()
         Me.PopupMenuLabelItemFile = New DevComponents.DotNetBar.LabelItem()
         Me.PopMenuButtonOpenFile = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonViewFile = New DevComponents.DotNetBar.ButtonItem()
@@ -71,6 +64,14 @@ Partial Class MainForm
         Me.PopMenuButtonExit = New DevComponents.DotNetBar.ButtonItem()
         Me.ButtonItemUp = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonItemDown = New DevComponents.DotNetBar.ButtonX()
+        Me.PopMenuButtonMoveUp = New DevComponents.DotNetBar.ButtonItem()
+        Me.PopMenuButtonMoveDown = New DevComponents.DotNetBar.ButtonItem()
+        Me.PopMenuButtonMoveBottom = New DevComponents.DotNetBar.ButtonItem()
+        Me.PopMenuButtonHighLight = New DevComponents.DotNetBar.ButtonItem()
+        Me.PopMenuButtonAddItem = New DevComponents.DotNetBar.ButtonItem()
+        Me.PopMenuButtonRemoveItem = New DevComponents.DotNetBar.ButtonItem()
+        Me.PopMenuButtonEditItem = New DevComponents.DotNetBar.ButtonItem()
+        Me.PopMenuButtonMoveTop = New DevComponents.DotNetBar.ButtonItem()
         CType(Me.NumericUpDownListCnt, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ContextMenuBar1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -213,7 +214,7 @@ Partial Class MainForm
         '
         Me.ListPopMenu.AutoExpandOnClick = True
         Me.ListPopMenu.Name = "ListPopMenu"
-        Me.ListPopMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.PopupMenuLabelSelItem, Me.PopupMenuLabelSelItemText, Me.PopupMenuLabelItemList, Me.PopMenuButtonMoveUp, Me.PopMenuButtonMoveDown, Me.PopMenuButtonMoveTop, Me.PopMenuButtonHighLight, Me.PopMenuButtonHighLightList, Me.PopMenuButtonAddItem, Me.PopMenuButtonRemoveItem, Me.PopMenuButtonEditItem, Me.PopupMenuLabelItemFile, Me.PopMenuButtonOpenFile, Me.PopMenuButtonViewFile, Me.PopupMenuLabelItemWindow, Me.PopMenuButtonListHeight, Me.PopMenuButtonOpacity, Me.PopMenuButtonWinTop, Me.PopMenuButtonExit})
+        Me.ListPopMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.PopupMenuLabelSelItem, Me.PopupMenuLabelSelItemText, Me.PopupMenuLabelItemList, Me.PopMenuButtonMoveUp, Me.PopMenuButtonMoveDown, Me.PopMenuButtonMoveTop, Me.PopMenuButtonMoveBottom, Me.PopMenuButtonHighLight, Me.PopMenuButtonHighLightList, Me.PopMenuButtonAddItem, Me.PopMenuButtonRemoveItem, Me.PopMenuButtonEditItem, Me.PopupMenuLabelItemFile, Me.PopMenuButtonOpenFile, Me.PopMenuButtonViewFile, Me.PopupMenuLabelItemWindow, Me.PopMenuButtonListHeight, Me.PopMenuButtonOpacity, Me.PopMenuButtonWinTop, Me.PopMenuButtonExit})
         Me.ListPopMenu.Text = "ListPopMenu"
         '
         'PopupMenuLabelSelItem
@@ -248,6 +249,7 @@ Partial Class MainForm
         'PopupMenuLabelItemList
         '
         Me.PopupMenuLabelItemList.BackColor = System.Drawing.Color.FromArgb(CType(CType(221, Byte), Integer), CType(CType(231, Byte), Integer), CType(CType(238, Byte), Integer))
+        Me.PopupMenuLabelItemList.BeginGroup = True
         Me.PopupMenuLabelItemList.BorderSide = DevComponents.DotNetBar.eBorderSide.Bottom
         Me.PopupMenuLabelItemList.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
         Me.PopupMenuLabelItemList.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
@@ -258,57 +260,10 @@ Partial Class MainForm
         Me.PopupMenuLabelItemList.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
         Me.PopupMenuLabelItemList.Text = "列表"
         '
-        'PopMenuButtonMoveUp
-        '
-        Me.PopMenuButtonMoveUp.Image = Global.DesktopTips.My.Resources.Resources._112_UpArrowLong_Orange_16x16_72
-        Me.PopMenuButtonMoveUp.Name = "PopMenuButtonMoveUp"
-        Me.PopMenuButtonMoveUp.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlU)
-        Me.PopMenuButtonMoveUp.Text = "上移(&U)"
-        '
-        'PopMenuButtonMoveDown
-        '
-        Me.PopMenuButtonMoveDown.Image = Global.DesktopTips.My.Resources.Resources._112_DownArrowLong_Blue_16x16_72
-        Me.PopMenuButtonMoveDown.Name = "PopMenuButtonMoveDown"
-        Me.PopMenuButtonMoveDown.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlD)
-        Me.PopMenuButtonMoveDown.Text = "下移(&D)"
-        '
-        'PopMenuButtonMoveTop
-        '
-        Me.PopMenuButtonMoveTop.Name = "PopMenuButtonMoveTop"
-        Me.PopMenuButtonMoveTop.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlT)
-        Me.PopMenuButtonMoveTop.Text = "移至顶部(&T)"
-        '
-        'PopMenuButtonHighLight
-        '
-        Me.PopMenuButtonHighLight.BeginGroup = True
-        Me.PopMenuButtonHighLight.Name = "PopMenuButtonHighLight"
-        Me.PopMenuButtonHighLight.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlH)
-        Me.PopMenuButtonHighLight.Text = "高亮(&H)"
-        '
         'PopMenuButtonHighLightList
         '
         Me.PopMenuButtonHighLightList.Name = "PopMenuButtonHighLightList"
         Me.PopMenuButtonHighLightList.Text = "查看高亮(&L)"
-        '
-        'PopMenuButtonAddItem
-        '
-        Me.PopMenuButtonAddItem.BeginGroup = True
-        Me.PopMenuButtonAddItem.Image = Global.DesktopTips.My.Resources.Resources._112_Plus_Green_16x16_72
-        Me.PopMenuButtonAddItem.Name = "PopMenuButtonAddItem"
-        Me.PopMenuButtonAddItem.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlA)
-        Me.PopMenuButtonAddItem.Text = "添加(&A)"
-        '
-        'PopMenuButtonRemoveItem
-        '
-        Me.PopMenuButtonRemoveItem.Image = Global.DesktopTips.My.Resources.Resources._112_Minus_Grey_16x16_72
-        Me.PopMenuButtonRemoveItem.Name = "PopMenuButtonRemoveItem"
-        Me.PopMenuButtonRemoveItem.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.Del)
-        Me.PopMenuButtonRemoveItem.Text = "删除(&X)"
-        '
-        'PopMenuButtonEditItem
-        '
-        Me.PopMenuButtonEditItem.Name = "PopMenuButtonEditItem"
-        Me.PopMenuButtonEditItem.Text = "编辑(&E)"
         '
         'PopupMenuLabelItemFile
         '
@@ -393,6 +348,62 @@ Partial Class MainForm
         Me.ButtonItemDown.Tag = "True"
         Me.ButtonItemDown.Text = "↓"
         '
+        'PopMenuButtonMoveUp
+        '
+        Me.PopMenuButtonMoveUp.Image = Global.DesktopTips.My.Resources.Resources._112_UpArrowLong_Orange_16x16_72
+        Me.PopMenuButtonMoveUp.Name = "PopMenuButtonMoveUp"
+        Me.PopMenuButtonMoveUp.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlU)
+        Me.PopMenuButtonMoveUp.Text = "上移(&U)"
+        '
+        'PopMenuButtonMoveDown
+        '
+        Me.PopMenuButtonMoveDown.Image = Global.DesktopTips.My.Resources.Resources._112_DownArrowLong_Blue_16x16_72
+        Me.PopMenuButtonMoveDown.Name = "PopMenuButtonMoveDown"
+        Me.PopMenuButtonMoveDown.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlD)
+        Me.PopMenuButtonMoveDown.Text = "下移(&D)"
+        '
+        'PopMenuButtonMoveBottom
+        '
+        Me.PopMenuButtonMoveBottom.Name = "PopMenuButtonMoveBottom"
+        Me.PopMenuButtonMoveBottom.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlB)
+        Me.PopMenuButtonMoveBottom.Text = "移至底部(&B)"
+        '
+        'PopMenuButtonHighLight
+        '
+        Me.PopMenuButtonHighLight.BeginGroup = True
+        Me.PopMenuButtonHighLight.Image = Global.DesktopTips.My.Resources.Resources.FavoriteStar_FrontFacing_16x16_72
+        Me.PopMenuButtonHighLight.Name = "PopMenuButtonHighLight"
+        Me.PopMenuButtonHighLight.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlH)
+        Me.PopMenuButtonHighLight.Text = "高亮(&H)"
+        '
+        'PopMenuButtonAddItem
+        '
+        Me.PopMenuButtonAddItem.BeginGroup = True
+        Me.PopMenuButtonAddItem.Image = Global.DesktopTips.My.Resources.Resources._112_Plus_Green_16x16_72
+        Me.PopMenuButtonAddItem.Name = "PopMenuButtonAddItem"
+        Me.PopMenuButtonAddItem.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlA)
+        Me.PopMenuButtonAddItem.Text = "添加(&A)"
+        '
+        'PopMenuButtonRemoveItem
+        '
+        Me.PopMenuButtonRemoveItem.Image = Global.DesktopTips.My.Resources.Resources._112_Minus_Grey_16x16_72
+        Me.PopMenuButtonRemoveItem.Name = "PopMenuButtonRemoveItem"
+        Me.PopMenuButtonRemoveItem.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.Del)
+        Me.PopMenuButtonRemoveItem.Text = "删除(&X)"
+        '
+        'PopMenuButtonEditItem
+        '
+        Me.PopMenuButtonEditItem.Image = Global.DesktopTips.My.Resources.Resources._126_Edit_16x16_72
+        Me.PopMenuButtonEditItem.Name = "PopMenuButtonEditItem"
+        Me.PopMenuButtonEditItem.Text = "编辑(&E)"
+        '
+        'PopMenuButtonMoveTop
+        '
+        Me.PopMenuButtonMoveTop.ItemAlignment = DevComponents.DotNetBar.eItemAlignment.Far
+        Me.PopMenuButtonMoveTop.Name = "PopMenuButtonMoveTop"
+        Me.PopMenuButtonMoveTop.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlT)
+        Me.PopMenuButtonMoveTop.Text = "移至顶部(&T)"
+        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
@@ -447,7 +458,6 @@ Partial Class MainForm
     Friend WithEvents PopMenuButtonMoveDown As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents PopMenuButtonAddItem As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents PopMenuButtonRemoveItem As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents PopMenuButtonMoveTop As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents PopMenuButtonWinTop As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents PopMenuButtonOpenFile As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents PopupMenuLabelItemList As DevComponents.DotNetBar.LabelItem
@@ -464,5 +474,7 @@ Partial Class MainForm
     Friend WithEvents ButtonItemDown As DevComponents.DotNetBar.ButtonX
     Friend WithEvents PopupMenuLabelSelItem As DevComponents.DotNetBar.LabelItem
     Friend WithEvents PopupMenuLabelSelItemText As DevComponents.DotNetBar.LabelItem
+    Friend WithEvents PopMenuButtonMoveBottom As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents PopMenuButtonMoveTop As DevComponents.DotNetBar.ButtonItem
 
 End Class

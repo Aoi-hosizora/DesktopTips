@@ -1,5 +1,6 @@
 ﻿Namespace My
-    ' 以下事件可用于 MyApplication:
+
+    ' 以下事件可用于 MyApplication:
     ' 
     ' Startup: 应用程序启动时在创建启动窗体之前引发。
     ' Shutdown: 在关闭所有应用程序窗体后引发。如果应用程序异常终止，则不会引发此事件。

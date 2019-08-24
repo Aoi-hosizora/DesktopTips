@@ -323,6 +323,7 @@ Public Class MainForm
         End While
         If msg <> "" Then
             ListView.Items.Add(msg.Trim())
+            ListView.SelectedIndex = ListView.Items.Count() - 1
             SaveList()
         End If
     End Sub
@@ -383,6 +384,7 @@ Public Class MainForm
         ButtonItemUp.Enabled = Not ListView.SelectedIndex = 0
         PopMenuButtonMoveUp.Enabled = Not ListView.SelectedIndex = 0
         PopMenuButtonMoveTop.Enabled = Not ListView.SelectedIndex = 0
+        PopMenuButtonMoveBottom.Enabled = Not ListView.SelectedIndex = ListView.Items.Count() - 1
 
         ButtonItemDown.Enabled = Not ListView.SelectedIndex = ListView.Items.Count() - 1
         PopMenuButtonMoveDown.Enabled = Not ListView.SelectedIndex = ListView.Items.Count() - 1
@@ -468,11 +470,21 @@ Public Class MainForm
 
     ' 置顶
     Private Sub PopMenuButtonMoveTop_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonMoveTop.Click
-        Dim currIdx As Integer = ListView.SelectedIndex
+        'Dim currIdx As Integer = ListView.SelectedIndex
         Dim currItem As Object = ListView.SelectedItem
         ListView.Items.Remove(currItem)
         ListView.Items.Insert(0, currItem)
         ListView.SetSelected(0, True)
+        SaveList()
+    End Sub
+
+    ' 置底
+    Private Sub PopMenuButtonMoveBottom_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonMoveBottom.Click
+        'Dim currIdx As Integer = ListView.SelectedIndex
+        Dim currItem As Object = ListView.SelectedItem
+        ListView.Items.Remove(currItem)
+        ListView.Items.Insert(ListView.Items.Count, currItem)
+        ListView.SetSelected(ListView.Items.Count - 1, True)
         SaveList()
     End Sub
 

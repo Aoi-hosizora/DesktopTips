@@ -296,12 +296,12 @@ Public Class MainForm
     Private Sub ListView_MouseDown_Sel(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseDown, TabStrip.MouseDown
         ListView_SelectedIndexChanged(sender, New System.EventArgs)
 
-        If ListView.SelectedIndex <> -1 Then
-            Dim rect As Rectangle = ListView.GetItemRectangle(ListView.SelectedIndex)
-            If e.Y > rect.Top + rect.Height Then
-                ListView.ClearSelected()
-            End If
-        End If
+        'If ListView.SelectedIndex <> -1 Then
+        '    Dim rect As Rectangle = ListView.GetItemRectangle(ListView.SelectedIndex)
+        '    If e.Y > rect.Top + rect.Height Then
+        '        ListView.ClearSelected()
+        '    End If
+        'End If
 
     End Sub
 
@@ -312,9 +312,18 @@ Public Class MainForm
 
         Dim idx As Integer = ListView.IndexFromPoint(e.X, e.Y)
         If e.Button = Windows.Forms.MouseButtons.Right And idx <> -1 And idx <> 65535 Then
-            If ListView.SelectedIndices.Count = 1 Then
+            If ListView.SelectedIndices.Count <= 1 Then
+
                 ListView.ClearSelected()
                 ListView.SetSelected(idx, True)
+
+                'If ListView.SelectedIndex <> -1 Then
+                '    Dim rect As Rectangle = ListView.GetItemRectangle(ListView.SelectedIndex)
+                '    If e.Y > rect.Top + rect.Height Then
+                '        ListView.ClearSelected()
+                '    End If
+                'End If
+
             End If
         End If
     End Sub
@@ -582,8 +591,6 @@ Public Class MainForm
     ''' </summary>
     Private Sub ListView_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles ListView.SelectedIndexChanged
 
-        ButtonRemoveItem.Enabled = ListView.SelectedItem IsNot Nothing
-
         If ListView.SelectedIndex <> -1 Then
             If CType(ListView.SelectedItem, TipItem).IsHighLight Then
                 ListPopupMenuHighLight.Checked = True
@@ -594,21 +601,41 @@ Public Class MainForm
 
         If ListView.SelectedIndices.Count = 1 Then
             SetSelectedItemButtonShow(ListView.GetItemRectangle(ListView.SelectedIndex))
-            ListPopupMenuEditItem.Enabled = True
         Else
             SetSelectedItemButtonHide()
-            ListPopupMenuEditItem.Enabled = False
         End If
 
-        ButtonItemUp.Enabled = Not ListView.SelectedIndex = 0
-        ListPopupMenuMoveUp.Enabled = Not ListView.SelectedIndex = 0
-        ListPopupMenuMoveTop.Enabled = Not ListView.SelectedIndex = 0
-        ListPopupMenuMoveBottom.Enabled = Not ListView.SelectedIndex = ListView.Items.Count() - 1
-
-        ButtonItemDown.Enabled = Not ListView.SelectedIndex = ListView.Items.Count() - 1
-        ListPopupMenuMoveDown.Enabled = Not ListView.SelectedIndex = ListView.Items.Count() - 1
-
+        SelCheck()
         ListView.Refresh()
+    End Sub
+
+    ''' <summary>
+    ''' 选择可用性
+    ''' </summary>
+    Private Sub SelCheck()
+        Dim IsNotNull As Boolean = ListView.Items.Count <> 0 And ListView.SelectedIndices.Count <> 0
+        Dim IsSingle As Boolean = ListView.SelectedIndices.Count = 1
+        Dim IsTop As Boolean = ListView.SelectedIndex = 0
+        Dim IsBottom As Boolean = ListView.SelectedIndex = ListView.Items.Count() - 1
+
+        ' 辅助按钮
+        ButtonItemUp.Enabled = IsNotNull And IsSingle And Not IsTop
+        ButtonItemDown.Enabled = IsNotNull And IsSingle And Not IsBottom
+
+        ' 位置按钮
+        ListPopupMenuMoveUp.Enabled = IsNotNull And IsSingle And Not IsTop
+        ListPopupMenuMoveTop.Enabled = IsNotNull And IsSingle And Not IsTop
+        ListPopupMenuMoveBottom.Enabled = IsNotNull And IsSingle And Not IsBottom
+        ListPopupMenuMoveDown.Enabled = IsNotNull And IsSingle And Not IsBottom
+
+        ' 删改
+        ButtonRemoveItem.Enabled = IsNotNull
+        ListPopupMenuRemoveItem.Enabled = IsNotNull
+        ListPopupMenuEditItem.Enabled = IsSingle
+        ListPopupMenuHighLight.Enabled = IsNotNull
+
+        ' 转移
+        ListPopupMenuTrans.Enabled = IsNotNull
     End Sub
 
     ''' <summary>
@@ -751,10 +778,13 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
-    ''' 高亮
+    ''' 高亮，可多选
     ''' </summary>
     Private Sub PopMenuButtonHighLight_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuHighLight.Click
-        CType(ListView.SelectedItem, TipItem).IsHighLight = Not CType(ListView.SelectedItem, TipItem).IsHighLight
+        Dim IsHighLight As Boolean = CType(ListView.SelectedItems(0), TipItem).IsHighLight
+        For Each Item As TipItem In ListView.SelectedItems
+            Item.IsHighLight = Not IsHighLight
+        Next
         SaveList()
         ListView.Refresh()
     End Sub
@@ -807,7 +837,9 @@ Public Class MainForm
         NewSuperTabItem.GlobalItem = False
         NewSuperTabItem.Name = ClassName
         NewSuperTabItem.Text = Title
+
         AddHandler NewSuperTabItem.MouseDown, AddressOf TabStrip_MouseDown
+        AddHandler NewSuperTabItem.DoubleClick, AddressOf PopMenuButtonRenameTab_Click
 
         Me.TabStrip.Tabs.AddRange(New DevComponents.DotNetBar.BaseItem() {NewSuperTabItem})
     End Sub
@@ -843,6 +875,23 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
+    ''' 重命名分组
+    ''' </summary>
+    Private Sub PopMenuButtonRenameTab_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonRenameTab.Click
+        If TabStrip.SelectedTabIndex <> -1 Then
+            Dim OldName As String = TabStrip.SelectedTab.Text
+            Dim NewName As String = InputBox("重命名分组 """ & OldName & """ 为: ", "重命名", OldName)
+            If NewName.Trim() <> "" Then
+                StorageUtil.StorageTabs.Item(Tab.GetTabIndexFromTabTitle(OldName, StorageUtil.StorageTabs)).TabTitle = NewName
+                TabStrip.SelectedTab.Text = NewName
+                StorageUtil.SaveOnlyTabData()
+            End If
+        End If
+    End Sub
+
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+    ''' <summary>
     ''' 右键点击Tab选中
     ''' </summary>
     Private Sub TabStrip_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles TabStrip.MouseDown, TabItemTest.MouseDown
@@ -873,8 +922,12 @@ Public Class MainForm
         For Each TabItems As DevComponents.DotNetBar.SuperTabItem In e.NewOrder
             StorageUtil.StorageTabs.Add(New Tab(TabItems.Text, TabItems.Name))
         Next
-        StorageUtil.SaveTabOrder()
+        StorageUtil.SaveOnlyTabData()
     End Sub
+
+#End Region
+
+#Region "转移分组"
 
 #End Region
 

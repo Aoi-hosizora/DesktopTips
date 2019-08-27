@@ -82,9 +82,9 @@ Public Class StorageUtil
     End Sub
 
     ''' <summary>
-    ''' 保存分组顺序信息
+    ''' 保存分组信息
     ''' </summary>
-    Public Shared Sub SaveTabOrder()
+    Public Shared Sub SaveOnlyTabData()
         SaveBinary(StorageTabs, StorageTabsInfo)
     End Sub
 

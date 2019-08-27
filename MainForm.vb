@@ -658,4 +658,45 @@ Public Class MainForm
     Private Sub ListPopMenu_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenu.Click
 
     End Sub
+
+    Private tabCnt As Integer = 1
+
+    Private Sub PopMenuButtonNewTab_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonNewTab.Click
+        Dim tabName As String = InputBox("请输入新分组的标题: ", "新建", "分组")
+        If tabName <> "" Then
+            tabCnt += 1
+            Dim NewSuperTabItem = New DevComponents.DotNetBar.SuperTabItem()
+            NewSuperTabItem.GlobalItem = False
+            NewSuperTabItem.Name = "SuperTabItem" + tabCnt.ToString()
+            NewSuperTabItem.Text = tabName
+            AddHandler NewSuperTabItem.MouseDown, AddressOf TabStrip_MouseDown
+
+            Me.TabStrip.Tabs.AddRange(New DevComponents.DotNetBar.BaseItem() {NewSuperTabItem})
+        End If
+    End Sub
+
+    Private Sub PopMenuButtonDeleteTab_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonDeleteTab.Click
+        If TabStrip.SelectedTab.Name = "SuperTabItemDefault" Then
+            MessageBox.Show("不允许删除默认分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+        Else
+            Dim ok As DialogResult = MessageBox.Show("是否删除分组 """ + TabStrip.SelectedTab.Text + """？", "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+            If ok = vbOK Then
+                TabStrip.Tabs.RemoveAt(TabStrip.SelectedTabIndex)
+            End If
+        End If
+    End Sub
+
+    Private Sub TabStrip_ItemClick(sender As System.Object, e As System.EventArgs) Handles TabStrip.ItemClick
+
+    End Sub
+
+    Private Sub TabStrip_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles TabStrip.MouseDown, SuperTabItemDefault.MouseDown
+        If e.Button = Windows.Forms.MouseButtons.Right Then
+            Dim sel As DevComponents.DotNetBar.BaseItem = TabStrip.GetItemFromPoint(e.Location)
+            If Not sel Is Nothing Then
+                Console.WriteLine(sel.Text())
+                TabStrip.SelectedTab = sel
+            End If
+        End If
+    End Sub
 End Class

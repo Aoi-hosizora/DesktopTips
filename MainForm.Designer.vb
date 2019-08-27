@@ -72,10 +72,9 @@ Partial Class MainForm
         Me.ListPopupMenuExit = New DevComponents.DotNetBar.ButtonItem()
         Me.TabPopupMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonNewTab = New DevComponents.DotNetBar.ButtonItem()
+        Me.PopMenuButtonDeleteTab = New DevComponents.DotNetBar.ButtonItem()
         Me.TabStrip = New DevComponents.DotNetBar.SuperTabStrip()
-        Me.SuperTabItem1 = New DevComponents.DotNetBar.SuperTabItem()
-        Me.SuperTabItem2 = New DevComponents.DotNetBar.SuperTabItem()
-        Me.SuperTabItem3 = New DevComponents.DotNetBar.SuperTabItem()
+        Me.SuperTabItemDefault = New DevComponents.DotNetBar.SuperTabItem()
         Me.ButtonItemUp = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonItemDown = New DevComponents.DotNetBar.ButtonX()
         CType(Me.NumericUpDownListCnt, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -389,13 +388,18 @@ Partial Class MainForm
         '
         Me.TabPopupMenu.AutoExpandOnClick = True
         Me.TabPopupMenu.Name = "TabPopupMenu"
-        Me.TabPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.PopMenuButtonNewTab})
+        Me.TabPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.PopMenuButtonNewTab, Me.PopMenuButtonDeleteTab})
         Me.TabPopupMenu.Text = "TabPopup"
         '
         'PopMenuButtonNewTab
         '
         Me.PopMenuButtonNewTab.Name = "PopMenuButtonNewTab"
-        Me.PopMenuButtonNewTab.Text = "新建(&N)"
+        Me.PopMenuButtonNewTab.Text = "新建分组(&N)"
+        '
+        'PopMenuButtonDeleteTab
+        '
+        Me.PopMenuButtonDeleteTab.Name = "PopMenuButtonDeleteTab"
+        Me.PopMenuButtonDeleteTab.Text = "删除分组(&D)"
         '
         'TabStrip
         '
@@ -431,29 +435,17 @@ Partial Class MainForm
         Me.TabStrip.Size = New System.Drawing.Size(28, 275)
         Me.TabStrip.TabAlignment = DevComponents.DotNetBar.eTabStripAlignment.Left
         Me.TabStrip.TabCloseButtonHot = Nothing
-        Me.TabStrip.TabFont = New System.Drawing.Font("Microsoft YaHei UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TabStrip.TabFont = New System.Drawing.Font("Microsoft YaHei UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TabStrip.TabIndex = 7
-        Me.TabStrip.Tabs.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.SuperTabItem1, Me.SuperTabItem2, Me.SuperTabItem3})
+        Me.TabStrip.Tabs.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.SuperTabItemDefault})
         Me.TabStrip.Text = "SuperTabStrip1"
         Me.TabStrip.TextAlignment = DevComponents.DotNetBar.eItemAlignment.Center
         '
-        'SuperTabItem1
+        'SuperTabItemDefault
         '
-        Me.SuperTabItem1.GlobalItem = False
-        Me.SuperTabItem1.Name = "SuperTabItem1"
-        Me.SuperTabItem1.Text = "tab1"
-        '
-        'SuperTabItem2
-        '
-        Me.SuperTabItem2.GlobalItem = False
-        Me.SuperTabItem2.Name = "SuperTabItem2"
-        Me.SuperTabItem2.Text = "tab2"
-        '
-        'SuperTabItem3
-        '
-        Me.SuperTabItem3.GlobalItem = False
-        Me.SuperTabItem3.Name = "SuperTabItem3"
-        Me.SuperTabItem3.Text = "tab3"
+        Me.SuperTabItemDefault.GlobalItem = False
+        Me.SuperTabItemDefault.Name = "SuperTabItemDefault"
+        Me.SuperTabItemDefault.Text = "默认"
         '
         'ButtonItemUp
         '
@@ -556,10 +548,9 @@ Partial Class MainForm
     Friend WithEvents ListPopupMenuMoveBottom As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuMoveTop As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents TabStrip As DevComponents.DotNetBar.SuperTabStrip
-    Friend WithEvents SuperTabItem1 As DevComponents.DotNetBar.SuperTabItem
-    Friend WithEvents SuperTabItem2 As DevComponents.DotNetBar.SuperTabItem
-    Friend WithEvents SuperTabItem3 As DevComponents.DotNetBar.SuperTabItem
+    Friend WithEvents SuperTabItemDefault As DevComponents.DotNetBar.SuperTabItem
     Friend WithEvents TabPopupMenu As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents PopMenuButtonNewTab As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents PopMenuButtonDeleteTab As DevComponents.DotNetBar.ButtonItem
 
 End Class

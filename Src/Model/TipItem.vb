@@ -9,4 +9,8 @@ Public Class TipItem
         Me.TipContent = Content
         Me.TipTab = TipTab
     End Sub
+
+    Public Overrides Function ToString() As String
+        Return TipContent
+    End Function
 End Class

@@ -3,12 +3,29 @@ Imports System.IO
 
 Public Class StorageUtil
 
+    ''' <summary>
+    ''' 保存文件目录
+    ''' </summary>
     Public Shared StorageFileDir As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\DesktopTips"
-    Public Shared StorageFileName As String = StorageFileDir & "\SavedItem.dat"
-    Public Shared StorageTabsInfo As String = StorageFileDir & "\Tabs.dip"
+    ''' <summary>
+    ''' 分组保存文件路径
+    ''' </summary>
+    Private Shared StorageTabsInfo As String = StorageFileDir & "\Tabs.dip"
 
-    Public Shared StorageTabs = New List(Of Tab)
-    Public Shared StorageTipItems = New List(Of List(Of TipItem))
+    ''' <summary>
+    ''' 分组集
+    ''' </summary>
+    Public Shared StorageTabs As New List(Of Tab)
+    ''' <summary>
+    ''' 内容集
+    ''' </summary>
+    Public Shared StorageTipItems As New List(Of List(Of TipItem))
+    ''' <summary>
+    ''' 当前分组
+    ''' </summary>
+    Public Shared CurrentTab As Tab
+
+#Region "Bin Save Load"
 
     ''' <summary>
     ''' 二进制数据保存
@@ -39,6 +56,29 @@ Public Class StorageUtil
         Return Obj
     End Function
 
+#End Region
+
+#Region "List"
+
+    ''' <summary>
+    ''' 从分组信息获取分组内容
+    ''' </summary>
+    ''' <param name="Tab">分组信息</param>
+    Public Shared Function GetTipsFromTab(ByVal Tab As Tab) As List(Of TipItem)
+        Return StorageTipItems.Item(StorageTabs.IndexOf(Tab))
+    End Function
+
+    ''' <summary>
+    ''' 从当前分组获取分组内容
+    ''' </summary>
+    Public Shared Function GetTipsFromTab() As List(Of TipItem)
+        Return StorageTipItems.Item(StorageTabs.IndexOf(CurrentTab))
+    End Function
+
+#End Region
+
+#Region "Save"
+
     ''' <summary>
     ''' 保存指定分组
     ''' </summary>
@@ -61,6 +101,10 @@ Public Class StorageUtil
         Next
     End Sub
 
+#End Region
+
+#Region "Load"
+
     ''' <summary>
     ''' 加载指定分组
     ''' </summary>
@@ -68,13 +112,13 @@ Public Class StorageUtil
     ''' <returns>指定分组</returns>
     Private Shared Function LoadTabTipsData(ByVal Tab As Tab) As List(Of TipItem)
         Dim StorageTipsName As String = StorageFileDir & "\" & Tab.TabTitle & ".dat"
-
+        Dim Tips As List(Of TipItem)
         If File.Exists(StorageTipsName) Then
-            Dim Tips As List(Of TipItem) = LoadBinary(StorageTipsName)
-            Return Tips
+            Tips = LoadBinary(StorageTipsName)
+        Else
+            Tips = New List(Of TipItem)
         End If
-
-        Return Nothing
+        Return Tips
     End Function
 
     ''' <summary>
@@ -82,23 +126,23 @@ Public Class StorageUtil
     ''' </summary>
     Private Shared Sub LoadTabData()
         If File.Exists(StorageTabsInfo) Then
-            StorageTabs = LoadBinary(StorageTabsInfo)
+            StorageTabs = CType(LoadBinary(StorageTabsInfo), List(Of Tab))
         Else
             StorageTabs.Add(New Tab("默认", "SuperTabItemDefault"))
         End If
     End Sub
-    
+
     ''' <summary>
     ''' 加载所有分组
     ''' </summary>
-    ''' <returns>所有分组</returns>
-    Public Shared Function LoadTabTipsData() As List(Of List(Of TipItem))
-
+    Public Shared Sub LoadTabTipsData()
         LoadTabData()
         For Each Tab As Tab In StorageTabs
             StorageTipItems.Add(LoadTabTipsData(Tab))
         Next
+        CurrentTab = StorageTabs.Item(0)
+    End Sub
 
-        Return StorageTipItems
-    End Function
+#End Region
+
 End Class

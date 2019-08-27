@@ -296,12 +296,8 @@ Public Class MainForm
     Private Sub ListView_MouseDown_Sel(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseDown, TabStrip.MouseDown
         ListView_SelectedIndexChanged(sender, New System.EventArgs)
 
-        'If ListView.SelectedIndex <> -1 Then
-        '    Dim rect As Rectangle = ListView.GetItemRectangle(ListView.SelectedIndex)
-        '    If e.Y > rect.Top + rect.Height Then
-        '        ListView.ClearSelected()
-        '    End If
-        'End If
+        Dim rect As Rectangle = ListView.GetItemRectangle(ListView.Items.Count - 1)
+        If e.Y > rect.Top + rect.Height Then ListView.ClearSelected()
 
     End Sub
 
@@ -317,13 +313,8 @@ Public Class MainForm
                 ListView.ClearSelected()
                 ListView.SetSelected(idx, True)
 
-                'If ListView.SelectedIndex <> -1 Then
-                '    Dim rect As Rectangle = ListView.GetItemRectangle(ListView.SelectedIndex)
-                '    If e.Y > rect.Top + rect.Height Then
-                '        ListView.ClearSelected()
-                '    End If
-                'End If
-
+                Dim rect As Rectangle = ListView.GetItemRectangle(ListView.Items.Count - 1)
+                If e.Y > rect.Top + rect.Height Then ListView.ClearSelected()
             End If
         End If
     End Sub
@@ -584,7 +575,7 @@ Public Class MainForm
 
 #End Region
 
-#Region "选择"
+#Region "选择 Enable"
 
     ''' <summary>
     ''' 高亮判断 辅助按钮显示

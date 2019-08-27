@@ -65,7 +65,7 @@ Public Class MainForm
     ''' <summary>
     ''' 透明度
     ''' </summary>
-    Private MaxOpacity As Double = 0.75
+    Private MaxOpacity As Double = 0.6
     ''' <summary>
     ''' 透明速度
     ''' </summary>
@@ -174,28 +174,30 @@ Public Class MainForm
 
 #Region "Setting"
 
-    Private Const AppName As String = "DesktopTips"
-    Private Const PosSection As String = "PosSize"
-    Private Const FormSection As String = "FormSize"
 
     Private Sub MainForm_FormClosed(sender As Object, e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
         SaveList()
 
-        SaveSetting(AppName, PosSection, "Top", Me.Top)
-        SaveSetting(AppName, PosSection, "Left", Me.Left)
-        SaveSetting(AppName, PosSection, "Height", Me.Height)
-        SaveSetting(AppName, PosSection, "Width", Me.Width)
-        SaveSetting(AppName, FormSection, "Opacity", MaxOpacity)
-        SaveSetting(AppName, FormSection, "TopMost", Me.TopMost)
+        Dim setting As SettingUtil.AppSetting
+        setting.Top = Me.Top
+        setting.Left = Me.Left
+        setting.Height = Me.Height
+        setting.Width = Me.Width
+        setting.MaxOpacity = MaxOpacity
+        setting.TopMost = Me.TopMost
+
+        SettingUtil.SaveAppSettings(setting)
     End Sub
 
     Private Sub MainForm_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
-        Me.Top = GetSetting(AppName, PosSection, "Top", 20)
-        Me.Left = GetSetting(AppName, PosSection, "Left", 20)
-        Me.Height = GetSetting(AppName, PosSection, "Height", 163)
-        Me.Width = GetSetting(AppName, PosSection, "Width", 200)
-        MaxOpacity = GetSetting(AppName, FormSection, "Opacity", 0.6)
-        Me.TopMost = GetSetting(AppName, FormSection, "TopMost", False)
+
+        Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
+        Me.Top = setting.Top
+        Me.Left = setting.Left
+        Me.Height = setting.Height
+        Me.Width = setting.Width
+        MaxOpacity = setting.MaxOpacity
+        Me.TopMost = setting.TopMost
 
         NumericUpDownListCnt.Value = (Me.Height - 27) \ 17
         ButtonRemoveItem.Enabled = False
@@ -230,8 +232,6 @@ Public Class MainForm
 #Region "FileIO"
 
     ' 文件 IO
-    Private FileDir As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\DesktopTips"
-    Private FileName As String = FileDir & "\SavedItem.dat"
     Private HighItems As List(Of String) = New List(Of String)
 
     Private MagicSign As String = ",,,"
@@ -249,10 +249,10 @@ Public Class MainForm
                 Buf.Append(vbNewLine & item.ToString() & UnHighLightSign)
             End If
         Next
-        If Not Directory.Exists(FileDir) Then
-            Directory.CreateDirectory(FileDir)
+        If Not Directory.Exists(StorageUtil.StorageFileDir) Then
+            Directory.CreateDirectory(StorageUtil.StorageFileDir)
         End If
-        Dim Myw As New FileStream(FileName, FileMode.Create)
+        Dim Myw As New FileStream(StorageUtil.StorageFileName, FileMode.Create)
         Dim MyBytes As Byte() = New UTF8Encoding().GetBytes(Buf.ToString())
         Dim MyB_Write As BinaryWriter = New BinaryWriter(Myw)
         MyB_Write.Write(MyBytes, 0, MyBytes.Length)
@@ -260,8 +260,8 @@ Public Class MainForm
     End Sub
 
     Private Sub LoadList()
-        If File.Exists(FileName) Then
-            Dim reader As TextReader = File.OpenText(FileName)
+        If File.Exists(StorageUtil.StorageFileName) Then
+            Dim reader As TextReader = File.OpenText(StorageUtil.StorageFileName)
             Dim Count As Integer = Convert.ToInt32(reader.ReadLine())
             For i = 1 To Count
                 Dim OneLine As String = reader.ReadLine()
@@ -461,7 +461,7 @@ Public Class MainForm
         'Process.Start(path)
         'C:\Users\Windows 10\AppData\Roaming\DesktopTips\SavedItem.dat
 
-        System.Diagnostics.Process.Start("explorer.exe", "/select,""" & FileName & """")
+        System.Diagnostics.Process.Start("explorer.exe", "/select,""" & StorageUtil.StorageFileName & """")
     End Sub
 
     Private Sub MainForm_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles Me.MouseMove
@@ -546,8 +546,8 @@ Public Class MainForm
 
     ' 浏览文件
     Private Sub PopMenuButtonViewFile_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuViewFile.Click
-        If File.Exists(FileName) Then
-            Dim reader As TextReader = File.OpenText(FileName)
+        If File.Exists(StorageUtil.StorageFileName) Then
+            Dim reader As TextReader = File.OpenText(StorageUtil.StorageFileName)
             Dim Count As Integer = CInt(reader.ReadLine)
             Dim Content As String = reader.ReadToEnd()
             reader.Close()

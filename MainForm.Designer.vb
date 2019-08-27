@@ -49,31 +49,38 @@ Partial Class MainForm
         Me.TimerMouseOut = New System.Windows.Forms.Timer(Me.components)
         Me.SuperTooltip = New DevComponents.DotNetBar.SuperTooltip()
         Me.ContextMenuBar1 = New DevComponents.DotNetBar.ContextMenuBar()
-        Me.ListPopMenu = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopupMenuLabelSelItem = New DevComponents.DotNetBar.LabelItem()
-        Me.PopupMenuLabelSelItemText = New DevComponents.DotNetBar.LabelItem()
-        Me.PopupMenuLabelItemList = New DevComponents.DotNetBar.LabelItem()
-        Me.PopMenuButtonHighLightList = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopupMenuLabelItemFile = New DevComponents.DotNetBar.LabelItem()
-        Me.PopMenuButtonOpenFile = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopMenuButtonViewFile = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopupMenuLabelItemWindow = New DevComponents.DotNetBar.LabelItem()
-        Me.PopMenuButtonListHeight = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopMenuButtonOpacity = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopMenuButtonWinTop = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopMenuButtonExit = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenu = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuLabelSelItem = New DevComponents.DotNetBar.LabelItem()
+        Me.ListPopupMenuLabelSelItemText = New DevComponents.DotNetBar.LabelItem()
+        Me.ListPopupMenuLabelItemList = New DevComponents.DotNetBar.LabelItem()
+        Me.ListPopupMenuMoveUp = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuMoveDown = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuMoveTop = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuMoveBottom = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuHighLight = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuHighLightList = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuAddItem = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuRemoveItem = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuEditItem = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuLabelItemFile = New DevComponents.DotNetBar.LabelItem()
+        Me.ListPopupMenuOpenFile = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuViewFile = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuLabelItemWindow = New DevComponents.DotNetBar.LabelItem()
+        Me.ListPopupMenuListHeight = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuOpacity = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuWinTop = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuExit = New DevComponents.DotNetBar.ButtonItem()
+        Me.TabPopupMenu = New DevComponents.DotNetBar.ButtonItem()
+        Me.PopMenuButtonNewTab = New DevComponents.DotNetBar.ButtonItem()
+        Me.TabStrip = New DevComponents.DotNetBar.SuperTabStrip()
+        Me.SuperTabItem1 = New DevComponents.DotNetBar.SuperTabItem()
+        Me.SuperTabItem2 = New DevComponents.DotNetBar.SuperTabItem()
+        Me.SuperTabItem3 = New DevComponents.DotNetBar.SuperTabItem()
         Me.ButtonItemUp = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonItemDown = New DevComponents.DotNetBar.ButtonX()
-        Me.PopMenuButtonMoveUp = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopMenuButtonMoveDown = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopMenuButtonMoveBottom = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopMenuButtonHighLight = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopMenuButtonAddItem = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopMenuButtonRemoveItem = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopMenuButtonEditItem = New DevComponents.DotNetBar.ButtonItem()
-        Me.PopMenuButtonMoveTop = New DevComponents.DotNetBar.ButtonItem()
         CType(Me.NumericUpDownListCnt, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ContextMenuBar1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.TabStrip, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'ButtonRemoveItem
@@ -81,7 +88,7 @@ Partial Class MainForm
         Me.ButtonRemoveItem.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.ButtonRemoveItem.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonRemoveItem.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
-        Me.ButtonRemoveItem.Location = New System.Drawing.Point(103, 105)
+        Me.ButtonRemoveItem.Location = New System.Drawing.Point(268, 275)
         Me.ButtonRemoveItem.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ButtonRemoveItem.Name = "ButtonRemoveItem"
         Me.ButtonRemoveItem.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
@@ -95,7 +102,7 @@ Partial Class MainForm
         Me.ButtonAddItem.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.ButtonAddItem.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonAddItem.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
-        Me.ButtonAddItem.Location = New System.Drawing.Point(80, 105)
+        Me.ButtonAddItem.Location = New System.Drawing.Point(245, 275)
         Me.ButtonAddItem.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ButtonAddItem.Name = "ButtonAddItem"
         Me.ButtonAddItem.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
@@ -125,14 +132,14 @@ Partial Class MainForm
         Me.ListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ContextMenuBar1.SetContextMenuEx(Me.ListView, Me.ListPopMenu)
+        Me.ContextMenuBar1.SetContextMenuEx(Me.ListView, Me.ListPopupMenu)
         Me.ListView.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed
         Me.ListView.FormattingEnabled = True
         Me.ListView.ItemHeight = 17
         Me.ListView.Items.AddRange(New Object() {"Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test"})
-        Me.ListView.Location = New System.Drawing.Point(0, 0)
+        Me.ListView.Location = New System.Drawing.Point(28, 0)
         Me.ListView.Name = "ListView"
-        Me.ListView.Size = New System.Drawing.Size(127, 106)
+        Me.ListView.Size = New System.Drawing.Size(264, 276)
         Me.ListView.TabIndex = 0
         '
         'ButtonCloseForm
@@ -140,7 +147,7 @@ Partial Class MainForm
         Me.ButtonCloseForm.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.ButtonCloseForm.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ButtonCloseForm.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
-        Me.ButtonCloseForm.Location = New System.Drawing.Point(0, 105)
+        Me.ButtonCloseForm.Location = New System.Drawing.Point(0, 275)
         Me.ButtonCloseForm.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ButtonCloseForm.Name = "ButtonCloseForm"
         Me.ButtonCloseForm.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
@@ -155,7 +162,7 @@ Partial Class MainForm
         Me.ButtonChangeHeight.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.ButtonChangeHeight.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ButtonChangeHeight.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
-        Me.ButtonChangeHeight.Location = New System.Drawing.Point(23, 105)
+        Me.ButtonChangeHeight.Location = New System.Drawing.Point(23, 275)
         Me.ButtonChangeHeight.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ButtonChangeHeight.Name = "ButtonChangeHeight"
         Me.ButtonChangeHeight.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
@@ -168,7 +175,7 @@ Partial Class MainForm
         'NumericUpDownListCnt
         '
         Me.NumericUpDownListCnt.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.NumericUpDownListCnt.Location = New System.Drawing.Point(46, 105)
+        Me.NumericUpDownListCnt.Location = New System.Drawing.Point(46, 275)
         Me.NumericUpDownListCnt.Minimum = New Decimal(New Integer() {5, 0, 0, 0})
         Me.NumericUpDownListCnt.Name = "NumericUpDownListCnt"
         Me.NumericUpDownListCnt.Size = New System.Drawing.Size(35, 23)
@@ -200,134 +207,260 @@ Partial Class MainForm
         '
         Me.ContextMenuBar1.AntiAlias = True
         Me.ContextMenuBar1.Font = New System.Drawing.Font("Yu Gothic UI", 9.0!)
-        Me.ContextMenuBar1.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopMenu})
-        Me.ContextMenuBar1.Location = New System.Drawing.Point(3, 12)
+        Me.ContextMenuBar1.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenu, Me.TabPopupMenu})
+        Me.ContextMenuBar1.Location = New System.Drawing.Point(95, 20)
         Me.ContextMenuBar1.Name = "ContextMenuBar1"
-        Me.ContextMenuBar1.Size = New System.Drawing.Size(101, 27)
+        Me.ContextMenuBar1.Size = New System.Drawing.Size(174, 27)
         Me.ContextMenuBar1.Stretch = True
         Me.ContextMenuBar1.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
         Me.ContextMenuBar1.TabIndex = 4
         Me.ContextMenuBar1.TabStop = False
         Me.ContextMenuBar1.Text = "ContextMenuBar1"
         '
-        'ListPopMenu
+        'ListPopupMenu
         '
-        Me.ListPopMenu.AutoExpandOnClick = True
-        Me.ListPopMenu.Name = "ListPopMenu"
-        Me.ListPopMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.PopupMenuLabelSelItem, Me.PopupMenuLabelSelItemText, Me.PopupMenuLabelItemList, Me.PopMenuButtonMoveUp, Me.PopMenuButtonMoveDown, Me.PopMenuButtonMoveTop, Me.PopMenuButtonMoveBottom, Me.PopMenuButtonHighLight, Me.PopMenuButtonHighLightList, Me.PopMenuButtonAddItem, Me.PopMenuButtonRemoveItem, Me.PopMenuButtonEditItem, Me.PopupMenuLabelItemFile, Me.PopMenuButtonOpenFile, Me.PopMenuButtonViewFile, Me.PopupMenuLabelItemWindow, Me.PopMenuButtonListHeight, Me.PopMenuButtonOpacity, Me.PopMenuButtonWinTop, Me.PopMenuButtonExit})
-        Me.ListPopMenu.Text = "ListPopMenu"
+        Me.ListPopupMenu.AutoExpandOnClick = True
+        Me.ListPopupMenu.Name = "ListPopupMenu"
+        Me.ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList, Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuHighLight, Me.ListPopupMenuHighLightList, Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem, Me.ListPopupMenuEditItem, Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenFile, Me.ListPopupMenuViewFile, Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuListHeight, Me.ListPopupMenuOpacity, Me.ListPopupMenuWinTop, Me.ListPopupMenuExit})
+        Me.ListPopupMenu.Text = "ListPopup"
         '
-        'PopupMenuLabelSelItem
+        'ListPopupMenuLabelSelItem
         '
-        Me.PopupMenuLabelSelItem.BackColor = System.Drawing.Color.FromArgb(CType(CType(221, Byte), Integer), CType(CType(231, Byte), Integer), CType(CType(238, Byte), Integer))
-        Me.PopupMenuLabelSelItem.BorderSide = DevComponents.DotNetBar.eBorderSide.Bottom
-        Me.PopupMenuLabelSelItem.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
-        Me.PopupMenuLabelSelItem.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
-        Me.PopupMenuLabelSelItem.Name = "PopupMenuLabelSelItem"
-        Me.PopupMenuLabelSelItem.PaddingBottom = 1
-        Me.PopupMenuLabelSelItem.PaddingLeft = 10
-        Me.PopupMenuLabelSelItem.PaddingTop = 1
-        Me.PopupMenuLabelSelItem.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
-        Me.PopupMenuLabelSelItem.Text = "当前选中"
+        Me.ListPopupMenuLabelSelItem.BackColor = System.Drawing.Color.FromArgb(CType(CType(221, Byte), Integer), CType(CType(231, Byte), Integer), CType(CType(238, Byte), Integer))
+        Me.ListPopupMenuLabelSelItem.BorderSide = DevComponents.DotNetBar.eBorderSide.Bottom
+        Me.ListPopupMenuLabelSelItem.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
+        Me.ListPopupMenuLabelSelItem.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
+        Me.ListPopupMenuLabelSelItem.Name = "ListPopupMenuLabelSelItem"
+        Me.ListPopupMenuLabelSelItem.PaddingBottom = 1
+        Me.ListPopupMenuLabelSelItem.PaddingLeft = 10
+        Me.ListPopupMenuLabelSelItem.PaddingTop = 1
+        Me.ListPopupMenuLabelSelItem.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
+        Me.ListPopupMenuLabelSelItem.Text = "当前选中"
         '
-        'PopupMenuLabelSelItemText
+        'ListPopupMenuLabelSelItemText
         '
-        Me.PopupMenuLabelSelItemText.BackColor = System.Drawing.Color.Transparent
-        Me.PopupMenuLabelSelItemText.BorderSide = DevComponents.DotNetBar.eBorderSide.None
-        Me.PopupMenuLabelSelItemText.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
-        Me.PopupMenuLabelSelItemText.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
-        Me.PopupMenuLabelSelItemText.Name = "PopupMenuLabelSelItemText"
-        Me.PopupMenuLabelSelItemText.PaddingBottom = 1
-        Me.PopupMenuLabelSelItemText.PaddingLeft = 5
-        Me.PopupMenuLabelSelItemText.PaddingRight = 5
-        Me.PopupMenuLabelSelItemText.PaddingTop = 1
-        Me.PopupMenuLabelSelItemText.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
-        Me.PopupMenuLabelSelItemText.Text = "LabelItem2LabelItem2LabelItem2LabelItem2LabelItem2"
-        Me.PopupMenuLabelSelItemText.Width = 180
-        Me.PopupMenuLabelSelItemText.WordWrap = True
+        Me.ListPopupMenuLabelSelItemText.BackColor = System.Drawing.Color.Transparent
+        Me.ListPopupMenuLabelSelItemText.BorderSide = DevComponents.DotNetBar.eBorderSide.None
+        Me.ListPopupMenuLabelSelItemText.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
+        Me.ListPopupMenuLabelSelItemText.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
+        Me.ListPopupMenuLabelSelItemText.Name = "ListPopupMenuLabelSelItemText"
+        Me.ListPopupMenuLabelSelItemText.PaddingBottom = 1
+        Me.ListPopupMenuLabelSelItemText.PaddingLeft = 5
+        Me.ListPopupMenuLabelSelItemText.PaddingRight = 5
+        Me.ListPopupMenuLabelSelItemText.PaddingTop = 1
+        Me.ListPopupMenuLabelSelItemText.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
+        Me.ListPopupMenuLabelSelItemText.Text = "LabelItem2LabelItem2LabelItem2LabelItem2LabelItem2"
+        Me.ListPopupMenuLabelSelItemText.Width = 180
+        Me.ListPopupMenuLabelSelItemText.WordWrap = True
         '
-        'PopupMenuLabelItemList
+        'ListPopupMenuLabelItemList
         '
-        Me.PopupMenuLabelItemList.BackColor = System.Drawing.Color.FromArgb(CType(CType(221, Byte), Integer), CType(CType(231, Byte), Integer), CType(CType(238, Byte), Integer))
-        Me.PopupMenuLabelItemList.BeginGroup = True
-        Me.PopupMenuLabelItemList.BorderSide = DevComponents.DotNetBar.eBorderSide.Bottom
-        Me.PopupMenuLabelItemList.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
-        Me.PopupMenuLabelItemList.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
-        Me.PopupMenuLabelItemList.Name = "PopupMenuLabelItemList"
-        Me.PopupMenuLabelItemList.PaddingBottom = 1
-        Me.PopupMenuLabelItemList.PaddingLeft = 10
-        Me.PopupMenuLabelItemList.PaddingTop = 1
-        Me.PopupMenuLabelItemList.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
-        Me.PopupMenuLabelItemList.Text = "列表"
+        Me.ListPopupMenuLabelItemList.BackColor = System.Drawing.Color.FromArgb(CType(CType(221, Byte), Integer), CType(CType(231, Byte), Integer), CType(CType(238, Byte), Integer))
+        Me.ListPopupMenuLabelItemList.BeginGroup = True
+        Me.ListPopupMenuLabelItemList.BorderSide = DevComponents.DotNetBar.eBorderSide.Bottom
+        Me.ListPopupMenuLabelItemList.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
+        Me.ListPopupMenuLabelItemList.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
+        Me.ListPopupMenuLabelItemList.Name = "ListPopupMenuLabelItemList"
+        Me.ListPopupMenuLabelItemList.PaddingBottom = 1
+        Me.ListPopupMenuLabelItemList.PaddingLeft = 10
+        Me.ListPopupMenuLabelItemList.PaddingTop = 1
+        Me.ListPopupMenuLabelItemList.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
+        Me.ListPopupMenuLabelItemList.Text = "列表"
         '
-        'PopMenuButtonHighLightList
+        'ListPopupMenuMoveUp
         '
-        Me.PopMenuButtonHighLightList.Name = "PopMenuButtonHighLightList"
-        Me.PopMenuButtonHighLightList.Text = "查看高亮(&L)"
+        Me.ListPopupMenuMoveUp.Image = Global.DesktopTips.My.Resources.Resources._112_UpArrowLong_Orange_16x16_72
+        Me.ListPopupMenuMoveUp.Name = "ListPopupMenuMoveUp"
+        Me.ListPopupMenuMoveUp.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlU)
+        Me.ListPopupMenuMoveUp.Text = "上移(&U)"
         '
-        'PopupMenuLabelItemFile
+        'ListPopupMenuMoveDown
         '
-        Me.PopupMenuLabelItemFile.BackColor = System.Drawing.Color.FromArgb(CType(CType(221, Byte), Integer), CType(CType(231, Byte), Integer), CType(CType(238, Byte), Integer))
-        Me.PopupMenuLabelItemFile.BorderSide = DevComponents.DotNetBar.eBorderSide.Bottom
-        Me.PopupMenuLabelItemFile.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
-        Me.PopupMenuLabelItemFile.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
-        Me.PopupMenuLabelItemFile.Name = "PopupMenuLabelItemFile"
-        Me.PopupMenuLabelItemFile.PaddingBottom = 1
-        Me.PopupMenuLabelItemFile.PaddingLeft = 10
-        Me.PopupMenuLabelItemFile.PaddingTop = 1
-        Me.PopupMenuLabelItemFile.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
-        Me.PopupMenuLabelItemFile.Text = "文件"
+        Me.ListPopupMenuMoveDown.Image = Global.DesktopTips.My.Resources.Resources._112_DownArrowLong_Blue_16x16_72
+        Me.ListPopupMenuMoveDown.Name = "ListPopupMenuMoveDown"
+        Me.ListPopupMenuMoveDown.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlD)
+        Me.ListPopupMenuMoveDown.Text = "下移(&D)"
         '
-        'PopMenuButtonOpenFile
+        'ListPopupMenuMoveTop
         '
-        Me.PopMenuButtonOpenFile.Name = "PopMenuButtonOpenFile"
-        Me.PopMenuButtonOpenFile.Text = "打开文件所在位置(&O)"
+        Me.ListPopupMenuMoveTop.ItemAlignment = DevComponents.DotNetBar.eItemAlignment.Far
+        Me.ListPopupMenuMoveTop.Name = "ListPopupMenuMoveTop"
+        Me.ListPopupMenuMoveTop.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlT)
+        Me.ListPopupMenuMoveTop.Text = "移至顶部(&T)"
         '
-        'PopMenuButtonViewFile
+        'ListPopupMenuMoveBottom
         '
-        Me.PopMenuButtonViewFile.Name = "PopMenuButtonViewFile"
-        Me.PopMenuButtonViewFile.Text = "浏览文件(&V)"
+        Me.ListPopupMenuMoveBottom.Name = "ListPopupMenuMoveBottom"
+        Me.ListPopupMenuMoveBottom.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlB)
+        Me.ListPopupMenuMoveBottom.Text = "移至底部(&B)"
         '
-        'PopupMenuLabelItemWindow
+        'ListPopupMenuHighLight
         '
-        Me.PopupMenuLabelItemWindow.BackColor = System.Drawing.Color.FromArgb(CType(CType(221, Byte), Integer), CType(CType(231, Byte), Integer), CType(CType(238, Byte), Integer))
-        Me.PopupMenuLabelItemWindow.BorderSide = DevComponents.DotNetBar.eBorderSide.Bottom
-        Me.PopupMenuLabelItemWindow.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
-        Me.PopupMenuLabelItemWindow.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
-        Me.PopupMenuLabelItemWindow.Name = "PopupMenuLabelItemWindow"
-        Me.PopupMenuLabelItemWindow.PaddingBottom = 1
-        Me.PopupMenuLabelItemWindow.PaddingLeft = 10
-        Me.PopupMenuLabelItemWindow.PaddingTop = 1
-        Me.PopupMenuLabelItemWindow.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
-        Me.PopupMenuLabelItemWindow.Text = "窗口"
+        Me.ListPopupMenuHighLight.BeginGroup = True
+        Me.ListPopupMenuHighLight.Image = Global.DesktopTips.My.Resources.Resources.FavoriteStar_FrontFacing_16x16_72
+        Me.ListPopupMenuHighLight.Name = "ListPopupMenuHighLight"
+        Me.ListPopupMenuHighLight.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlH)
+        Me.ListPopupMenuHighLight.Text = "高亮(&H)"
         '
-        'PopMenuButtonListHeight
+        'ListPopupMenuHighLightList
         '
-        Me.PopMenuButtonListHeight.AutoCheckOnClick = True
-        Me.PopMenuButtonListHeight.Name = "PopMenuButtonListHeight"
-        Me.PopMenuButtonListHeight.Text = "列表高度设置(&E)"
+        Me.ListPopupMenuHighLightList.Name = "ListPopupMenuHighLightList"
+        Me.ListPopupMenuHighLightList.Text = "查看高亮(&L)"
         '
-        'PopMenuButtonOpacity
+        'ListPopupMenuAddItem
         '
-        Me.PopMenuButtonOpacity.Name = "PopMenuButtonOpacity"
-        Me.PopMenuButtonOpacity.Text = "不透明度(&P)"
+        Me.ListPopupMenuAddItem.BeginGroup = True
+        Me.ListPopupMenuAddItem.Image = Global.DesktopTips.My.Resources.Resources._112_Plus_Green_16x16_72
+        Me.ListPopupMenuAddItem.Name = "ListPopupMenuAddItem"
+        Me.ListPopupMenuAddItem.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlA)
+        Me.ListPopupMenuAddItem.Text = "添加(&A)"
         '
-        'PopMenuButtonWinTop
+        'ListPopupMenuRemoveItem
         '
-        Me.PopMenuButtonWinTop.Name = "PopMenuButtonWinTop"
-        Me.PopMenuButtonWinTop.Text = "窗口置顶(&W)"
+        Me.ListPopupMenuRemoveItem.Image = Global.DesktopTips.My.Resources.Resources._112_Minus_Grey_16x16_72
+        Me.ListPopupMenuRemoveItem.Name = "ListPopupMenuRemoveItem"
+        Me.ListPopupMenuRemoveItem.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.Del)
+        Me.ListPopupMenuRemoveItem.Text = "删除(&X)"
         '
-        'PopMenuButtonExit
+        'ListPopupMenuEditItem
         '
-        Me.PopMenuButtonExit.Name = "PopMenuButtonExit"
-        Me.PopMenuButtonExit.Text = "退出(&E)"
+        Me.ListPopupMenuEditItem.Image = Global.DesktopTips.My.Resources.Resources._126_Edit_16x16_72
+        Me.ListPopupMenuEditItem.Name = "ListPopupMenuEditItem"
+        Me.ListPopupMenuEditItem.Text = "编辑(&E)"
+        '
+        'ListPopupMenuLabelItemFile
+        '
+        Me.ListPopupMenuLabelItemFile.BackColor = System.Drawing.Color.FromArgb(CType(CType(221, Byte), Integer), CType(CType(231, Byte), Integer), CType(CType(238, Byte), Integer))
+        Me.ListPopupMenuLabelItemFile.BorderSide = DevComponents.DotNetBar.eBorderSide.Bottom
+        Me.ListPopupMenuLabelItemFile.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
+        Me.ListPopupMenuLabelItemFile.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
+        Me.ListPopupMenuLabelItemFile.Name = "ListPopupMenuLabelItemFile"
+        Me.ListPopupMenuLabelItemFile.PaddingBottom = 1
+        Me.ListPopupMenuLabelItemFile.PaddingLeft = 10
+        Me.ListPopupMenuLabelItemFile.PaddingTop = 1
+        Me.ListPopupMenuLabelItemFile.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
+        Me.ListPopupMenuLabelItemFile.Text = "文件"
+        '
+        'ListPopupMenuOpenFile
+        '
+        Me.ListPopupMenuOpenFile.Name = "ListPopupMenuOpenFile"
+        Me.ListPopupMenuOpenFile.Text = "打开文件所在位置(&O)"
+        '
+        'ListPopupMenuViewFile
+        '
+        Me.ListPopupMenuViewFile.Name = "ListPopupMenuViewFile"
+        Me.ListPopupMenuViewFile.Text = "浏览文件(&V)"
+        '
+        'ListPopupMenuLabelItemWindow
+        '
+        Me.ListPopupMenuLabelItemWindow.BackColor = System.Drawing.Color.FromArgb(CType(CType(221, Byte), Integer), CType(CType(231, Byte), Integer), CType(CType(238, Byte), Integer))
+        Me.ListPopupMenuLabelItemWindow.BorderSide = DevComponents.DotNetBar.eBorderSide.Bottom
+        Me.ListPopupMenuLabelItemWindow.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
+        Me.ListPopupMenuLabelItemWindow.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
+        Me.ListPopupMenuLabelItemWindow.Name = "ListPopupMenuLabelItemWindow"
+        Me.ListPopupMenuLabelItemWindow.PaddingBottom = 1
+        Me.ListPopupMenuLabelItemWindow.PaddingLeft = 10
+        Me.ListPopupMenuLabelItemWindow.PaddingTop = 1
+        Me.ListPopupMenuLabelItemWindow.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
+        Me.ListPopupMenuLabelItemWindow.Text = "窗口"
+        '
+        'ListPopupMenuListHeight
+        '
+        Me.ListPopupMenuListHeight.AutoCheckOnClick = True
+        Me.ListPopupMenuListHeight.Name = "ListPopupMenuListHeight"
+        Me.ListPopupMenuListHeight.Text = "列表高度设置(&E)"
+        '
+        'ListPopupMenuOpacity
+        '
+        Me.ListPopupMenuOpacity.Name = "ListPopupMenuOpacity"
+        Me.ListPopupMenuOpacity.Text = "不透明度(&P)"
+        '
+        'ListPopupMenuWinTop
+        '
+        Me.ListPopupMenuWinTop.Name = "ListPopupMenuWinTop"
+        Me.ListPopupMenuWinTop.Text = "窗口置顶(&W)"
+        '
+        'ListPopupMenuExit
+        '
+        Me.ListPopupMenuExit.Name = "ListPopupMenuExit"
+        Me.ListPopupMenuExit.Text = "退出(&E)"
+        '
+        'TabPopupMenu
+        '
+        Me.TabPopupMenu.AutoExpandOnClick = True
+        Me.TabPopupMenu.Name = "TabPopupMenu"
+        Me.TabPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.PopMenuButtonNewTab})
+        Me.TabPopupMenu.Text = "TabPopup"
+        '
+        'PopMenuButtonNewTab
+        '
+        Me.PopMenuButtonNewTab.Name = "PopMenuButtonNewTab"
+        Me.PopMenuButtonNewTab.Text = "新建(&N)"
+        '
+        'TabStrip
+        '
+        Me.TabStrip.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.TabStrip.AutoSelectAttachedControl = False
+        '
+        '
+        '
+        Me.TabStrip.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square
+        Me.TabStrip.ContainerControlProcessDialogKey = True
+        Me.ContextMenuBar1.SetContextMenuEx(Me.TabStrip, Me.TabPopupMenu)
+        '
+        '
+        '
+        '
+        '
+        '
+        Me.TabStrip.ControlBox.CloseBox.Name = ""
+        '
+        '
+        '
+        Me.TabStrip.ControlBox.MenuBox.Name = ""
+        Me.TabStrip.ControlBox.Name = ""
+        Me.TabStrip.ControlBox.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.TabStrip.ControlBox.MenuBox, Me.TabStrip.ControlBox.CloseBox})
+        Me.TabStrip.HorizontalText = False
+        Me.TabStrip.Location = New System.Drawing.Point(0, 0)
+        Me.TabStrip.Name = "TabStrip"
+        Me.TabStrip.ReorderTabsEnabled = True
+        Me.TabStrip.RotateVerticalText = True
+        Me.TabStrip.SelectedTabFont = New System.Drawing.Font("Microsoft YaHei UI", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.TabStrip.SelectedTabIndex = 0
+        Me.TabStrip.Size = New System.Drawing.Size(28, 275)
+        Me.TabStrip.TabAlignment = DevComponents.DotNetBar.eTabStripAlignment.Left
+        Me.TabStrip.TabCloseButtonHot = Nothing
+        Me.TabStrip.TabFont = New System.Drawing.Font("Microsoft YaHei UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TabStrip.TabIndex = 7
+        Me.TabStrip.Tabs.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.SuperTabItem1, Me.SuperTabItem2, Me.SuperTabItem3})
+        Me.TabStrip.Text = "SuperTabStrip1"
+        Me.TabStrip.TextAlignment = DevComponents.DotNetBar.eItemAlignment.Center
+        '
+        'SuperTabItem1
+        '
+        Me.SuperTabItem1.GlobalItem = False
+        Me.SuperTabItem1.Name = "SuperTabItem1"
+        Me.SuperTabItem1.Text = "tab1"
+        '
+        'SuperTabItem2
+        '
+        Me.SuperTabItem2.GlobalItem = False
+        Me.SuperTabItem2.Name = "SuperTabItem2"
+        Me.SuperTabItem2.Text = "tab2"
+        '
+        'SuperTabItem3
+        '
+        Me.SuperTabItem3.GlobalItem = False
+        Me.SuperTabItem3.Name = "SuperTabItem3"
+        Me.SuperTabItem3.Text = "tab3"
         '
         'ButtonItemUp
         '
         Me.ButtonItemUp.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.ButtonItemUp.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
         Me.ButtonItemUp.Font = New System.Drawing.Font("Yu Gothic UI Semibold", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.ButtonItemUp.Location = New System.Drawing.Point(30, 64)
+        Me.ButtonItemUp.Location = New System.Drawing.Point(123, 151)
         Me.ButtonItemUp.Name = "ButtonItemUp"
         Me.ButtonItemUp.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
         Me.ButtonItemUp.Size = New System.Drawing.Size(17, 17)
@@ -340,7 +473,7 @@ Partial Class MainForm
         Me.ButtonItemDown.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.ButtonItemDown.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
         Me.ButtonItemDown.Font = New System.Drawing.Font("Yu Gothic UI Semibold", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.ButtonItemDown.Location = New System.Drawing.Point(46, 64)
+        Me.ButtonItemDown.Location = New System.Drawing.Point(139, 151)
         Me.ButtonItemDown.Name = "ButtonItemDown"
         Me.ButtonItemDown.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
         Me.ButtonItemDown.Size = New System.Drawing.Size(17, 17)
@@ -348,68 +481,12 @@ Partial Class MainForm
         Me.ButtonItemDown.Tag = "True"
         Me.ButtonItemDown.Text = "↓"
         '
-        'PopMenuButtonMoveUp
-        '
-        Me.PopMenuButtonMoveUp.Image = Global.DesktopTips.My.Resources.Resources._112_UpArrowLong_Orange_16x16_72
-        Me.PopMenuButtonMoveUp.Name = "PopMenuButtonMoveUp"
-        Me.PopMenuButtonMoveUp.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlU)
-        Me.PopMenuButtonMoveUp.Text = "上移(&U)"
-        '
-        'PopMenuButtonMoveDown
-        '
-        Me.PopMenuButtonMoveDown.Image = Global.DesktopTips.My.Resources.Resources._112_DownArrowLong_Blue_16x16_72
-        Me.PopMenuButtonMoveDown.Name = "PopMenuButtonMoveDown"
-        Me.PopMenuButtonMoveDown.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlD)
-        Me.PopMenuButtonMoveDown.Text = "下移(&D)"
-        '
-        'PopMenuButtonMoveBottom
-        '
-        Me.PopMenuButtonMoveBottom.Name = "PopMenuButtonMoveBottom"
-        Me.PopMenuButtonMoveBottom.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlB)
-        Me.PopMenuButtonMoveBottom.Text = "移至底部(&B)"
-        '
-        'PopMenuButtonHighLight
-        '
-        Me.PopMenuButtonHighLight.BeginGroup = True
-        Me.PopMenuButtonHighLight.Image = Global.DesktopTips.My.Resources.Resources.FavoriteStar_FrontFacing_16x16_72
-        Me.PopMenuButtonHighLight.Name = "PopMenuButtonHighLight"
-        Me.PopMenuButtonHighLight.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlH)
-        Me.PopMenuButtonHighLight.Text = "高亮(&H)"
-        '
-        'PopMenuButtonAddItem
-        '
-        Me.PopMenuButtonAddItem.BeginGroup = True
-        Me.PopMenuButtonAddItem.Image = Global.DesktopTips.My.Resources.Resources._112_Plus_Green_16x16_72
-        Me.PopMenuButtonAddItem.Name = "PopMenuButtonAddItem"
-        Me.PopMenuButtonAddItem.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlA)
-        Me.PopMenuButtonAddItem.Text = "添加(&A)"
-        '
-        'PopMenuButtonRemoveItem
-        '
-        Me.PopMenuButtonRemoveItem.Image = Global.DesktopTips.My.Resources.Resources._112_Minus_Grey_16x16_72
-        Me.PopMenuButtonRemoveItem.Name = "PopMenuButtonRemoveItem"
-        Me.PopMenuButtonRemoveItem.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.Del)
-        Me.PopMenuButtonRemoveItem.Text = "删除(&X)"
-        '
-        'PopMenuButtonEditItem
-        '
-        Me.PopMenuButtonEditItem.Image = Global.DesktopTips.My.Resources.Resources._126_Edit_16x16_72
-        Me.PopMenuButtonEditItem.Name = "PopMenuButtonEditItem"
-        Me.PopMenuButtonEditItem.Text = "编辑(&E)"
-        '
-        'PopMenuButtonMoveTop
-        '
-        Me.PopMenuButtonMoveTop.ItemAlignment = DevComponents.DotNetBar.eItemAlignment.Far
-        Me.PopMenuButtonMoveTop.Name = "PopMenuButtonMoveTop"
-        Me.PopMenuButtonMoveTop.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlT)
-        Me.PopMenuButtonMoveTop.Text = "移至顶部(&T)"
-        '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.DarkRed
-        Me.ClientSize = New System.Drawing.Size(127, 129)
+        Me.ClientSize = New System.Drawing.Size(292, 299)
         Me.Controls.Add(Me.ButtonItemDown)
         Me.Controls.Add(Me.ButtonItemUp)
         Me.Controls.Add(Me.ContextMenuBar1)
@@ -420,6 +497,7 @@ Partial Class MainForm
         Me.Controls.Add(Me.ButtonRemoveItem)
         Me.Controls.Add(Me.LabelFocus)
         Me.Controls.Add(Me.NumericUpDownListCnt)
+        Me.Controls.Add(Me.TabStrip)
         Me.Font = New System.Drawing.Font("Microsoft YaHei UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
@@ -435,6 +513,7 @@ Partial Class MainForm
         Me.TransparencyKey = System.Drawing.Color.DarkRed
         CType(Me.NumericUpDownListCnt, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ContextMenuBar1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.TabStrip, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -453,28 +532,34 @@ Partial Class MainForm
     Friend WithEvents TimerMouseOut As System.Windows.Forms.Timer
     Friend WithEvents SuperTooltip As DevComponents.DotNetBar.SuperTooltip
     Friend WithEvents ContextMenuBar1 As DevComponents.DotNetBar.ContextMenuBar
-    Friend WithEvents ListPopMenu As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents PopMenuButtonMoveUp As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents PopMenuButtonMoveDown As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents PopMenuButtonAddItem As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents PopMenuButtonRemoveItem As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents PopMenuButtonWinTop As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents PopMenuButtonOpenFile As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents PopupMenuLabelItemList As DevComponents.DotNetBar.LabelItem
-    Friend WithEvents PopupMenuLabelItemWindow As DevComponents.DotNetBar.LabelItem
-    Friend WithEvents PopMenuButtonEditItem As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents PopMenuButtonViewFile As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents PopMenuButtonExit As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents PopMenuButtonHighLight As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents PopMenuButtonHighLightList As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents PopMenuButtonOpacity As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents PopupMenuLabelItemFile As DevComponents.DotNetBar.LabelItem
-    Friend WithEvents PopMenuButtonListHeight As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenu As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuMoveUp As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuMoveDown As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuAddItem As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuRemoveItem As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuWinTop As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuOpenFile As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuLabelItemList As DevComponents.DotNetBar.LabelItem
+    Friend WithEvents ListPopupMenuLabelItemWindow As DevComponents.DotNetBar.LabelItem
+    Friend WithEvents ListPopupMenuEditItem As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuViewFile As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuExit As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuHighLight As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuHighLightList As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuOpacity As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuLabelItemFile As DevComponents.DotNetBar.LabelItem
+    Friend WithEvents ListPopupMenuListHeight As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ButtonItemUp As DevComponents.DotNetBar.ButtonX
     Friend WithEvents ButtonItemDown As DevComponents.DotNetBar.ButtonX
-    Friend WithEvents PopupMenuLabelSelItem As DevComponents.DotNetBar.LabelItem
-    Friend WithEvents PopupMenuLabelSelItemText As DevComponents.DotNetBar.LabelItem
-    Friend WithEvents PopMenuButtonMoveBottom As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents PopMenuButtonMoveTop As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuLabelSelItem As DevComponents.DotNetBar.LabelItem
+    Friend WithEvents ListPopupMenuLabelSelItemText As DevComponents.DotNetBar.LabelItem
+    Friend WithEvents ListPopupMenuMoveBottom As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuMoveTop As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents TabStrip As DevComponents.DotNetBar.SuperTabStrip
+    Friend WithEvents SuperTabItem1 As DevComponents.DotNetBar.SuperTabItem
+    Friend WithEvents SuperTabItem2 As DevComponents.DotNetBar.SuperTabItem
+    Friend WithEvents SuperTabItem3 As DevComponents.DotNetBar.SuperTabItem
+    Friend WithEvents TabPopupMenu As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents PopMenuButtonNewTab As DevComponents.DotNetBar.ButtonItem
 
 End Class

@@ -94,7 +94,7 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub ButtonCloseForm_Click(sender As System.Object, e As System.EventArgs) Handles ButtonCloseForm.Click, PopMenuButtonExit.Click
+    Private Sub ButtonCloseForm_Click(sender As System.Object, e As System.EventArgs) Handles ButtonCloseForm.Click, ListPopupMenuExit.Click
         TimerMouseIn.Interval = 10000
         TimerMouseIn.Stop()
         TimerMouseIn.Enabled = False
@@ -155,7 +155,7 @@ Public Class MainForm
     ''' 鼠标移出，并且没有popup
     ''' </summary>
     Private Sub FormMouseLeave(sender As Object, e As System.EventArgs)
-        If ListPopMenu.PopupControl Is Nothing Then
+        If ListPopupMenu.PopupControl Is Nothing Then
             TimerMouseIn.Stop()
             TimerMouseIn.Enabled = False
             TimerMouseOut.Enabled = True
@@ -166,7 +166,7 @@ Public Class MainForm
     ''' <summary>
     ''' Popup 关闭，不能使用 Close
     ''' </summary>
-    Private Sub ListPopMenu_PopupFinalized(sender As Object, e As System.EventArgs) Handles ListPopMenu.PopupFinalized
+    Private Sub ListPopMenu_PopupFinalized(sender As Object, e As System.EventArgs) Handles ListPopupMenu.PopupFinalized
         FormMouseLeave(sender, e)
     End Sub
 
@@ -204,7 +204,7 @@ Public Class MainForm
         TimerShowForm.Enabled = True
         TimerShowForm.Start()
 
-        PopMenuButtonWinTop.Checked = Me.TopMost
+        ListPopupMenuWinTop.Checked = Me.TopMost
 
         ListView.Items.Clear()
         SetupMouseEnterLeave()
@@ -315,7 +315,7 @@ Public Class MainForm
 #End Region
 
     ' 增
-    Private Sub ButtonAddItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonAddItem.Click, PopMenuButtonAddItem.Click
+    Private Sub ButtonAddItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonAddItem.Click, ListPopupMenuAddItem.Click
         Dim msg As String = InputBox("新的提醒标签：", "添加")
         While msg.Contains(MagicSign)
             MsgBox("字符错误，不允许使用 """ + MagicSign + """ 内置字符。", MsgBoxStyle.Critical, "错误")
@@ -329,7 +329,7 @@ Public Class MainForm
     End Sub
 
     ' 删
-    Private Sub ButtonRemoveItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonRemoveItem.Click, PopMenuButtonRemoveItem.Click
+    Private Sub ButtonRemoveItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonRemoveItem.Click, ListPopupMenuRemoveItem.Click
         If (ListView.SelectedItem IsNot Nothing) Then
             Dim ok As Integer = MsgBox("确定删除提醒标签 """ & ListView.SelectedItem & """ 吗？", MsgBoxStyle.OkCancel, "删除")
             If (ok = vbOK) Then
@@ -345,7 +345,7 @@ Public Class MainForm
     End Sub
 
     ' 改
-    Private Sub ListView_DoubleClick(sender As Object, e As System.EventArgs) Handles ListView.DoubleClick, PopMenuButtonEditItem.Click
+    Private Sub ListView_DoubleClick(sender As Object, e As System.EventArgs) Handles ListView.DoubleClick, ListPopupMenuEditItem.Click
         If (ListView.SelectedItem IsNot Nothing) Then
             Dim newstr As String = InputBox("修改提醒标签 """ & ListView.SelectedItem & """ 为：", "修改", ListView.SelectedItem)
             If newstr.Contains(MagicSign) Then
@@ -369,9 +369,9 @@ Public Class MainForm
     Private Sub ListView_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles ListView.SelectedIndexChanged
         ButtonRemoveItem.Enabled = ListView.SelectedItem IsNot Nothing
         If HighItems.Contains(ListView.SelectedItem) Then
-            PopMenuButtonHighLight.Checked = True
+            ListPopupMenuHighLight.Checked = True
         Else
-            PopMenuButtonHighLight.Checked = False
+            ListPopupMenuHighLight.Checked = False
         End If
         ListView.Refresh()
 
@@ -382,12 +382,12 @@ Public Class MainForm
         End If
 
         ButtonItemUp.Enabled = Not ListView.SelectedIndex = 0
-        PopMenuButtonMoveUp.Enabled = Not ListView.SelectedIndex = 0
-        PopMenuButtonMoveTop.Enabled = Not ListView.SelectedIndex = 0
-        PopMenuButtonMoveBottom.Enabled = Not ListView.SelectedIndex = ListView.Items.Count() - 1
+        ListPopupMenuMoveUp.Enabled = Not ListView.SelectedIndex = 0
+        ListPopupMenuMoveTop.Enabled = Not ListView.SelectedIndex = 0
+        ListPopupMenuMoveBottom.Enabled = Not ListView.SelectedIndex = ListView.Items.Count() - 1
 
         ButtonItemDown.Enabled = Not ListView.SelectedIndex = ListView.Items.Count() - 1
-        PopMenuButtonMoveDown.Enabled = Not ListView.SelectedIndex = ListView.Items.Count() - 1
+        ListPopupMenuMoveDown.Enabled = Not ListView.SelectedIndex = ListView.Items.Count() - 1
 
     End Sub
 
@@ -445,18 +445,18 @@ Public Class MainForm
 
     ' 显示弹出菜单
     Private Sub ButtonChangeHeight_Click(sender As System.Object, e As System.EventArgs) Handles ButtonChangeHeight.Click
-        ListPopMenu.Popup(Me.Left + sender.Left, Me.Top + sender.Top + sender.Height - 1)
+        ListPopupMenu.Popup(Me.Left + sender.Left, Me.Top + sender.Top + sender.Height - 1)
     End Sub
 
     Private Sub ButtonChangeHeight_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonChangeHeight.MouseUp
         If e.Button = Windows.Forms.MouseButtons.Right Then
-            PopMenuButtonListHeight.Checked = Not PopMenuButtonListHeight.Checked
+            ListPopupMenuListHeight.Checked = Not ListPopupMenuListHeight.Checked
             PopMenuButtonListHeight_Click(sender, New System.EventArgs)
         End If
     End Sub
 
     ' 打开文件所在位置
-    Private Sub PopMenuButtonOpenFile_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonOpenFile.Click
+    Private Sub PopMenuButtonOpenFile_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuOpenFile.Click
         'Dim path As String = FileDir
         'Process.Start(path)
         'C:\Users\Windows 10\AppData\Roaming\DesktopTips\SavedItem.dat
@@ -469,7 +469,7 @@ Public Class MainForm
     End Sub
 
     ' 置顶
-    Private Sub PopMenuButtonMoveTop_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonMoveTop.Click
+    Private Sub PopMenuButtonMoveTop_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuMoveTop.Click
         'Dim currIdx As Integer = ListView.SelectedIndex
         Dim currItem As Object = ListView.SelectedItem
         ListView.Items.Remove(currItem)
@@ -479,7 +479,7 @@ Public Class MainForm
     End Sub
 
     ' 置底
-    Private Sub PopMenuButtonMoveBottom_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonMoveBottom.Click
+    Private Sub PopMenuButtonMoveBottom_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuMoveBottom.Click
         'Dim currIdx As Integer = ListView.SelectedIndex
         Dim currItem As Object = ListView.SelectedItem
         ListView.Items.Remove(currItem)
@@ -489,7 +489,7 @@ Public Class MainForm
     End Sub
 
     ' 上移
-    Private Sub MoveUp_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonMoveUp.Click, ButtonItemUp.Click
+    Private Sub MoveUp_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuMoveUp.Click, ButtonItemUp.Click
         Dim currIdx As Integer = ListView.SelectedIndex
         If currIdx >= 1 Then
             Dim currItem As Object = ListView.SelectedItem
@@ -505,7 +505,7 @@ Public Class MainForm
     End Sub
 
     ' 下移
-    Private Sub MoveDown_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonMoveDown.Click, ButtonItemDown.Click
+    Private Sub MoveDown_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuMoveDown.Click, ButtonItemDown.Click
         Dim currIdx As Integer = ListView.SelectedIndex
         If currIdx <= ListView.Items.Count() - 2 Then
             Dim currItem As Object = ListView.SelectedItem
@@ -521,7 +521,7 @@ Public Class MainForm
     End Sub
 
     ' TopMost
-    Private Sub PopMenuButtonWinTop_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonWinTop.Click
+    Private Sub PopMenuButtonWinTop_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuWinTop.Click
         sender.checked = Not sender.checked
         Me.TopMost = sender.checked
     End Sub
@@ -545,7 +545,7 @@ Public Class MainForm
     End Sub
 
     ' 浏览文件
-    Private Sub PopMenuButtonViewFile_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonViewFile.Click
+    Private Sub PopMenuButtonViewFile_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuViewFile.Click
         If File.Exists(FileName) Then
             Dim reader As TextReader = File.OpenText(FileName)
             Dim Count As Integer = CInt(reader.ReadLine)
@@ -560,7 +560,7 @@ Public Class MainForm
     End Sub
 
     ' 高亮
-    Private Sub PopMenuButtonHighLight_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonHighLight.Click
+    Private Sub PopMenuButtonHighLight_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuHighLight.Click
         If HighItems.Contains(ListView.SelectedItem) Then
             HighItems.Remove(ListView.SelectedItem)
         Else
@@ -589,7 +589,7 @@ Public Class MainForm
     End Sub
 
     ' 显示高亮部分
-    Private Sub PopMenuButtonHighLightList_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonHighLightList.Click
+    Private Sub PopMenuButtonHighLightList_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuHighLightList.Click
         Dim Content As New StringBuilder
         For Each Item As String In HighItems
             Content.AppendLine(Item)
@@ -614,7 +614,7 @@ Public Class MainForm
             }
 
             AddHandler opBtns(i).Click, AddressOf PopMenuButtonOpacity_Click
-            Me.PopMenuButtonOpacity.SubItems.Add(opBtns(i))
+            Me.ListPopupMenuOpacity.SubItems.Add(opBtns(i))
 
             If MaxOpacity = opBtns(i).Tag Then
                 opBtns(i).Checked = True
@@ -640,22 +640,22 @@ Public Class MainForm
 
 #End Region
 
-    Private Sub PopMenuButtonListHeight_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonListHeight.Click
-        NumericUpDownListCnt.Visible = PopMenuButtonListHeight.Checked
+    Private Sub PopMenuButtonListHeight_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuListHeight.Click
+        NumericUpDownListCnt.Visible = ListPopupMenuListHeight.Checked
     End Sub
 
-    Private Sub ListPopMenu_PopupOpen(sender As Object, e As DevComponents.DotNetBar.PopupOpenEventArgs) Handles ListPopMenu.PopupOpen
+    Private Sub ListPopMenu_PopupOpen(sender As Object, e As DevComponents.DotNetBar.PopupOpenEventArgs) Handles ListPopupMenu.PopupOpen
         e.Cancel = True
-        PopupMenuLabelSelItem.Visible = ListView.SelectedIndex <> -1
-        PopupMenuLabelSelItemText.Visible = ListView.SelectedIndex <> -1
+        ListPopupMenuLabelSelItem.Visible = ListView.SelectedIndex <> -1
+        ListPopupMenuLabelSelItemText.Visible = ListView.SelectedIndex <> -1
         If ListView.SelectedIndex <> -1 Then
-            PopupMenuLabelSelItemText.Text = ListView.SelectedItem
+            ListPopupMenuLabelSelItemText.Text = ListView.SelectedItem
         End If
         e.Cancel = False
-        ListPopMenu.Refresh()
+        ListPopupMenu.Refresh()
     End Sub
 
-    Private Sub ListPopMenu_Click(sender As System.Object, e As System.EventArgs) Handles ListPopMenu.Click
+    Private Sub ListPopMenu_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenu.Click
 
     End Sub
 End Class

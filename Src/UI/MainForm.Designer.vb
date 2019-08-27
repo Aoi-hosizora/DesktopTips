@@ -75,7 +75,7 @@ Partial Class MainForm
         Me.PopMenuButtonNewTab = New DevComponents.DotNetBar.ButtonItem()
         Me.PopMenuButtonDeleteTab = New DevComponents.DotNetBar.ButtonItem()
         Me.TabStrip = New DevComponents.DotNetBar.SuperTabStrip()
-        Me.SuperTabItemDefault = New DevComponents.DotNetBar.SuperTabItem()
+        Me.TabItemDefault = New DevComponents.DotNetBar.SuperTabItem()
         Me.ButtonItemUp = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonItemDown = New DevComponents.DotNetBar.ButtonX()
         CType(Me.NumericUpDownListCnt, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -133,7 +133,7 @@ Partial Class MainForm
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ContextMenuBar1.SetContextMenuEx(Me.ListView, Me.ListPopupMenu)
-        Me.ListView.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed
+        Me.ListView.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
         Me.ListView.FormattingEnabled = True
         Me.ListView.ItemHeight = 17
         Me.ListView.Items.AddRange(New Object() {"Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test"})
@@ -439,22 +439,22 @@ Partial Class MainForm
         Me.TabStrip.Name = "TabStrip"
         Me.TabStrip.ReorderTabsEnabled = True
         Me.TabStrip.RotateVerticalText = True
-        Me.TabStrip.SelectedTabFont = New System.Drawing.Font("Microsoft YaHei UI", 9.0!, System.Drawing.FontStyle.Bold)
+        Me.TabStrip.SelectedTabFont = New System.Drawing.Font("Microsoft YaHei UI Light", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TabStrip.SelectedTabIndex = 0
-        Me.TabStrip.Size = New System.Drawing.Size(28, 275)
+        Me.TabStrip.Size = New System.Drawing.Size(29, 275)
         Me.TabStrip.TabAlignment = DevComponents.DotNetBar.eTabStripAlignment.Left
         Me.TabStrip.TabCloseButtonHot = Nothing
         Me.TabStrip.TabFont = New System.Drawing.Font("Microsoft YaHei UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TabStrip.TabIndex = 7
-        Me.TabStrip.Tabs.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.SuperTabItemDefault})
+        Me.TabStrip.Tabs.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.TabItemDefault})
         Me.TabStrip.Text = "SuperTabStrip1"
         Me.TabStrip.TextAlignment = DevComponents.DotNetBar.eItemAlignment.Center
         '
-        'SuperTabItemDefault
+        'TabItemDefault
         '
-        Me.SuperTabItemDefault.GlobalItem = False
-        Me.SuperTabItemDefault.Name = "SuperTabItemDefault"
-        Me.SuperTabItemDefault.Text = "默认"
+        Me.TabItemDefault.GlobalItem = False
+        Me.TabItemDefault.Name = "TabItemDefault"
+        Me.TabItemDefault.Text = "默认"
         '
         'ButtonItemUp
         '
@@ -557,7 +557,7 @@ Partial Class MainForm
     Friend WithEvents ListPopupMenuMoveBottom As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuMoveTop As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents TabStrip As DevComponents.DotNetBar.SuperTabStrip
-    Friend WithEvents SuperTabItemDefault As DevComponents.DotNetBar.SuperTabItem
+    Friend WithEvents TabItemDefault As DevComponents.DotNetBar.SuperTabItem
     Friend WithEvents TabPopupMenu As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents PopMenuButtonNewTab As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents PopMenuButtonDeleteTab As DevComponents.DotNetBar.ButtonItem

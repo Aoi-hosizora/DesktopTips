@@ -306,7 +306,7 @@ Public Class MainForm
     ''' </summary>
     Private Sub ListView_RightMouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseUp
         Dim idx As Integer = ListView.IndexFromPoint(e.X, e.Y)
-        If e.Button = Windows.Forms.MouseButtons.Right And idx <> -1 Then
+        If e.Button = Windows.Forms.MouseButtons.Right And idx <> -1 And idx <> 65535 Then
             If ListView.SelectedIndices.Count <= 1 Then
                 ListView.ClearSelected()
                 ListView.SetSelected(idx, True)
@@ -373,11 +373,22 @@ Public Class MainForm
     ''' <summary>
     ''' MyBase.Load
     ''' </summary>
-    Private Sub LoadList()
-        StorageUtil.LoadTabTipsData()
-        For Each Tip As TipItem In StorageUtil.GetTipsFromTab()
+    ''' <param name="IsAlreadyLoadTab">是否已经初始化分组 (True: 不需要更新分组和Curr)</param>
+    Private Sub LoadList(Optional ByVal IsAlreadyLoadTab = False)
+        StorageUtil.LoadTabTipsData(Not IsAlreadyLoadTab)
+        ListView.Items.Clear()
+
+        For Each Tip As TipItem In StorageUtil.GetTipsFromTab(StorageUtil.CurrentTab)
             ListView.Items.Add(Tip)
         Next
+
+        If Not IsAlreadyLoadTab Then
+            For Each Tab As Tab In StorageUtil.StorageTabs
+                If Tab.TabClassName <> "TabItemDefault" Then
+                    AddTab(Tab.TabTitle)
+                End If
+            Next
+        End If
     End Sub
 
     ''' <summary>
@@ -385,11 +396,12 @@ Public Class MainForm
     ''' </summary>
     ''' <param name="IsSaveAll">是否保存所有分组</param>
     Private Sub SaveList(Optional ByVal IsSaveAll As Boolean = False)
-        Dim tabIdx As Integer = StorageUtil.StorageTabs.IndexOf(StorageUtil.CurrentTab)
+        Dim tabIdx As Integer = StorageUtil.GetTabIndexFromTab(StorageUtil.CurrentTab)
         Dim Tips As New List(Of TipItem)
         For Each Tip As TipItem In ListView.Items.Cast(Of TipItem)()
             Tips.Add(Tip)
         Next
+        ' TODO
         StorageUtil.StorageTipItems.Item(tabIdx) = Tips
 
         If IsSaveAll Then
@@ -428,13 +440,13 @@ Public Class MainForm
 
             Dim ok As Integer
             If ListView.SelectedIndices.Count = 1 Then
-                ok = MsgBox("确定删除提醒标签 """ & CType(ListView.SelectedItem, TipItem).TipContent & """ 吗？", MsgBoxStyle.OkCancel, "删除")
+                ok = MsgBox("确定删除以下提醒标签吗？" & Chr(10) & Chr(10) & CType(ListView.SelectedItem, TipItem).TipContent, MsgBoxStyle.OkCancel, "删除")
             Else
                 Dim sb As New StringBuilder
                 For Each item As TipItem In ListView.SelectedItems.Cast(Of TipItem)()
                     sb.AppendLine(item.TipContent)
                 Next
-                ok = MsgBox("确定删除以下所选所有提醒标签吗？" & Chr(10) & Chr(10) & sb.ToString, MsgBoxStyle.OkCancel, "删除")
+                ok = MsgBox("确定删除以下所有提醒标签吗？" & Chr(10) & Chr(10) & sb.ToString, MsgBoxStyle.OkCancel, "删除")
             End If
             If (ok = vbOK) Then
                 For Each item As TipItem In SelectItemIdics
@@ -559,6 +571,8 @@ Public Class MainForm
 
 #End Region
 
+#Region "选择"
+
     ''' <summary>
     ''' 高亮判断 辅助按钮显示
     ''' </summary>
@@ -602,6 +616,8 @@ Public Class MainForm
         Next
     End Sub
 
+#End Region
+    
 #Region "调整大小 弹出菜单"
 
     ''' <summary>
@@ -768,43 +784,78 @@ Public Class MainForm
 
 #Region "Tab"
 
-    Private tabCnt As Integer = 1
+    ''' <summary>
+    ''' 添加分组
+    ''' </summary>
+    ''' <param name="Title">分组标题</param>
+    ''' <param name="IsAddToStorage">是否添加到存储</param>
+    ''' <remarks></remarks>
+    Private Sub AddTab(ByVal Title As String, Optional ByVal IsAddToStorage As Boolean = False)
+        Dim ClassName As String = "TabItemCustom_" + StorageUtil.StorageTabs.Count.ToString()
 
+        If IsAddToStorage Then
+            Dim NewTab As New Tab(Title, ClassName)
+            StorageUtil.StorageTabs.Add(NewTab)
+            StorageUtil.StorageTipItems.Add(New List(Of TipItem))
+            StorageUtil.SaveTabData(NewTab)
+        End If
+
+        Dim NewSuperTabItem = New DevComponents.DotNetBar.SuperTabItem()
+        NewSuperTabItem.GlobalItem = False
+        NewSuperTabItem.Name = ClassName
+        NewSuperTabItem.Text = Title
+        AddHandler NewSuperTabItem.MouseDown, AddressOf TabStrip_MouseDown
+
+        Me.TabStrip.Tabs.AddRange(New DevComponents.DotNetBar.BaseItem() {NewSuperTabItem})
+    End Sub
+
+    ''' <summary>
+    ''' 新建分组
+    ''' </summary>
     Private Sub PopMenuButtonNewTab_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonNewTab.Click
         Dim tabName As String = InputBox("请输入新分组的标题: ", "新建", "分组")
         If tabName <> "" Then
-            tabCnt += 1
-            Dim NewSuperTabItem = New DevComponents.DotNetBar.SuperTabItem()
-            NewSuperTabItem.GlobalItem = False
-            NewSuperTabItem.Name = "SuperTabItem" + tabCnt.ToString()
-            NewSuperTabItem.Text = tabName
-            AddHandler NewSuperTabItem.MouseDown, AddressOf TabStrip_MouseDown
-
-            Me.TabStrip.Tabs.AddRange(New DevComponents.DotNetBar.BaseItem() {NewSuperTabItem})
+            If StorageUtil.CheckDuplicateTab(tabName.Trim()) Then
+                MessageBox.Show("分组标题 """ & tabName & """ 已存在。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+                PopMenuButtonNewTab_Click(sender, New System.EventArgs)
+            Else
+                AddTab(tabName, True)
+            End If
         End If
     End Sub
 
+    ''' <summary>
+    ''' 删除分组
+    ''' </summary>
     Private Sub PopMenuButtonDeleteTab_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonDeleteTab.Click
-        If TabStrip.SelectedTab.Name = "SuperTabItemDefault" Then
+        If TabStrip.SelectedTab.Name = "TabItemDefault" Then
             MessageBox.Show("不允许删除默认分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
         Else
             Dim ok As DialogResult = MessageBox.Show("是否删除分组 """ + TabStrip.SelectedTab.Text + """？", "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
             If ok = vbOK Then
+                StorageUtil.DeleteTabData(TabStrip.SelectedTab.Text)
                 TabStrip.Tabs.RemoveAt(TabStrip.SelectedTabIndex)
             End If
         End If
     End Sub
 
-    Private Sub TabStrip_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles TabStrip.MouseDown, SuperTabItemDefault.MouseDown
+    Private Sub TabStrip_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles TabStrip.MouseDown, TabItemDefault.MouseDown
         If e.Button = Windows.Forms.MouseButtons.Right Then
             Dim sel As DevComponents.DotNetBar.BaseItem = TabStrip.GetItemFromPoint(e.Location)
             If Not sel Is Nothing Then
-                Console.WriteLine(sel.Text())
                 TabStrip.SelectedTab = sel
             End If
         End If
     End Sub
 
+    Private Sub TabStrip_SelectedTabChanged(sender As Object, e As DevComponents.DotNetBar.SuperTabStripSelectedTabChangedEventArgs) Handles TabStrip.SelectedTabChanged
+
+        If TabStrip.SelectedTabIndex <> -1 And StorageUtil.StorageTabs.Count <> 0 Then
+            ' TODO
+            StorageUtil.CurrentTab = StorageUtil.StorageTabs.Item(TabStrip.SelectedTabIndex)
+            LoadList(True)
+        End If
+    End Sub
 #End Region
 
 End Class

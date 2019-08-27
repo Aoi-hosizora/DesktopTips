@@ -64,15 +64,36 @@ Public Class StorageUtil
     ''' 从分组信息获取分组内容
     ''' </summary>
     ''' <param name="Tab">分组信息</param>
-    Public Shared Function GetTipsFromTab(ByVal Tab As Tab) As List(Of TipItem)
-        Return StorageTipItems.Item(StorageTabs.IndexOf(Tab))
+    Public Shared Function GetTipsFromTab(ByRef Tab As Tab) As List(Of TipItem)
+        ' TODO
+        Return StorageTipItems.Item(GetTabIndexFromTab(Tab))
     End Function
 
     ''' <summary>
-    ''' 从当前分组获取分组内容
+    ''' 从 Tab 获取 TabIndex (IndexOf 问题)
     ''' </summary>
-    Public Shared Function GetTipsFromTab() As List(Of TipItem)
-        Return StorageTipItems.Item(StorageTabs.IndexOf(CurrentTab))
+    ''' <param name="Tab"></param>
+    Public Shared Function GetTabIndexFromTab(ByRef Tab As Tab) As Integer
+        For Each t As Tab In StorageTabs
+            If t.TabTitle = Tab.TabTitle Then
+                Return StorageTabs.IndexOf(t)
+            End If
+        Next
+        Return 0
+    End Function
+
+    ''' <summary>
+    ''' 判断是否重复分组标题
+    ''' </summary>
+    ''' <param name="NewTitle">检索的新标题</param>
+    ''' <returns>重复 True</returns>
+    Public Shared Function CheckDuplicateTab(ByVal NewTitle As String) As Boolean
+        For Each Tab As Tab In StorageTabs
+            If Tab.TabTitle = NewTitle.Trim() Then
+                Return True
+            End If
+        Next
+        Return False
     End Function
 
 #End Region
@@ -83,12 +104,13 @@ Public Class StorageUtil
     ''' 保存指定分组
     ''' </summary>
     ''' <param name="Tab">分组信息</param>
-    Public Shared Sub SaveTabData(ByVal Tab As Tab)
+    Public Shared Sub SaveTabData(ByRef Tab As Tab)
         If Tab Is Nothing Then Return
 
         Dim StorageTipsName As String = StorageFileDir & "\" & Tab.TabTitle & ".dat"
 
-        SaveBinary(StorageTipItems.Item(StorageTabs.IndexOf(Tab)), StorageTipsName)
+        ' TODO
+        SaveBinary(StorageTipItems.Item(GetTabIndexFromTab(Tab)), StorageTipsName)
         SaveBinary(StorageTabs, StorageTabsInfo)
     End Sub
 
@@ -110,7 +132,7 @@ Public Class StorageUtil
     ''' </summary>
     ''' <param name="Tab">分组信息</param>
     ''' <returns>指定分组</returns>
-    Private Shared Function LoadTabTipsData(ByVal Tab As Tab) As List(Of TipItem)
+    Private Shared Function LoadTabTipsData(ByRef Tab As Tab) As List(Of TipItem)
         Dim StorageTipsName As String = StorageFileDir & "\" & Tab.TabTitle & ".dat"
         Dim Tips As List(Of TipItem)
         If File.Exists(StorageTipsName) Then
@@ -128,19 +150,48 @@ Public Class StorageUtil
         If File.Exists(StorageTabsInfo) Then
             StorageTabs = CType(LoadBinary(StorageTabsInfo), List(Of Tab))
         Else
-            StorageTabs.Add(New Tab("默认", "SuperTabItemDefault"))
+            StorageTabs.Add(New Tab("默认"))
         End If
     End Sub
 
     ''' <summary>
     ''' 加载所有分组
     ''' </summary>
-    Public Shared Sub LoadTabTipsData()
+    Public Shared Sub LoadTabTipsData(Optional ByVal IsChangeCurr = True)
         LoadTabData()
+        StorageTipItems.Clear()
         For Each Tab As Tab In StorageTabs
             StorageTipItems.Add(LoadTabTipsData(Tab))
         Next
-        CurrentTab = StorageTabs.Item(0)
+        If IsChangeCurr Then
+            CurrentTab = StorageTabs.Item(0)
+        End If
+    End Sub
+
+#End Region
+
+#Region "Delete"
+
+    ''' <summary>
+    ''' 删除分组并保存
+    ''' </summary>
+    ''' <param name="TabTitle">分组标题</param>
+    Public Shared Sub DeleteTabData(ByVal TabTitle As String)
+        For Each Tab As Tab In StorageTabs
+            If Tab.TabTitle = TabTitle Then
+                StorageTabs.Remove(Tab)
+                Exit For
+            End If
+        Next
+
+        For Each Tips As List(Of TipItem) In StorageTipItems
+            If Tips.Count > 0 Then
+                If Tips(0).TipTab.TabTitle = TabTitle Then
+                    StorageTipItems.Remove(Tips)
+                End If
+            End If
+        Next
+        SaveTabData()
     End Sub
 
 #End Region

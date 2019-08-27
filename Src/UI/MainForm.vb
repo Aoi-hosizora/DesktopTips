@@ -847,7 +847,7 @@ Public Class MainForm
     ''' <summary>
     ''' 新建分组
     ''' </summary>
-    Private Sub PopMenuButtonNewTab_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonNewTab.Click
+    Private Sub PopMenuButtonNewTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuNewTab.Click
         Dim tabName As String = InputBox("请输入新分组的标题: ", "新建", "分组")
         If tabName <> "" Then
             If Tab.CheckDuplicateTab(tabName.Trim(), StorageUtil.StorageTabs) Then
@@ -862,7 +862,7 @@ Public Class MainForm
     ''' <summary>
     ''' 删除分组
     ''' </summary>
-    Private Sub PopMenuButtonDeleteTab_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonDeleteTab.Click
+    Private Sub PopMenuButtonDeleteTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuDeleteTab.Click
         If TabStrip.Tabs.Count = 1 Then
             MessageBox.Show("无法删除最后的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
         Else
@@ -877,7 +877,7 @@ Public Class MainForm
     ''' <summary>
     ''' 重命名分组
     ''' </summary>
-    Private Sub PopMenuButtonRenameTab_Click(sender As System.Object, e As System.EventArgs) Handles PopMenuButtonRenameTab.Click
+    Private Sub PopMenuButtonRenameTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuRenameTab.Click
         If TabStrip.SelectedTabIndex <> -1 Then
             Dim OldName As String = TabStrip.SelectedTab.Text
             Dim NewName As String = InputBox("重命名分组 """ & OldName & """ 为: ", "重命名", OldName)
@@ -927,7 +927,21 @@ Public Class MainForm
 
 #End Region
 
-#Region "转移分组"
+#Region "Trans"
+
+    ''' <summary>
+    ''' 所选项移动至分组
+    ''' </summary>
+    Private Sub ListPopupMenuTrans_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuTrans.Click
+
+    End Sub
+
+    ''' <summary>
+    ''' 整个分组转移
+    ''' </summary>
+    Private Sub PopMenuButtonTrans_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuTrans.Click
+
+    End Sub
 
 #End Region
 

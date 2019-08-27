@@ -77,6 +77,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Src\Model\Tab.vb" />
     <Compile Include="Src\Model\TabTips.vb" />
     <Compile Include="Src\Model\TipItem.vb" />
@@ -92,11 +97,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
     </Compile>
-    <Compile Include="My Project\Resources.Designer.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="My Project\Settings.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -111,9 +111,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -130,17 +130,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SelectAll.png" />
-    <None Include="Resources\FavoriteStar_FrontFacing_16x16_72.png" />
-    <None Include="Resources\126_Edit_16x16_72.png" />
-    <None Include="Resources\138_MottomPin_16x16.png" />
-    <None Include="Resources\138_TopPin_16x16.png" />
-    <None Include="Resources\138_MottomPin_16x161.png" />
-    <None Include="Resources\112_PurpleArrowLong_Green_16x16_72.png" />
+    <None Include="Resources\Star.png" />
+    <None Include="Resources\Edit.png" />
+    <None Include="Resources\Right.png" />
+    <None Include="Resources\Pin.png" />
     <Content Include="Resources\Icon_157.ico" />
-    <None Include="Resources\112_Minus_Grey_16x16_72.png" />
-    <None Include="Resources\112_Plus_Green_16x16_72.png" />
-    <None Include="Resources\112_DownArrowLong_Blue_16x16_72.png" />
-    <None Include="Resources\112_UpArrowLong_Orange_16x16_72.png" />
+    <None Include="Resources\Minus.png" />
+    <None Include="Resources\Plus.png" />
+    <None Include="Resources\Down.png" />
+    <None Include="Resources\Up.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />

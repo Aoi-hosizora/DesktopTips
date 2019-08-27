@@ -19,7 +19,7 @@ Public Class StorageUtil
     ''' <summary>
     ''' 内容集
     ''' </summary>
-    Public Shared StorageTipItems As New List(Of List(Of TipItem))
+    Public Shared StorageTipItems As New List(Of TabTips)
     ''' <summary>
     ''' 当前分组
     ''' </summary>
@@ -58,46 +58,6 @@ Public Class StorageUtil
 
 #End Region
 
-#Region "List"
-
-    ''' <summary>
-    ''' 从分组信息获取分组内容
-    ''' </summary>
-    ''' <param name="Tab">分组信息</param>
-    Public Shared Function GetTipsFromTab(ByRef Tab As Tab) As List(Of TipItem)
-        ' TODO
-        Return StorageTipItems.Item(GetTabIndexFromTab(Tab))
-    End Function
-
-    ''' <summary>
-    ''' 从 Tab 获取 TabIndex (IndexOf 问题)
-    ''' </summary>
-    ''' <param name="Tab"></param>
-    Public Shared Function GetTabIndexFromTab(ByRef Tab As Tab) As Integer
-        For Each t As Tab In StorageTabs
-            If t.TabTitle = Tab.TabTitle Then
-                Return StorageTabs.IndexOf(t)
-            End If
-        Next
-        Return 0
-    End Function
-
-    ''' <summary>
-    ''' 判断是否重复分组标题
-    ''' </summary>
-    ''' <param name="NewTitle">检索的新标题</param>
-    ''' <returns>重复 True</returns>
-    Public Shared Function CheckDuplicateTab(ByVal NewTitle As String) As Boolean
-        For Each Tab As Tab In StorageTabs
-            If Tab.TabTitle = NewTitle.Trim() Then
-                Return True
-            End If
-        Next
-        Return False
-    End Function
-
-#End Region
-
 #Region "Save"
 
     ''' <summary>
@@ -108,9 +68,7 @@ Public Class StorageUtil
         If Tab Is Nothing Then Return
 
         Dim StorageTipsName As String = StorageFileDir & "\" & Tab.TabTitle & ".dat"
-
-        ' TODO
-        SaveBinary(StorageTipItems.Item(GetTabIndexFromTab(Tab)), StorageTipsName)
+        SaveBinary(StorageTipItems.Item(TabTips.GetIndexFromTab(Tab.TabTitle, StorageTipItems)), StorageTipsName)
         SaveBinary(StorageTabs, StorageTabsInfo)
     End Sub
 
@@ -121,6 +79,13 @@ Public Class StorageUtil
         For Each Tab As Tab In StorageTabs
             SaveTabData(Tab)
         Next
+    End Sub
+
+    ''' <summary>
+    ''' 保存分组顺序信息
+    ''' </summary>
+    Public Shared Sub SaveTabOrder()
+        SaveBinary(StorageTabs, StorageTabsInfo)
     End Sub
 
 #End Region
@@ -136,7 +101,7 @@ Public Class StorageUtil
         Dim StorageTipsName As String = StorageFileDir & "\" & Tab.TabTitle & ".dat"
         Dim Tips As List(Of TipItem)
         If File.Exists(StorageTipsName) Then
-            Tips = LoadBinary(StorageTipsName)
+            Tips = CType(LoadBinary(StorageTipsName), TabTips).Tips
         Else
             Tips = New List(Of TipItem)
         End If
@@ -150,7 +115,9 @@ Public Class StorageUtil
         If File.Exists(StorageTabsInfo) Then
             StorageTabs = CType(LoadBinary(StorageTabsInfo), List(Of Tab))
         Else
-            StorageTabs.Add(New Tab("默认"))
+            StorageTabs = New List(Of Tab)
+            StorageTabs.Add(New Tab("默认", "TabItemCustom_0"))
+            SaveBinary(StorageTabs, StorageTabsInfo)
         End If
     End Sub
 
@@ -161,7 +128,7 @@ Public Class StorageUtil
         LoadTabData()
         StorageTipItems.Clear()
         For Each Tab As Tab In StorageTabs
-            StorageTipItems.Add(LoadTabTipsData(Tab))
+            StorageTipItems.Add(New TabTips(Tab, LoadTabTipsData(Tab)))
         Next
         If IsChangeCurr Then
             CurrentTab = StorageTabs.Item(0)
@@ -184,16 +151,19 @@ Public Class StorageUtil
             End If
         Next
 
-        For Each Tips As List(Of TipItem) In StorageTipItems
-            If Tips.Count > 0 Then
-                If Tips(0).TipTab.TabTitle = TabTitle Then
-                    StorageTipItems.Remove(Tips)
-                End If
+        For Each Tips As TabTips In StorageTipItems
+            If Tips.Tab.TabTitle = TabTitle Then
+                StorageTipItems.Remove(Tips)
+                Exit For
             End If
         Next
+
+        Dim StorageTipsName As String = StorageFileDir & "\" & TabTitle & ".dat"
+        If File.Exists(StorageTipsName) Then
+            File.Delete(StorageTipsName)
+        End If
         SaveTabData()
     End Sub
-
 #End Region
 
 End Class

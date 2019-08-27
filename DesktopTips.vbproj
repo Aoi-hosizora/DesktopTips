@@ -78,6 +78,7 @@
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Src\Model\Tab.vb" />
+    <Compile Include="Src\Model\TabTips.vb" />
     <Compile Include="Src\Model\TipItem.vb" />
     <Compile Include="Src\UI\MainForm.vb">
       <SubType>Form</SubType>

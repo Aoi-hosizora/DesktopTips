@@ -61,6 +61,7 @@ Partial Class MainForm
         Me.ListPopupMenuViewHighLight = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuAddItem = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuRemoveItem = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuSelectAll = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuEditItem = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuLabelItemFile = New DevComponents.DotNetBar.LabelItem()
         Me.ListPopupMenuOpenDir = New DevComponents.DotNetBar.ButtonItem()
@@ -138,6 +139,7 @@ Partial Class MainForm
         Me.ListView.Items.AddRange(New Object() {"Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test"})
         Me.ListView.Location = New System.Drawing.Point(28, 0)
         Me.ListView.Name = "ListView"
+        Me.ListView.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
         Me.ListView.Size = New System.Drawing.Size(264, 276)
         Me.ListView.TabIndex = 0
         '
@@ -220,7 +222,7 @@ Partial Class MainForm
         '
         Me.ListPopupMenu.AutoExpandOnClick = True
         Me.ListPopupMenu.Name = "ListPopupMenu"
-        Me.ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList, Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuHighLight, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem, Me.ListPopupMenuEditItem, Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuListHeight, Me.ListPopupMenuOpacity, Me.ListPopupMenuWinTop, Me.ListPopupMenuExit})
+        Me.ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList, Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuHighLight, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem, Me.ListPopupMenuSelectAll, Me.ListPopupMenuEditItem, Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuListHeight, Me.ListPopupMenuOpacity, Me.ListPopupMenuWinTop, Me.ListPopupMenuExit})
         Me.ListPopupMenu.Text = "ListPopup"
         '
         'ListPopupMenuLabelSelItem
@@ -311,8 +313,8 @@ Partial Class MainForm
         Me.ListPopupMenuAddItem.BeginGroup = True
         Me.ListPopupMenuAddItem.Image = Global.DesktopTips.My.Resources.Resources._112_Plus_Green_16x16_72
         Me.ListPopupMenuAddItem.Name = "ListPopupMenuAddItem"
-        Me.ListPopupMenuAddItem.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlA)
-        Me.ListPopupMenuAddItem.Text = "添加(&A)"
+        Me.ListPopupMenuAddItem.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlN)
+        Me.ListPopupMenuAddItem.Text = "添加(&N)"
         '
         'ListPopupMenuRemoveItem
         '
@@ -320,6 +322,13 @@ Partial Class MainForm
         Me.ListPopupMenuRemoveItem.Name = "ListPopupMenuRemoveItem"
         Me.ListPopupMenuRemoveItem.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.Del)
         Me.ListPopupMenuRemoveItem.Text = "删除(&X)"
+        '
+        'ListPopupMenuSelectAll
+        '
+        Me.ListPopupMenuSelectAll.Image = Global.DesktopTips.My.Resources.Resources.SelectAll
+        Me.ListPopupMenuSelectAll.Name = "ListPopupMenuSelectAll"
+        Me.ListPopupMenuSelectAll.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlA)
+        Me.ListPopupMenuSelectAll.Text = "全选(&A)"
         '
         'ListPopupMenuEditItem
         '
@@ -552,5 +561,6 @@ Partial Class MainForm
     Friend WithEvents TabPopupMenu As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents PopMenuButtonNewTab As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents PopMenuButtonDeleteTab As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuSelectAll As DevComponents.DotNetBar.ButtonItem
 
 End Class

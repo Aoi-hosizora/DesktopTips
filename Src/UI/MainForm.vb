@@ -25,12 +25,10 @@ Public Class MainForm
     Private IsMouseDown As Boolean
     Private IsChangeSize As Boolean
 
-    Private Sub ListView_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseDown
+    Private Sub ListView_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseDown, TabStrip.MouseDown
         If e.Button = Windows.Forms.MouseButtons.Left Then
             IsMouseDown = True
-            If ListView.SelectedIndex <> -1 Then
-                SetSelectedItemButtonShow(ListView.GetItemRectangle(ListView.SelectedIndex))
-            End If
+            ListView_SelectedIndexChanged(sender, New System.EventArgs)
         End If
 
         PushDownMouseInScreen = Cursor.Position
@@ -39,27 +37,28 @@ Public Class MainForm
 
     End Sub
 
-    Private Sub ListView_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseMove
-        Dim rr As Integer = 8
-        If ListView.Items.Count > NumericUpDownListCnt.Value Then
-            rr = 25
+    Private Sub ListView_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseMove, TabStrip.MouseMove
+        Dim rr As Integer = If(ListView.Items.Count > NumericUpDownListCnt.Value, 25, 8)
+
+        If sender.Equals(ListView) Then
+            If e.X > sender.Width - rr Or IsChangeSize = True Then
+                Me.Cursor = Cursors.SizeWE
+                If IsMouseDown Then
+                    IsChangeSize = True
+                    Me.Width = PushDownWindowSize.X + Cursor.Position.X - PushDownMouseInScreen.X
+                End If
+                Return
+            End If
         End If
-        If e.X > sender.Width - rr Or IsChangeSize = True Then
-            Me.Cursor = Cursors.SizeWE
-            If IsMouseDown Then
-                IsChangeSize = True
-                Me.Width = PushDownWindowSize.X + Cursor.Position.X - PushDownMouseInScreen.X
-            End If
-        Else
-            Me.Cursor = Cursors.Default
-            If IsMouseDown And Not IsChangeSize Then
-                Me.Top = PushDownWindowPos.Y + Cursor.Position.Y - PushDownMouseInScreen.Y
-                Me.Left = PushDownWindowPos.X + Cursor.Position.X - PushDownMouseInScreen.X
-            End If
+
+        Me.Cursor = Cursors.Default
+        If IsMouseDown And Not IsChangeSize Then
+            Me.Top = PushDownWindowPos.Y + Cursor.Position.Y - PushDownMouseInScreen.Y
+            Me.Left = PushDownWindowPos.X + Cursor.Position.X - PushDownMouseInScreen.X
         End If
     End Sub
 
-    Private Sub ListView_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseUp
+    Private Sub ListView_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseUp, TabStrip.MouseUp
         IsMouseDown = False
         IsChangeSize = False
     End Sub
@@ -286,6 +285,13 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
+    ''' 边栏点击，取消选择
+    ''' </summary>
+    Private Sub TabStrip_Click(sender As System.Object, e As System.EventArgs) Handles TabStrip.Click
+        ListView.ClearSelected()
+    End Sub
+
+    ''' <summary>
     ''' 没有选择列表项，取消选择
     ''' </summary>
     Private Sub ListView_MouseDown_Sel(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseDown
@@ -301,7 +307,10 @@ Public Class MainForm
     Private Sub ListView_RightMouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseUp
         Dim idx As Integer = ListView.IndexFromPoint(e.X, e.Y)
         If e.Button = Windows.Forms.MouseButtons.Right And idx <> -1 Then
-            ListView.SetSelected(idx, True)
+            If ListView.SelectedIndices.Count <= 1 Then
+                ListView.ClearSelected()
+                ListView.SetSelected(idx, True)
+            End If
         End If
     End Sub
 
@@ -407,18 +416,30 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
-    ''' 离开窗口时的高亮索引，删改用
-    ''' </summary>
-    Dim SelectItemIdx As Integer = -1
-
-    ''' <summary>
     ''' 删 ButtonRemoveItem ListPopupMenuRemoveItem
     ''' </summary>
     Private Sub ButtonRemoveItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonRemoveItem.Click, ListPopupMenuRemoveItem.Click
-        If (ListView.SelectedItem IsNot Nothing) Then
-            Dim ok As Integer = MsgBox("确定删除提醒标签 """ & CType(ListView.SelectedItem, TipItem).TipContent & """ 吗？", MsgBoxStyle.OkCancel, "删除")
+        Dim SelectItemIdics As New List(Of TipItem)
+        If ListView.SelectedItem IsNot Nothing Then
+            SelectItemIdics.Clear()
+            For Each idx As TipItem In ListView.SelectedItems
+                SelectItemIdics.Add(idx)
+            Next
+
+            Dim ok As Integer
+            If ListView.SelectedIndices.Count = 1 Then
+                ok = MsgBox("确定删除提醒标签 """ & CType(ListView.SelectedItem, TipItem).TipContent & """ 吗？", MsgBoxStyle.OkCancel, "删除")
+            Else
+                Dim sb As New StringBuilder
+                For Each item As TipItem In ListView.SelectedItems.Cast(Of TipItem)()
+                    sb.AppendLine(item.TipContent)
+                Next
+                ok = MsgBox("确定删除以下所选所有提醒标签吗？" & Chr(10) & Chr(10) & sb.ToString, MsgBoxStyle.OkCancel, "删除")
+            End If
             If (ok = vbOK) Then
-                ListView.Items.RemoveAt(SelectItemIdx)
+                For Each item As TipItem In SelectItemIdics
+                    ListView.Items.Remove(item)
+                Next
                 SaveList()
             End If
         End If
@@ -428,14 +449,19 @@ Public Class MainForm
     ''' 改 ListView.DoubleClick ListPopupMenuEditItem
     ''' </summary>
     Private Sub ListView_DoubleClick(sender As Object, e As System.EventArgs) Handles ListView.DoubleClick, ListPopupMenuEditItem.Click
+        Dim tmpIdx As Integer
         If (ListView.SelectedItem IsNot Nothing) Then
-            Dim tip As TipItem = CType(ListView.SelectedItem, TipItem)
-            Dim newstr As String = InputBox("修改提醒标签 """ & tip.TipContent & """ 为：", "修改", tip.TipContent)
-            If newstr <> "" Then
-                tip.TipContent = newstr.Trim()
-                ListView.Items(SelectItemIdx) = tip
-                ListView.SelectedIndex = SelectItemIdx
-                SaveList()
+            If ListView.SelectedIndices.Count = 1 Then
+                tmpIdx = ListView.SelectedIndex
+
+                Dim tip As TipItem = CType(ListView.SelectedItem, TipItem)
+                Dim newstr As String = InputBox("修改提醒标签 """ & tip.TipContent & """ 为：", "修改", tip.TipContent)
+                If newstr <> "" Then
+                    tip.TipContent = newstr.Trim()
+                    ListView.Items(tmpIdx) = tip
+                    ListView.SelectedIndex = tmpIdx
+                    SaveList()
+                End If
             End If
         End If
     End Sub
@@ -531,33 +557,12 @@ Public Class MainForm
         ButtonItemDown.Visible = False
     End Sub
 
-    ''' <summary>
-    ''' 显示按钮，调整 Enabled
-    ''' </summary>
-    ''' <remarks></remarks>
-    Private Sub ListView_ShowButtons()
-        ButtonItemUp.Enabled = Not ListView.SelectedIndex = 0
-        ListPopupMenuMoveUp.Enabled = Not ListView.SelectedIndex = 0
-        ListPopupMenuMoveTop.Enabled = Not ListView.SelectedIndex = 0
-        ListPopupMenuMoveBottom.Enabled = Not ListView.SelectedIndex = ListView.Items.Count() - 1
-
-        ButtonItemDown.Enabled = Not ListView.SelectedIndex = ListView.Items.Count() - 1
-        ListPopupMenuMoveDown.Enabled = Not ListView.SelectedIndex = ListView.Items.Count() - 1
-
-        SetSelectedItemButtonShow(ListView.GetItemRectangle(ListView.SelectedIndex))
-    End Sub
-
 #End Region
 
     ''' <summary>
     ''' 高亮判断 辅助按钮显示
     ''' </summary>
     Private Sub ListView_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles ListView.SelectedIndexChanged
-
-        ' 删除修改窗口失去焦点时用
-        If ListView.SelectedIndex <> -1 Then
-            SelectItemIdx = ListView.SelectedIndex
-        End If
 
         ButtonRemoveItem.Enabled = ListView.SelectedItem IsNot Nothing
 
@@ -567,13 +572,34 @@ Public Class MainForm
             Else
                 ListPopupMenuHighLight.Checked = False
             End If
-
-            ListView_ShowButtons()
-        Else
-            SetSelectedItemButtonHide()
         End If
 
+        If ListView.SelectedIndices.Count = 1 Then
+            SetSelectedItemButtonShow(ListView.GetItemRectangle(ListView.SelectedIndex))
+            ListPopupMenuEditItem.Enabled = True
+        Else
+            SetSelectedItemButtonHide()
+            ListPopupMenuEditItem.Enabled = False
+        End If
+
+        ButtonItemUp.Enabled = Not ListView.SelectedIndex = 0
+        ListPopupMenuMoveUp.Enabled = Not ListView.SelectedIndex = 0
+        ListPopupMenuMoveTop.Enabled = Not ListView.SelectedIndex = 0
+        ListPopupMenuMoveBottom.Enabled = Not ListView.SelectedIndex = ListView.Items.Count() - 1
+
+        ButtonItemDown.Enabled = Not ListView.SelectedIndex = ListView.Items.Count() - 1
+        ListPopupMenuMoveDown.Enabled = Not ListView.SelectedIndex = ListView.Items.Count() - 1
+
         ListView.Refresh()
+    End Sub
+
+    ''' <summary>
+    ''' 全选
+    ''' </summary>
+    Private Sub ListPopupMenuSelectAll_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuSelectAll.Click
+        For i = 0 To ListView.Items.Count - 1
+            ListView.SetSelected(i, True)
+        Next
     End Sub
 
 #Region "调整大小 弹出菜单"
@@ -720,8 +746,15 @@ Public Class MainForm
         e.Cancel = True
         ListPopupMenuLabelSelItem.Visible = ListView.SelectedIndex <> -1
         ListPopupMenuLabelSelItemText.Visible = ListView.SelectedIndex <> -1
-        If ListView.SelectedIndex <> -1 Then
+        ListPopupMenuLabelSelItem.Text = "当前选中 (共 " & ListView.SelectedIndices.Count & " 项)"
+        If ListView.SelectedIndices.Count = 1 Then
             ListPopupMenuLabelSelItemText.Text = CType(ListView.SelectedItem, TipItem).TipContent
+        ElseIf ListView.SelectedIndices.Count <> 0 Then
+            Dim sb As New StringBuilder
+            For Each item As TipItem In ListView.SelectedItems.Cast(Of TipItem)()
+                sb.AppendLine(item.TipContent)
+            Next
+            ListPopupMenuLabelSelItemText.Text = sb.ToString
         End If
         e.Cancel = False
         ListPopupMenu.Refresh()

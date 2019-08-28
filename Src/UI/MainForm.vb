@@ -239,12 +239,12 @@ Public Class MainForm
     Private Sub FormOpacity_Load()
         For i = 0 To ops.Length - 1
             opBtns(i) = New DevComponents.DotNetBar.ButtonItem With { _
-                .Name = "PopMenuButtonOpacity" & CInt(ops(i) * 100), _
+                .Name = "ListPopupMenuOpacity" & CInt(ops(i) * 100), _
                 .Tag = ops(i), _
                 .Text = CInt(ops(i) * 100) & "%"
             }
 
-            AddHandler opBtns(i).Click, AddressOf PopMenuButtonOpacity_Click
+            AddHandler opBtns(i).Click, AddressOf ListPopupMenuOpacity_Click
             Me.ListPopupMenuOpacity.SubItems.Add(opBtns(i))
 
             If MaxOpacity = opBtns(i).Tag Then
@@ -253,7 +253,7 @@ Public Class MainForm
         Next
     End Sub
 
-    Private Sub PopMenuButtonOpacity_Click(sender As System.Object, e As System.EventArgs)
+    Private Sub ListPopupMenuOpacity_Click(sender As System.Object, e As System.EventArgs)
 
         Dim btn As DevComponents.DotNetBar.ButtonItem = CType(sender, DevComponents.DotNetBar.ButtonItem)
 
@@ -296,8 +296,10 @@ Public Class MainForm
     Private Sub ListView_MouseDown_Sel(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseDown, TabStrip.MouseDown
         ListView_SelectedIndexChanged(sender, New System.EventArgs)
 
-        Dim rect As Rectangle = ListView.GetItemRectangle(ListView.Items.Count - 1)
-        If e.Y > rect.Top + rect.Height Then ListView.ClearSelected()
+        If ListView.Items.Count > 0 Then
+            Dim rect As Rectangle = ListView.GetItemRectangle(ListView.Items.Count - 1)
+            If e.Y > rect.Top + rect.Height Then ListView.ClearSelected()
+        End If
 
     End Sub
 
@@ -312,9 +314,11 @@ Public Class MainForm
 
                 ListView.ClearSelected()
                 ListView.SetSelected(idx, True)
-
-                Dim rect As Rectangle = ListView.GetItemRectangle(ListView.Items.Count - 1)
-                If e.Y > rect.Top + rect.Height Then ListView.ClearSelected()
+                
+                If ListView.Items.Count > 0 Then
+                    Dim rect As Rectangle = ListView.GetItemRectangle(ListView.Items.Count - 1)
+                    If e.Y > rect.Top + rect.Height Then ListView.ClearSelected()
+                End If
             End If
         End If
     End Sub
@@ -435,12 +439,8 @@ Public Class MainForm
     ''' 删 ButtonRemoveItem ListPopupMenuRemoveItem
     ''' </summary>
     Private Sub ButtonRemoveItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonRemoveItem.Click, ListPopupMenuRemoveItem.Click
-        Dim SelectItemIdics As New List(Of TipItem)
+        Dim SelectItemIdics As New List(Of TipItem)(ListView.SelectedItems.Cast(Of TipItem)())
         If ListView.SelectedItem IsNot Nothing Then
-            SelectItemIdics.Clear()
-            For Each idx As TipItem In ListView.SelectedItems
-                SelectItemIdics.Add(idx)
-            Next
 
             Dim ok As Integer
             If ListView.SelectedIndices.Count = 1 Then
@@ -465,10 +465,9 @@ Public Class MainForm
     ''' 改 ListView.DoubleClick ListPopupMenuEditItem
     ''' </summary>
     Private Sub ListView_DoubleClick(sender As Object, e As System.EventArgs) Handles ListView.DoubleClick, ListPopupMenuEditItem.Click
-        Dim tmpIdx As Integer
+        Dim tmpIdx As Integer = ListView.SelectedIndex
         If (ListView.SelectedItem IsNot Nothing) Then
             If ListView.SelectedIndices.Count = 1 Then
-                tmpIdx = ListView.SelectedIndex
 
                 Dim tip As TipItem = CType(ListView.SelectedItem, TipItem)
                 Dim newstr As String = InputBox("修改提醒标签 """ & tip.TipContent & """ 为：", "修改", tip.TipContent)
@@ -479,13 +478,15 @@ Public Class MainForm
                     SaveList()
                 End If
             End If
+        Else
+            ButtonAddItem_Click(sender, New System.EventArgs)
         End If
     End Sub
 
     ''' <summary>
     ''' 置顶
     ''' </summary>
-    Private Sub PopMenuButtonMoveTop_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuMoveTop.Click
+    Private Sub ListPopupMenuMoveTop_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuMoveTop.Click
         Dim currItem As Object = ListView.SelectedItem
         ListView.Items.Remove(currItem)
         ListView.Items.Insert(0, currItem)
@@ -497,7 +498,7 @@ Public Class MainForm
     ''' <summary>
     ''' 置底
     ''' </summary>
-    Private Sub PopMenuButtonMoveBottom_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuMoveBottom.Click
+    Private Sub ListPopupMenuMoveBottom_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuMoveBottom.Click
         'Dim currIdx As Integer = ListView.SelectedIndex
         Dim currItem As Object = ListView.SelectedItem
         ListView.Items.Remove(currItem)
@@ -639,7 +640,7 @@ Public Class MainForm
     End Sub
 
 #End Region
-    
+
 #Region "调整大小 弹出菜单"
 
     ''' <summary>
@@ -669,14 +670,14 @@ Public Class MainForm
     Private Sub ButtonSetting_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonSetting.MouseUp
         If e.Button = Windows.Forms.MouseButtons.Right Then
             ListPopupMenuListHeight.Checked = Not ListPopupMenuListHeight.Checked
-            PopMenuButtonListHeight_Click(sender, New System.EventArgs)
+            ListPopupMenuListHeight_Click(sender, New System.EventArgs)
         End If
     End Sub
 
     ''' <summary>
     ''' Popup 显示调整大小
     ''' </summary>
-    Private Sub PopMenuButtonListHeight_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuListHeight.Click
+    Private Sub ListPopupMenuListHeight_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuListHeight.Click
         NumericUpDownListCnt.Visible = ListPopupMenuListHeight.Checked
     End Sub
 
@@ -687,7 +688,7 @@ Public Class MainForm
     ''' <summary>
     ''' 打开文件所在位置
     ''' </summary>
-    Private Sub PopMenuButtonOpenFile_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuOpenDir.Click
+    Private Sub ListPopupMenuOpenFile_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuOpenDir.Click
         'Dim path As String = FileDir
         'Process.Start(path)
         'C:\Users\Windows 10\AppData\Roaming\DesktopTips
@@ -722,18 +723,7 @@ Public Class MainForm
     ''' <summary>
     ''' 浏览文件
     ''' </summary>
-    Private Sub PopMenuButtonViewFile_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuViewFile.Click
-        'If File.Exists(StorageUtil.StorageFileName) Then
-        '    Dim reader As TextReader = File.OpenText(StorageUtil.StorageFileName)
-        '    Dim Count As Integer = CInt(reader.ReadLine)
-        '    Dim Content As String = reader.ReadToEnd()
-        '    reader.Close()
-
-        '    ' 清除 ,,,
-        '    Content = Content.Replace(HighLightedSign, "")
-        '    Content = Content.Replace(UnHighLightSign, "")
-        '    ShowForm("浏览文件 (共 " & Count & " 项)", Content, Color.Black)
-        'End If
+    Private Sub ListPopupMenuViewFile_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuViewFile.Click
         Dim sb As New StringBuilder
         For Each Item As TipItem In ListView.Items.Cast(Of TipItem)()
             sb.AppendLine(Item.TipContent & If(Item.IsHighLight, " [高亮]", ""))
@@ -744,7 +734,7 @@ Public Class MainForm
     ''' <summary>
     ''' 显示高亮部分
     ''' </summary>
-    Private Sub PopMenuButtonHighLightList_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuViewHighLight.Click
+    Private Sub ListPopupMenuHighLightList_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuViewHighLight.Click
         Dim sb As New StringBuilder
         Dim idx As Integer = 0
         For Each Item As TipItem In ListView.Items.Cast(Of TipItem)()
@@ -763,7 +753,7 @@ Public Class MainForm
     ''' <summary>
     ''' TopMost
     ''' </summary>
-    Private Sub PopMenuButtonWinTop_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuWinTop.Click
+    Private Sub ListPopupMenuWinTop_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuWinTop.Click
         sender.checked = Not sender.checked
         Me.TopMost = sender.checked
     End Sub
@@ -771,7 +761,7 @@ Public Class MainForm
     ''' <summary>
     ''' 高亮，可多选
     ''' </summary>
-    Private Sub PopMenuButtonHighLight_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuHighLight.Click
+    Private Sub ListPopupMenuHighLight_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuHighLight.Click
         Dim IsHighLight As Boolean = CType(ListView.SelectedItems(0), TipItem).IsHighLight
         For Each Item As TipItem In ListView.SelectedItems
             Item.IsHighLight = Not IsHighLight
@@ -830,7 +820,7 @@ Public Class MainForm
         NewSuperTabItem.Text = Title
 
         AddHandler NewSuperTabItem.MouseDown, AddressOf TabStrip_MouseDown
-        AddHandler NewSuperTabItem.DoubleClick, AddressOf PopMenuButtonRenameTab_Click
+        AddHandler NewSuperTabItem.DoubleClick, AddressOf ListPopupMenuRenameTab_Click
 
         Me.TabStrip.Tabs.AddRange(New DevComponents.DotNetBar.BaseItem() {NewSuperTabItem})
     End Sub
@@ -838,12 +828,12 @@ Public Class MainForm
     ''' <summary>
     ''' 新建分组
     ''' </summary>
-    Private Sub PopMenuButtonNewTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuNewTab.Click
+    Private Sub ListPopupMenuNewTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuNewTab.Click
         Dim tabName As String = InputBox("请输入新分组的标题: ", "新建", "分组")
         If tabName <> "" Then
             If Tab.CheckDuplicateTab(tabName.Trim(), StorageUtil.StorageTabs) Then
                 MessageBox.Show("分组标题 """ & tabName & """ 已存在。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
-                PopMenuButtonNewTab_Click(sender, New System.EventArgs)
+                ListPopupMenuNewTab_Click(sender, New System.EventArgs)
             Else
                 AddTab(tabName, True)
             End If
@@ -853,7 +843,7 @@ Public Class MainForm
     ''' <summary>
     ''' 删除分组
     ''' </summary>
-    Private Sub PopMenuButtonDeleteTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuDeleteTab.Click
+    Private Sub ListPopupMenuDeleteTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuDeleteTab.Click
         If TabStrip.Tabs.Count = 1 Then
             MessageBox.Show("无法删除最后的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
         Else
@@ -868,7 +858,7 @@ Public Class MainForm
     ''' <summary>
     ''' 重命名分组
     ''' </summary>
-    Private Sub PopMenuButtonRenameTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuRenameTab.Click
+    Private Sub ListPopupMenuRenameTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuRenameTab.Click
         If TabStrip.SelectedTabIndex <> -1 Then
             Dim OldName As String = TabStrip.SelectedTab.Text
             Dim NewName As String = InputBox("重命名分组 """ & OldName & """ 为: ", "重命名", OldName)
@@ -921,17 +911,102 @@ Public Class MainForm
 #Region "Trans"
 
     ''' <summary>
-    ''' 所选项移动至分组
+    ''' 获得非活动分组集，转移至分组 用
     ''' </summary>
-    Private Sub ListPopupMenuTrans_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuTrans.Click
+    ''' <param name="ClassNamePreFix">分组类名前缀 ListPopupMenuTrans / TabPopupMenuTrans</param>
+    ''' <returns>分组按钮</returns>
+    Private Function GetUnActivityTabTransButtonList(ByVal ClassNamePreFix As String) As List(Of DevComponents.DotNetBar.ButtonItem)
+        Dim Tabs As New List(Of String)
+        Dim TabBtns As New List(Of DevComponents.DotNetBar.ButtonItem)
 
+        For Each Tab As Tab In StorageUtil.StorageTabs
+            If Tab.TabTitle <> TabStrip.SelectedTab.Text Then
+                Tabs.Add(Tab.TabTitle)
+            End If
+        Next
+
+        For i = 0 To Tabs.Count - 1
+            Dim Btn As New DevComponents.DotNetBar.ButtonItem With { _
+                .Name = ClassNamePreFix & Tabs.Item(i), _
+                .Tag = Tabs.Item(i), _
+                .Text = Tabs.Item(i)
+            }
+            AddHandler Btn.Click, AddressOf TransTab
+
+            TabBtns.Add(Btn)
+        Next
+        Return TabBtns
+    End Function
+
+    ''' <summary>
+    ''' 弹出列表右键菜单
+    ''' </summary>
+    Private Sub ListPopMenu_PopupOpen_Trans(sender As Object, e As DevComponents.DotNetBar.PopupOpenEventArgs) Handles ListPopupMenu.PopupOpen
+        Me.ListPopupMenuTrans.SubItems.Clear()
+        For Each Btn As DevComponents.DotNetBar.ButtonItem In GetUnActivityTabTransButtonList("ListPopupMenuTrans")
+            Me.ListPopupMenuTrans.SubItems.Add(Btn)
+        Next
     End Sub
 
     ''' <summary>
-    ''' 整个分组转移
+    ''' 弹出分组右键菜单
     ''' </summary>
-    Private Sub PopMenuButtonTrans_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuTrans.Click
+    Private Sub TabPopupMenu_PopupOpen(sender As Object, e As DevComponents.DotNetBar.PopupOpenEventArgs) Handles TabPopupMenu.PopupOpen
+        Me.TabPopupMenuTrans.SubItems.Clear()
+        For Each Btn As DevComponents.DotNetBar.ButtonItem In GetUnActivityTabTransButtonList("TabPopupMenuTrans")
+            Me.TabPopupMenuTrans.SubItems.Add(Btn)
+        Next
+    End Sub
 
+    ''' <summary>
+    ''' 移动至分组
+    ''' </summary>
+    ''' <remarks></remarks>
+    Private Sub TransTab(sender As System.Object, e As System.EventArgs)
+
+        Dim Dest As String = sender.Tag
+        Dim SelectItems As List(Of TipItem)
+        Dim Flag As String
+
+        If ListView.SelectedItem Is Nothing Then
+            ' 转移全部
+            SelectItems = New List(Of TipItem)(ListView.Items.Cast(Of TipItem)())
+            Flag = "确定将当前分组 """ & StorageUtil.CurrentTab.TabTitle & """ 的全部内容 (共 " & ListView.Items.Count & " 项) 移动至分组 """ & Dest & """ 吗？"
+        Else
+            ' 转移已选
+            SelectItems = New List(Of TipItem)(ListView.SelectedItems.Cast(Of TipItem)())
+            Dim sb As New StringBuilder
+            For Each Item As TipItem In SelectItems
+                sb.AppendLine(Item.TipContent)
+            Next
+            Flag = "确定将当前分组 """ & StorageUtil.CurrentTab.TabTitle & """ 所选内容 (共 " & _
+                                                     ListView.SelectedItems.Count & " 项) 移动至分组 """ & Dest & """ 吗？" _
+                                                     & Chr(10) & Chr(10) & sb.ToString
+        End If
+
+        Dim ok As MsgBoxResult = MessageBox.Show(Flag, "移动至分组...", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2)
+        If ok = vbOK Then
+            For Each Item As TipItem In SelectItems
+                StorageUtil.StorageTipItems.Item(TabTips.GetIndexFromTab(Dest, StorageUtil.StorageTipItems)).Tips.Add(Item)
+                StorageUtil.StorageTipItems.Item(TabTips.GetIndexFromTab(StorageUtil.CurrentTab.TabTitle, StorageUtil.StorageTipItems)).Tips.Remove(Item)
+                ListView.Items.Remove(Item)
+            Next
+            SaveList(True)
+        End If
+
+        For Each TabItem As DevComponents.DotNetBar.SuperTabItem In TabStrip.Tabs
+            If TabItem.Text = Dest Then
+                TabStrip.SelectedTab = TabItem
+                Exit For
+            End If
+        Next
+
+        For Each Item As TipItem In SelectItems
+            Dim Idx As Integer = TipItem.GetIndexFromTips(Item.TipContent, StorageUtil.StorageTipItems.Item(TabTips.GetIndexFromTab(Dest, StorageUtil.StorageTipItems)).Tips)
+            If Idx <> -1 Then
+                ListView.SetSelected(Idx, True)
+            End If
+        Next
     End Sub
 
 #End Region

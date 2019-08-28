@@ -36,6 +36,6 @@ Public Class TabTips
                 Return TabTips.IndexOf(TabTip)
             End If
         Next
-        Return Nothing
+        Return -1
     End Function
 End Class

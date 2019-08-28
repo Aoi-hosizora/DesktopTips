@@ -53,15 +53,24 @@ Partial Class MainForm
         Me.ListPopupMenuLabelSelItem = New DevComponents.DotNetBar.LabelItem()
         Me.ListPopupMenuLabelSelItemText = New DevComponents.DotNetBar.LabelItem()
         Me.ListPopupMenuLabelItemList = New DevComponents.DotNetBar.LabelItem()
+        Me.ListPopupMenuMoveUp = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuMoveDown = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuMoveTop = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuMoveBottom = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuHighLight = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuViewHighLight = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuAddItem = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuRemoveItem = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuEditItem = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuSelectAll = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuTrans = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuLabelItemFile = New DevComponents.DotNetBar.LabelItem()
         Me.ListPopupMenuOpenDir = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuViewFile = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuLabelItemWindow = New DevComponents.DotNetBar.LabelItem()
         Me.ListPopupMenuListHeight = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuOpacity = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuWinTop = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuExit = New DevComponents.DotNetBar.ButtonItem()
         Me.TabPopupMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuLabelItemList的 = New DevComponents.DotNetBar.LabelItem()
@@ -73,15 +82,6 @@ Partial Class MainForm
         Me.TabItemTest = New DevComponents.DotNetBar.SuperTabItem()
         Me.ButtonItemUp = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonItemDown = New DevComponents.DotNetBar.ButtonX()
-        Me.ListPopupMenuMoveUp = New DevComponents.DotNetBar.ButtonItem()
-        Me.ListPopupMenuMoveDown = New DevComponents.DotNetBar.ButtonItem()
-        Me.ListPopupMenuHighLight = New DevComponents.DotNetBar.ButtonItem()
-        Me.ListPopupMenuAddItem = New DevComponents.DotNetBar.ButtonItem()
-        Me.ListPopupMenuRemoveItem = New DevComponents.DotNetBar.ButtonItem()
-        Me.ListPopupMenuEditItem = New DevComponents.DotNetBar.ButtonItem()
-        Me.ListPopupMenuSelectAll = New DevComponents.DotNetBar.ButtonItem()
-        Me.ListPopupMenuTrans = New DevComponents.DotNetBar.ButtonItem()
-        Me.ListPopupMenuWinTop = New DevComponents.DotNetBar.ButtonItem()
         CType(Me.NumericUpDownListCnt, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ContextMenuBar1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TabStrip, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -272,6 +272,20 @@ Partial Class MainForm
         Me.ListPopupMenuLabelItemList.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
         Me.ListPopupMenuLabelItemList.Text = "列表"
         '
+        'ListPopupMenuMoveUp
+        '
+        Me.ListPopupMenuMoveUp.Image = Global.DesktopTips.My.Resources.Resources.Up
+        Me.ListPopupMenuMoveUp.Name = "ListPopupMenuMoveUp"
+        Me.ListPopupMenuMoveUp.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlU)
+        Me.ListPopupMenuMoveUp.Text = "上移(&U)"
+        '
+        'ListPopupMenuMoveDown
+        '
+        Me.ListPopupMenuMoveDown.Image = Global.DesktopTips.My.Resources.Resources.Down
+        Me.ListPopupMenuMoveDown.Name = "ListPopupMenuMoveDown"
+        Me.ListPopupMenuMoveDown.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlD)
+        Me.ListPopupMenuMoveDown.Text = "下移(&D)"
+        '
         'ListPopupMenuMoveTop
         '
         Me.ListPopupMenuMoveTop.ItemAlignment = DevComponents.DotNetBar.eItemAlignment.Far
@@ -285,10 +299,53 @@ Partial Class MainForm
         Me.ListPopupMenuMoveBottom.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlB)
         Me.ListPopupMenuMoveBottom.Text = "移至底部(&B)"
         '
+        'ListPopupMenuHighLight
+        '
+        Me.ListPopupMenuHighLight.BeginGroup = True
+        Me.ListPopupMenuHighLight.Image = Global.DesktopTips.My.Resources.Resources.Star
+        Me.ListPopupMenuHighLight.Name = "ListPopupMenuHighLight"
+        Me.ListPopupMenuHighLight.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlH)
+        Me.ListPopupMenuHighLight.Text = "高亮(&H)"
+        '
         'ListPopupMenuViewHighLight
         '
         Me.ListPopupMenuViewHighLight.Name = "ListPopupMenuViewHighLight"
         Me.ListPopupMenuViewHighLight.Text = "查看所有高亮(&L)"
+        '
+        'ListPopupMenuAddItem
+        '
+        Me.ListPopupMenuAddItem.BeginGroup = True
+        Me.ListPopupMenuAddItem.Image = Global.DesktopTips.My.Resources.Resources.Plus
+        Me.ListPopupMenuAddItem.Name = "ListPopupMenuAddItem"
+        Me.ListPopupMenuAddItem.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlN)
+        Me.ListPopupMenuAddItem.Text = "添加(&N)"
+        '
+        'ListPopupMenuRemoveItem
+        '
+        Me.ListPopupMenuRemoveItem.Image = Global.DesktopTips.My.Resources.Resources.Minus
+        Me.ListPopupMenuRemoveItem.Name = "ListPopupMenuRemoveItem"
+        Me.ListPopupMenuRemoveItem.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.Del)
+        Me.ListPopupMenuRemoveItem.Text = "删除(&X)"
+        '
+        'ListPopupMenuEditItem
+        '
+        Me.ListPopupMenuEditItem.Image = Global.DesktopTips.My.Resources.Resources.Edit
+        Me.ListPopupMenuEditItem.Name = "ListPopupMenuEditItem"
+        Me.ListPopupMenuEditItem.Text = "编辑(&E)"
+        '
+        'ListPopupMenuSelectAll
+        '
+        Me.ListPopupMenuSelectAll.Image = Global.DesktopTips.My.Resources.Resources.SelectAll
+        Me.ListPopupMenuSelectAll.Name = "ListPopupMenuSelectAll"
+        Me.ListPopupMenuSelectAll.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlA)
+        Me.ListPopupMenuSelectAll.Text = "全选(&A)"
+        '
+        'ListPopupMenuTrans
+        '
+        Me.ListPopupMenuTrans.BeginGroup = True
+        Me.ListPopupMenuTrans.Image = Global.DesktopTips.My.Resources.Resources.Right
+        Me.ListPopupMenuTrans.Name = "ListPopupMenuTrans"
+        Me.ListPopupMenuTrans.Text = "转移至分组...(&R)"
         '
         'ListPopupMenuLabelItemFile
         '
@@ -336,6 +393,11 @@ Partial Class MainForm
         '
         Me.ListPopupMenuOpacity.Name = "ListPopupMenuOpacity"
         Me.ListPopupMenuOpacity.Text = "不透明度(&P)"
+        '
+        'ListPopupMenuWinTop
+        '
+        Me.ListPopupMenuWinTop.Name = "ListPopupMenuWinTop"
+        Me.ListPopupMenuWinTop.Text = "窗口置顶(&W)"
         '
         'ListPopupMenuExit
         '
@@ -460,68 +522,6 @@ Partial Class MainForm
         Me.ButtonItemDown.TabIndex = 6
         Me.ButtonItemDown.Tag = "True"
         Me.ButtonItemDown.Text = "↓"
-        '
-        'ListPopupMenuMoveUp
-        '
-        Me.ListPopupMenuMoveUp.Image = Global.DesktopTips.My.Resources.Resources.Up
-        Me.ListPopupMenuMoveUp.Name = "ListPopupMenuMoveUp"
-        Me.ListPopupMenuMoveUp.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlU)
-        Me.ListPopupMenuMoveUp.Text = "上移(&U)"
-        '
-        'ListPopupMenuMoveDown
-        '
-        Me.ListPopupMenuMoveDown.Image = Global.DesktopTips.My.Resources.Resources.Down
-        Me.ListPopupMenuMoveDown.Name = "ListPopupMenuMoveDown"
-        Me.ListPopupMenuMoveDown.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlD)
-        Me.ListPopupMenuMoveDown.Text = "下移(&D)"
-        '
-        'ListPopupMenuHighLight
-        '
-        Me.ListPopupMenuHighLight.BeginGroup = True
-        Me.ListPopupMenuHighLight.Image = Global.DesktopTips.My.Resources.Resources.Star
-        Me.ListPopupMenuHighLight.Name = "ListPopupMenuHighLight"
-        Me.ListPopupMenuHighLight.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlH)
-        Me.ListPopupMenuHighLight.Text = "高亮(&H)"
-        '
-        'ListPopupMenuAddItem
-        '
-        Me.ListPopupMenuAddItem.BeginGroup = True
-        Me.ListPopupMenuAddItem.Image = Global.DesktopTips.My.Resources.Resources.Plus
-        Me.ListPopupMenuAddItem.Name = "ListPopupMenuAddItem"
-        Me.ListPopupMenuAddItem.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlN)
-        Me.ListPopupMenuAddItem.Text = "添加(&N)"
-        '
-        'ListPopupMenuRemoveItem
-        '
-        Me.ListPopupMenuRemoveItem.Image = Global.DesktopTips.My.Resources.Resources.Minus
-        Me.ListPopupMenuRemoveItem.Name = "ListPopupMenuRemoveItem"
-        Me.ListPopupMenuRemoveItem.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.Del)
-        Me.ListPopupMenuRemoveItem.Text = "删除(&X)"
-        '
-        'ListPopupMenuEditItem
-        '
-        Me.ListPopupMenuEditItem.Image = Global.DesktopTips.My.Resources.Resources.Edit
-        Me.ListPopupMenuEditItem.Name = "ListPopupMenuEditItem"
-        Me.ListPopupMenuEditItem.Text = "编辑(&E)"
-        '
-        'ListPopupMenuSelectAll
-        '
-        Me.ListPopupMenuSelectAll.Image = Global.DesktopTips.My.Resources.Resources.SelectAll
-        Me.ListPopupMenuSelectAll.Name = "ListPopupMenuSelectAll"
-        Me.ListPopupMenuSelectAll.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlA)
-        Me.ListPopupMenuSelectAll.Text = "全选(&A)"
-        '
-        'ListPopupMenuTrans
-        '
-        Me.ListPopupMenuTrans.BeginGroup = True
-        Me.ListPopupMenuTrans.Image = Global.DesktopTips.My.Resources.Resources.Right
-        Me.ListPopupMenuTrans.Name = "ListPopupMenuTrans"
-        Me.ListPopupMenuTrans.Text = "转移至分组...(&R)"
-        '
-        'ListPopupMenuWinTop
-        '
-        Me.ListPopupMenuWinTop.Name = "ListPopupMenuWinTop"
-        Me.ListPopupMenuWinTop.Text = "窗口置顶(&W)"
         '
         'MainForm
         '

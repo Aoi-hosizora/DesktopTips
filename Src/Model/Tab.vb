@@ -24,7 +24,7 @@ Public Class Tab
                 Return Tabs.IndexOf(t)
             End If
         Next
-        Return 0
+        Return -1
     End Function
 
     ''' <summary>

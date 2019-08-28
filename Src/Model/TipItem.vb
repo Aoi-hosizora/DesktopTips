@@ -13,4 +13,13 @@ Public Class TipItem
     Public Overrides Function ToString() As String
         Return TipContent
     End Function
+
+    Public Shared Function GetIndexFromTips(ByVal Content As String, ByVal Tips As List(Of TipItem)) As Integer
+        For Each Tip As TipItem In Tips
+            If Tip.TipContent = Content Then
+                Return Tips.IndexOf(Tip)
+            End If
+        Next
+        Return -1
+    End Function
 End Class

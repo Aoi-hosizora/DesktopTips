@@ -86,6 +86,7 @@ Partial Class MainForm
         Me.ButtonItemUp = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonItemDown = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonResizeFlag = New DevComponents.DotNetBar.ButtonX()
+        Me.ListPopupMenuWinSetting = New DevComponents.DotNetBar.ButtonItem()
         CType(Me.NumericUpDownListCnt, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ContextMenuBar1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TabStrip, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -140,6 +141,7 @@ Partial Class MainForm
         Me.ListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ListView.BackColor = System.Drawing.Color.Snow
         Me.ContextMenuBar1.SetContextMenuEx(Me.ListView, Me.ListPopupMenu)
         Me.ListView.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
         Me.ListView.FormattingEnabled = True
@@ -230,7 +232,7 @@ Partial Class MainForm
         '
         Me.ListPopupMenu.AutoExpandOnClick = True
         Me.ListPopupMenu.Name = "ListPopupMenu"
-        Me.ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList, Me.ListPopupMenuItemContainer, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuMove, Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuListHeight, Me.ListPopupMenuOpacity, Me.ListPopupMenuFold, Me.ListPopupMenuWinTop, Me.ListPopupMenuExit})
+        Me.ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList, Me.ListPopupMenuItemContainer, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuMove, Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuListHeight, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
         Me.ListPopupMenu.Text = "ListPopup"
         '
         'ListPopupMenuLabelSelItem
@@ -253,10 +255,8 @@ Partial Class MainForm
         Me.ListPopupMenuLabelSelItemText.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
         Me.ListPopupMenuLabelSelItemText.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
         Me.ListPopupMenuLabelSelItemText.Name = "ListPopupMenuLabelSelItemText"
-        Me.ListPopupMenuLabelSelItemText.PaddingBottom = 1
         Me.ListPopupMenuLabelSelItemText.PaddingLeft = 5
         Me.ListPopupMenuLabelSelItemText.PaddingRight = 5
-        Me.ListPopupMenuLabelSelItemText.PaddingTop = 1
         Me.ListPopupMenuLabelSelItemText.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
         Me.ListPopupMenuLabelSelItemText.Text = "LabelItem2LabelItem2LabelItem2LabelItem2LabelItem2"
         Me.ListPopupMenuLabelSelItemText.Width = 180
@@ -486,6 +486,7 @@ Partial Class MainForm
         Me.TabStrip.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.TabStrip.AutoSelectAttachedControl = False
+        Me.TabStrip.BackColor = System.Drawing.Color.DarkRed
         '
         '
         '
@@ -516,10 +517,12 @@ Partial Class MainForm
         Me.TabStrip.TabAlignment = DevComponents.DotNetBar.eTabStripAlignment.Left
         Me.TabStrip.TabCloseButtonHot = Nothing
         Me.TabStrip.TabFont = New System.Drawing.Font("Microsoft YaHei UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TabStrip.TabHorizontalSpacing = 2
         Me.TabStrip.TabIndex = 7
         Me.TabStrip.Tabs.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.TabItemTest, Me.TabItemTest2})
+        Me.TabStrip.TabStyle = DevComponents.DotNetBar.eSuperTabStyle.VisualStudio2008Dock
         Me.TabStrip.TabVerticalSpacing = 3
-        Me.TabStrip.Text = "SuperTabStrip"
+        Me.TabStrip.Text = "TabStrip"
         Me.TabStrip.TextAlignment = DevComponents.DotNetBar.eItemAlignment.Center
         '
         'TabItemTest
@@ -575,6 +578,12 @@ Partial Class MainForm
         Me.ButtonResizeFlag.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
         Me.ButtonResizeFlag.TabIndex = 8
         Me.ButtonResizeFlag.Text = "::"
+        '
+        'ListPopupMenuWinSetting
+        '
+        Me.ListPopupMenuWinSetting.Name = "ListPopupMenuWinSetting"
+        Me.ListPopupMenuWinSetting.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuOpacity, Me.ListPopupMenuFold, Me.ListPopupMenuWinTop})
+        Me.ListPopupMenuWinSetting.Text = "显示设置(&S)"
         '
         'MainForm
         '
@@ -665,5 +674,6 @@ Partial Class MainForm
     Friend WithEvents TabItemTest2 As DevComponents.DotNetBar.SuperTabItem
     Friend WithEvents ListPopupMenuItemContainer As DevComponents.DotNetBar.ItemContainer
     Friend WithEvents ListPopupMenuFold As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuWinSetting As DevComponents.DotNetBar.ButtonItem
 
 End Class

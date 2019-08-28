@@ -1,54 +1,52 @@
-﻿<Serializable()>
+﻿Imports Newtonsoft.Json
+
+<JsonObject()>
 Public Class Tab
 
-    Public Property TabTitle As String
-    Public Property TabClassName As String
+    <JsonProperty(PropertyName:="Title")>
+    Public Property Title As String
+    Public Property Tips As List(Of TipItem)
 
-    Public Sub New(ByVal Title As String, ByVal ClassName As String)
-        Me.TabTitle = Title
-        Me.TabClassName = ClassName
+    Public Sub New(ByVal Title As String, Optional ByVal Tips As List(Of TipItem) = Nothing)
+        Me.Title = Title
+        If Tips Is Nothing Then
+            Tips = New List(Of TipItem)
+        End If
+        Me.Tips = Tips
     End Sub
 
     Public Overrides Function ToString() As String
-        Return Me.TabTitle
-    End Function
-
-    ''' <summary>
-    ''' 从 TabTitle 获取 TabIndex
-    ''' </summary>
-    ''' <param name="TabTitle">Tab.TabTitle</param>
-    ''' <param name="Tabs">List(Of Tab)</param>
-    Public Shared Function GetTabIndexFromTabTitle(ByVal TabTitle As String, ByRef Tabs As List(Of Tab)) As Integer
-        For Each t As Tab In Tabs
-            If t.TabTitle = TabTitle Then
-                Return Tabs.IndexOf(t)
-            End If
-        Next
-        Return 0
-    End Function
-
-    ''' <summary>
-    ''' 从 TabTitle 获取 Tab
-    ''' </summary>
-    ''' <param name="TabTitle">Tab.TabTitle</param>
-    Public Shared Function GetTabFromTabTitle(ByVal TabTitle As String) As Tab
-        Return StorageUtil.StorageTabs.Item(GetTabIndexFromTabTitle(TabTitle, StorageUtil.StorageTabs))
+        Return Title
     End Function
 
     ''' <summary>
     ''' 判断是否重复分组标题
     ''' </summary>
-    ''' <param name="NewTitle">检索的新标题</param>
-    ''' <param name="Tabs">List(Of Tab)</param>
-    ''' <returns>重复 True</returns>
     Public Shared Function CheckDuplicateTab(ByVal NewTitle As String, ByRef Tabs As List(Of Tab)) As Boolean
         For Each Tab As Tab In Tabs
-            If Tab.TabTitle = NewTitle.Trim() Then
+            If Tab.Title = NewTitle.Trim() Then
                 Return True
             End If
         Next
         Return False
     End Function
 
+    ''' <summary>
+    ''' TabTitle -> Tab
+    ''' </summary>
+    Public Shared Function GetTabFromTitle(ByVal Title As String, ByRef Tabs As List(Of Tab)) As Tab
+        For Each Tab As Tab In Tabs
+            If Tab.Title = Title Then
+                Return Tab
+            End If
+        Next
+        Return Nothing
+    End Function
 
+    ''' <summary>
+    ''' TabTitle -> Tab
+    ''' </summary>
+    Public Shared Function GetTabFromTitle(ByVal Title As String) As Tab
+        Return GetTabFromTitle(Title, StorageUtil.Tabs)
+    End Function
 End Class

@@ -1,15 +1,17 @@
 # DesktopTips
 + `VB.net` 编写的桌面备忘录工具
-+ (学了两年 SE 了还在用以前学的 `VB.net` 写工具)
 
 ### 环境
 + `MSVB` 2010
 + `.NET Framework` 4.0
-+ `Dotnetbar` 10.8 (习惯)
 
-### 功能 (v2.0)
-+ [x] 存储提醒，支持高亮显示
-+ [x] 分组分类，支持分组内移动
+### 依赖
++ `Dotnetbar` 10.8.0.0
++ `Newtonsoft.Json` 12.0.2
+
+### 功能 (v2.1)
++ [x] 备忘录，高亮显示
++ [x] 分组，分组移动
 + [ ] ...
 
 ### 待改
@@ -28,18 +30,13 @@ SaveSetting(AppName, FormSection, "Opacity", MaxOpacity)
 
 + 文件访问
 	+ 文件系统：`AppData\Roaming`
-    + `*.dat` 为分组内容文件 (二进制)
-    + `Tabs.dip` 为分组标题文件 (二进制)
+	+ 使用 `json` 格式存储，结构见 [Tab.vb](https://github.com/Aoi-hosizora/DesktopTips/blob/master/Src/Model/Tab.vb) 和 [TipItem.vb](https://github.com/Aoi-hosizora/DesktopTips/blob/master/Src/Model/TipItem.vb)
 
 ```vb
 Public Shared StorageFileDir As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\DesktopTips"
-Private Shared StorageTabsInfo As String = StorageFileDir & "\Tabs.dip"
+Public Shared StorageJsonFile As String = StorageFileDir & "\data.json"
 
-' C:\Users\xxx\AppData\Roaming\DesktopTips\xxx
-
-Dim StorageTipsName As String = StorageFileDir & "\" & Tab.TabTitle & ".dat"
-SaveBinary(StorageTipItems.Item(TabTips.GetTabTipsIndexFromTabTitle(Tab.TabTitle, StorageTipItems)), StorageTipsName)
-SaveBinary(StorageTabs, StorageTabsInfo)
+' C:\Users\xxx\AppData\Roaming\DesktopTips\data.json
 ```
 
 ### 截图

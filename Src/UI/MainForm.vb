@@ -1,11 +1,11 @@
 ﻿Imports System.IO
 Imports System.Text
+Imports SU = DesktopTips.StorageUtil
 
 Public Class MainForm
 
     Declare Sub mouse_event Lib "user32" (ByVal dwFlags As Integer, ByVal dx As Integer, ByVal dy As Integer, ByVal cButtons As Integer, ByVal dwExtraInfo As Integer)
     Private Declare Function SetCursorPos Lib "user32" (ByVal x As Long, ByVal y As Long) As Long
-    ' Private Declare Sub mouse_event Lib "user32" (ByVal dwFlags As Long, ByVal dx As Long, ByVal dy As Long, ByVal cButtons As Long, ByVal dwExtraInfo As Long)
 
     Enum MouseEvent
         MOUSEEVENTF_LEFTDOWN = &H2      '左键按下
@@ -23,7 +23,6 @@ Public Class MainForm
     Private PushDownWindowPos As Point
     Private PushDownWindowSize As Point
     Private IsMouseDown As Boolean
-    'Private IsChangeSize As Boolean
 
     Private Sub Flag_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseDown, TabStrip.MouseDown, ButtonResizeFlag.MouseDown
         If e.Button = Windows.Forms.MouseButtons.Left Then
@@ -35,11 +34,14 @@ Public Class MainForm
     End Sub
 
     Private Sub Flag_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseUp, TabStrip.MouseUp, ButtonResizeFlag.MouseUp
+
+        Me.Cursor = Cursors.Default
         IsMouseDown = False
     End Sub
 
     Private Sub ListView_TabStrip_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseMove, TabStrip.MouseMove
         If IsMouseDown Then
+            Me.Cursor = Cursors.SizeAll
             Me.Top = PushDownWindowPos.Y + Cursor.Position.Y - PushDownMouseInScreen.Y
             Me.Left = PushDownWindowPos.X + Cursor.Position.X - PushDownMouseInScreen.X
         End If
@@ -436,25 +438,21 @@ Public Class MainForm
 
 #Region "File Content"
 
-    Private Sub MainForm_SaveList_FormClosed(sender As Object, e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
-        SaveList(True)
-    End Sub
-
     ''' <summary>
     ''' MyBase.Load
     ''' </summary>
     ''' <param name="IsAlreadyLoadTab">是否已经初始化分组 (True: 不需要更新 分组 和 Curr)</param>
     Private Sub LoadList(Optional ByVal IsAlreadyLoadTab = False)
-        StorageUtil.LoadTabTipsData(Not IsAlreadyLoadTab)
+        SU.LoadTabTipsData()
         ListView.Items.Clear()
 
-        For Each Tip As TipItem In TabTips.GetTipsFromTabTitle(StorageUtil.CurrentTab.TabTitle, StorageUtil.StorageTipItems)
+        For Each Tip As TipItem In SU.Tabs.Item(SU.CurrTabIdx).Tips
             ListView.Items.Add(Tip)
         Next
 
         If Not IsAlreadyLoadTab Then
-            For i = 0 To StorageUtil.StorageTabs.Count - 1
-                AddTab(StorageUtil.StorageTabs.Item(i).TabTitle)
+            For i = 0 To SU.Tabs.Count - 1
+                AddTab(SU.Tabs.Item(i).Title)
             Next
         End If
     End Sub
@@ -462,23 +460,19 @@ Public Class MainForm
     ''' <summary>
     ''' 保存数据
     ''' </summary>
-    ''' <param name="IsSaveAll">是否保存所有分组</param>
-    Private Sub SaveList(Optional ByVal IsSaveAll As Boolean = False)
-        Dim tabIdx As Integer = Tab.GetTabIndexFromTabTitle(StorageUtil.CurrentTab.TabTitle, StorageUtil.StorageTabs)
+    Private Sub SaveList()
         Dim Tips As New List(Of TipItem)
         For Each Tip As TipItem In ListView.Items.Cast(Of TipItem)()
             Tips.Add(Tip)
         Next
 
-        TabTips.GetTabTipsFromTabTitle(StorageUtil.CurrentTab.TabTitle).Tips = Tips
-
-        If IsSaveAll Then
-            StorageUtil.SaveTabData()
-        Else
-            StorageUtil.SaveTabData(StorageUtil.CurrentTab)
-        End If
+        SU.Tabs.Item(SU.CurrTabIdx).Tips = New List(Of TipItem)(Tips)
+        SU.SaveTabData()
     End Sub
 
+    Private Sub MainForm_SaveList_FormClosed(sender As Object, e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
+        SaveList()
+    End Sub
 #End Region
 
 #Region "增删改移动"
@@ -489,7 +483,7 @@ Public Class MainForm
     Private Sub ButtonAddItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonAddItem.Click, ListPopupMenuAddItem.Click
         Dim msg As String = InputBox("新的提醒标签：", "添加")
         If msg <> "" Then
-            ListView.Items.Add(New TipItem(msg.Trim(), StorageUtil.CurrentTab))
+            ListView.Items.Add(New TipItem(msg.Trim()))
             ListView.SelectedIndex = ListView.Items.Count() - 1
             SaveList()
         End If
@@ -551,7 +545,6 @@ Public Class MainForm
         ListView.Items.Remove(currItem)
         ListView.Items.Insert(0, currItem)
         ListView.SetSelected(0, True)
-
         SaveList()
     End Sub
 
@@ -564,7 +557,6 @@ Public Class MainForm
         ListView.Items.Remove(currItem)
         ListView.Items.Insert(ListView.Items.Count, currItem)
         ListView.SetSelected(ListView.Items.Count - 1, True)
-
         SaveList()
     End Sub
 
@@ -581,7 +573,6 @@ Public Class MainForm
             If sender.Tag = "True" Then
                 mouse_event(MouseEvent.MOUSEEVENTF_MOVE, 0, -10, 0, 0)
             End If
-
             SaveList()
         End If
     End Sub
@@ -599,7 +590,6 @@ Public Class MainForm
             If sender.Tag = "True" Then
                 mouse_event(MouseEvent.MOUSEEVENTF_MOVE, 0, 10, 0, 0)
             End If
-
             SaveList()
         End If
     End Sub
@@ -655,15 +645,6 @@ Public Class MainForm
     ''' 高亮判断 辅助按钮显示
     ''' </summary>
     Private Sub ListView_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles ListView.SelectedIndexChanged
-
-        If ListView.SelectedIndex <> -1 Then
-            If CType(ListView.SelectedItem, TipItem).IsHighLight Then
-                ListPopupMenuHighLight.Checked = True
-            Else
-                ListPopupMenuHighLight.Checked = False
-            End If
-        End If
-
         If ListView.SelectedIndices.Count = 1 Then
             SetSelectedItemButtonShow(ListView.GetItemRectangle(ListView.SelectedIndex))
         Else
@@ -698,6 +679,12 @@ Public Class MainForm
         ListPopupMenuRemoveItem.Enabled = IsNotNull
         ListPopupMenuEditItem.Enabled = IsSingle
         ListPopupMenuHighLight.Enabled = IsNotNull
+
+        If IsNotNull Then
+            ListPopupMenuHighLight.Checked = CType(ListView.SelectedItem, TipItem).IsHighLight
+        Else
+            ListPopupMenuHighLight.Checked = False
+        End If
 
         ' 移动
         ListPopupMenuMove.Enabled = IsNotNull
@@ -766,8 +753,7 @@ Public Class MainForm
         'Process.Start(path)
         'C:\Users\Windows 10\AppData\Roaming\DesktopTips
 
-        ' System.Diagnostics.Process.Start("explorer.exe", "/select,""" & StorageUtil.StorageFileName & """")
-        System.Diagnostics.Process.Start("explorer.exe", """" & StorageUtil.StorageFileDir & """")
+        System.Diagnostics.Process.Start("explorer.exe", "/select,""" & SU.StorageJsonFile & """")
     End Sub
 
     ''' <summary>
@@ -827,8 +813,8 @@ Public Class MainForm
     ''' TopMost
     ''' </summary>
     Private Sub ListPopupMenuWinTop_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuWinTop.Click
-        sender.checked = Not sender.checked
-        Me.TopMost = sender.checked
+        ListPopupMenuWinTop.Checked = Not ListPopupMenuWinTop.Checked
+        Me.TopMost = ListPopupMenuWinTop.Checked
     End Sub
 
     ''' <summary>
@@ -878,18 +864,16 @@ Public Class MainForm
     ''' <param name="Title">分组标题</param>
     ''' <param name="IsAddToStorage">是否添加到存储</param>
     Private Sub AddTab(ByVal Title As String, Optional ByVal IsAddToStorage As Boolean = False)
-        Dim ClassName As String = "TabItemCustom_" + StorageUtil.StorageTabs.Count.ToString()
 
         If IsAddToStorage Then
-            Dim NewTab As New Tab(Title, ClassName)
-            StorageUtil.StorageTabs.Add(NewTab)
-            StorageUtil.StorageTipItems.Add(New TabTips(NewTab, New List(Of TipItem)))
-            StorageUtil.SaveTabData(NewTab)
+            Dim NewTab As New Tab(Title)
+            SU.Tabs.Add(NewTab)
+            SU.SaveTabData()
         End If
 
         Dim NewSuperTabItem = New DevComponents.DotNetBar.SuperTabItem()
         NewSuperTabItem.GlobalItem = False
-        NewSuperTabItem.Name = ClassName
+        NewSuperTabItem.Name = "TabItemCustom_" & SU.Tabs.Count
         NewSuperTabItem.Text = Title
 
         AddHandler NewSuperTabItem.MouseDown, AddressOf TabStrip_MouseDown
@@ -904,7 +888,7 @@ Public Class MainForm
     Private Sub ListPopupMenuNewTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuNewTab.Click
         Dim tabName As String = InputBox("请输入新分组的标题: ", "新建", "分组")
         If tabName <> "" Then
-            If Tab.CheckDuplicateTab(tabName.Trim(), StorageUtil.StorageTabs) Then
+            If Tab.CheckDuplicateTab(tabName.Trim(), SU.Tabs) Then
                 MessageBox.Show("分组标题 """ & tabName & """ 已存在。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
                 ListPopupMenuNewTab_Click(sender, New System.EventArgs)
             Else
@@ -920,45 +904,32 @@ Public Class MainForm
         If TabStrip.Tabs.Count = 1 Then
             MessageBox.Show("无法删除最后的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
         Else
-            Dim Cnt As Integer = TabTips.GetTipsFromTabTitle(TabStrip.SelectedTab.Text).Count
-            If Cnt <> 0 Then
-                MessageBox.Show("分组内存在 " & Cnt & " 条记录无法删除，请先将记录移动到别的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Dim TabTitle As String = TabStrip.SelectedTab.Text
+            Dim Tab As Tab = Tab.GetTabFromTitle(TabTitle)
+            If Tab.Tips.Count <> 0 Then
+                MessageBox.Show("分组内存在 " & Tab.Tips.Count & " 条记录无法删除，请先将记录移动到别的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Else
                 Dim ok As DialogResult = MessageBox.Show("是否删除分组 """ + TabStrip.SelectedTab.Text + """？", "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
                 If ok = vbOK Then
-                    StorageUtil.DeleteTabData(TabStrip.SelectedTab.Text)
                     TabStrip.Tabs.RemoveAt(TabStrip.SelectedTabIndex)
+                    SU.Tabs.RemoveAt(SU.Tabs.IndexOf(Tab.GetTabFromTitle(TabTitle)))
+                    SU.SaveTabData()
                 End If
             End If
         End If
     End Sub
 
     ''' <summary>
-    ''' 重命名分组
+    ''' 重命名分组 !!!
     ''' </summary>
     Private Sub ListPopupMenuRenameTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuRenameTab.Click
         If TabStrip.SelectedTabIndex <> -1 Then
             Dim OldName As String = TabStrip.SelectedTab.Text
             Dim NewName As String = InputBox("重命名分组 """ & OldName & """ 为: ", "重命名", OldName)
             If NewName.Trim() <> "" Then
-                Dim TabTip As TabTips = TabTips.GetTabTipsFromTabTitle(OldName)
-                If Not TabTip Is Nothing Then
-                    For Each Item As TipItem In TabTip.Tips
-                        Item.TipTab.TabTitle = NewName
-                    Next
-                    TabTip.Tab.TabTitle = NewName
-                End If
-
-                Dim Tab As Tab = Tab.GetTabFromTabTitle(OldName)
-                If Not Tab Is Nothing Then
-                    Tab.TabTitle = NewName
-                End If
-
-                StorageUtil.CurrentTab.TabTitle = NewName
-
+                Tab.GetTabFromTitle(OldName).Title = NewName
+                SU.SaveTabData()
                 TabStrip.SelectedTab.Text = NewName
-                StorageUtil.DeleteTabData(OldName)
-                StorageUtil.SaveTabData()
             End If
         End If
     End Sub
@@ -982,8 +953,8 @@ Public Class MainForm
     ''' </summary>
     Private Sub TabStrip_SelectedTabChanged(sender As Object, e As DevComponents.DotNetBar.SuperTabStripSelectedTabChangedEventArgs) Handles TabStrip.SelectedTabChanged
         SetSelectedItemButtonHide()
-        If TabStrip.SelectedTabIndex <> -1 And StorageUtil.StorageTabs.Count <> 0 Then
-            StorageUtil.CurrentTab = Tab.GetTabFromTabTitle(TabStrip.SelectedTab.Text)
+        If TabStrip.SelectedTabIndex <> -1 And SU.Tabs.Count <> 0 Then
+            SU.CurrTabIdx = SU.Tabs.IndexOf(Tab.GetTabFromTitle(TabStrip.SelectedTab.Text))
             LoadList(True)
         End If
     End Sub
@@ -992,11 +963,13 @@ Public Class MainForm
     ''' Tab 顺序更改
     ''' </summary>
     Private Sub TabStrip_TabMoved(sender As Object, e As DevComponents.DotNetBar.SuperTabStripTabMovedEventArgs) Handles TabStrip.TabMoved
-        StorageUtil.StorageTabs.Clear()
-        For Each TabItems As DevComponents.DotNetBar.SuperTabItem In e.NewOrder
-            StorageUtil.StorageTabs.Add(New Tab(TabItems.Text, TabItems.Name))
+        Dim NewTabs As New List(Of Tab)
+        For Each TabItem As DevComponents.DotNetBar.SuperTabItem In e.NewOrder
+            NewTabs.Add(Tab.GetTabFromTitle(TabItem.Text))
         Next
-        StorageUtil.SaveOnlyTabData()
+        SU.Tabs = NewTabs
+        SU.CurrTabIdx = SU.Tabs.IndexOf(Tab.GetTabFromTitle(TabStrip.SelectedTab.Text))
+        SU.SaveTabData()
     End Sub
 
 #End Region
@@ -1012,9 +985,9 @@ Public Class MainForm
         Dim Tabs As New List(Of String)
         Dim TabBtns As New List(Of DevComponents.DotNetBar.ButtonItem)
 
-        For Each Tab As Tab In StorageUtil.StorageTabs
-            If Tab.TabTitle <> TabStrip.SelectedTab.Text Then
-                Tabs.Add(Tab.TabTitle)
+        For Each Tab As Tab In SU.Tabs
+            If Tab.Title <> SU.Tabs.Item(SU.CurrTabIdx).Title Then
+                Tabs.Add(Tab.Title)
             End If
         Next
 
@@ -1065,14 +1038,16 @@ Public Class MainForm
     ''' <remarks></remarks>
     Private Sub MoveTab(sender As System.Object, e As System.EventArgs)
 
+        Dim Src As String = SU.Tabs.Item(SU.CurrTabIdx).Title
         Dim Dest As String = sender.Tag
+
         Dim SelectItems As List(Of TipItem)
         Dim Flag As String
 
         If ListView.SelectedItem Is Nothing Then
             ' 移动全部
             SelectItems = New List(Of TipItem)(ListView.Items.Cast(Of TipItem)())
-            Flag = "确定将当前分组 """ & StorageUtil.CurrentTab.TabTitle & """ 的全部内容 (共 " & ListView.Items.Count & " 项) 移动至分组 """ & Dest & """ 吗？"
+            Flag = "确定将当前分组 """ & Src & """ 的全部内容 (共 " & ListView.Items.Count & " 项) 移动至分组 """ & Dest & """ 吗？"
         Else
             ' 移动已选
             SelectItems = New List(Of TipItem)(ListView.SelectedItems.Cast(Of TipItem)())
@@ -1080,7 +1055,7 @@ Public Class MainForm
             For Each Item As TipItem In SelectItems
                 sb.AppendLine(Item.TipContent)
             Next
-            Flag = "确定将当前分组 """ & StorageUtil.CurrentTab.TabTitle & """ 所选内容 (共 " & _
+            Flag = "确定将当前分组 """ & Src & """ 所选内容 (共 " & _
                                                      ListView.SelectedItems.Count & " 项) 移动至分组 """ & Dest & """ 吗？" _
                                                      & Chr(10) & Chr(10) & sb.ToString
         End If
@@ -1088,11 +1063,10 @@ Public Class MainForm
         Dim ok As MsgBoxResult = MessageBox.Show(Flag, "移动至分组...", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2)
         If ok = vbOK Then
             For Each Item As TipItem In SelectItems
-                TabTips.GetTabTipsFromTabTitle(Dest).Tips.Add(Item)
-                TabTips.GetTabTipsFromTabTitle(StorageUtil.CurrentTab.TabTitle).Tips.Remove(Item)
-                ListView.Items.Remove(Item)
+                Tab.GetTabFromTitle(Dest).Tips.Add(Item)
+                Tab.GetTabFromTitle(Src).Tips.Remove(Item)
             Next
-            SaveList(True)
+            SU.SaveTabData()
         End If
 
         For Each TabItem As DevComponents.DotNetBar.SuperTabItem In TabStrip.Tabs
@@ -1103,7 +1077,7 @@ Public Class MainForm
         Next
 
         For Each Item As TipItem In SelectItems
-            Dim Idx As Integer = TipItem.GetTipIndexFromContent(Item.TipContent, TabTips.GetTabTipsFromTabTitle(Dest).Tips)
+            Dim Idx As Integer = TipItem.GetIndexFromContent(Item.TipContent, Tab.GetTabFromTitle(Dest).Tips)
             If Idx <> -1 Then
                 ListView.SetSelected(Idx, True)
             End If

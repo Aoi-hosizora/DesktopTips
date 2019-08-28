@@ -511,7 +511,7 @@ Partial Class MainForm
         Me.TabStrip.ReorderTabsEnabled = True
         Me.TabStrip.RotateVerticalText = True
         Me.TabStrip.SelectedTabFont = New System.Drawing.Font("Microsoft YaHei UI Light", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TabStrip.SelectedTabIndex = 0
+        Me.TabStrip.SelectedTabIndex = 1
         Me.TabStrip.Size = New System.Drawing.Size(25, 272)
         Me.TabStrip.TabAlignment = DevComponents.DotNetBar.eTabStripAlignment.Left
         Me.TabStrip.TabCloseButtonHot = Nothing
@@ -519,7 +519,7 @@ Partial Class MainForm
         Me.TabStrip.TabIndex = 7
         Me.TabStrip.Tabs.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.TabItemTest, Me.TabItemTest2})
         Me.TabStrip.TabVerticalSpacing = 3
-        Me.TabStrip.Text = "SuperTabStrip"
+        Me.TabStrip.Text = "TabStrip"
         Me.TabStrip.TextAlignment = DevComponents.DotNetBar.eItemAlignment.Center
         '
         'TabItemTest

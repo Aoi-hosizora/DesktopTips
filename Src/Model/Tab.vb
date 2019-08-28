@@ -31,7 +31,7 @@ Public Class Tab
     ''' 从 TabTitle 获取 Tab
     ''' </summary>
     ''' <param name="TabTitle">Tab.TabTitle</param>
-    Public Shared Function GetTabIndexFromTabTitle(ByVal TabTitle As String) As Tab
+    Public Shared Function GetTabFromTabTitle(ByVal TabTitle As String) As Tab
         Return StorageUtil.StorageTabs.Item(GetTabIndexFromTabTitle(TabTitle, StorageUtil.StorageTabs))
     End Function
 

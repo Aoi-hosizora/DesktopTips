@@ -23,9 +23,9 @@ Public Class MainForm
     Private PushDownWindowPos As Point
     Private PushDownWindowSize As Point
     Private IsMouseDown As Boolean
-    Private IsChangeSize As Boolean
+    'Private IsChangeSize As Boolean
 
-    Private Sub ListView_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseDown, TabStrip.MouseDown
+    Private Sub Flag_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseDown, TabStrip.MouseDown, ButtonResizeFlag.MouseDown
         If e.Button = Windows.Forms.MouseButtons.Left Then
             IsMouseDown = True
         End If
@@ -34,30 +34,21 @@ Public Class MainForm
         PushDownWindowSize = New Point(Me.Width, Me.Height)
     End Sub
 
-    Private Sub ListView_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseMove, TabStrip.MouseMove
-        Dim rr As Integer = If(ListView.Items.Count > NumericUpDownListCnt.Value, 25, 8)
+    Private Sub Flag_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseUp, TabStrip.MouseUp, ButtonResizeFlag.MouseUp
+        IsMouseDown = False
+    End Sub
 
-        If sender.Equals(ListView) Then
-            If e.X > sender.Width - rr Or IsChangeSize = True Then
-                Me.Cursor = Cursors.SizeWE
-                If IsMouseDown Then
-                    IsChangeSize = True
-                    Me.Width = PushDownWindowSize.X + Cursor.Position.X - PushDownMouseInScreen.X
-                End If
-                Return
-            End If
-        End If
-
-        Me.Cursor = Cursors.Default
-        If IsMouseDown And Not IsChangeSize Then
+    Private Sub ListView_TabStrip_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseMove, TabStrip.MouseMove
+        If IsMouseDown Then
             Me.Top = PushDownWindowPos.Y + Cursor.Position.Y - PushDownMouseInScreen.Y
             Me.Left = PushDownWindowPos.X + Cursor.Position.X - PushDownMouseInScreen.X
         End If
     End Sub
 
-    Private Sub ListView_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseUp, TabStrip.MouseUp
-        IsMouseDown = False
-        IsChangeSize = False
+    Private Sub ButtonResizeFlag_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonResizeFlag.MouseMove
+        If IsMouseDown Then
+            Me.Width = PushDownWindowSize.X + Cursor.Position.X - PushDownMouseInScreen.X
+        End If
     End Sub
 
 #End Region
@@ -184,6 +175,7 @@ Public Class MainForm
         setting.Width = Me.Width
         setting.MaxOpacity = MaxOpacity
         setting.TopMost = Me.TopMost
+        setting.IsFold = ListPopupMenuFold.Checked
 
         SettingUtil.SaveAppSettings(setting)
     End Sub
@@ -196,6 +188,9 @@ Public Class MainForm
         Me.Width = setting.Width
         MaxOpacity = setting.MaxOpacity
         Me.TopMost = setting.TopMost
+        ListPopupMenuFold.Checked = setting.IsFold
+
+        Me.Refresh()
 
         NumericUpDownListCnt.Value = (Me.Height - 27) \ 17
         ButtonRemoveItem.Enabled = False
@@ -207,12 +202,14 @@ Public Class MainForm
         ListPopupMenuWinTop.Checked = Me.TopMost
 
         Me.TabStrip.Tabs.Remove(Me.TabItemTest)
+        Me.TabStrip.Tabs.Remove(Me.TabItemTest2)
 
         ListView.Items.Clear()
         SetupMouseEnterLeave()
         SetupUpDownButtonsPos()
         LoadList()
         FormOpacity_Load()
+        FoldMenu(ListPopupMenuFold.Checked)
     End Sub
 
     Private Sub SetupUpDownButtonsPos()
@@ -224,6 +221,70 @@ Public Class MainForm
         ButtonItemDown.Visible = False
         ButtonItemDown.Height = height
         ButtonItemDown.Width = height
+    End Sub
+
+
+
+#End Region
+
+#Region "Fold"
+
+    ''' <summary>
+    ''' 折叠菜单
+    ''' </summary>
+    Private Sub ListPopupMenuFold_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuFold.Click
+        ListPopupMenuFold.Checked = Not ListPopupMenuFold.Checked
+        FoldMenu(ListPopupMenuFold.Checked)
+    End Sub
+
+    ''' <summary>
+    ''' 折叠菜单
+    ''' </summary>
+    ''' <param name="IsFold"></param>
+    Private Sub FoldMenu(ByVal IsFold As Boolean)
+        If IsFold Then
+            Me.ListPopupMenuItemContainer.SubItems.Clear()
+            Me.ListPopupMenu.SubItems.Clear()
+
+            Me.ListPopupMenuItemContainer.SubItems.AddRange( _
+                New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, _
+                                                        Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem, Me.ListPopupMenuEditItem, Me.ListPopupMenuSelectAll, _
+                                                        Me.ListPopupMenuHighLight})
+
+            Me.ListPopupMenu.SubItems.AddRange( _
+                New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, _
+ _
+                                                        Me.ListPopupMenuLabelItemList, Me.ListPopupMenuItemContainer, _
+                                                        Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuMove, _
+ _
+                                                        Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuLabelItemWindow, _
+                                                        Me.ListPopupMenuListHeight, Me.ListPopupMenuOpacity, Me.ListPopupMenuFold, Me.ListPopupMenuWinTop, Me.ListPopupMenuExit})
+
+            Me.ListPopupMenuMoveTop.BeginGroup = True
+            Me.ListPopupMenuViewHighLight.BeginGroup = True
+            For Each Item As DevComponents.DotNetBar.ButtonItem In Me.ListPopupMenuItemContainer.SubItems
+                Item.Tooltip = Item.Text
+            Next
+        Else
+            For Each Item As DevComponents.DotNetBar.ButtonItem In Me.ListPopupMenuItemContainer.SubItems
+                Item.Tooltip = ""
+            Next
+            Me.ListPopupMenuMoveTop.BeginGroup = False
+            Me.ListPopupMenuViewHighLight.BeginGroup = False
+
+            Me.ListPopupMenuItemContainer.SubItems.Clear()
+            Me.ListPopupMenu.SubItems.Clear()
+            Me.ListPopupMenu.SubItems.AddRange( _
+                New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, _
+ _
+                                                        Me.ListPopupMenuLabelItemList, Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, _
+                                                        Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem, Me.ListPopupMenuEditItem, Me.ListPopupMenuSelectAll, _
+                                                        Me.ListPopupMenuHighLight, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuMove, _
+ _
+                                                        Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuLabelItemWindow, _
+                                                        Me.ListPopupMenuListHeight, Me.ListPopupMenuOpacity, Me.ListPopupMenuFold, Me.ListPopupMenuWinTop, Me.ListPopupMenuExit})
+
+        End If
     End Sub
 
 #End Region
@@ -328,7 +389,7 @@ Public Class MainForm
     ''' </summary>
     Private Sub ButtonFocus_Handle(sender As Object, e As System.Windows.Forms.MouseEventArgs) _
         Handles ButtonAddItem.MouseDown, ButtonRemoveItem.MouseDown, ButtonCloseForm.MouseDown, ButtonSetting.MouseDown, _
-        ButtonItemUp.MouseDown, ButtonItemDown.MouseDown
+        ButtonItemUp.MouseDown, ButtonItemDown.MouseDown, ButtonResizeFlag.MouseDown
 
         LabelFocus.Select()
     End Sub
@@ -387,7 +448,7 @@ Public Class MainForm
         StorageUtil.LoadTabTipsData(Not IsAlreadyLoadTab)
         ListView.Items.Clear()
 
-        For Each Tip As TipItem In TabTips.GetTipsFromTab(StorageUtil.CurrentTab.TabTitle, StorageUtil.StorageTipItems)
+        For Each Tip As TipItem In TabTips.GetTipsFromTabTitle(StorageUtil.CurrentTab.TabTitle, StorageUtil.StorageTipItems)
             ListView.Items.Add(Tip)
         Next
 
@@ -573,6 +634,19 @@ Public Class MainForm
         ButtonItemDown.Visible = False
     End Sub
 
+    ''' <summary>
+    ''' 调整大小，辅助按钮位置调整
+    ''' </summary>
+    Private Sub ListView_SizeChanged(sender As Object, e As System.EventArgs) Handles ListView.SizeChanged
+        If ButtonItemUp.Visible = True Then
+            If ListView.SelectedIndices.Count = 1 Then
+                Dim Rect As Rectangle = ListView.GetItemRectangle(ListView.SelectedIndex)
+                SetSelectedItemButtonShow(Rect)
+            End If
+        End If
+
+    End Sub
+
 #End Region
 
 #Region "选择 Enable"
@@ -625,8 +699,8 @@ Public Class MainForm
         ListPopupMenuEditItem.Enabled = IsSingle
         ListPopupMenuHighLight.Enabled = IsNotNull
 
-        ' 转移
-        ListPopupMenuTrans.Enabled = IsNotNull
+        ' 移动
+        ListPopupMenuMove.Enabled = IsNotNull
     End Sub
 
     ''' <summary>
@@ -846,10 +920,15 @@ Public Class MainForm
         If TabStrip.Tabs.Count = 1 Then
             MessageBox.Show("无法删除最后的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
         Else
-            Dim ok As DialogResult = MessageBox.Show("是否删除分组 """ + TabStrip.SelectedTab.Text + """？", "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
-            If ok = vbOK Then
-                StorageUtil.DeleteTabData(TabStrip.SelectedTab.Text)
-                TabStrip.Tabs.RemoveAt(TabStrip.SelectedTabIndex)
+            Dim Cnt As Integer = TabTips.GetTipsFromTabTitle(TabStrip.SelectedTab.Text).Count
+            If Cnt <> 0 Then
+                MessageBox.Show("分组内存在 " & Cnt & " 条记录无法删除，请先将记录移动到别的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Else
+                Dim ok As DialogResult = MessageBox.Show("是否删除分组 """ + TabStrip.SelectedTab.Text + """？", "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+                If ok = vbOK Then
+                    StorageUtil.DeleteTabData(TabStrip.SelectedTab.Text)
+                    TabStrip.Tabs.RemoveAt(TabStrip.SelectedTabIndex)
+                End If
             End If
         End If
     End Sub
@@ -862,10 +941,24 @@ Public Class MainForm
             Dim OldName As String = TabStrip.SelectedTab.Text
             Dim NewName As String = InputBox("重命名分组 """ & OldName & """ 为: ", "重命名", OldName)
             If NewName.Trim() <> "" Then
-                Tab.GetTabIndexFromTabTitle(OldName).TabTitle = NewName
-                'StorageUtil.StorageTabs.Item(Tab.GetTabIndexFromTabTitle(OldName, StorageUtil.StorageTabs)).TabTitle = NewName
+                Dim TabTip As TabTips = TabTips.GetTabTipsFromTabTitle(OldName)
+                If Not TabTip Is Nothing Then
+                    For Each Item As TipItem In TabTip.Tips
+                        Item.TipTab.TabTitle = NewName
+                    Next
+                    TabTip.Tab.TabTitle = NewName
+                End If
+
+                Dim Tab As Tab = Tab.GetTabFromTabTitle(OldName)
+                If Not Tab Is Nothing Then
+                    Tab.TabTitle = NewName
+                End If
+
+                StorageUtil.CurrentTab.TabTitle = NewName
+
                 TabStrip.SelectedTab.Text = NewName
-                StorageUtil.SaveOnlyTabData()
+                StorageUtil.DeleteTabData(OldName)
+                StorageUtil.SaveTabData()
             End If
         End If
     End Sub
@@ -875,7 +968,7 @@ Public Class MainForm
     ''' <summary>
     ''' 右键点击Tab选中
     ''' </summary>
-    Private Sub TabStrip_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles TabStrip.MouseDown, TabItemTest.MouseDown
+    Private Sub TabStrip_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles TabStrip.MouseDown
         If e.Button = Windows.Forms.MouseButtons.Right Then
             Dim sel As DevComponents.DotNetBar.BaseItem = TabStrip.GetItemFromPoint(e.Location)
             If Not sel Is Nothing Then
@@ -890,8 +983,7 @@ Public Class MainForm
     Private Sub TabStrip_SelectedTabChanged(sender As Object, e As DevComponents.DotNetBar.SuperTabStripSelectedTabChangedEventArgs) Handles TabStrip.SelectedTabChanged
         SetSelectedItemButtonHide()
         If TabStrip.SelectedTabIndex <> -1 And StorageUtil.StorageTabs.Count <> 0 Then
-            'StorageUtil.CurrentTab = StorageUtil.StorageTabs.Item(Tab.GetTabIndexFromTabTitle(TabStrip.SelectedTab.Text, StorageUtil.StorageTabs))
-            StorageUtil.CurrentTab = Tab.GetTabIndexFromTabTitle(TabStrip.SelectedTab.Text)
+            StorageUtil.CurrentTab = Tab.GetTabFromTabTitle(TabStrip.SelectedTab.Text)
             LoadList(True)
         End If
     End Sub
@@ -909,14 +1001,14 @@ Public Class MainForm
 
 #End Region
 
-#Region "Trans"
+#Region "Move"
 
     ''' <summary>
-    ''' 获得非活动分组集，转移至分组 用
+    ''' 获得非活动分组集，移动至分组 用
     ''' </summary>
-    ''' <param name="ClassNamePreFix">分组类名前缀 ListPopupMenuTrans / TabPopupMenuTrans</param>
+    ''' <param name="ClassNamePreFix">分组类名前缀 ListPopupMenuMove / TabPopupMenuMove</param>
     ''' <returns>分组按钮</returns>
-    Private Function GetUnActivityTabTransButtonList(ByVal ClassNamePreFix As String) As List(Of DevComponents.DotNetBar.ButtonItem)
+    Private Function GetUnActivityTabMoveButtonList(ByVal ClassNamePreFix As String) As List(Of DevComponents.DotNetBar.ButtonItem)
         Dim Tabs As New List(Of String)
         Dim TabBtns As New List(Of DevComponents.DotNetBar.ButtonItem)
 
@@ -932,7 +1024,7 @@ Public Class MainForm
                 .Tag = Tabs.Item(i), _
                 .Text = Tabs.Item(i)
             }
-            AddHandler Btn.Click, AddressOf TransTab
+            AddHandler Btn.Click, AddressOf MoveTab
 
             TabBtns.Add(Btn)
         Next
@@ -942,39 +1034,47 @@ Public Class MainForm
     ''' <summary>
     ''' 弹出列表右键菜单
     ''' </summary>
-    Private Sub ListPopMenu_PopupOpen_Trans(sender As Object, e As DevComponents.DotNetBar.PopupOpenEventArgs) Handles ListPopupMenu.PopupOpen
-        Me.ListPopupMenuTrans.SubItems.Clear()
-        For Each Btn As DevComponents.DotNetBar.ButtonItem In GetUnActivityTabTransButtonList("ListPopupMenuTrans")
-            Me.ListPopupMenuTrans.SubItems.Add(Btn)
+    Private Sub ListPopMenu_PopupOpen_Move(sender As Object, e As DevComponents.DotNetBar.PopupOpenEventArgs) Handles ListPopupMenu.PopupOpen
+        Me.ListPopupMenuMove.SubItems.Clear()
+        For Each Btn As DevComponents.DotNetBar.ButtonItem In GetUnActivityTabMoveButtonList("ListPopupMenuMove")
+            Me.ListPopupMenuMove.SubItems.Add(Btn)
         Next
+        Me.ListPopupMenuMove.Enabled = Not Me.ListPopupMenuMove.SubItems.Count = 0 And Not ListView.Items.Count = 0
+        If Not Me.ListPopupMenuMove.Enabled Then
+            Me.ListPopupMenuMove.SubItems.Clear()
+        End If
     End Sub
 
     ''' <summary>
     ''' 弹出分组右键菜单
     ''' </summary>
     Private Sub TabPopupMenu_PopupOpen(sender As Object, e As DevComponents.DotNetBar.PopupOpenEventArgs) Handles TabPopupMenu.PopupOpen
-        Me.TabPopupMenuTrans.SubItems.Clear()
-        For Each Btn As DevComponents.DotNetBar.ButtonItem In GetUnActivityTabTransButtonList("TabPopupMenuTrans")
-            Me.TabPopupMenuTrans.SubItems.Add(Btn)
+        Me.TabPopupMenuMove.SubItems.Clear()
+        For Each Btn As DevComponents.DotNetBar.ButtonItem In GetUnActivityTabMoveButtonList("TabPopupMenuMove")
+            Me.TabPopupMenuMove.SubItems.Add(Btn)
         Next
+        Me.TabPopupMenuMove.Enabled = Not Me.TabPopupMenuMove.SubItems.Count = 0 And Not ListView.Items.Count = 0
+        If Not Me.TabPopupMenuMove.Enabled Then
+            Me.TabPopupMenuMove.SubItems.Clear()
+        End If
     End Sub
 
     ''' <summary>
     ''' 移动至分组
     ''' </summary>
     ''' <remarks></remarks>
-    Private Sub TransTab(sender As System.Object, e As System.EventArgs)
+    Private Sub MoveTab(sender As System.Object, e As System.EventArgs)
 
         Dim Dest As String = sender.Tag
         Dim SelectItems As List(Of TipItem)
         Dim Flag As String
 
         If ListView.SelectedItem Is Nothing Then
-            ' 转移全部
+            ' 移动全部
             SelectItems = New List(Of TipItem)(ListView.Items.Cast(Of TipItem)())
             Flag = "确定将当前分组 """ & StorageUtil.CurrentTab.TabTitle & """ 的全部内容 (共 " & ListView.Items.Count & " 项) 移动至分组 """ & Dest & """ 吗？"
         Else
-            ' 转移已选
+            ' 移动已选
             SelectItems = New List(Of TipItem)(ListView.SelectedItems.Cast(Of TipItem)())
             Dim sb As New StringBuilder
             For Each Item As TipItem In SelectItems

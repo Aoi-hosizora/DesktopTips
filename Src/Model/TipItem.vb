@@ -14,6 +14,9 @@ Public Class TipItem
         Return TipContent
     End Function
 
+    ''' <summary>
+    ''' 从 TipContent 获取 TipItem Index
+    ''' </summary>
     Public Shared Function GetTipIndexFromContent(ByVal Content As String, ByVal Tips As List(Of TipItem)) As Integer
         For Each Tip As TipItem In Tips
             If Tip.TipContent = Content Then

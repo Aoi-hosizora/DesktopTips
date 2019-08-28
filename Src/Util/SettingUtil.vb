@@ -12,6 +12,8 @@
 
         Public MaxOpacity As Double
         Public TopMost As Boolean
+
+        Public IsFold As Boolean
     End Structure
 
     Public Shared Sub SaveAppSettings(ByVal appSetting As AppSetting)
@@ -21,6 +23,7 @@
         SaveSetting(AppName, PosSection, "Width", appSetting.Width)
         SaveSetting(AppName, FormSection, "Opacity", appSetting.MaxOpacity)
         SaveSetting(AppName, FormSection, "TopMost", appSetting.TopMost)
+        SaveSetting(AppName, FormSection, "IsFold", appSetting.IsFold)
     End Sub
 
     Public Shared Function LoadAppSettings() As AppSetting
@@ -31,6 +34,7 @@
         setting.Width = GetSetting(AppName, PosSection, "Width", 200)
         setting.MaxOpacity = GetSetting(AppName, FormSection, "Opacity", 0.6)
         setting.TopMost = GetSetting(AppName, FormSection, "TopMost", False)
+        setting.IsFold = GetSetting(AppName, FormSection, "IsFold", True)
         Return setting
     End Function
 End Class

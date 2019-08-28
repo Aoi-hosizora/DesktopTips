@@ -409,8 +409,7 @@ Public Class MainForm
             Tips.Add(Tip)
         Next
 
-        StorageUtil.StorageTipItems.Item(TabTips.GetIndexFromTab(StorageUtil.CurrentTab.TabTitle, StorageUtil.StorageTipItems)) _
-            = New TabTips(StorageUtil.CurrentTab, Tips)
+        TabTips.GetTabTipsFromTabTitle(StorageUtil.CurrentTab.TabTitle).Tips = Tips
 
         If IsSaveAll Then
             StorageUtil.SaveTabData()
@@ -863,7 +862,8 @@ Public Class MainForm
             Dim OldName As String = TabStrip.SelectedTab.Text
             Dim NewName As String = InputBox("重命名分组 """ & OldName & """ 为: ", "重命名", OldName)
             If NewName.Trim() <> "" Then
-                StorageUtil.StorageTabs.Item(Tab.GetTabIndexFromTabTitle(OldName, StorageUtil.StorageTabs)).TabTitle = NewName
+                Tab.GetTabIndexFromTabTitle(OldName).TabTitle = NewName
+                'StorageUtil.StorageTabs.Item(Tab.GetTabIndexFromTabTitle(OldName, StorageUtil.StorageTabs)).TabTitle = NewName
                 TabStrip.SelectedTab.Text = NewName
                 StorageUtil.SaveOnlyTabData()
             End If
@@ -890,7 +890,8 @@ Public Class MainForm
     Private Sub TabStrip_SelectedTabChanged(sender As Object, e As DevComponents.DotNetBar.SuperTabStripSelectedTabChangedEventArgs) Handles TabStrip.SelectedTabChanged
         SetSelectedItemButtonHide()
         If TabStrip.SelectedTabIndex <> -1 And StorageUtil.StorageTabs.Count <> 0 Then
-            StorageUtil.CurrentTab = StorageUtil.StorageTabs.Item(Tab.GetTabIndexFromTabTitle(TabStrip.SelectedTab.Text, StorageUtil.StorageTabs))
+            'StorageUtil.CurrentTab = StorageUtil.StorageTabs.Item(Tab.GetTabIndexFromTabTitle(TabStrip.SelectedTab.Text, StorageUtil.StorageTabs))
+            StorageUtil.CurrentTab = Tab.GetTabIndexFromTabTitle(TabStrip.SelectedTab.Text)
             LoadList(True)
         End If
     End Sub
@@ -987,8 +988,8 @@ Public Class MainForm
         Dim ok As MsgBoxResult = MessageBox.Show(Flag, "移动至分组...", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2)
         If ok = vbOK Then
             For Each Item As TipItem In SelectItems
-                StorageUtil.StorageTipItems.Item(TabTips.GetIndexFromTab(Dest, StorageUtil.StorageTipItems)).Tips.Add(Item)
-                StorageUtil.StorageTipItems.Item(TabTips.GetIndexFromTab(StorageUtil.CurrentTab.TabTitle, StorageUtil.StorageTipItems)).Tips.Remove(Item)
+                TabTips.GetTabTipsFromTabTitle(Dest).Tips.Add(Item)
+                TabTips.GetTabTipsFromTabTitle(StorageUtil.CurrentTab.TabTitle).Tips.Remove(Item)
                 ListView.Items.Remove(Item)
             Next
             SaveList(True)
@@ -1002,7 +1003,7 @@ Public Class MainForm
         Next
 
         For Each Item As TipItem In SelectItems
-            Dim Idx As Integer = TipItem.GetIndexFromTips(Item.TipContent, StorageUtil.StorageTipItems.Item(TabTips.GetIndexFromTab(Dest, StorageUtil.StorageTipItems)).Tips)
+            Dim Idx As Integer = TipItem.GetTipIndexFromContent(Item.TipContent, TabTips.GetTabTipsFromTabTitle(Dest).Tips)
             If Idx <> -1 Then
                 ListView.SetSelected(Idx, True)
             End If

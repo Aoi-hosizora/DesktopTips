@@ -14,7 +14,7 @@ Public Class Tab
     End Function
 
     ''' <summary>
-    ''' 从 Tab 获取 TabIndex
+    ''' 从 TabTitle 获取 TabIndex
     ''' </summary>
     ''' <param name="TabTitle">Tab.TabTitle</param>
     ''' <param name="Tabs">List(Of Tab)</param>
@@ -24,7 +24,15 @@ Public Class Tab
                 Return Tabs.IndexOf(t)
             End If
         Next
-        Return -1
+        Return 0
+    End Function
+
+    ''' <summary>
+    ''' 从 TabTitle 获取 Tab
+    ''' </summary>
+    ''' <param name="TabTitle">Tab.TabTitle</param>
+    Public Shared Function GetTabIndexFromTabTitle(ByVal TabTitle As String) As Tab
+        Return StorageUtil.StorageTabs.Item(GetTabIndexFromTabTitle(TabTitle, StorageUtil.StorageTabs))
     End Function
 
     ''' <summary>

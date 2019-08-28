@@ -68,7 +68,7 @@ Public Class StorageUtil
         If Tab Is Nothing Then Return
 
         Dim StorageTipsName As String = StorageFileDir & "\" & Tab.TabTitle & ".dat"
-        SaveBinary(StorageTipItems.Item(TabTips.GetIndexFromTab(Tab.TabTitle, StorageTipItems)), StorageTipsName)
+        SaveBinary(StorageTipItems.Item(TabTips.GetTabTipsIndexFromTabTitle(Tab.TabTitle, StorageTipItems)), StorageTipsName)
         SaveBinary(StorageTabs, StorageTabsInfo)
     End Sub
 

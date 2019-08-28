@@ -14,7 +14,7 @@ Public Class TipItem
         Return TipContent
     End Function
 
-    Public Shared Function GetIndexFromTips(ByVal Content As String, ByVal Tips As List(Of TipItem)) As Integer
+    Public Shared Function GetTipIndexFromContent(ByVal Content As String, ByVal Tips As List(Of TipItem)) As Integer
         For Each Tip As TipItem In Tips
             If Tip.TipContent = Content Then
                 Return Tips.IndexOf(Tip)

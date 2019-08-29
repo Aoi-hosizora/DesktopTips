@@ -499,13 +499,13 @@ Public Class MainForm
 
             Dim ok As Integer
             If ListView.SelectedIndices.Count = 1 Then
-                ok = MsgBox("确定删除以下提醒标签吗？" & Chr(10) & Chr(10) & CType(ListView.SelectedItem, TipItem).TipContent, MsgBoxStyle.OkCancel, "删除")
+                ok = MessageBoxEx.Show("确定删除以下提醒标签吗？" & Chr(10) & Chr(10) & CType(ListView.SelectedItem, TipItem).TipContent, "删除", MessageBoxButtons.OKCancel)
             Else
                 Dim sb As New StringBuilder
                 For Each item As TipItem In ListView.SelectedItems.Cast(Of TipItem)()
                     sb.AppendLine(item.TipContent)
                 Next
-                ok = MsgBox("确定删除以下所有提醒标签吗？" & Chr(10) & Chr(10) & sb.ToString, MsgBoxStyle.OkCancel, "删除")
+                ok = MessageBoxEx.Show("确定删除以下所有提醒标签吗？" & Chr(10) & Chr(10) & sb.ToString, "删除", MessageBoxButtons.OKCancel)
             End If
             If (ok = vbOK) Then
                 For Each item As TipItem In SelectItemIdics
@@ -521,17 +521,14 @@ Public Class MainForm
     ''' </summary>
     Private Sub ListView_DoubleClick(sender As Object, e As System.EventArgs) Handles ListView.DoubleClick, ListPopupMenuEditItem.Click
         Dim tmpIdx As Integer = ListView.SelectedIndex
-        If (ListView.SelectedItem IsNot Nothing) Then
-            If ListView.SelectedIndices.Count = 1 Then
-
-                Dim tip As TipItem = CType(ListView.SelectedItem, TipItem)
-                Dim newstr As String = InputBox("修改提醒标签 """ & tip.TipContent & """ 为：", "修改", tip.TipContent)
-                If newstr <> "" Then
-                    tip.TipContent = newstr.Trim()
-                    ListView.Items(tmpIdx) = tip
-                    ListView.SelectedIndex = tmpIdx
-                    SaveList()
-                End If
+        If ListView.SelectedItem IsNot Nothing AndAlso ListView.SelectedIndices.Count = 1 Then
+            Dim tip As TipItem = CType(ListView.SelectedItem, TipItem)
+            Dim newstr As String = InputBox("修改提醒标签 """ & tip.TipContent & """ 为：", "修改", tip.TipContent)
+            If newstr <> "" Then
+                tip.TipContent = newstr.Trim()
+                ListView.Items(tmpIdx) = tip
+                ListView.SelectedIndex = tmpIdx
+                SaveList()
             End If
         Else
             ButtonAddItem_Click(sender, New System.EventArgs)
@@ -630,11 +627,9 @@ Public Class MainForm
     ''' </summary>
     Private Sub ListView_SizeChanged(sender As Object, e As System.EventArgs) Handles ListView.SizeChanged
         ' ListView.Refresh()
-        If ButtonItemUp.Visible = True Then
-            If ListView.SelectedIndices.Count = 1 Then
-                Dim Rect As Rectangle = ListView.GetItemRectangle(ListView.SelectedIndex)
-                SetSelectedItemButtonShow(Rect)
-            End If
+        If ButtonItemUp.Visible = True AndAlso ListView.SelectedIndices.Count = 1 Then
+            Dim Rect As Rectangle = ListView.GetItemRectangle(ListView.SelectedIndex)
+            SetSelectedItemButtonShow(Rect)
         End If
     End Sub
 
@@ -890,7 +885,7 @@ Public Class MainForm
         Dim tabName As String = InputBox("请输入新分组的标题: ", "新建", "分组")
         If tabName <> "" Then
             If Tab.CheckDuplicateTab(tabName.Trim(), SU.Tabs) Then
-                MessageBox.Show("分组标题 """ & tabName & """ 已存在。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+                MessageBoxEx.Show("分组标题 """ & tabName & """ 已存在。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
                 ListPopupMenuNewTab_Click(sender, New System.EventArgs)
             Else
                 AddTab(tabName, True)
@@ -903,14 +898,14 @@ Public Class MainForm
     ''' </summary>
     Private Sub ListPopupMenuDeleteTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuDeleteTab.Click
         If TabStrip.Tabs.Count = 1 Then
-            MessageBox.Show("无法删除最后的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+            MessageBoxEx.Show("无法删除最后的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
         Else
             Dim TabTitle As String = TabStrip.SelectedTab.Text
             Dim Tab As Tab = Tab.GetTabFromTitle(TabTitle)
             If Tab.Tips.Count <> 0 Then
-                MessageBox.Show("分组内存在 " & Tab.Tips.Count & " 条记录无法删除，请先将记录移动到别的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBoxEx.Show("分组内存在 " & Tab.Tips.Count & " 条记录无法删除，请先将记录移动到别的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
             Else
-                Dim ok As DialogResult = MessageBox.Show("是否删除分组 """ + TabStrip.SelectedTab.Text + """？", "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+                Dim ok As DialogResult = MessageBoxEx.Show("是否删除分组 """ + TabStrip.SelectedTab.Text + """？", "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
                 If ok = vbOK Then
                     TabStrip.Tabs.RemoveAt(TabStrip.SelectedTabIndex)
                     SU.Tabs.RemoveAt(SU.Tabs.IndexOf(Tab.GetTabFromTitle(TabTitle)))
@@ -955,7 +950,7 @@ Public Class MainForm
     Private Sub TabStrip_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles TabStrip.MouseDown
         If e.Button = Windows.Forms.MouseButtons.Right Then
             Dim sel As DevComponents.DotNetBar.BaseItem = TabStrip.GetItemFromPoint(e.Location)
-            If Not sel Is Nothing Then
+            If sel IsNot Nothing Then
                 TabStrip.SelectedTab = sel
             End If
         End If
@@ -1073,7 +1068,7 @@ Public Class MainForm
                                                      & Chr(10) & Chr(10) & sb.ToString
         End If
 
-        Dim ok As MsgBoxResult = MessageBox.Show(Flag, "移动至分组...", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2)
+        Dim ok As MessageBoxButtons = MessageBoxEx.Show(Flag, "移动至分组...", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2)
         If ok = vbOK Then
             For Each Item As TipItem In SelectItems
                 Tab.GetTabFromTitle(Dest).Tips.Add(Item)

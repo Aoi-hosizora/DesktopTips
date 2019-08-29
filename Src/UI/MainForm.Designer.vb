@@ -70,6 +70,7 @@ Partial Class MainForm
         Me.ListPopupMenuViewFile = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuLabelItemWindow = New DevComponents.DotNetBar.LabelItem()
         Me.ListPopupMenuListHeight = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuWinSetting = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuOpacity = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuFold = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuWinTop = New DevComponents.DotNetBar.ButtonItem()
@@ -86,7 +87,6 @@ Partial Class MainForm
         Me.ButtonItemUp = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonItemDown = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonResizeFlag = New DevComponents.DotNetBar.ButtonX()
-        Me.ListPopupMenuWinSetting = New DevComponents.DotNetBar.ButtonItem()
         CType(Me.NumericUpDownListCnt, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ContextMenuBar1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TabStrip, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -416,6 +416,12 @@ Partial Class MainForm
         Me.ListPopupMenuListHeight.Name = "ListPopupMenuListHeight"
         Me.ListPopupMenuListHeight.Text = "列表高度设置(&E)"
         '
+        'ListPopupMenuWinSetting
+        '
+        Me.ListPopupMenuWinSetting.Name = "ListPopupMenuWinSetting"
+        Me.ListPopupMenuWinSetting.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuOpacity, Me.ListPopupMenuFold, Me.ListPopupMenuWinTop})
+        Me.ListPopupMenuWinSetting.Text = "显示设置(&S)"
+        '
         'ListPopupMenuOpacity
         '
         Me.ListPopupMenuOpacity.Name = "ListPopupMenuOpacity"
@@ -578,12 +584,6 @@ Partial Class MainForm
         Me.ButtonResizeFlag.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
         Me.ButtonResizeFlag.TabIndex = 8
         Me.ButtonResizeFlag.Text = "::"
-        '
-        'ListPopupMenuWinSetting
-        '
-        Me.ListPopupMenuWinSetting.Name = "ListPopupMenuWinSetting"
-        Me.ListPopupMenuWinSetting.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuOpacity, Me.ListPopupMenuFold, Me.ListPopupMenuWinTop})
-        Me.ListPopupMenuWinSetting.Text = "显示设置(&S)"
         '
         'MainForm
         '

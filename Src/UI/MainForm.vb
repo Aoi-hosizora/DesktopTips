@@ -36,6 +36,7 @@ Public Class MainForm
     Private Sub Flag_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseUp, TabStrip.MouseUp, ButtonResizeFlag.MouseUp
         Me.Cursor = Cursors.Default
         IsMouseDown = False
+        ListView.Refresh()
     End Sub
 
     Private Sub ListView_TabStrip_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseMove, TabStrip.MouseMove
@@ -182,6 +183,7 @@ Public Class MainForm
     End Sub
 
     Private Sub MainForm_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+
         Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
         Me.Top = setting.Top
         Me.Left = setting.Left
@@ -876,7 +878,7 @@ Public Class MainForm
         NewSuperTabItem.Text = Title
 
         AddHandler NewSuperTabItem.MouseDown, AddressOf TabStrip_MouseDown
-        AddHandler NewSuperTabItem.DoubleClick, AddressOf ListPopupMenuRenameTab_Click
+        ' AddHandler NewSuperTabItem.DoubleClick, AddressOf ListPopupMenuRenameTab_Click
 
         Me.TabStrip.Tabs.AddRange(New DevComponents.DotNetBar.BaseItem() {NewSuperTabItem})
     End Sub
@@ -930,6 +932,18 @@ Public Class MainForm
                 SU.SaveTabData()
                 TabStrip.SelectedTab.Text = NewName
             End If
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 双击Tab，新建或重命名
+    ''' </summary>
+    Private Sub TabStrip_DoubleClick(sender As Object, e As System.EventArgs) Handles TabStrip.DoubleClick
+        Dim ePos As New Point(Cursor.Position.X - Me.Left - sender.Left, Cursor.Position.Y - Me.Top - sender.Top)
+        If TabStrip.GetItemFromPoint(ePos) Is Nothing Then
+            ListPopupMenuNewTab_Click(sender, New EventArgs)
+        Else
+            ListPopupMenuRenameTab_Click(sender, New EventArgs)
         End If
     End Sub
 

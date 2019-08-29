@@ -11,6 +11,7 @@
 Option Strict On
 Option Explicit On
 
+Imports DD = DevComponents.DotNetBar
 
 Namespace My
     
@@ -30,9 +31,50 @@ Namespace My
             Me.ShutDownStyle = Global.Microsoft.VisualBasic.ApplicationServices.ShutdownMode.AfterMainFormCloses
         End Sub
         
-        <Global.System.Diagnostics.DebuggerStepThroughAttribute()>  _
+        <Global.System.Diagnostics.DebuggerStepThroughAttribute()> _
         Protected Overrides Sub OnCreateMainForm()
+            AddHandler DD.LocalizationKeys.LocalizeString, AddressOf LocalizationKeys_LocalizeString
             Me.MainForm = Global.DesktopTips.MainForm
         End Sub
+
+        Private Sub LocalizationKeys_LocalizeString(sender As Object, e As DD.LocalizeEventArgs)
+            ' DD.MessageBoxEx.UseSystemLocalizedString = True
+            Select Case e.Key
+                Case DD.LocalizationKeys.MessageBoxYesButton
+                    e.LocalizedValue = "是"
+                    e.Handled = True
+                Case DD.LocalizationKeys.MessageBoxNoButton
+                    e.LocalizedValue = "否"
+                    e.Handled = True
+                Case DD.LocalizationKeys.MessageBoxOkButton
+                    e.LocalizedValue = "确定"
+                    e.Handled = True
+                Case DD.LocalizationKeys.MessageBoxCancelButton
+                    e.LocalizedValue = "取消"
+                    e.Handled = True
+                Case DD.LocalizationKeys.MessageBoxHelpButton
+                    e.LocalizedValue = "帮助"
+                    e.Handled = True
+                Case DD.LocalizationKeys.MessageBoxIgnoreButton
+                    e.LocalizedValue = "忽略"
+                    e.Handled = True
+                Case DD.LocalizationKeys.MessageBoxTryAgainButton
+                    e.LocalizedValue = "重试"
+                    e.Handled = True
+                Case DD.LocalizationKeys.MessageBoxRetryButton
+                    e.LocalizedValue = "重试"
+                    e.Handled = True
+                Case DD.LocalizationKeys.MessageBoxContinueButton
+                    e.LocalizedValue = "继续"
+                    e.Handled = True
+                Case DD.LocalizationKeys.MessageBoxCloseButton
+                    e.LocalizedValue = "关闭"
+                    e.Handled = True
+                Case DD.LocalizationKeys.MessageBoxAbortButton
+                    e.LocalizedValue = "终止"
+                    e.Handled = True
+            End Select
+        End Sub
     End Class
+
 End Namespace

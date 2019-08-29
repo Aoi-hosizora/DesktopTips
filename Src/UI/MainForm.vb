@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports System.Text
 Imports SU = DesktopTips.StorageUtil
+Imports DD = DevComponents.DotNetBar
 
 Public Class MainForm
 
@@ -226,8 +227,6 @@ Public Class MainForm
         ButtonItemDown.Width = height
     End Sub
 
-
-
 #End Region
 
 #Region "Fold"
@@ -250,12 +249,12 @@ Public Class MainForm
             Me.ListPopupMenu.SubItems.Clear()
 
             Me.ListPopupMenuItemContainer.SubItems.AddRange( _
-                New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, _
+                New DD.BaseItem() {Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, _
                                                         Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem, Me.ListPopupMenuEditItem, Me.ListPopupMenuSelectAll, _
                                                         Me.ListPopupMenuHighLight})
 
             Me.ListPopupMenu.SubItems.AddRange( _
-                New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, _
+                New DD.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, _
  _
                                                         Me.ListPopupMenuLabelItemList, Me.ListPopupMenuItemContainer, _
                                                         Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuMove, _
@@ -265,11 +264,11 @@ Public Class MainForm
 
             Me.ListPopupMenuMoveTop.BeginGroup = True
             Me.ListPopupMenuViewHighLight.BeginGroup = True
-            For Each Item As DevComponents.DotNetBar.ButtonItem In Me.ListPopupMenuItemContainer.SubItems
+            For Each Item As DD.ButtonItem In Me.ListPopupMenuItemContainer.SubItems
                 Item.Tooltip = Item.Text
             Next
         Else
-            For Each Item As DevComponents.DotNetBar.ButtonItem In Me.ListPopupMenuItemContainer.SubItems
+            For Each Item As DD.ButtonItem In Me.ListPopupMenuItemContainer.SubItems
                 Item.Tooltip = ""
             Next
             Me.ListPopupMenuMoveTop.BeginGroup = False
@@ -278,7 +277,7 @@ Public Class MainForm
             Me.ListPopupMenuItemContainer.SubItems.Clear()
             Me.ListPopupMenu.SubItems.Clear()
             Me.ListPopupMenu.SubItems.AddRange( _
-                New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, _
+                New DD.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, _
  _
                                                         Me.ListPopupMenuLabelItemList, Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, _
                                                         Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem, Me.ListPopupMenuEditItem, Me.ListPopupMenuSelectAll, _
@@ -295,14 +294,14 @@ Public Class MainForm
 #Region "Opacity"
 
     Dim ops() As Double = {0.2, 0.4, 0.6, 0.7, 0.8, 1.0}
-    Dim opBtns(ops.Length - 1) As DevComponents.DotNetBar.ButtonItem
+    Dim opBtns(ops.Length - 1) As DD.ButtonItem
 
     ''' <summary>
     ''' 动态添加透明度
     ''' </summary>
     Private Sub FormOpacity_Load()
         For i = 0 To ops.Length - 1
-            opBtns(i) = New DevComponents.DotNetBar.ButtonItem With { _
+            opBtns(i) = New DD.ButtonItem With { _
                 .Name = "ListPopupMenuOpacity" & CInt(ops(i) * 100), _
                 .Tag = ops(i), _
                 .Text = CInt(ops(i) * 100) & "%"
@@ -319,7 +318,7 @@ Public Class MainForm
 
     Private Sub ListPopupMenuOpacity_Click(sender As System.Object, e As System.EventArgs)
 
-        Dim btn As DevComponents.DotNetBar.ButtonItem = CType(sender, DevComponents.DotNetBar.ButtonItem)
+        Dim btn As DD.ButtonItem = CType(sender, DD.ButtonItem)
 
         MaxOpacity = CDbl(btn.Tag())
 
@@ -499,13 +498,13 @@ Public Class MainForm
 
             Dim ok As Integer
             If ListView.SelectedIndices.Count = 1 Then
-                ok = MessageBoxEx.Show("确定删除以下提醒标签吗？" & Chr(10) & Chr(10) & CType(ListView.SelectedItem, TipItem).TipContent, "删除", MessageBoxButtons.OKCancel)
+                ok = MessageBoxEx.Show("确定删除以下提醒标签吗？" & Chr(10) & Chr(10) & CType(ListView.SelectedItem, TipItem).TipContent, "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2)
             Else
                 Dim sb As New StringBuilder
                 For Each item As TipItem In ListView.SelectedItems.Cast(Of TipItem)()
                     sb.AppendLine(item.TipContent)
                 Next
-                ok = MessageBoxEx.Show("确定删除以下所有提醒标签吗？" & Chr(10) & Chr(10) & sb.ToString, "删除", MessageBoxButtons.OKCancel)
+                ok = MessageBoxEx.Show("确定删除以下所有提醒标签吗？" & Chr(10) & Chr(10) & sb.ToString, "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2)
             End If
             If (ok = vbOK) Then
                 For Each item As TipItem In SelectItemIdics
@@ -828,7 +827,7 @@ Public Class MainForm
     ''' <summary>
     ''' 显示弹出菜单标题
     ''' </summary>
-    Private Sub ListPopMenu_PopupOpen(sender As Object, e As DevComponents.DotNetBar.PopupOpenEventArgs) Handles ListPopupMenu.PopupOpen
+    Private Sub ListPopMenu_PopupOpen(sender As Object, e As DD.PopupOpenEventArgs) Handles ListPopupMenu.PopupOpen
         e.Cancel = True
         ListPopupMenuLabelSelItem.Visible = ListView.SelectedIndex <> -1
         ListPopupMenuLabelSelItemText.Visible = ListView.SelectedIndex <> -1
@@ -867,7 +866,7 @@ Public Class MainForm
             SU.SaveTabData()
         End If
 
-        Dim NewSuperTabItem = New DevComponents.DotNetBar.SuperTabItem()
+        Dim NewSuperTabItem = New DD.SuperTabItem()
         NewSuperTabItem.GlobalItem = False
         NewSuperTabItem.Name = "TabItemCustom_" & SU.Tabs.Count
         NewSuperTabItem.Text = Title
@@ -875,7 +874,7 @@ Public Class MainForm
         AddHandler NewSuperTabItem.MouseDown, AddressOf TabStrip_MouseDown
         ' AddHandler NewSuperTabItem.DoubleClick, AddressOf ListPopupMenuRenameTab_Click
 
-        Me.TabStrip.Tabs.AddRange(New DevComponents.DotNetBar.BaseItem() {NewSuperTabItem})
+        Me.TabStrip.Tabs.AddRange(New DD.BaseItem() {NewSuperTabItem})
     End Sub
 
     ''' <summary>
@@ -949,7 +948,7 @@ Public Class MainForm
     ''' </summary>
     Private Sub TabStrip_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles TabStrip.MouseDown
         If e.Button = Windows.Forms.MouseButtons.Right Then
-            Dim sel As DevComponents.DotNetBar.BaseItem = TabStrip.GetItemFromPoint(e.Location)
+            Dim sel As DD.BaseItem = TabStrip.GetItemFromPoint(e.Location)
             If sel IsNot Nothing Then
                 TabStrip.SelectedTab = sel
             End If
@@ -959,7 +958,7 @@ Public Class MainForm
     ''' <summary>
     ''' Tab选择更改
     ''' </summary>
-    Private Sub TabStrip_SelectedTabChanged(sender As Object, e As DevComponents.DotNetBar.SuperTabStripSelectedTabChangedEventArgs) Handles TabStrip.SelectedTabChanged
+    Private Sub TabStrip_SelectedTabChanged(sender As Object, e As DD.SuperTabStripSelectedTabChangedEventArgs) Handles TabStrip.SelectedTabChanged
         SetSelectedItemButtonHide()
         If TabStrip.SelectedTabIndex <> -1 And SU.Tabs.Count <> 0 Then
             SU.CurrTabIdx = SU.Tabs.IndexOf(Tab.GetTabFromTitle(TabStrip.SelectedTab.Text))
@@ -970,9 +969,9 @@ Public Class MainForm
     ''' <summary>
     ''' Tab 顺序更改
     ''' </summary>
-    Private Sub TabStrip_TabMoved(sender As Object, e As DevComponents.DotNetBar.SuperTabStripTabMovedEventArgs) Handles TabStrip.TabMoved
+    Private Sub TabStrip_TabMoved(sender As Object, e As DD.SuperTabStripTabMovedEventArgs) Handles TabStrip.TabMoved
         Dim NewTabs As New List(Of Tab)
-        For Each TabItem As DevComponents.DotNetBar.SuperTabItem In e.NewOrder
+        For Each TabItem As DD.SuperTabItem In e.NewOrder
             NewTabs.Add(Tab.GetTabFromTitle(TabItem.Text))
         Next
         SU.Tabs = NewTabs
@@ -989,9 +988,9 @@ Public Class MainForm
     ''' </summary>
     ''' <param name="ClassNamePreFix">分组类名前缀 ListPopupMenuMove / TabPopupMenuMove</param>
     ''' <returns>分组按钮</returns>
-    Private Function GetUnActivityTabMoveButtonList(ByVal ClassNamePreFix As String) As List(Of DevComponents.DotNetBar.ButtonItem)
+    Private Function GetUnActivityTabMoveButtonList(ByVal ClassNamePreFix As String) As List(Of DD.ButtonItem)
         Dim Tabs As New List(Of String)
-        Dim TabBtns As New List(Of DevComponents.DotNetBar.ButtonItem)
+        Dim TabBtns As New List(Of DD.ButtonItem)
 
         For Each Tab As Tab In SU.Tabs
             If Tab.Title <> SU.Tabs.Item(SU.CurrTabIdx).Title Then
@@ -1000,7 +999,7 @@ Public Class MainForm
         Next
 
         For i = 0 To Tabs.Count - 1
-            Dim Btn As New DevComponents.DotNetBar.ButtonItem With { _
+            Dim Btn As New DD.ButtonItem With { _
                 .Name = ClassNamePreFix & Tabs.Item(i), _
                 .Tag = Tabs.Item(i), _
                 .Text = Tabs.Item(i)
@@ -1015,9 +1014,9 @@ Public Class MainForm
     ''' <summary>
     ''' 弹出列表右键菜单
     ''' </summary>
-    Private Sub ListPopMenu_PopupOpen_Move(sender As Object, e As DevComponents.DotNetBar.PopupOpenEventArgs) Handles ListPopupMenu.PopupOpen
+    Private Sub ListPopMenu_PopupOpen_Move(sender As Object, e As DD.PopupOpenEventArgs) Handles ListPopupMenu.PopupOpen
         Me.ListPopupMenuMove.SubItems.Clear()
-        For Each Btn As DevComponents.DotNetBar.ButtonItem In GetUnActivityTabMoveButtonList("ListPopupMenuMove")
+        For Each Btn As DD.ButtonItem In GetUnActivityTabMoveButtonList("ListPopupMenuMove")
             Me.ListPopupMenuMove.SubItems.Add(Btn)
         Next
         Me.ListPopupMenuMove.Enabled = Not Me.ListPopupMenuMove.SubItems.Count = 0 And Not ListView.Items.Count = 0
@@ -1029,9 +1028,9 @@ Public Class MainForm
     ''' <summary>
     ''' 弹出分组右键菜单
     ''' </summary>
-    Private Sub TabPopupMenu_PopupOpen(sender As Object, e As DevComponents.DotNetBar.PopupOpenEventArgs) Handles TabPopupMenu.PopupOpen
+    Private Sub TabPopupMenu_PopupOpen(sender As Object, e As DD.PopupOpenEventArgs) Handles TabPopupMenu.PopupOpen
         Me.TabPopupMenuMove.SubItems.Clear()
-        For Each Btn As DevComponents.DotNetBar.ButtonItem In GetUnActivityTabMoveButtonList("TabPopupMenuMove")
+        For Each Btn As DD.ButtonItem In GetUnActivityTabMoveButtonList("TabPopupMenuMove")
             Me.TabPopupMenuMove.SubItems.Add(Btn)
         Next
         Me.TabPopupMenuMove.Enabled = Not Me.TabPopupMenuMove.SubItems.Count = 0 And Not ListView.Items.Count = 0
@@ -1077,7 +1076,7 @@ Public Class MainForm
             SU.SaveTabData()
         End If
 
-        For Each TabItem As DevComponents.DotNetBar.SuperTabItem In TabStrip.Tabs
+        For Each TabItem As DD.SuperTabItem In TabStrip.Tabs
             If TabItem.Text = Dest Then
                 TabStrip.SelectedTab = TabItem
                 Exit For

@@ -26,7 +26,6 @@ namespace Utils
             MessageBoxIcon icon, MessageBoxDefaultButton defaultButton, string[] buttonTitles)
         {
             MessageForm frm = new MessageForm(buttons, buttonTitles);
-            frm.Show();
             frm.WatchForActivate = true;
             DialogResult result = MessageBoxEx.Show(frm, text, caption, buttons, icon, defaultButton);
             frm.Close();

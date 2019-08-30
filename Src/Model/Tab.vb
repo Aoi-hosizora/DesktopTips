@@ -22,13 +22,13 @@ Public Class Tab
     ''' <summary>
     ''' 判断是否重复分组标题
     ''' </summary>
-    Public Shared Function CheckDuplicateTab(ByVal NewTitle As String, ByRef Tabs As List(Of Tab)) As Boolean
+    Public Shared Function CheckDuplicateTab(ByVal NewTitle As String, ByRef Tabs As List(Of Tab)) As Tab
         For Each Tab As Tab In Tabs
             If Tab.Title = NewTitle.Trim() Then
-                Return True
+                Return Tab
             End If
         Next
-        Return False
+        Return Nothing
     End Function
 
     ''' <summary>

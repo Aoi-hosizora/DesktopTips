@@ -43,7 +43,22 @@ Public Class StorageUtil
         fs.Close()
 
         Json = If(Json = "", "[{""Title"": ""默认"", ""Tips"": []}]", Json)
-        Tabs = JsonConvert.DeserializeObject(Of List(Of Tab))(Json)
+
+        Try
+            Tabs = JsonConvert.DeserializeObject(Of List(Of Tab))(Json)
+            If Tabs Is Nothing Then
+                Throw New Exception
+            End If
+        Catch ex As Exception
+            Throw New FileLoadException("读取文件失败，请检查文件。")
+        End Try
+
+        For Each Tab As Tab In Tabs
+            Dim dup As Tab = Tab.CheckDuplicateTab(Tab.Title, Tabs)
+            If dup IsNot Nothing AndAlso Not dup.Equals(Tab) Then
+                Throw New FileLoadException("文件中存在重复分组，请检查文件。")
+            End If
+        Next
         CurrTabIdx = If(CurrTabIdx = -1, 0, CurrTabIdx)
     End Sub
 

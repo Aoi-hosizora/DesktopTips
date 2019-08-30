@@ -443,9 +443,19 @@ Public Class MainForm
     ''' </summary>
     ''' <param name="IsAlreadyLoadTab">是否已经初始化分组 (True: 不需要更新 分组 和 Curr)</param>
     Private Sub LoadList(Optional ByVal IsAlreadyLoadTab = False)
-        SU.LoadTabTipsData()
-        ListView.Items.Clear()
+        Try
+            SU.LoadTabTipsData()
+        Catch ex As FileLoadException
+            Dim Msg As String = "错误：" & ex.Message & Chr(10) & "是否打开文件位置检查文件？"
+            Dim ok As MsgBoxResult = MessageBoxEx.Show(Msg, "错误", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, {"開く", "キャンセル"})
+            If ok = vbYes Then
+                ListPopupMenuOpenFile_Click(ListPopupMenuOpenDir, New EventArgs)
+            End If
+            Application.Exit()
+            Return
+        End Try
 
+        ListView.Items.Clear()
         For Each Tip As TipItem In SU.Tabs.Item(SU.CurrTabIdx).Tips
             ListView.Items.Add(Tip)
         Next
@@ -484,6 +494,7 @@ Public Class MainForm
         Dim msg As String = InputBox("新的提醒标签：", "添加")
         If msg <> "" Then
             ListView.Items.Add(New TipItem(msg.Trim()))
+            ListView.SelectedIndex = 0
             ListView.SelectedIndex = ListView.Items.Count() - 1
             SaveList()
         End If
@@ -493,24 +504,20 @@ Public Class MainForm
     ''' 删 ButtonRemoveItem ListPopupMenuRemoveItem
     ''' </summary>
     Private Sub ButtonRemoveItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonRemoveItem.Click, ListPopupMenuRemoveItem.Click
-        Dim SelectItemIdics As New List(Of TipItem)(ListView.SelectedItems.Cast(Of TipItem)())
         If ListView.SelectedItem IsNot Nothing Then
+            Dim SelectItemIdics As New List(Of TipItem)(ListView.SelectedItems.Cast(Of TipItem)())
 
-            Dim ok As Integer
-            If ListView.SelectedIndices.Count = 1 Then
-                ok = MessageBoxEx.Show("确定删除以下提醒标签吗？" & Chr(10) & Chr(10) & CType(ListView.SelectedItem, TipItem).TipContent, "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2)
-            Else
-                Dim sb As New StringBuilder
-                For Each item As TipItem In ListView.SelectedItems.Cast(Of TipItem)()
-                    sb.AppendLine(item.TipContent)
-                Next
-                ok = MessageBoxEx.Show("确定删除以下所有提醒标签吗？" & Chr(10) & Chr(10) & sb.ToString, "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2)
-            End If
+            Dim sb As New StringBuilder
+            For Each item As TipItem In ListView.SelectedItems.Cast(Of TipItem)()
+                sb.AppendLine(item.TipContent)
+            Next
+            Dim ok As Integer = MessageBoxEx.Show("确定删除以下 " & SelectItemIdics.Count & " 个提醒标签吗？" & Chr(10) & Chr(10) & sb.ToString, "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1)
             If (ok = vbOK) Then
                 For Each item As TipItem In SelectItemIdics
                     ListView.Items.Remove(item)
                 Next
                 SaveList()
+                ListView.Refresh()
             End If
         End If
     End Sub
@@ -882,8 +889,9 @@ Public Class MainForm
     ''' </summary>
     Private Sub ListPopupMenuNewTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuNewTab.Click
         Dim tabName As String = InputBox("请输入新分组的标题: ", "新建", "分组")
+        tabName = tabName.Trim()
         If tabName <> "" Then
-            If Tab.CheckDuplicateTab(tabName.Trim(), SU.Tabs) Then
+            If Tab.CheckDuplicateTab(tabName, SU.Tabs) IsNot Nothing Then
                 MessageBoxEx.Show("分组标题 """ & tabName & """ 已存在。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
                 ListPopupMenuNewTab_Click(sender, New System.EventArgs)
             Else
@@ -921,10 +929,16 @@ Public Class MainForm
         If TabStrip.SelectedTabIndex <> -1 Then
             Dim OldName As String = TabStrip.SelectedTab.Text
             Dim NewName As String = InputBox("重命名分组 """ & OldName & """ 为: ", "重命名", OldName)
-            If NewName.Trim() <> "" Then
-                Tab.GetTabFromTitle(OldName).Title = NewName
-                SU.SaveTabData()
-                TabStrip.SelectedTab.Text = NewName
+            NewName = NewName.Trim()
+            If NewName <> "" Then
+                If Tab.CheckDuplicateTab(NewName, SU.Tabs) IsNot Nothing Then
+                    MessageBoxEx.Show("分组标题 """ & NewName & """ 已存在。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+                    ListPopupMenuRenameTab_Click(sender, New System.EventArgs)
+                Else
+                    Tab.GetTabFromTitle(OldName).Title = NewName
+                    SU.SaveTabData()
+                    TabStrip.SelectedTab.Text = NewName
+                End If
             End If
         End If
     End Sub

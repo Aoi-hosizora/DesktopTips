@@ -4,7 +4,7 @@ Imports System.Runtime.InteropServices
 Public Class MessageBoxEx
 
     Public Shared Function Show(text As String, caption As String, buttons As MessageBoxButtons, Optional buttonTitles() As String = Nothing)
-        Return Show(text, caption, buttons, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, {"d"})
+        Return Show(text, caption, buttons, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, buttonTitles)
     End Function
 
     Public Shared Function Show(text As String, caption As String, buttons As MessageBoxButtons, _

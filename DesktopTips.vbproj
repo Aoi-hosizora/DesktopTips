@@ -138,6 +138,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\HighLightColor.png" />
     <Content Include="Src\Util\MessageBoxEx.used.cs" />
     <None Include="Resources\SelectAll.png" />
     <None Include="Resources\Star.png" />

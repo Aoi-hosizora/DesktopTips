@@ -20,7 +20,7 @@ Public Class MessageBoxEx
         Return result
     End Function
 
-    Class MessageForm
+    Private Class MessageForm
         Inherits Form
 
         Private _handle As IntPtr

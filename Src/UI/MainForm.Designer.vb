@@ -41,7 +41,7 @@ Partial Class MainForm
         Me.LabelFocus = New System.Windows.Forms.Label()
         Me.ListView = New System.Windows.Forms.ListBox()
         Me.ButtonCloseForm = New DevComponents.DotNetBar.ButtonX()
-        Me.ButtonSetting = New DevComponents.DotNetBar.ButtonX()
+        Me.ButtonListSetting = New DevComponents.DotNetBar.ButtonX()
         Me.NumericUpDownListCnt = New System.Windows.Forms.NumericUpDown()
         Me.TimerShowForm = New System.Windows.Forms.Timer(Me.components)
         Me.TimerEndForm = New System.Windows.Forms.Timer(Me.components)
@@ -74,6 +74,7 @@ Partial Class MainForm
         Me.ListPopupMenuOpacity = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuFold = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuWinTop = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuWinHighColor = New DevComponents.DotNetBar.ColorPickerDropDown()
         Me.ListPopupMenuExit = New DevComponents.DotNetBar.ButtonItem()
         Me.TabPopupMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuLabelItemList的 = New DevComponents.DotNetBar.LabelItem()
@@ -87,6 +88,7 @@ Partial Class MainForm
         Me.ButtonItemUp = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonItemDown = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonResizeFlag = New DevComponents.DotNetBar.ButtonX()
+        Me.HoverToolTip = New System.Windows.Forms.ToolTip(Me.components)
         CType(Me.NumericUpDownListCnt, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ContextMenuBar1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TabStrip, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -168,20 +170,20 @@ Partial Class MainForm
         Me.ButtonCloseForm.TabIndex = 1
         Me.ButtonCloseForm.Text = "×"
         '
-        'ButtonSetting
+        'ButtonListSetting
         '
-        Me.ButtonSetting.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
-        Me.ButtonSetting.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.ButtonSetting.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
-        Me.ButtonSetting.Location = New System.Drawing.Point(23, 272)
-        Me.ButtonSetting.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.ButtonSetting.Name = "ButtonSetting"
-        Me.ButtonSetting.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
-        Me.ButtonSetting.Size = New System.Drawing.Size(24, 23)
-        Me.ButtonSetting.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
-        Me.SuperTooltip.SetSuperTooltip(Me.ButtonSetting, New DevComponents.DotNetBar.SuperTooltipInfo("设置", "", "左键单击显示弹出菜单，右键点击显示设置列表高度。", Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(180, 68)))
-        Me.ButtonSetting.TabIndex = 1
-        Me.ButtonSetting.Text = "≡"
+        Me.ButtonListSetting.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
+        Me.ButtonListSetting.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ButtonListSetting.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
+        Me.ButtonListSetting.Location = New System.Drawing.Point(23, 272)
+        Me.ButtonListSetting.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.ButtonListSetting.Name = "ButtonListSetting"
+        Me.ButtonListSetting.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
+        Me.ButtonListSetting.Size = New System.Drawing.Size(24, 23)
+        Me.ButtonListSetting.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
+        Me.SuperTooltip.SetSuperTooltip(Me.ButtonListSetting, New DevComponents.DotNetBar.SuperTooltipInfo("设置", "", "左键单击显示弹出菜单，右键点击显示设置列表高度。", Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(180, 68)))
+        Me.ButtonListSetting.TabIndex = 1
+        Me.ButtonListSetting.Text = "≡"
         '
         'NumericUpDownListCnt
         '
@@ -253,12 +255,13 @@ Partial Class MainForm
         Me.ListPopupMenuLabelSelItemText.BackColor = System.Drawing.Color.Transparent
         Me.ListPopupMenuLabelSelItemText.BorderSide = DevComponents.DotNetBar.eBorderSide.None
         Me.ListPopupMenuLabelSelItemText.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
+        Me.ListPopupMenuLabelSelItemText.EnableMarkup = False
         Me.ListPopupMenuLabelSelItemText.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
         Me.ListPopupMenuLabelSelItemText.Name = "ListPopupMenuLabelSelItemText"
         Me.ListPopupMenuLabelSelItemText.PaddingLeft = 5
         Me.ListPopupMenuLabelSelItemText.PaddingRight = 5
         Me.ListPopupMenuLabelSelItemText.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
-        Me.ListPopupMenuLabelSelItemText.Text = "LabelItem2LabelItem2LabelItem2LabelItem2LabelItem2"
+        Me.ListPopupMenuLabelSelItemText.Text = "https://www.youtube.com/watch?v=wb94Z3Ck_uU&t=1015s"
         Me.ListPopupMenuLabelSelItemText.Width = 180
         Me.ListPopupMenuLabelSelItemText.WordWrap = True
         '
@@ -372,7 +375,8 @@ Partial Class MainForm
         Me.ListPopupMenuMove.BeginGroup = True
         Me.ListPopupMenuMove.Image = Global.DesktopTips.My.Resources.Resources.Right
         Me.ListPopupMenuMove.Name = "ListPopupMenuMove"
-        Me.ListPopupMenuMove.Text = "移动至分组...(&R)"
+        Me.ListPopupMenuMove.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlM)
+        Me.ListPopupMenuMove.Text = "移动至(&M)"
         '
         'ListPopupMenuLabelItemFile
         '
@@ -395,7 +399,7 @@ Partial Class MainForm
         'ListPopupMenuViewFile
         '
         Me.ListPopupMenuViewFile.Name = "ListPopupMenuViewFile"
-        Me.ListPopupMenuViewFile.Text = "浏览列表内容(&V)"
+        Me.ListPopupMenuViewFile.Text = "浏览当前列表内容(&V)"
         '
         'ListPopupMenuLabelItemWindow
         '
@@ -419,7 +423,7 @@ Partial Class MainForm
         'ListPopupMenuWinSetting
         '
         Me.ListPopupMenuWinSetting.Name = "ListPopupMenuWinSetting"
-        Me.ListPopupMenuWinSetting.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuOpacity, Me.ListPopupMenuFold, Me.ListPopupMenuWinTop})
+        Me.ListPopupMenuWinSetting.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuOpacity, Me.ListPopupMenuFold, Me.ListPopupMenuWinTop, Me.ListPopupMenuWinHighColor})
         Me.ListPopupMenuWinSetting.Text = "显示设置(&S)"
         '
         'ListPopupMenuOpacity
@@ -436,6 +440,12 @@ Partial Class MainForm
         '
         Me.ListPopupMenuWinTop.Name = "ListPopupMenuWinTop"
         Me.ListPopupMenuWinTop.Text = "窗口置顶(&W)"
+        '
+        'ListPopupMenuWinHighColor
+        '
+        Me.ListPopupMenuWinHighColor.Image = Global.DesktopTips.My.Resources.Resources.HighLightColor
+        Me.ListPopupMenuWinHighColor.Name = "ListPopupMenuWinHighColor"
+        Me.ListPopupMenuWinHighColor.Text = "高亮颜色(&C)"
         '
         'ListPopupMenuExit
         '
@@ -485,7 +495,7 @@ Partial Class MainForm
         Me.TabPopupMenuMove.BeginGroup = True
         Me.TabPopupMenuMove.Image = Global.DesktopTips.My.Resources.Resources.Right
         Me.TabPopupMenuMove.Name = "TabPopupMenuMove"
-        Me.TabPopupMenuMove.Text = "移动至分组...(&T)"
+        Me.TabPopupMenuMove.Text = "移动至分组(&M)"
         '
         'TabStrip
         '
@@ -596,7 +606,7 @@ Partial Class MainForm
         Me.Controls.Add(Me.ButtonItemUp)
         Me.Controls.Add(Me.ContextMenuBar1)
         Me.Controls.Add(Me.ListView)
-        Me.Controls.Add(Me.ButtonSetting)
+        Me.Controls.Add(Me.ButtonListSetting)
         Me.Controls.Add(Me.ButtonCloseForm)
         Me.Controls.Add(Me.ButtonAddItem)
         Me.Controls.Add(Me.ButtonRemoveItem)
@@ -629,7 +639,7 @@ Partial Class MainForm
     Friend WithEvents LabelFocus As System.Windows.Forms.Label
     Friend WithEvents ListView As System.Windows.Forms.ListBox
     Friend WithEvents ButtonCloseForm As DevComponents.DotNetBar.ButtonX
-    Friend WithEvents ButtonSetting As DevComponents.DotNetBar.ButtonX
+    Friend WithEvents ButtonListSetting As DevComponents.DotNetBar.ButtonX
     Friend WithEvents NumericUpDownListCnt As System.Windows.Forms.NumericUpDown
     Friend WithEvents TimerShowForm As System.Windows.Forms.Timer
     Friend WithEvents TimerEndForm As System.Windows.Forms.Timer
@@ -675,5 +685,7 @@ Partial Class MainForm
     Friend WithEvents ListPopupMenuItemContainer As DevComponents.DotNetBar.ItemContainer
     Friend WithEvents ListPopupMenuFold As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuWinSetting As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuWinHighColor As DevComponents.DotNetBar.ColorPickerDropDown
+    Friend WithEvents HoverToolTip As System.Windows.Forms.ToolTip
 
 End Class

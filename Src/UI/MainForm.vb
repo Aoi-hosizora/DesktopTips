@@ -179,6 +179,7 @@ Public Class MainForm
         setting.MaxOpacity = MaxOpacity
         setting.TopMost = Me.TopMost
         setting.IsFold = ListPopupMenuFold.Checked
+        setting.HighLightColor = ListPopupMenuWinHighColor.SelectedColor
 
         SettingUtil.SaveAppSettings(setting)
     End Sub
@@ -193,6 +194,7 @@ Public Class MainForm
         MaxOpacity = setting.MaxOpacity
         Me.TopMost = setting.TopMost
         ListPopupMenuFold.Checked = setting.IsFold
+        ListPopupMenuWinHighColor.SelectedColor = setting.HighLightColor
 
         Me.Refresh()
 
@@ -337,7 +339,7 @@ Public Class MainForm
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-#Region "List Sel Draw"
+#Region "List Sel"
 
     ''' <summary>
     ''' 窗口失去焦点，取消选择
@@ -372,12 +374,12 @@ Public Class MainForm
     Private Sub ListView_RightMouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseUp
 
         Dim idx As Integer = ListView.IndexFromPoint(e.X, e.Y)
-        If e.Button = Windows.Forms.MouseButtons.Right And idx <> -1 And idx <> 65535 Then
+        If e.Button = Windows.Forms.MouseButtons.Right AndAlso idx <> -1 AndAlso idx < ListView.Items.Count Then
             If ListView.SelectedIndices.Count <= 1 Then
 
                 ListView.ClearSelected()
                 ListView.SetSelected(idx, True)
-                
+
                 If ListView.Items.Count > 0 Then
                     Dim rect As Rectangle = ListView.GetItemRectangle(ListView.Items.Count - 1)
                     If e.Y > rect.Top + rect.Height Then ListView.ClearSelected()
@@ -390,31 +392,10 @@ Public Class MainForm
     ''' 按钮焦点
     ''' </summary>
     Private Sub ButtonFocus_Handle(sender As Object, e As System.Windows.Forms.MouseEventArgs) _
-        Handles ButtonAddItem.MouseDown, ButtonRemoveItem.MouseDown, ButtonCloseForm.MouseDown, ButtonSetting.MouseDown, _
+        Handles ButtonAddItem.MouseDown, ButtonRemoveItem.MouseDown, ButtonCloseForm.MouseDown, ButtonListSetting.MouseDown, _
         ButtonItemUp.MouseDown, ButtonItemDown.MouseDown, ButtonResizeFlag.MouseDown
 
         LabelFocus.Select()
-    End Sub
-
-    ''' <summary>
-    ''' 重写绘制 高亮
-    ''' </summary>
-    Private Sub ListView_DrawItem(sender As Object, e As System.Windows.Forms.DrawItemEventArgs) Handles ListView.DrawItem
-        If e.Index <> -1 Then
-            e.DrawBackground()
-            e.DrawFocusRectangle()
-
-            Dim NowItem = ListView.Items(e.Index)
-            Dim ColoredBrush As SolidBrush = New SolidBrush(Color.Black)
-
-            If CType(NowItem, TipItem).IsHighLight Then
-                ColoredBrush = New SolidBrush(Color.Red)
-            Else
-                ColoredBrush = New SolidBrush(e.ForeColor)
-            End If
-
-            e.Graphics.DrawString(NowItem.ToString, e.Font, ColoredBrush, e.Bounds, StringFormat.GenericDefault)
-        End If
     End Sub
 
 #End Region
@@ -658,6 +639,23 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
+    ''' ListView_MouseMoveHover 用 HoverIdx
+    ''' </summary>
+    Dim HoverIdx As Integer
+
+    ''' <summary>
+    ''' 悬浮弹出提示
+    ''' </summary>
+    Private Sub ListView_MouseMoveHover(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseMove
+        Dim Idx = ListView.IndexFromPoint(e.Location)
+        If HoverIdx <> Idx AndAlso Idx <> -1 AndAlso Idx < ListView.Items.Count Then
+            HoverToolTip.Hide(ListView)
+            HoverToolTip.SetToolTip(ListView, CType(ListView.Items.Item(Idx), TipItem).TipContent)
+            HoverIdx = Idx
+        End If
+    End Sub
+
+    ''' <summary>
     ''' 选择可用性
     ''' </summary>
     Private Sub SelCheck()
@@ -722,14 +720,14 @@ Public Class MainForm
     ''' <summary>
     ''' 显示弹出菜单
     ''' </summary>
-    Private Sub ButtonChangeHeight_Click(sender As System.Object, e As System.EventArgs) Handles ButtonSetting.Click
+    Private Sub ButtonChangeHeight_Click(sender As System.Object, e As System.EventArgs) Handles ButtonListSetting.Click
         ListPopupMenu.Popup(Me.Left + sender.Left, Me.Top + sender.Top + sender.Height - 1)
     End Sub
 
     ''' <summary>
     ''' 右键 Setting 显示调整大小
     ''' </summary>
-    Private Sub ButtonSetting_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonSetting.MouseUp
+    Private Sub ButtonSetting_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonListSetting.MouseUp
         If e.Button = Windows.Forms.MouseButtons.Right Then
             ListPopupMenuListHeight.Checked = Not ListPopupMenuListHeight.Checked
             ListPopupMenuListHeight_Click(sender, New System.EventArgs)
@@ -830,6 +828,35 @@ Public Class MainForm
         SaveList()
         ListView.Refresh()
     End Sub
+
+    ''' <summary>
+    ''' 高亮颜色修改
+    ''' </summary>
+    Private Sub ListPopupMenuWinHighColor_SelectedColorChanged(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuWinHighColor.SelectedColorChanged
+        ListView.Refresh()
+    End Sub
+
+    ''' <summary>
+    ''' 重写绘制 高亮
+    ''' </summary>
+    Private Sub ListView_DrawItem(sender As Object, e As System.Windows.Forms.DrawItemEventArgs) Handles ListView.DrawItem
+        If e.Index <> -1 Then
+            e.DrawBackground()
+            e.DrawFocusRectangle()
+
+            Dim NowItem = ListView.Items(e.Index)
+            Dim ColoredBrush As SolidBrush = New SolidBrush(Color.Black)
+
+            If CType(NowItem, TipItem).IsHighLight Then
+                ColoredBrush = New SolidBrush(ListPopupMenuWinHighColor.SelectedColor)
+            Else
+                ColoredBrush = New SolidBrush(e.ForeColor)
+            End If
+
+            e.Graphics.DrawString(NowItem.ToString, e.Font, ColoredBrush, e.Bounds, StringFormat.GenericDefault)
+        End If
+    End Sub
+
 
     ''' <summary>
     ''' 显示弹出菜单标题
@@ -1016,7 +1043,7 @@ Public Class MainForm
             Dim Btn As New DD.ButtonItem With { _
                 .Name = ClassNamePreFix & Tabs.Item(i), _
                 .Tag = Tabs.Item(i), _
-                .Text = Tabs.Item(i)
+                .Text = Tabs.Item(i) & If(i < 10, "(&" & i & ")", "")
             }
             AddHandler Btn.Click, AddressOf MoveTab
 
@@ -1054,6 +1081,16 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
+    ''' 快捷键弹出 移动至分组
+    ''' </summary>
+    Private Sub ListPopupMenuMove_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuMove.Click
+        If Not DD.BaseItem.IsOnPopup(ListPopupMenuMove) Then
+            ' ListPopupMenu.Popup(Me.Left + ButtonSetting.Left, Me.Top + ButtonSetting.Top + ButtonSetting.Height - 1)
+            ListPopupMenuMove.Popup(Me.Left + ButtonListSetting.Left, Me.Top + ButtonListSetting.Top + ButtonListSetting.Height - 1)
+        End If
+    End Sub
+
+    ''' <summary>
     ''' 移动至分组
     ''' </summary>
     ''' <remarks></remarks>
@@ -1081,7 +1118,7 @@ Public Class MainForm
                                                      & Chr(10) & Chr(10) & sb.ToString
         End If
 
-        Dim ok As MessageBoxButtons = MessageBoxEx.Show(Flag, "移动至分组...", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2)
+        Dim ok As MessageBoxButtons = MessageBoxEx.Show(Flag, "移动至分组...", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1)
         If ok = vbOK Then
             For Each Item As TipItem In SelectItems
                 Tab.GetTabFromTitle(Dest).Tips.Add(Item)

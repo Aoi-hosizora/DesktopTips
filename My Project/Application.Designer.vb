@@ -38,8 +38,10 @@ Namespace My
         End Sub
 
         Private Sub LocalizationKeys_LocalizeString(sender As Object, e As DD.LocalizeEventArgs)
-            ' DD.MessageBoxEx.UseSystemLocalizedString = True
+            'DD.MessageBoxEx.UseSystemLocalizedString = True
+
             Select Case e.Key
+                ' MessageBox
                 Case DD.LocalizationKeys.MessageBoxYesButton
                     e.LocalizedValue = "是"
                     e.Handled = True
@@ -72,6 +74,57 @@ Namespace My
                     e.Handled = True
                 Case DD.LocalizationKeys.MessageBoxAbortButton
                     e.LocalizedValue = "终止"
+                    e.Handled = True
+
+                    ' Color
+
+                Case DD.LocalizationKeys.ColorPickerCaption
+                    e.LocalizedValue = "选择颜色"
+                    e.Handled = True
+                Case DD.LocalizationKeys.ColorPickerDialogRedLabel
+                    e.LocalizedValue = "R："
+                    e.Handled = True
+                Case DD.LocalizationKeys.ColorPickerDialogGreenLabel
+                    e.LocalizedValue = "G："
+                    e.Handled = True
+                Case DD.LocalizationKeys.ColorPickerDialogBlueLabel
+                    e.LocalizedValue = "B："
+                    e.Handled = True
+                Case DD.LocalizationKeys.ColorPickerMoreColorsMenuItem
+                    e.LocalizedValue = "更多颜色(&M)..."
+                    e.Handled = True
+                Case DD.LocalizationKeys.ColorPickerStandardColorsLabel
+                    e.LocalizedValue = "标准颜色"
+                    e.Handled = True
+                Case DD.LocalizationKeys.ColorPickerThemeColorsLabel
+                    e.LocalizedValue = "主题颜色"
+                    e.Handled = True
+                Case DD.LocalizationKeys.ColorPickerTabStandard
+                    e.LocalizedValue = "标准"
+                    e.Handled = True
+                Case DD.LocalizationKeys.ColorPickerTabCustom
+                    e.LocalizedValue = "自定义"
+                    e.Handled = True
+                Case DD.LocalizationKeys.ColorPickerDialogOKButton
+                    e.LocalizedValue = "确定"
+                    e.Handled = True
+                Case DD.LocalizationKeys.ColorPickerDialogCancelButton
+                    e.LocalizedValue = "取消"
+                    e.Handled = True
+                Case DD.LocalizationKeys.ColorPickerDialogColorModelLabel
+                    e.LocalizedValue = "颜色模型"
+                    e.Handled = True
+                Case DD.LocalizationKeys.ColorPickerDialogNewColorLabel
+                    e.LocalizedValue = "新"
+                    e.Handled = True
+                Case DD.LocalizationKeys.ColorPickerDialogCurrentColorLabel
+                    e.LocalizedValue = "当前"
+                    e.Handled = True
+                Case DD.LocalizationKeys.ColorPickerDialogCustomColorsLabel
+                    e.LocalizedValue = "  颜色："
+                    e.Handled = True
+                Case DD.LocalizationKeys.ColorPickerDialogStandardColorsLabel
+                    e.LocalizedValue = "  颜色："
                     e.Handled = True
             End Select
         End Sub

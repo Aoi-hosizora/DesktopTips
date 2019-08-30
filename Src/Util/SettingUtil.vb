@@ -14,6 +14,8 @@
         Public TopMost As Boolean
 
         Public IsFold As Boolean
+
+        Public HighLightColor As Color
     End Structure
 
     Public Shared Sub SaveAppSettings(ByVal appSetting As AppSetting)
@@ -24,6 +26,7 @@
         SaveSetting(AppName, FormSection, "Opacity", appSetting.MaxOpacity)
         SaveSetting(AppName, FormSection, "TopMost", appSetting.TopMost)
         SaveSetting(AppName, FormSection, "IsFold", appSetting.IsFold)
+        SaveSetting(AppName, FormSection, "HighLight", ColorTranslator.ToHtml(appSetting.HighLightColor))
     End Sub
 
     Public Shared Function LoadAppSettings() As AppSetting
@@ -35,6 +38,7 @@
         setting.MaxOpacity = GetSetting(AppName, FormSection, "Opacity", 0.6)
         setting.TopMost = GetSetting(AppName, FormSection, "TopMost", False)
         setting.IsFold = GetSetting(AppName, FormSection, "IsFold", True)
+        setting.HighLightColor = ColorTranslator.FromHtml(GetSetting(AppName, FormSection, "HighLight", "#FF0000"))
         Return setting
     End Function
 End Class

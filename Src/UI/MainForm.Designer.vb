@@ -105,7 +105,7 @@ Partial Class MainForm
         Me.ButtonRemoveItem.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
         Me.ButtonRemoveItem.Size = New System.Drawing.Size(24, 23)
         Me.ButtonRemoveItem.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
-        Me.ButtonRemoveItem.TabIndex = 1
+        Me.ButtonRemoveItem.TabIndex = 5
         Me.ButtonRemoveItem.Text = "－"
         '
         'ButtonAddItem
@@ -119,7 +119,7 @@ Partial Class MainForm
         Me.ButtonAddItem.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
         Me.ButtonAddItem.Size = New System.Drawing.Size(24, 23)
         Me.ButtonAddItem.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
-        Me.ButtonAddItem.TabIndex = 1
+        Me.ButtonAddItem.TabIndex = 4
         Me.ButtonAddItem.Text = "＋"
         '
         'StyleManager1
@@ -182,7 +182,7 @@ Partial Class MainForm
         Me.ButtonListSetting.Size = New System.Drawing.Size(24, 23)
         Me.ButtonListSetting.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
         Me.SuperTooltip.SetSuperTooltip(Me.ButtonListSetting, New DevComponents.DotNetBar.SuperTooltipInfo("设置", "", "左键单击显示弹出菜单，右键点击显示设置列表高度。", Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(180, 68)))
-        Me.ButtonListSetting.TabIndex = 1
+        Me.ButtonListSetting.TabIndex = 2
         Me.ButtonListSetting.Text = "≡"
         '
         'NumericUpDownListCnt
@@ -248,7 +248,7 @@ Partial Class MainForm
         Me.ListPopupMenuLabelSelItem.PaddingLeft = 10
         Me.ListPopupMenuLabelSelItem.PaddingTop = 1
         Me.ListPopupMenuLabelSelItem.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
-        Me.ListPopupMenuLabelSelItem.Text = "当前选中"
+        Me.ListPopupMenuLabelSelItem.Text = "当前选中 (共 0 项)"
         '
         'ListPopupMenuLabelSelItemText
         '
@@ -262,7 +262,7 @@ Partial Class MainForm
         Me.ListPopupMenuLabelSelItemText.PaddingRight = 5
         Me.ListPopupMenuLabelSelItemText.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
         Me.ListPopupMenuLabelSelItemText.Text = "https://www.youtube.com/watch?v=wb94Z3Ck_uU&t=1015s"
-        Me.ListPopupMenuLabelSelItemText.Width = 180
+        Me.ListPopupMenuLabelSelItemText.Width = 178
         Me.ListPopupMenuLabelSelItemText.WordWrap = True
         '
         'ListPopupMenuLabelItemList
@@ -277,7 +277,7 @@ Partial Class MainForm
         Me.ListPopupMenuLabelItemList.PaddingLeft = 10
         Me.ListPopupMenuLabelItemList.PaddingTop = 1
         Me.ListPopupMenuLabelItemList.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
-        Me.ListPopupMenuLabelItemList.Text = "列表"
+        Me.ListPopupMenuLabelItemList.Text = "列表 (共 0 项，高亮 0 项)"
         '
         'ListPopupMenuItemContainer
         '
@@ -286,7 +286,6 @@ Partial Class MainForm
         '
         Me.ListPopupMenuItemContainer.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square
         Me.ListPopupMenuItemContainer.HorizontalItemAlignment = DevComponents.DotNetBar.eHorizontalItemsAlignment.Center
-        Me.ListPopupMenuItemContainer.ItemSpacing = 2
         Me.ListPopupMenuItemContainer.Name = "ListPopupMenuItemContainer"
         Me.ListPopupMenuItemContainer.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem, Me.ListPopupMenuEditItem, Me.ListPopupMenuSelectAll, Me.ListPopupMenuHighLight})
         '
@@ -470,7 +469,7 @@ Partial Class MainForm
         Me.ListPopupMenuLabelItemList的.PaddingLeft = 10
         Me.ListPopupMenuLabelItemList的.PaddingTop = 1
         Me.ListPopupMenuLabelItemList的.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
-        Me.ListPopupMenuLabelItemList的.Text = "分组"
+        Me.ListPopupMenuLabelItemList的.Text = "分组 (共 0 组)"
         '
         'TabPopupMenuNewTab
         '
@@ -534,7 +533,7 @@ Partial Class MainForm
         Me.TabStrip.TabCloseButtonHot = Nothing
         Me.TabStrip.TabFont = New System.Drawing.Font("Microsoft YaHei UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TabStrip.TabHorizontalSpacing = 2
-        Me.TabStrip.TabIndex = 7
+        Me.TabStrip.TabIndex = 9
         Me.TabStrip.Tabs.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.TabItemTest, Me.TabItemTest2})
         Me.TabStrip.TabStyle = DevComponents.DotNetBar.eSuperTabStyle.VisualStudio2008Dock
         Me.TabStrip.TabVerticalSpacing = 3
@@ -564,7 +563,7 @@ Partial Class MainForm
         Me.ButtonItemUp.Name = "ButtonItemUp"
         Me.ButtonItemUp.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
         Me.ButtonItemUp.Size = New System.Drawing.Size(17, 17)
-        Me.ButtonItemUp.TabIndex = 5
+        Me.ButtonItemUp.TabIndex = 7
         Me.ButtonItemUp.Tag = "True"
         Me.ButtonItemUp.Text = "↑"
         '
@@ -577,7 +576,7 @@ Partial Class MainForm
         Me.ButtonItemDown.Name = "ButtonItemDown"
         Me.ButtonItemDown.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
         Me.ButtonItemDown.Size = New System.Drawing.Size(17, 17)
-        Me.ButtonItemDown.TabIndex = 6
+        Me.ButtonItemDown.TabIndex = 8
         Me.ButtonItemDown.Tag = "True"
         Me.ButtonItemDown.Text = "↓"
         '
@@ -592,7 +591,7 @@ Partial Class MainForm
         Me.ButtonResizeFlag.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
         Me.ButtonResizeFlag.Size = New System.Drawing.Size(10, 23)
         Me.ButtonResizeFlag.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
-        Me.ButtonResizeFlag.TabIndex = 8
+        Me.ButtonResizeFlag.TabIndex = 6
         Me.ButtonResizeFlag.Text = "::"
         '
         'MainForm

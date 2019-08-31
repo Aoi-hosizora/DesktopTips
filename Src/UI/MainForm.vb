@@ -151,7 +151,10 @@ Public Class MainForm
     ''' 鼠标移出，并且没有popup
     ''' </summary>
     Private Sub FormMouseLeave(sender As Object, e As System.EventArgs)
-        If ListPopupMenu.PopupControl Is Nothing Then
+        If ListPopupMenu.PopupControl Is Nothing _
+            AndAlso TabPopupMenu.PopupControl Is Nothing _
+            AndAlso ListPopupMenuMove.PopupControl Is Nothing Then
+
             TimerMouseIn.Stop()
             TimerMouseIn.Enabled = False
             TimerMouseOut.Enabled = True
@@ -162,7 +165,7 @@ Public Class MainForm
     ''' <summary>
     ''' Popup 关闭，不能使用 Close
     ''' </summary>
-    Private Sub ListPopMenu_PopupFinalized(sender As Object, e As System.EventArgs) Handles ListPopupMenu.PopupFinalized
+    Private Sub PopMenu_PopupFinalized(sender As Object, e As System.EventArgs) Handles ListPopupMenu.PopupFinalized, TabPopupMenu.PopupFinalized, ListPopupMenuMove.PopupFinalized
         FormMouseLeave(sender, e)
     End Sub
 
@@ -641,7 +644,7 @@ Public Class MainForm
     ''' <summary>
     ''' ListView_MouseMoveHover 用 HoverIdx
     ''' </summary>
-    Dim HoverIdx As Integer
+    Dim HoverIdx As Integer = -1
 
     ''' <summary>
     ''' 悬浮弹出提示
@@ -865,16 +868,21 @@ Public Class MainForm
         e.Cancel = True
         ListPopupMenuLabelSelItem.Visible = ListView.SelectedIndex <> -1
         ListPopupMenuLabelSelItemText.Visible = ListView.SelectedIndex <> -1
+
         ListPopupMenuLabelSelItem.Text = "当前选中 (共 " & ListView.SelectedIndices.Count & " 项)"
-        If ListView.SelectedIndices.Count = 1 Then
-            ListPopupMenuLabelSelItemText.Text = CType(ListView.SelectedItem, TipItem).TipContent
-        ElseIf ListView.SelectedIndices.Count <> 0 Then
-            Dim sb As New StringBuilder
-            For Each item As TipItem In ListView.SelectedItems.Cast(Of TipItem)()
-                sb.AppendLine(item.TipContent)
-            Next
-            ListPopupMenuLabelSelItemText.Text = sb.ToString
-        End If
+
+        Dim sb As New StringBuilder
+        For Each item As TipItem In ListView.SelectedItems.Cast(Of TipItem)()
+            sb.AppendLine(item.TipContent)
+        Next
+        ListPopupMenuLabelSelItemText.Text = sb.ToString
+
+        Dim HLItemCnt As Integer = 0
+        For Each Tip As TipItem In SU.Tabs.Item(SU.CurrTabIdx).Tips
+            HLItemCnt += If(Tip.IsHighLight, 1, 0)
+        Next
+        ListPopupMenuLabelItemList.Text = "列表 (共 " & ListView.Items.Count & " 项，高亮 " & HLItemCnt & " 项)"
+
         e.Cancel = False
         ListPopupMenu.Refresh()
     End Sub
@@ -1078,6 +1086,8 @@ Public Class MainForm
         If Not Me.TabPopupMenuMove.Enabled Then
             Me.TabPopupMenuMove.SubItems.Clear()
         End If
+
+        ListPopupMenuLabelItemList.Text = "分组 (共 " & SU.Tabs.Count & " 组)"
     End Sub
 
     ''' <summary>
@@ -1125,23 +1135,26 @@ Public Class MainForm
                 Tab.GetTabFromTitle(Src).Tips.Remove(Item)
             Next
             SU.SaveTabData()
+
+            For Each TabItem As DD.SuperTabItem In TabStrip.Tabs
+                If TabItem.Text = Dest Then
+                    TabStrip.SelectedTab = TabItem
+                    Exit For
+                End If
+            Next
+
+            For Each Item As TipItem In SelectItems
+                Dim Idx As Integer = TipItem.GetIndexFromContent(Item.TipContent, Tab.GetTabFromTitle(Dest).Tips)
+                If Idx <> -1 Then
+                    ListView.SetSelected(Idx, True)
+                End If
+            Next
         End If
-
-        For Each TabItem As DD.SuperTabItem In TabStrip.Tabs
-            If TabItem.Text = Dest Then
-                TabStrip.SelectedTab = TabItem
-                Exit For
-            End If
-        Next
-
-        For Each Item As TipItem In SelectItems
-            Dim Idx As Integer = TipItem.GetIndexFromContent(Item.TipContent, Tab.GetTabFromTitle(Dest).Tips)
-            If Idx <> -1 Then
-                ListView.SetSelected(Idx, True)
-            End If
-        Next
     End Sub
 
 #End Region
 
+    Private Sub ListPopupMenu_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenu.Click
+
+    End Sub
 End Class

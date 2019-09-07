@@ -174,7 +174,11 @@ Public Class MainForm
 
 #Region "Setting & SetupUI"
 
-    Private Sub MainForm_FormClosed(sender As Object, e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
+    public HotKey As Keys = Keys.F4
+
+    Public Sub SaveSetting()
+        SettingUtil.UnRegisterHotKey(Handle, 0)
+
         Dim setting As SettingUtil.AppSetting
         setting.Top = Me.Top
         setting.Left = Me.Left
@@ -186,6 +190,10 @@ Public Class MainForm
         setting.HighLightColor = ListPopupMenuWinHighColor.SelectedColor
 
         SettingUtil.SaveAppSettings(setting)
+    End Sub
+
+    Private Sub MainForm_FormClosed(sender As Object, e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
+        SaveSetting()
     End Sub
 
     Private Sub MainForm_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
@@ -220,6 +228,10 @@ Public Class MainForm
         LoadList()
         FormOpacity_Load()
         FoldMenu(ListPopupMenuFold.Checked)
+
+        If Not SettingUtil.RegisterHotKey(Handle, 0, Nothing, HotKey) Then
+            MessageBox.Show("快捷键已被占用，请重新设置", "快捷键", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End If
     End Sub
 
     Private Sub SetupUpDownButtonsPos()
@@ -231,6 +243,21 @@ Public Class MainForm
         ButtonItemDown.Visible = False
         ButtonItemDown.Height = height
         ButtonItemDown.Width = height
+    End Sub
+
+    ''' <summary>
+    ''' 设置快捷键相应
+    ''' </summary>
+    Protected Overrides Sub WndProc(ByRef m As System.Windows.Forms.Message)
+        If m.Msg = SettingUtil.WM_HOTKEY Then
+            Me.Focus()
+            Me.Select()
+            Me.TopMost = True
+            Me.TopMost = False
+            TimerMouseIn.Enabled = True
+            TimerMouseIn.Start()
+        End If
+        MyBase.WndProc(m)
     End Sub
 
 #End Region
@@ -742,7 +769,7 @@ Public Class MainForm
 
 #End Region
 
-#Region "调整大小 弹出菜单"
+#Region "调整大小 弹出菜单 快捷键"
 
     ''' <summary>
     ''' 调整大小

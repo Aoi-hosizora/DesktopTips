@@ -50,7 +50,7 @@ Public Class StorageUtil
                 Throw New Exception
             End If
         Catch ex As Exception
-            Throw New FileLoadException("读取文件失败，请检查文件。")
+            Throw New FileLoadException("读取文件失败，请检查文件。", StorageJsonFile)
         End Try
 
         For Each Tab As Tab In Tabs

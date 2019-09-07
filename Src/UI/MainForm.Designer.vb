@@ -64,6 +64,7 @@ Partial Class MainForm
         Me.ListPopupMenuMoveTop = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuMoveBottom = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuViewHighLight = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuFind = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuMove = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuLabelItemFile = New DevComponents.DotNetBar.LabelItem()
         Me.ListPopupMenuOpenDir = New DevComponents.DotNetBar.ButtonItem()
@@ -234,7 +235,7 @@ Partial Class MainForm
         '
         Me.ListPopupMenu.AutoExpandOnClick = True
         Me.ListPopupMenu.Name = "ListPopupMenu"
-        Me.ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList, Me.ListPopupMenuItemContainer, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuMove, Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuListHeight, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
+        Me.ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList, Me.ListPopupMenuItemContainer, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuFind, Me.ListPopupMenuMove, Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuListHeight, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
         Me.ListPopupMenu.Text = "ListPopup"
         '
         'ListPopupMenuLabelSelItem
@@ -369,9 +370,16 @@ Partial Class MainForm
         Me.ListPopupMenuViewHighLight.Name = "ListPopupMenuViewHighLight"
         Me.ListPopupMenuViewHighLight.Text = "浏览所有高亮(&L)"
         '
+        'ListPopupMenuFind
+        '
+        Me.ListPopupMenuFind.BeginGroup = True
+        Me.ListPopupMenuFind.Image = Global.DesktopTips.My.Resources.Resources.Find
+        Me.ListPopupMenuFind.Name = "ListPopupMenuFind"
+        Me.ListPopupMenuFind.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlF)
+        Me.ListPopupMenuFind.Text = "查找(&F)"
+        '
         'ListPopupMenuMove
         '
-        Me.ListPopupMenuMove.BeginGroup = True
         Me.ListPopupMenuMove.Image = Global.DesktopTips.My.Resources.Resources.Right
         Me.ListPopupMenuMove.Name = "ListPopupMenuMove"
         Me.ListPopupMenuMove.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlM)
@@ -686,5 +694,6 @@ Partial Class MainForm
     Friend WithEvents ListPopupMenuWinSetting As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuWinHighColor As DevComponents.DotNetBar.ColorPickerDropDown
     Friend WithEvents HoverToolTip As System.Windows.Forms.ToolTip
+    Friend WithEvents ListPopupMenuFind As DevComponents.DotNetBar.ButtonItem
 
 End Class

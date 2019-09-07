@@ -3,6 +3,7 @@ Imports System.Text
 Imports SU = DesktopTips.StorageUtil
 Imports DD = DevComponents.DotNetBar
 
+
 Public Class MainForm
 
     Declare Sub mouse_event Lib "user32" (ByVal dwFlags As Integer, ByVal dx As Integer, ByVal dy As Integer, ByVal cButtons As Integer, ByVal dwExtraInfo As Integer)
@@ -262,7 +263,7 @@ Public Class MainForm
                 New DD.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, _
  _
                                                         Me.ListPopupMenuLabelItemList, Me.ListPopupMenuItemContainer, _
-                                                        Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuMove, _
+                                                        Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuFind, Me.ListPopupMenuMove, _
  _
                                                         Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuLabelItemWindow, _
                                                         Me.ListPopupMenuListHeight, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
@@ -286,7 +287,7 @@ Public Class MainForm
  _
                                                         Me.ListPopupMenuLabelItemList, Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, _
                                                         Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem, Me.ListPopupMenuEditItem, Me.ListPopupMenuSelectAll, _
-                                                        Me.ListPopupMenuHighLight, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuMove, _
+                                                        Me.ListPopupMenuHighLight, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuFind, Me.ListPopupMenuMove, _
  _
                                                         Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuLabelItemWindow, _
                                                         Me.ListPopupMenuListHeight, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
@@ -625,7 +626,7 @@ Public Class MainForm
 
 #End Region
 
-#Region "选择 Enable"
+#Region "选择 Enable 查找"
 
     ''' <summary>
     ''' 高亮判断 辅助按钮显示
@@ -700,6 +701,43 @@ Public Class MainForm
         For i = 0 To ListView.Items.Count - 1
             ListView.SetSelected(i, True)
         Next
+    End Sub
+
+    ''' <summary>
+    ''' 查找结果
+    ''' </summary>
+    Public SearchResult As New List(Of Tuple(Of Integer, Integer))
+
+    ''' <summary>
+    ''' 搜索文字
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public SearchText As String
+
+    ''' <summary>
+    ''' 查找文字
+    ''' </summary>
+    Public Sub ListPopupMenuFind_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuFind.Click
+        SearchResult.Clear()
+        SearchText = InputBox("请输入查找的文字：", "查找").Trim()
+
+        If SearchText <> "" Then
+            Dim spl() As String = SearchText.Split(" ")
+            For Each Tab As Tab In SU.Tabs
+                For Each Tip As TipItem In Tab.Tips
+                    If Tip.TipContent.ToLower.Contains(SearchText.ToLower) Then
+                        SearchResult.Add(New Tuple(Of Integer, Integer)(SU.Tabs.IndexOf(Tab), Tab.Tips.IndexOf(Tip)))
+                    End If
+                Next
+            Next
+
+            SearchForm.Close()
+            If SearchResult.Count = 0 Then
+                MessageBoxEx.Show("未找到 """ & SearchText & """ 。", "查找", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1)
+            Else
+                SearchForm.Show(Me)
+            End If
+        End If
     End Sub
 
 #End Region
@@ -1154,7 +1192,4 @@ Public Class MainForm
 
 #End Region
 
-    Private Sub ListPopupMenu_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenu.Click
-
-    End Sub
 End Class

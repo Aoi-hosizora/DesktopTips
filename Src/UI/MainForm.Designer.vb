@@ -78,7 +78,7 @@ Partial Class MainForm
         Me.ListPopupMenuWinHighColor = New DevComponents.DotNetBar.ColorPickerDropDown()
         Me.ListPopupMenuExit = New DevComponents.DotNetBar.ButtonItem()
         Me.TabPopupMenu = New DevComponents.DotNetBar.ButtonItem()
-        Me.ListPopupMenuLabelItemList的 = New DevComponents.DotNetBar.LabelItem()
+        Me.TabPopupMenuLabel = New DevComponents.DotNetBar.LabelItem()
         Me.TabPopupMenuNewTab = New DevComponents.DotNetBar.ButtonItem()
         Me.TabPopupMenuDeleteTab = New DevComponents.DotNetBar.ButtonItem()
         Me.TabPopupMenuRenameTab = New DevComponents.DotNetBar.ButtonItem()
@@ -86,6 +86,7 @@ Partial Class MainForm
         Me.TabStrip = New DevComponents.DotNetBar.SuperTabStrip()
         Me.TabItemTest = New DevComponents.DotNetBar.SuperTabItem()
         Me.TabItemTest2 = New DevComponents.DotNetBar.SuperTabItem()
+        Me.LabelNothing = New System.Windows.Forms.Label()
         Me.ButtonItemUp = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonItemDown = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonResizeFlag = New DevComponents.DotNetBar.ButtonX()
@@ -463,21 +464,21 @@ Partial Class MainForm
         '
         Me.TabPopupMenu.AutoExpandOnClick = True
         Me.TabPopupMenu.Name = "TabPopupMenu"
-        Me.TabPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuLabelItemList的, Me.TabPopupMenuNewTab, Me.TabPopupMenuDeleteTab, Me.TabPopupMenuRenameTab, Me.TabPopupMenuMove})
+        Me.TabPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.TabPopupMenuLabel, Me.TabPopupMenuNewTab, Me.TabPopupMenuDeleteTab, Me.TabPopupMenuRenameTab, Me.TabPopupMenuMove})
         Me.TabPopupMenu.Text = "TabPopup"
         '
-        'ListPopupMenuLabelItemList的
+        'TabPopupMenuLabel
         '
-        Me.ListPopupMenuLabelItemList的.BackColor = System.Drawing.Color.FromArgb(CType(CType(221, Byte), Integer), CType(CType(231, Byte), Integer), CType(CType(238, Byte), Integer))
-        Me.ListPopupMenuLabelItemList的.BorderSide = DevComponents.DotNetBar.eBorderSide.Bottom
-        Me.ListPopupMenuLabelItemList的.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
-        Me.ListPopupMenuLabelItemList的.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
-        Me.ListPopupMenuLabelItemList的.Name = "ListPopupMenuLabelItemList的"
-        Me.ListPopupMenuLabelItemList的.PaddingBottom = 1
-        Me.ListPopupMenuLabelItemList的.PaddingLeft = 10
-        Me.ListPopupMenuLabelItemList的.PaddingTop = 1
-        Me.ListPopupMenuLabelItemList的.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
-        Me.ListPopupMenuLabelItemList的.Text = "分组 (共 0 组)"
+        Me.TabPopupMenuLabel.BackColor = System.Drawing.Color.FromArgb(CType(CType(221, Byte), Integer), CType(CType(231, Byte), Integer), CType(CType(238, Byte), Integer))
+        Me.TabPopupMenuLabel.BorderSide = DevComponents.DotNetBar.eBorderSide.Bottom
+        Me.TabPopupMenuLabel.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
+        Me.TabPopupMenuLabel.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
+        Me.TabPopupMenuLabel.Name = "TabPopupMenuLabel"
+        Me.TabPopupMenuLabel.PaddingBottom = 1
+        Me.TabPopupMenuLabel.PaddingLeft = 10
+        Me.TabPopupMenuLabel.PaddingTop = 1
+        Me.TabPopupMenuLabel.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
+        Me.TabPopupMenuLabel.Text = "分组 (共 0 组)"
         '
         'TabPopupMenuNewTab
         '
@@ -562,6 +563,18 @@ Partial Class MainForm
         Me.TabItemTest2.Text = "Test"
         Me.TabItemTest2.Visible = False
         '
+        'LabelNothing
+        '
+        Me.LabelNothing.BackColor = System.Drawing.Color.Snow
+        Me.ContextMenuBar1.SetContextMenuEx(Me.LabelNothing, Me.ListPopupMenu)
+        Me.LabelNothing.ForeColor = System.Drawing.Color.DimGray
+        Me.LabelNothing.Location = New System.Drawing.Point(213, 197)
+        Me.LabelNothing.Name = "LabelNothing"
+        Me.LabelNothing.Size = New System.Drawing.Size(56, 20)
+        Me.LabelNothing.TabIndex = 10
+        Me.LabelNothing.Text = "无内容"
+        Me.LabelNothing.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
         'ButtonItemUp
         '
         Me.ButtonItemUp.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
@@ -608,10 +621,11 @@ Partial Class MainForm
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.DarkRed
         Me.ClientSize = New System.Drawing.Size(326, 295)
-        Me.Controls.Add(Me.ButtonResizeFlag)
         Me.Controls.Add(Me.ButtonItemDown)
         Me.Controls.Add(Me.ButtonItemUp)
         Me.Controls.Add(Me.ContextMenuBar1)
+        Me.Controls.Add(Me.LabelNothing)
+        Me.Controls.Add(Me.ButtonResizeFlag)
         Me.Controls.Add(Me.ListView)
         Me.Controls.Add(Me.ButtonListSetting)
         Me.Controls.Add(Me.ButtonCloseForm)
@@ -686,7 +700,7 @@ Partial Class MainForm
     Friend WithEvents TabPopupMenuRenameTab As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuMove As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents TabPopupMenuMove As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents ListPopupMenuLabelItemList的 As DevComponents.DotNetBar.LabelItem
+    Friend WithEvents TabPopupMenuLabel As DevComponents.DotNetBar.LabelItem
     Friend WithEvents ButtonResizeFlag As DevComponents.DotNetBar.ButtonX
     Friend WithEvents TabItemTest2 As DevComponents.DotNetBar.SuperTabItem
     Friend WithEvents ListPopupMenuItemContainer As DevComponents.DotNetBar.ItemContainer
@@ -695,5 +709,6 @@ Partial Class MainForm
     Friend WithEvents ListPopupMenuWinHighColor As DevComponents.DotNetBar.ColorPickerDropDown
     Friend WithEvents HoverToolTip As System.Windows.Forms.ToolTip
     Friend WithEvents ListPopupMenuFind As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents LabelNothing As System.Windows.Forms.Label
 
 End Class

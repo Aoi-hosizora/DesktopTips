@@ -26,7 +26,10 @@ Public Class MainForm
     Private PushDownWindowSize As Point
     Private IsMouseDown As Boolean
 
-    Private Sub Flag_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseDown, TabStrip.MouseDown, ButtonResizeFlag.MouseDown
+    ''' <summary>
+    ''' 点下
+    ''' </summary>
+    Private Sub Flag_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseDown, TabStrip.MouseDown, LabelNothing.MouseDown, ButtonResizeFlag.MouseDown
         If e.Button = Windows.Forms.MouseButtons.Left Then
             IsMouseDown = True
         End If
@@ -35,13 +38,30 @@ Public Class MainForm
         PushDownWindowSize = New Point(Me.Width, Me.Height)
     End Sub
 
-    Private Sub Flag_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseUp, TabStrip.MouseUp, ButtonResizeFlag.MouseUp
+    ''' <summary>
+    ''' 放开
+    ''' </summary>
+    Private Sub Flag_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseUp, TabStrip.MouseUp, LabelNothing.MouseUp, ButtonResizeFlag.MouseUp
         Me.Cursor = Cursors.Default
         IsMouseDown = False
         ListView.Refresh()
     End Sub
 
-    Private Sub ListView_TabStrip_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseMove, TabStrip.MouseMove
+    ''' <summary>
+    ''' 重新进入
+    ''' </summary>
+    Private Sub Flag_MouseEnter(sender As Object, e As System.EventArgs) Handles ListView.MouseEnter, TabStrip.MouseEnter, LabelNothing.MouseEnter, ButtonResizeFlag.MouseEnter
+        If IsMouseDown = True Then
+            Me.Cursor = Cursors.Default
+            IsMouseDown = False
+            ListView.Refresh()
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 窗口移动
+    ''' </summary>
+    Private Sub ListView_TabStrip_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseMove, TabStrip.MouseMove, LabelNothing.MouseMove
         If IsMouseDown Then
             Me.Cursor = Cursors.SizeAll
             Me.Top = PushDownWindowPos.Y + Cursor.Position.Y - PushDownMouseInScreen.Y
@@ -49,10 +69,22 @@ Public Class MainForm
         End If
     End Sub
 
+    ''' <summary>
+    ''' 大小调整
+    ''' </summary>
     Private Sub ButtonResizeFlag_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonResizeFlag.MouseMove
         If IsMouseDown Then
             Me.Width = PushDownWindowSize.X + Cursor.Position.X - PushDownMouseInScreen.X
         End If
+    End Sub
+
+    Private Sub MainForm_SizeChanged(sender As Object, e As System.EventArgs) Handles Me.SizeChanged
+        LabelNothing.Top = ListView.Top + 1
+        LabelNothing.Left = ListView.Left + 1
+        LabelNothing.Height = ListView.Height - 2
+        LabelNothing.Width = ListView.Width - 2
+
+        ' LabelNothing.Anchor = AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top Or AnchorStyles.Bottom
     End Sub
 
 #End Region
@@ -174,7 +206,7 @@ Public Class MainForm
 
 #Region "Setting & SetupUI"
 
-    public HotKey As Keys = Keys.F4
+    Public HotKey As Keys = Keys.F4
 
     Public Sub SaveSetting()
         SettingUtil.UnRegisterHotKey(Handle, 0)
@@ -477,6 +509,8 @@ Public Class MainForm
                 AddTab(SU.Tabs.Item(i).Title)
             Next
         End If
+
+        LabelNothing.Visible = ListView.Items.Count = 0
     End Sub
 
     ''' <summary>
@@ -490,11 +524,9 @@ Public Class MainForm
 
         SU.Tabs.Item(SU.CurrTabIdx).Tips = New List(Of TipItem)(Tips)
         SU.SaveTabData()
+        LabelNothing.Visible = ListView.Items.Count = 0
     End Sub
 
-    Private Sub MainForm_SaveList_FormClosed(sender As Object, e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
-        ' SaveList()
-    End Sub
 #End Region
 
 #Region "增删改移动"
@@ -506,8 +538,9 @@ Public Class MainForm
         Dim msg As String = InputBox("新的提醒标签：", "添加")
         If msg <> "" Then
             ListView.Items.Add(New TipItem(msg.Trim()))
-            ListView.SelectedIndex = 0
-            ListView.SelectedIndex = ListView.Items.Count() - 1
+            ListView.SetSelected(0, True)
+            ListView.ClearSelected()
+            ListView.SetSelected(ListView.Items.Count() - 1, True)
             SaveList()
         End If
     End Sub
@@ -1152,7 +1185,7 @@ Public Class MainForm
             Me.TabPopupMenuMove.SubItems.Clear()
         End If
 
-        ListPopupMenuLabelItemList.Text = "分组 (共 " & SU.Tabs.Count & " 组)"
+        TabPopupMenuLabel.Text = "分组 (共 " & SU.Tabs.Count & " 组)"
     End Sub
 
     ''' <summary>

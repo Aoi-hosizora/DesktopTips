@@ -282,8 +282,7 @@ Public Class MainForm
     ''' </summary>
     Protected Overrides Sub WndProc(ByRef m As System.Windows.Forms.Message)
         If m.Msg = SettingUtil.WM_HOTKEY Then
-            Me.Focus()
-            Me.Select()
+            Me.Activate()
             Me.TopMost = True
             Me.TopMost = False
             TimerMouseIn.Enabled = True
@@ -409,6 +408,10 @@ Public Class MainForm
     ''' </summary>
     Private Sub MainForm_Deactivate(sender As Object, e As System.EventArgs) Handles Me.Deactivate
         ListView.ClearSelected()
+        If Me.Opacity <> MaxOpacity Then
+            TimerMouseOut.Enabled = True
+            TimerMouseOut.Start()
+        End If
     End Sub
 
     ''' <summary>
@@ -534,7 +537,7 @@ Public Class MainForm
     ''' <summary>
     ''' 增 ButtonAddItem ListPopupMenuAddItem
     ''' </summary>
-    Private Sub ButtonAddItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonAddItem.Click, ListPopupMenuAddItem.Click
+    Private Sub ButtonAddItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonAddItem.Click, ListPopupMenuAddItem.Click, LabelNothing.DoubleClick
         Dim msg As String = InputBox("新的提醒标签：", "添加")
         If msg <> "" Then
             ListView.Items.Add(New TipItem(msg.Trim()))
@@ -903,7 +906,7 @@ Public Class MainForm
                 idx += 1
             End If
         Next
-        ShowForm("查看高亮 (共 " & idx & " 项)", sb.ToString, Color.Red)
+        ShowForm("查看高亮 (共 " & idx & " 项)", sb.ToString, ListPopupMenuWinHighColor.SelectedColor)
     End Sub
 
 #End Region
@@ -1192,8 +1195,8 @@ Public Class MainForm
     ''' 快捷键弹出 移动至分组
     ''' </summary>
     Private Sub ListPopupMenuMove_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuMove.Click
-        If Not DD.BaseItem.IsOnPopup(ListPopupMenuMove) Then
-            ' ListPopupMenu.Popup(Me.Left + ButtonSetting.Left, Me.Top + ButtonSetting.Top + ButtonSetting.Height - 1)
+        If ListView.SelectedIndices.Count <> 0 AndAlso Not DD.BaseItem.IsOnPopup(ListPopupMenuMove) Then
+            ListPopMenu_PopupOpen_Move(sender, New DD.PopupOpenEventArgs)
             ListPopupMenuMove.Popup(Me.Left + ButtonListSetting.Left, Me.Top + ButtonListSetting.Top + ButtonListSetting.Height - 1)
         End If
     End Sub

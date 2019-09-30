@@ -323,7 +323,7 @@ Public Class MainForm
                                                         Me.ListPopupMenuLabelItemList, Me.ListPopupMenuItemContainer, _
                                                         Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuFind, Me.ListPopupMenuMove, _
  _
-                                                        Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuLabelItemWindow, _
+                                                        Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuOpenBrowser, Me.ListPopupMenuLabelItemWindow, _
                                                         Me.ListPopupMenuListHeight, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
 
             Me.ListPopupMenuMoveTop.BeginGroup = True
@@ -347,7 +347,7 @@ Public Class MainForm
                                                         Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem, Me.ListPopupMenuEditItem, Me.ListPopupMenuSelectAll, _
                                                         Me.ListPopupMenuHighLight, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuFind, Me.ListPopupMenuMove, _
  _
-                                                        Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuLabelItemWindow, _
+                                                        Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuOpenBrowser, Me.ListPopupMenuLabelItemWindow, _
                                                         Me.ListPopupMenuListHeight, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
 
         End If
@@ -755,6 +755,21 @@ Public Class MainForm
 
         ' 移动
         ListPopupMenuMove.Enabled = IsNotNull
+
+        ' 浏览器
+        If IsSingle Then
+            Dim item As TipItem = CType(ListView.SelectedItem, TipItem)
+            ListPopupMenuOpenBrowser.Enabled = item.TipContent.IndexOf("http://") <> -1 Or item.TipContent.IndexOf("https://") <> -1
+        Else
+            Dim ok As Boolean = False
+            For Each item As TipItem In ListView.SelectedItems.Cast(Of TipItem)()
+                If item.TipContent.IndexOf("http://") <> -1 Or item.TipContent.IndexOf("https://") <> -1 Then
+                    ok = True
+                    Exit For
+                End If
+            Next
+            ListPopupMenuOpenBrowser.Enabled = ok
+        End If
     End Sub
 
     ''' <summary>
@@ -847,7 +862,7 @@ Public Class MainForm
 
 #End Region
 
-#Region "打开窗口"
+#Region "打开窗口 浏览器"
 
     ''' <summary>
     ''' 打开文件所在位置
@@ -907,6 +922,42 @@ Public Class MainForm
             End If
         Next
         ShowForm("查看高亮 (共 " & idx & " 项)", sb.ToString, ListPopupMenuWinHighColor.SelectedColor)
+    End Sub
+
+    ''' <summary>
+    ''' 打开浏览器
+    ''' </summary>
+    Private Sub ListPopupMenuOpenBrowser_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuOpenBrowser.Click
+        Dim IsSingle As Boolean = ListView.SelectedItems.Count = 1
+
+        ' 整合
+        Dim Sel As List(Of TipItem) = New List(Of TipItem)
+        If IsSingle Then
+            Sel.Add(CType(ListView.SelectedItem, TipItem))
+        Else
+            Sel = ListView.SelectedItems.Cast(Of TipItem).ToList()
+        End If
+
+        ' 结果
+        Dim links As List(Of String) = New List(Of String)
+        Dim sp() As String
+        For Each item As TipItem In Sel
+            sp = item.TipContent.Split(New Char() {" "}, StringSplitOptions.RemoveEmptyEntries)
+            For Each link As String In sp
+                If link.StartsWith("http://") Or link.StartsWith("https://") Then
+                    links.Add(link)
+                End If
+            Next
+        Next
+
+        ' 打开
+        If links.Count = 0 Then
+            MessageBox.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Else
+            For Each link As String In links
+                Process.Start(link)
+            Next
+        End If
     End Sub
 
 #End Region

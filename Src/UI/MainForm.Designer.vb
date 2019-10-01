@@ -69,6 +69,7 @@ Partial Class MainForm
         Me.ListPopupMenuLabelItemFile = New DevComponents.DotNetBar.LabelItem()
         Me.ListPopupMenuOpenDir = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuViewFile = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuOpenBrowser = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuLabelItemWindow = New DevComponents.DotNetBar.LabelItem()
         Me.ListPopupMenuListHeight = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuWinSetting = New DevComponents.DotNetBar.ButtonItem()
@@ -91,7 +92,6 @@ Partial Class MainForm
         Me.ButtonItemDown = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonResizeFlag = New DevComponents.DotNetBar.ButtonX()
         Me.HoverToolTip = New System.Windows.Forms.ToolTip(Me.components)
-        Me.ListPopupMenuOpenBrowser = New DevComponents.DotNetBar.ButtonItem()
         CType(Me.NumericUpDownListCnt, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ContextMenuBar1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TabStrip, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -333,6 +333,7 @@ Partial Class MainForm
         '
         Me.ListPopupMenuEditItem.Image = Global.DesktopTips.My.Resources.Resources.Edit
         Me.ListPopupMenuEditItem.Name = "ListPopupMenuEditItem"
+        Me.ListPopupMenuEditItem.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.F2)
         Me.ListPopupMenuEditItem.Text = "编辑(&E)"
         Me.ListPopupMenuEditItem.Tooltip = "编辑"
         '
@@ -409,6 +410,11 @@ Partial Class MainForm
         '
         Me.ListPopupMenuViewFile.Name = "ListPopupMenuViewFile"
         Me.ListPopupMenuViewFile.Text = "浏览当前列表内容(&V)"
+        '
+        'ListPopupMenuOpenBrowser
+        '
+        Me.ListPopupMenuOpenBrowser.Name = "ListPopupMenuOpenBrowser"
+        Me.ListPopupMenuOpenBrowser.Text = "打开浏览器链接(&B)"
         '
         'ListPopupMenuLabelItemWindow
         '
@@ -615,11 +621,6 @@ Partial Class MainForm
         Me.ButtonResizeFlag.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
         Me.ButtonResizeFlag.TabIndex = 6
         Me.ButtonResizeFlag.Text = "::"
-        '
-        'ListPopupMenuOpenBrowser
-        '
-        Me.ListPopupMenuOpenBrowser.Name = "ListPopupMenuOpenBrowser"
-        Me.ListPopupMenuOpenBrowser.Text = "打开浏览器链接(&B)"
         '
         'MainForm
         '

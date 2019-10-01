@@ -954,9 +954,13 @@ Public Class MainForm
         If links.Count = 0 Then
             MessageBox.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
         Else
-            For Each link As String In links
-                Process.Start(link)
-            Next
+            Dim ok As MessageBoxButtons = _
+                MessageBox.Show("是否打开以下链接：" + Chr(10) + Chr(10) + String.Join(Chr(10), links), "打开链接", MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
+            If ok = MsgBoxResult.Ok Then
+                For Each link As String In links
+                    Process.Start(link)
+                Next
+            End If
         End If
     End Sub
 

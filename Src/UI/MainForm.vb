@@ -268,12 +268,13 @@ Public Class MainForm
 
     Private Sub SetupUpDownButtonsPos()
         Dim height As Integer = ListView.ItemHeight
+
         ButtonItemUp.Visible = False
-        ButtonItemUp.Height = height
+        ButtonItemUp.Height = (height + 1) / 2
         ButtonItemUp.Width = height
 
         ButtonItemDown.Visible = False
-        ButtonItemDown.Height = height
+        ButtonItemDown.Height = (height + 1) / 2
         ButtonItemDown.Width = height
     End Sub
 
@@ -658,13 +659,14 @@ Public Class MainForm
         rect.Offset(ListView.Location)
         rect.Offset(2, 2)
 
-        ButtonItemDown.Top = rect.Top
-        ButtonItemDown.Left = rect.Left + rect.Width - ButtonItemDown.Width
+        ButtonItemUp.Top = rect.Top
+        ButtonItemUp.Left = rect.Left + rect.Width - ButtonItemDown.Width
+        ButtonItemUp.Visible = True
+
+        ButtonItemDown.Top = ButtonItemUp.Top + ButtonItemUp.Height - 1
+        ButtonItemDown.Left = ButtonItemUp.Left
         ButtonItemDown.Visible = True
 
-        ButtonItemUp.Top = rect.Top
-        ButtonItemUp.Left = rect.Left + rect.Width - 2 * ButtonItemUp.Width
-        ButtonItemUp.Visible = True
 
     End Sub
 

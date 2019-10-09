@@ -102,7 +102,7 @@ Partial Class MainForm
         Me.ButtonRemoveItem.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.ButtonRemoveItem.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonRemoveItem.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
-        Me.ButtonRemoveItem.Location = New System.Drawing.Point(293, 272)
+        Me.ButtonRemoveItem.Location = New System.Drawing.Point(293, 239)
         Me.ButtonRemoveItem.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ButtonRemoveItem.Name = "ButtonRemoveItem"
         Me.ButtonRemoveItem.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
@@ -116,7 +116,7 @@ Partial Class MainForm
         Me.ButtonAddItem.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.ButtonAddItem.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonAddItem.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
-        Me.ButtonAddItem.Location = New System.Drawing.Point(270, 272)
+        Me.ButtonAddItem.Location = New System.Drawing.Point(270, 239)
         Me.ButtonAddItem.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ButtonAddItem.Name = "ButtonAddItem"
         Me.ButtonAddItem.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
@@ -155,7 +155,7 @@ Partial Class MainForm
         Me.ListView.Location = New System.Drawing.Point(23, 0)
         Me.ListView.Name = "ListView"
         Me.ListView.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.ListView.Size = New System.Drawing.Size(303, 273)
+        Me.ListView.Size = New System.Drawing.Size(303, 240)
         Me.ListView.TabIndex = 0
         '
         'ButtonCloseForm
@@ -163,7 +163,7 @@ Partial Class MainForm
         Me.ButtonCloseForm.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.ButtonCloseForm.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ButtonCloseForm.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
-        Me.ButtonCloseForm.Location = New System.Drawing.Point(0, 272)
+        Me.ButtonCloseForm.Location = New System.Drawing.Point(0, 239)
         Me.ButtonCloseForm.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ButtonCloseForm.Name = "ButtonCloseForm"
         Me.ButtonCloseForm.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
@@ -178,7 +178,7 @@ Partial Class MainForm
         Me.ButtonListSetting.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.ButtonListSetting.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.ButtonListSetting.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
-        Me.ButtonListSetting.Location = New System.Drawing.Point(23, 272)
+        Me.ButtonListSetting.Location = New System.Drawing.Point(23, 239)
         Me.ButtonListSetting.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ButtonListSetting.Name = "ButtonListSetting"
         Me.ButtonListSetting.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
@@ -191,7 +191,7 @@ Partial Class MainForm
         'NumericUpDownListCnt
         '
         Me.NumericUpDownListCnt.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.NumericUpDownListCnt.Location = New System.Drawing.Point(46, 272)
+        Me.NumericUpDownListCnt.Location = New System.Drawing.Point(46, 239)
         Me.NumericUpDownListCnt.Minimum = New Decimal(New Integer() {5, 0, 0, 0})
         Me.NumericUpDownListCnt.Name = "NumericUpDownListCnt"
         Me.NumericUpDownListCnt.Size = New System.Drawing.Size(35, 23)
@@ -544,7 +544,7 @@ Partial Class MainForm
         Me.TabStrip.RotateVerticalText = True
         Me.TabStrip.SelectedTabFont = New System.Drawing.Font("Microsoft YaHei UI Light", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TabStrip.SelectedTabIndex = 0
-        Me.TabStrip.Size = New System.Drawing.Size(25, 272)
+        Me.TabStrip.Size = New System.Drawing.Size(25, 239)
         Me.TabStrip.TabAlignment = DevComponents.DotNetBar.eTabStripAlignment.Left
         Me.TabStrip.TabCloseButtonHot = Nothing
         Me.TabStrip.TabFont = New System.Drawing.Font("Microsoft YaHei UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -586,27 +586,27 @@ Partial Class MainForm
         '
         Me.ButtonItemUp.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.ButtonItemUp.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
-        Me.ButtonItemUp.Font = New System.Drawing.Font("Yu Gothic UI Semibold", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.ButtonItemUp.Location = New System.Drawing.Point(123, 151)
+        Me.ButtonItemUp.Font = New System.Drawing.Font("Yu Gothic UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ButtonItemUp.Image = Global.DesktopTips.My.Resources.Resources.UpIcon
+        Me.ButtonItemUp.Location = New System.Drawing.Point(139, 144)
         Me.ButtonItemUp.Name = "ButtonItemUp"
         Me.ButtonItemUp.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
-        Me.ButtonItemUp.Size = New System.Drawing.Size(17, 17)
+        Me.ButtonItemUp.Size = New System.Drawing.Size(17, 9)
         Me.ButtonItemUp.TabIndex = 7
         Me.ButtonItemUp.Tag = "True"
-        Me.ButtonItemUp.Text = "↑"
         '
         'ButtonItemDown
         '
         Me.ButtonItemDown.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.ButtonItemDown.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
         Me.ButtonItemDown.Font = New System.Drawing.Font("Yu Gothic UI Semibold", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.ButtonItemDown.Location = New System.Drawing.Point(139, 151)
+        Me.ButtonItemDown.Image = Global.DesktopTips.My.Resources.Resources.DownIcon
+        Me.ButtonItemDown.Location = New System.Drawing.Point(139, 152)
         Me.ButtonItemDown.Name = "ButtonItemDown"
         Me.ButtonItemDown.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
-        Me.ButtonItemDown.Size = New System.Drawing.Size(17, 17)
+        Me.ButtonItemDown.Size = New System.Drawing.Size(17, 9)
         Me.ButtonItemDown.TabIndex = 8
         Me.ButtonItemDown.Tag = "True"
-        Me.ButtonItemDown.Text = "↓"
         '
         'ButtonResizeFlag
         '
@@ -614,7 +614,7 @@ Partial Class MainForm
         Me.ButtonResizeFlag.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonResizeFlag.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
         Me.ButtonResizeFlag.Cursor = System.Windows.Forms.Cursors.SizeWE
-        Me.ButtonResizeFlag.Location = New System.Drawing.Point(316, 272)
+        Me.ButtonResizeFlag.Location = New System.Drawing.Point(316, 239)
         Me.ButtonResizeFlag.Name = "ButtonResizeFlag"
         Me.ButtonResizeFlag.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
         Me.ButtonResizeFlag.Size = New System.Drawing.Size(10, 23)
@@ -627,7 +627,7 @@ Partial Class MainForm
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.DarkRed
-        Me.ClientSize = New System.Drawing.Size(326, 295)
+        Me.ClientSize = New System.Drawing.Size(326, 262)
         Me.Controls.Add(Me.ButtonItemDown)
         Me.Controls.Add(Me.ButtonItemUp)
         Me.Controls.Add(Me.ContextMenuBar1)

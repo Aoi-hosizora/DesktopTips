@@ -165,6 +165,8 @@
   <ItemGroup>
     <None Include="Resources\HighLightColor.png" />
     <None Include="Resources\Find.png" />
+    <None Include="Resources\DownIcon.png" />
+    <None Include="Resources\UpIcon.png" />
     <Content Include="Src\Util\MessageBoxEx.used.cs" />
     <None Include="Resources\SelectAll.png" />
     <None Include="Resources\Star.png" />

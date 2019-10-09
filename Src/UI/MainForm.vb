@@ -314,21 +314,21 @@ Public Class MainForm
             Me.ListPopupMenu.SubItems.Clear()
 
             Me.ListPopupMenuItemContainer.SubItems.AddRange( _
-                New DD.BaseItem() {Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, _
-                                                        Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem, Me.ListPopupMenuEditItem, Me.ListPopupMenuSelectAll, _
-                                                        Me.ListPopupMenuHighLight})
+                New DD.BaseItem() {Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem, _
+                                   Me.ListPopupMenuEditItem, Me.ListPopupMenuCopy, Me.ListPopupMenuSelectAll, Me.ListPopupMenuHighLight})
 
             Me.ListPopupMenu.SubItems.AddRange( _
-                New DD.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, _
- _
-                                                        Me.ListPopupMenuLabelItemList, Me.ListPopupMenuItemContainer, _
-                                                        Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuFind, Me.ListPopupMenuMove, _
- _
-                                                        Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuOpenBrowser, Me.ListPopupMenuLabelItemWindow, _
-                                                        Me.ListPopupMenuListHeight, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
-
+                New DD.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList, _
+                                   Me.ListPopupMenuItemContainer, _
+                                   Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuFind, Me.ListPopupMenuMove, _
+                                   Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuOpenBrowser, _
+                                   Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuListHeight, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
+            
+            Me.ListPopupMenuAddItem.BeginGroup = True
+            Me.ListPopupMenuMoveUp.BeginGroup = True
             Me.ListPopupMenuMoveTop.BeginGroup = True
-            Me.ListPopupMenuViewHighLight.BeginGroup = True
+            Me.ListPopupMenuCopy.BeginGroup = True
+
             For Each Item As DD.ButtonItem In Me.ListPopupMenuItemContainer.SubItems
                 Item.Tooltip = Item.Text
             Next
@@ -336,20 +336,22 @@ Public Class MainForm
             For Each Item As DD.ButtonItem In Me.ListPopupMenuItemContainer.SubItems
                 Item.Tooltip = ""
             Next
+
+            Me.ListPopupMenuAddItem.BeginGroup = False
+            Me.ListPopupMenuMoveUp.BeginGroup = True
             Me.ListPopupMenuMoveTop.BeginGroup = False
-            Me.ListPopupMenuViewHighLight.BeginGroup = False
+            Me.ListPopupMenuCopy.BeginGroup = True
 
             Me.ListPopupMenuItemContainer.SubItems.Clear()
             Me.ListPopupMenu.SubItems.Clear()
             Me.ListPopupMenu.SubItems.AddRange( _
-                New DD.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, _
- _
-                                                        Me.ListPopupMenuLabelItemList, Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, _
-                                                        Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem, Me.ListPopupMenuEditItem, Me.ListPopupMenuSelectAll, _
-                                                        Me.ListPopupMenuHighLight, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuFind, Me.ListPopupMenuMove, _
- _
-                                                        Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuOpenBrowser, Me.ListPopupMenuLabelItemWindow, _
-                                                        Me.ListPopupMenuListHeight, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
+                New DD.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList, _
+                                   Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem, Me.ListPopupMenuEditItem, _
+                                   Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, _
+                                   Me.ListPopupMenuCopy, Me.ListPopupMenuSelectAll, Me.ListPopupMenuHighLight, Me.ListPopupMenuViewHighLight, _
+                                   Me.ListPopupMenuFind, Me.ListPopupMenuMove, _
+                                   Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuOpenBrowser, _
+                                   Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuListHeight, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
 
         End If
     End Sub
@@ -691,7 +693,7 @@ Public Class MainForm
 
 #End Region
 
-#Region "选择 Enable 查找"
+#Region "选择 Enable"
 
     ''' <summary>
     ''' 高亮判断 辅助按钮显示
@@ -728,7 +730,7 @@ Public Class MainForm
     ''' 选择可用性
     ''' </summary>
     Private Sub SelCheck()
-        Dim IsNotNull As Boolean = ListView.Items.Count <> 0 And ListView.SelectedIndices.Count <> 0
+        Dim IsNotNull As Boolean = ListView.SelectedIndex <> -1
         Dim IsSingle As Boolean = ListView.SelectedIndices.Count = 1
         Dim IsTop As Boolean = ListView.SelectedIndex = 0
         Dim IsBottom As Boolean = ListView.SelectedIndex = ListView.Items.Count() - 1
@@ -743,11 +745,12 @@ Public Class MainForm
         ListPopupMenuMoveBottom.Enabled = IsNotNull And IsSingle And Not IsBottom
         ListPopupMenuMoveDown.Enabled = IsNotNull And IsSingle And Not IsBottom
 
-        ' 删改
+        ' 删改复制
         ButtonRemoveItem.Enabled = IsNotNull
         ListPopupMenuRemoveItem.Enabled = IsNotNull
         ListPopupMenuEditItem.Enabled = IsSingle
         ListPopupMenuHighLight.Enabled = IsNotNull
+        ListPopupMenuCopy.Enabled = IsNotNull
 
         If IsNotNull Then
             ListPopupMenuHighLight.Checked = CType(ListView.SelectedItem, TipItem).IsHighLight
@@ -772,6 +775,21 @@ Public Class MainForm
             Next
             ListPopupMenuOpenBrowser.Enabled = ok
         End If
+    End Sub
+
+#End Region
+
+#Region "复制 全选 查找"
+
+    ''' <summary>
+    ''' 复制
+    ''' </summary>
+    Private Sub ListPopupMenuCopy_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuCopy.Click
+        Dim Sb As New StringBuilder
+        For Each item As TipItem In ListView.SelectedItems.Cast(Of TipItem)()
+            Sb.AppendLine(item.TipContent)
+        Next
+        Clipboard.SetText(Sb.ToString())
     End Sub
 
     ''' <summary>
@@ -822,6 +840,7 @@ Public Class MainForm
 
 #End Region
 
+
 #Region "调整大小 弹出菜单 快捷键"
 
     ''' <summary>
@@ -842,6 +861,7 @@ Public Class MainForm
     ''' 显示弹出菜单
     ''' </summary>
     Private Sub ButtonChangeHeight_Click(sender As System.Object, e As System.EventArgs) Handles ButtonListSetting.Click
+        SelCheck()
         ListPopupMenu.Popup(Me.Left + sender.Left, Me.Top + sender.Top + sender.Height - 1)
     End Sub
 

@@ -59,6 +59,7 @@ Partial Class MainForm
         Me.ListPopupMenuAddItem = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuRemoveItem = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuEditItem = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuCopy = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuSelectAll = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuHighLight = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuMoveTop = New DevComponents.DotNetBar.ButtonItem()
@@ -265,7 +266,7 @@ Partial Class MainForm
         Me.ListPopupMenuLabelSelItemText.PaddingRight = 5
         Me.ListPopupMenuLabelSelItemText.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
         Me.ListPopupMenuLabelSelItemText.Text = "https://www.youtube.com/watch?v=wb94Z3Ck_uU&t=1015s"
-        Me.ListPopupMenuLabelSelItemText.Width = 178
+        Me.ListPopupMenuLabelSelItemText.Width = 185
         Me.ListPopupMenuLabelSelItemText.WordWrap = True
         '
         'ListPopupMenuLabelItemList
@@ -289,8 +290,9 @@ Partial Class MainForm
         '
         Me.ListPopupMenuItemContainer.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square
         Me.ListPopupMenuItemContainer.HorizontalItemAlignment = DevComponents.DotNetBar.eHorizontalItemsAlignment.Center
+        Me.ListPopupMenuItemContainer.ItemSpacing = -1
         Me.ListPopupMenuItemContainer.Name = "ListPopupMenuItemContainer"
-        Me.ListPopupMenuItemContainer.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem, Me.ListPopupMenuEditItem, Me.ListPopupMenuSelectAll, Me.ListPopupMenuHighLight})
+        Me.ListPopupMenuItemContainer.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem, Me.ListPopupMenuEditItem, Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, Me.ListPopupMenuCopy, Me.ListPopupMenuSelectAll, Me.ListPopupMenuHighLight})
         '
         '
         '
@@ -298,6 +300,7 @@ Partial Class MainForm
         '
         'ListPopupMenuMoveUp
         '
+        Me.ListPopupMenuMoveUp.BeginGroup = True
         Me.ListPopupMenuMoveUp.Image = Global.DesktopTips.My.Resources.Resources.Up
         Me.ListPopupMenuMoveUp.Name = "ListPopupMenuMoveUp"
         Me.ListPopupMenuMoveUp.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlU)
@@ -337,6 +340,14 @@ Partial Class MainForm
         Me.ListPopupMenuEditItem.Text = "编辑(&E)"
         Me.ListPopupMenuEditItem.Tooltip = "编辑"
         '
+        'ListPopupMenuCopy
+        '
+        Me.ListPopupMenuCopy.BeginGroup = True
+        Me.ListPopupMenuCopy.Image = Global.DesktopTips.My.Resources.Resources.Copy
+        Me.ListPopupMenuCopy.Name = "ListPopupMenuCopy"
+        Me.ListPopupMenuCopy.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlC)
+        Me.ListPopupMenuCopy.Text = "复制(&C)"
+        '
         'ListPopupMenuSelectAll
         '
         Me.ListPopupMenuSelectAll.Image = Global.DesktopTips.My.Resources.Resources.SelectAll
@@ -347,7 +358,6 @@ Partial Class MainForm
         '
         'ListPopupMenuHighLight
         '
-        Me.ListPopupMenuHighLight.BeginGroup = True
         Me.ListPopupMenuHighLight.Image = Global.DesktopTips.My.Resources.Resources.Star
         Me.ListPopupMenuHighLight.Name = "ListPopupMenuHighLight"
         Me.ListPopupMenuHighLight.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlH)
@@ -718,5 +728,6 @@ Partial Class MainForm
     Friend WithEvents ListPopupMenuFind As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents LabelNothing As System.Windows.Forms.Label
     Friend WithEvents ListPopupMenuOpenBrowser As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuCopy As DevComponents.DotNetBar.ButtonItem
 
 End Class

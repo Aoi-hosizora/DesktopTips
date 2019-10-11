@@ -123,15 +123,21 @@ Public Class MainForm
         End If
     End Sub
 
+    ''' <summary>
+    ''' 窗口关闭判断，不能用在 FormClosing 事件处理
+    ''' </summary>
     Private Sub ButtonCloseForm_Click(sender As System.Object, e As System.EventArgs) Handles ButtonCloseForm.Click, ListPopupMenuExit.Click
-        TimerMouseIn.Interval = 10000
-        TimerMouseIn.Stop()
-        TimerMouseIn.Enabled = False
-        TimerMouseOut.Interval = 10000
-        TimerMouseOut.Stop()
-        TimerMouseOut.Enabled = False
+        Dim ok As Integer = MessageBox.Show("确定退出 DesktopTips 吗？", "关闭", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+        If ok = vbYes Then
+            TimerMouseIn.Interval = 10000
+            TimerMouseIn.Stop()
+            TimerMouseIn.Enabled = False
+            TimerMouseOut.Interval = 10000
+            TimerMouseOut.Stop()
+            TimerMouseOut.Enabled = False
 
-        TimerEndForm.Enabled = True
+            TimerEndForm.Enabled = True
+        End If
     End Sub
 
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -186,7 +192,9 @@ Public Class MainForm
     Private Sub FormMouseLeave(sender As Object, e As System.EventArgs)
         If ListPopupMenu.PopupControl Is Nothing _
             AndAlso TabPopupMenu.PopupControl Is Nothing _
-            AndAlso ListPopupMenuMove.PopupControl Is Nothing Then
+            AndAlso TabStrip.ContextMenu Is Nothing _
+            AndAlso ListPopupMenuMove.PopupControl Is Nothing _
+            AndAlso IsMenuPopuping = False Then
 
             TimerMouseIn.Stop()
             TimerMouseIn.Enabled = False
@@ -195,10 +203,20 @@ Public Class MainForm
         End If
     End Sub
 
+    Private IsMenuPopuping As Boolean = False
+
+    ''' <summary>
+    ''' TabStrip 菜单弹出
+    ''' </summary>
+    Private Sub TabStrip_PopupOpen(sender As System.Object, e As System.EventArgs) Handles TabStrip.PopupOpen
+        IsMenuPopuping = True
+    End Sub
+
     ''' <summary>
     ''' Popup 关闭，不能使用 Close
     ''' </summary>
-    Private Sub PopMenu_PopupFinalized(sender As Object, e As System.EventArgs) Handles ListPopupMenu.PopupFinalized, TabPopupMenu.PopupFinalized, ListPopupMenuMove.PopupFinalized
+    Private Sub PopMenu_PopupFinalizedAndClosed(sender As Object, e As System.EventArgs) Handles ListPopupMenu.PopupFinalized, TabPopupMenu.PopupFinalized, ListPopupMenuMove.PopupFinalized, TabStrip.PopupClose
+        IsMenuPopuping = False
         FormMouseLeave(sender, e)
     End Sub
 
@@ -209,9 +227,9 @@ Public Class MainForm
     Public HotKey As Keys = Keys.F4
 
     Public Sub SaveSetting()
-        SettingUtil.UnRegisterHotKey(Handle, 0)
+        NativeMethod.UnRegisterHotKey(Handle, 0)
 
-        Dim setting As SettingUtil.AppSetting
+        Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
         setting.Top = Me.Top
         setting.Left = Me.Left
         setting.Height = Me.Height
@@ -224,22 +242,31 @@ Public Class MainForm
         SettingUtil.SaveAppSettings(setting)
     End Sub
 
-    Private Sub MainForm_FormClosed(sender As Object, e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
-        SaveSetting()
-    End Sub
-
-    Private Sub MainForm_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
-
+    Public Sub LoadSetting()
         Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
+
         Me.Top = setting.Top
         Me.Left = setting.Left
         Me.Height = setting.Height
         Me.Width = setting.Width
+
         MaxOpacity = setting.MaxOpacity
         Me.TopMost = setting.TopMost
         ListPopupMenuFold.Checked = setting.IsFold
         ListPopupMenuWinHighColor.SelectedColor = setting.HighLightColor
 
+        ListPopupMenuLoadPos.Enabled = Not (setting.SaveLeft = -1 Or setting.SaveTop = -1)
+    End Sub
+
+    ''' <summary>
+    ''' 窗口关闭后保存设置
+    ''' </summary>
+    Private Sub MainForm_FormClosed(sender As Object, e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
+        SaveSetting()
+    End Sub
+
+    Private Sub MainForm_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+        LoadSetting()
         Me.Refresh()
 
         NumericUpDownListCnt.Value = (Me.Height - 27) \ 17
@@ -261,7 +288,7 @@ Public Class MainForm
         FormOpacity_Load()
         FoldMenu(ListPopupMenuFold.Checked)
 
-        If Not SettingUtil.RegisterHotKey(Handle, 0, Nothing, HotKey) Then
+        If Not NativeMethod.RegisterHotKey(Handle, 0, Nothing, HotKey) Then
             MessageBox.Show("快捷键已被占用，请重新设置", "快捷键", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End If
     End Sub
@@ -282,7 +309,7 @@ Public Class MainForm
     ''' 设置快捷键相应
     ''' </summary>
     Protected Overrides Sub WndProc(ByRef m As System.Windows.Forms.Message)
-        If m.Msg = SettingUtil.WM_HOTKEY Then
+        If m.Msg = NativeMethod.WM_HOTKEY Then
             Me.Activate()
             Me.TopMost = True
             Me.TopMost = False
@@ -322,7 +349,7 @@ Public Class MainForm
                                    Me.ListPopupMenuItemContainer, _
                                    Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuFind, Me.ListPopupMenuMove, _
                                    Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuOpenBrowser, _
-                                   Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuListHeight, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
+                                   Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
             
             Me.ListPopupMenuAddItem.BeginGroup = True
             Me.ListPopupMenuMoveUp.BeginGroup = True
@@ -351,7 +378,7 @@ Public Class MainForm
                                    Me.ListPopupMenuCopy, Me.ListPopupMenuSelectAll, Me.ListPopupMenuHighLight, Me.ListPopupMenuViewHighLight, _
                                    Me.ListPopupMenuFind, Me.ListPopupMenuMove, _
                                    Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuOpenBrowser, _
-                                   Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuListHeight, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
+                                   Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
 
         End If
     End Sub
@@ -840,7 +867,6 @@ Public Class MainForm
 
 #End Region
 
-
 #Region "调整大小 弹出菜单 快捷键"
 
     ''' <summary>
@@ -1067,6 +1093,30 @@ Public Class MainForm
 
 #End Region
 
+#Region "保存位置"
+
+    ''' <summary>
+    ''' 保存位置
+    ''' </summary>
+    Private Sub ListPopupMenuSavePos_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuSavePos.Click
+        Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
+        setting.SaveTop = Me.Top
+        setting.SaveLeft = Me.Left
+        SettingUtil.SaveAppSettings(setting)
+
+        ListPopupMenuLoadPos.Enabled = True
+    End Sub
+
+    ''' <summary>
+    ''' 加载位置
+    ''' </summary>
+    Private Sub ListPopupMenuLoadPos_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuLoadPos.Click
+        Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
+        Me.Top = setting.SaveTop
+        Me.Left = setting.SaveLeft
+    End Sub
+
+#End Region
 
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''

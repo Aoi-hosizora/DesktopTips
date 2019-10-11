@@ -4,17 +4,6 @@
     Private Const PosSection As String = "PosSize"
     Private Const FormSection As String = "FormSize"
 
-    Public Const WM_HOTKEY = &H312
-    Public Const MOD_ALT = &H1
-    Public Const MOD_CONTROL = &H2
-    Public Const MOD_SHIFT = &H4
-    Public Const GWL_WNDPROC = (-4)
-
-    Public Declare Auto Function RegisterHotKey Lib "user32.dll" Alias "RegisterHotKey" _
-        (ByVal hwnd As IntPtr, ByVal id As Integer, ByVal fsModifiers As Integer, ByVal vk As Integer) As Boolean
-    Public Declare Auto Function UnRegisterHotKey Lib "user32.dll" Alias "UnregisterHotKey" _
-        (ByVal hwnd As IntPtr, ByVal id As Integer) As Boolean
-
     Public Structure AppSetting
         Public Top As Integer
         Public Left As Integer
@@ -23,10 +12,11 @@
 
         Public MaxOpacity As Double
         Public TopMost As Boolean
-
         Public IsFold As Boolean
-
         Public HighLightColor As Color
+
+        Public SaveTop As Integer
+        Public SaveLeft As Integer
     End Structure
 
     Public Shared Sub SaveAppSettings(ByVal appSetting As AppSetting)
@@ -34,10 +24,17 @@
         SaveSetting(AppName, PosSection, "Left", appSetting.Left)
         SaveSetting(AppName, PosSection, "Height", appSetting.Height)
         SaveSetting(AppName, PosSection, "Width", appSetting.Width)
+
         SaveSetting(AppName, FormSection, "Opacity", appSetting.MaxOpacity)
         SaveSetting(AppName, FormSection, "TopMost", appSetting.TopMost)
         SaveSetting(AppName, FormSection, "IsFold", appSetting.IsFold)
         SaveSetting(AppName, FormSection, "HighLight", ColorTranslator.ToHtml(appSetting.HighLightColor))
+
+        appSetting.SaveTop = If(appSetting.SaveTop = 0, -1, appSetting.SaveTop)
+        appSetting.SaveLeft = If(appSetting.SaveLeft = 0, -1, appSetting.SaveLeft)
+
+        SaveSetting(AppName, PosSection, "SaveTop", appSetting.SaveTop)
+        SaveSetting(AppName, PosSection, "SaveLeft", appSetting.SaveLeft)
     End Sub
 
     Public Shared Function LoadAppSettings() As AppSetting
@@ -46,10 +43,15 @@
         setting.Left = GetSetting(AppName, PosSection, "Left", 20)
         setting.Height = GetSetting(AppName, PosSection, "Height", 163)
         setting.Width = GetSetting(AppName, PosSection, "Width", 200)
+
         setting.MaxOpacity = GetSetting(AppName, FormSection, "Opacity", 0.6)
         setting.TopMost = GetSetting(AppName, FormSection, "TopMost", False)
         setting.IsFold = GetSetting(AppName, FormSection, "IsFold", True)
         setting.HighLightColor = ColorTranslator.FromHtml(GetSetting(AppName, FormSection, "HighLight", "#FF0000"))
+
+        setting.SaveTop = GetSetting(AppName, PosSection, "SaveTop", -1)
+        setting.SaveLeft = GetSetting(AppName, PosSection, "SaveLeft", -1)
+
         Return setting
     End Function
 End Class

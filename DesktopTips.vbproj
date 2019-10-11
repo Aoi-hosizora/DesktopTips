@@ -132,6 +132,7 @@
     <Compile Include="Src\Util\MessageBoxEx.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Src\Util\NativeMethod.vb" />
     <Compile Include="Src\Util\StorageUtil.vb" />
     <Compile Include="Src\Util\SettingUtil.vb" />
   </ItemGroup>
@@ -150,6 +151,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="My Project\app.manifest" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>

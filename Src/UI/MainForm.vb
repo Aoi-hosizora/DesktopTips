@@ -1,23 +1,9 @@
 ﻿Imports System.IO
 Imports System.Text
-Imports SU = DesktopTips.StorageUtil
+Imports SU = DesktopTips.GlobalModel
 Imports DD = DevComponents.DotNetBar
 
-
 Public Class MainForm
-
-    Declare Sub mouse_event Lib "user32" (ByVal dwFlags As Integer, ByVal dx As Integer, ByVal dy As Integer, ByVal cButtons As Integer, ByVal dwExtraInfo As Integer)
-    Private Declare Function SetCursorPos Lib "user32" (ByVal x As Long, ByVal y As Long) As Long
-
-    Enum MouseEvent
-        MOUSEEVENTF_LEFTDOWN = &H2      '左键按下
-        MOUSEEVENTF_LEFTUP = &H4        '左键释放
-        MOUSEEVENTF_MIDDLEDOWN = &H20   '中键按下
-        MOUSEEVENTF_MIDDLEUP = &H40     '中键释放
-        MOUSEEVENTF_RIGHTDOWN = &H8     '右键按下
-        MOUSEEVENTF_RIGHTUP = &H10      '右键释放
-        MOUSEEVENTF_MOVE = &H1          '指针移动
-    End Enum
 
 #Region "PosMove"
 
@@ -653,7 +639,7 @@ Public Class MainForm
             ListView.Items.Insert(currIdx - 1, currItem)
             ListView.SetSelected(currIdx - 1, True)
             If sender.Tag = "True" Then
-                mouse_event(MouseEvent.MOUSEEVENTF_MOVE, 0, -10, 0, 0)
+                NativeMethod.mouse_event(NativeMethod.MouseEvent.MOUSEEVENTF_MOVE, 0, -10, 0, 0)
             End If
             SaveList()
         End If
@@ -670,7 +656,7 @@ Public Class MainForm
             ListView.Items.Insert(currIdx + 1, currItem)
             ListView.SetSelected(currIdx + 1, True)
             If sender.Tag = "True" Then
-                mouse_event(MouseEvent.MOUSEEVENTF_MOVE, 0, 10, 0, 0)
+                NativeMethod.mouse_event(NativeMethod.MouseEvent.MOUSEEVENTF_MOVE, 0, 10, 0, 0)
             End If
             SaveList()
         End If
@@ -880,7 +866,7 @@ Public Class MainForm
             MoveY = -10
         End If
         Me.Height = NumericUpDownListCnt.Value * ListView.ItemHeight + 27
-        mouse_event(MouseEvent.MOUSEEVENTF_MOVE, 0, MoveY, 0, 0)
+        NativeMethod.mouse_event(NativeMethod.MouseEvent.MOUSEEVENTF_MOVE, 0, MoveY, 0, 0)
     End Sub
 
     ''' <summary>
@@ -1378,6 +1364,27 @@ Public Class MainForm
                 End If
             Next
         End If
+    End Sub
+
+#End Region
+
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+#Region "数据同步"
+
+    ''' <summary>
+    ''' 同步到移动端
+    ''' </summary>
+    Private Sub ListPopupMenuSyncDataTo_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuSyncDataTo.Click
+
+    End Sub
+
+    ''' <summary>
+    ''' 从移动端同步
+    ''' </summary>
+    Private Sub ListPopupMenuSyncDataFrom_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuSyncDataFrom.Click
+
     End Sub
 
 #End Region

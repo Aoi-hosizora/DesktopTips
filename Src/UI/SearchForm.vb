@@ -1,4 +1,5 @@
-﻿Imports SU = DesktopTips.StorageUtil
+﻿Imports SU = DesktopTips.GlobalModel
+
 Public Class SearchForm
 
     Private Sub SearchForm_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load

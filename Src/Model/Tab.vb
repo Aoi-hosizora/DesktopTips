@@ -47,6 +47,6 @@ Public Class Tab
     ''' TabTitle -> Tab
     ''' </summary>
     Public Shared Function GetTabFromTitle(ByVal Title As String) As Tab
-        Return GetTabFromTitle(Title, StorageUtil.Tabs)
+        Return GetTabFromTitle(Title, GlobalModel.Tabs)
     End Function
 End Class

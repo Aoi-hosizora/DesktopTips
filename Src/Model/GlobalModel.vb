@@ -2,7 +2,7 @@
 Imports System.IO
 Imports Newtonsoft.Json
 
-Public Class StorageUtil
+Public Class GlobalModel
 
     ''' <summary>
     ''' 保存文件目录

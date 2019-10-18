@@ -106,6 +106,7 @@
     </Compile>
     <Compile Include="Src\Model\Tab.vb" />
     <Compile Include="Src\Model\TipItem.vb" />
+    <Compile Include="Src\Service\SyncData.vb" />
     <Compile Include="Src\UI\MainForm.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -133,7 +134,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Src\Util\NativeMethod.vb" />
-    <Compile Include="Src\Util\StorageUtil.vb" />
+    <Compile Include="Src\Model\Global.vb" />
     <Compile Include="Src\Util\SettingUtil.vb" />
   </ItemGroup>
   <ItemGroup>

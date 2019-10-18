@@ -72,12 +72,14 @@ Partial Class MainForm
         Me.ListPopupMenuViewFile = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuOpenBrowser = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuLabelItemWindow = New DevComponents.DotNetBar.LabelItem()
-        Me.ListPopupMenuListHeight = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuWinSetting = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuListHeight = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuOpacity = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuFold = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuWinTop = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuWinHighColor = New DevComponents.DotNetBar.ColorPickerDropDown()
+        Me.ListPopupMenuSavePos = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuLoadPos = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuExit = New DevComponents.DotNetBar.ButtonItem()
         Me.TabPopupMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.TabPopupMenuLabel = New DevComponents.DotNetBar.LabelItem()
@@ -93,8 +95,9 @@ Partial Class MainForm
         Me.ButtonItemDown = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonResizeFlag = New DevComponents.DotNetBar.ButtonX()
         Me.HoverToolTip = New System.Windows.Forms.ToolTip(Me.components)
-        Me.ListPopupMenuSavePos = New DevComponents.DotNetBar.ButtonItem()
-        Me.ListPopupMenuLoadPos = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuSyncData = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuSyncDataTo = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuSyncDataFrom = New DevComponents.DotNetBar.ButtonItem()
         CType(Me.NumericUpDownListCnt, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ContextMenuBar1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TabStrip, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -240,7 +243,7 @@ Partial Class MainForm
         '
         Me.ListPopupMenu.AutoExpandOnClick = True
         Me.ListPopupMenu.Name = "ListPopupMenu"
-        Me.ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList, Me.ListPopupMenuItemContainer, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuFind, Me.ListPopupMenuMove, Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuOpenBrowser, Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
+        Me.ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList, Me.ListPopupMenuItemContainer, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuFind, Me.ListPopupMenuMove, Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuOpenBrowser, Me.ListPopupMenuSyncData, Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
         Me.ListPopupMenu.Text = "ListPopup"
         '
         'ListPopupMenuLabelSelItem
@@ -441,17 +444,17 @@ Partial Class MainForm
         Me.ListPopupMenuLabelItemWindow.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
         Me.ListPopupMenuLabelItemWindow.Text = "窗口"
         '
-        'ListPopupMenuListHeight
-        '
-        Me.ListPopupMenuListHeight.AutoCheckOnClick = True
-        Me.ListPopupMenuListHeight.Name = "ListPopupMenuListHeight"
-        Me.ListPopupMenuListHeight.Text = "列表高度设置(&E)"
-        '
         'ListPopupMenuWinSetting
         '
         Me.ListPopupMenuWinSetting.Name = "ListPopupMenuWinSetting"
         Me.ListPopupMenuWinSetting.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuListHeight, Me.ListPopupMenuOpacity, Me.ListPopupMenuFold, Me.ListPopupMenuWinTop, Me.ListPopupMenuWinHighColor, Me.ListPopupMenuSavePos, Me.ListPopupMenuLoadPos})
         Me.ListPopupMenuWinSetting.Text = "显示设置(&S)"
+        '
+        'ListPopupMenuListHeight
+        '
+        Me.ListPopupMenuListHeight.AutoCheckOnClick = True
+        Me.ListPopupMenuListHeight.Name = "ListPopupMenuListHeight"
+        Me.ListPopupMenuListHeight.Text = "列表高度设置(&E)"
         '
         'ListPopupMenuOpacity
         '
@@ -474,6 +477,17 @@ Partial Class MainForm
         Me.ListPopupMenuWinHighColor.Image = Global.DesktopTips.My.Resources.Resources.HighLightColor
         Me.ListPopupMenuWinHighColor.Name = "ListPopupMenuWinHighColor"
         Me.ListPopupMenuWinHighColor.Text = "高亮颜色(&C)"
+        '
+        'ListPopupMenuSavePos
+        '
+        Me.ListPopupMenuSavePos.BeginGroup = True
+        Me.ListPopupMenuSavePos.Name = "ListPopupMenuSavePos"
+        Me.ListPopupMenuSavePos.Text = "保存当前位置(&S)"
+        '
+        'ListPopupMenuLoadPos
+        '
+        Me.ListPopupMenuLoadPos.Name = "ListPopupMenuLoadPos"
+        Me.ListPopupMenuLoadPos.Text = "恢复保存位置(&L)"
         '
         'ListPopupMenuExit
         '
@@ -635,16 +649,21 @@ Partial Class MainForm
         Me.ButtonResizeFlag.TabIndex = 6
         Me.ButtonResizeFlag.Text = "::"
         '
-        'ListPopupMenuSavePos
+        'ListPopupMenuSyncData
         '
-        Me.ListPopupMenuSavePos.BeginGroup = True
-        Me.ListPopupMenuSavePos.Name = "ListPopupMenuSavePos"
-        Me.ListPopupMenuSavePos.Text = "保存当前位置(&S)"
+        Me.ListPopupMenuSyncData.Name = "ListPopupMenuSyncData"
+        Me.ListPopupMenuSyncData.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuSyncDataTo, Me.ListPopupMenuSyncDataFrom})
+        Me.ListPopupMenuSyncData.Text = "数据同步(&Y)"
         '
-        'ListPopupMenuLoadPos
+        'ListPopupMenuSyncDataTo
         '
-        Me.ListPopupMenuLoadPos.Name = "ListPopupMenuLoadPos"
-        Me.ListPopupMenuLoadPos.Text = "恢复保存位置(&L)"
+        Me.ListPopupMenuSyncDataTo.Name = "ListPopupMenuSyncDataTo"
+        Me.ListPopupMenuSyncDataTo.Text = "同步到移动端(&T)"
+        '
+        'ListPopupMenuSyncDataFrom
+        '
+        Me.ListPopupMenuSyncDataFrom.Name = "ListPopupMenuSyncDataFrom"
+        Me.ListPopupMenuSyncDataFrom.Text = "从移动端同步(&F)"
         '
         'MainForm
         '
@@ -745,5 +764,8 @@ Partial Class MainForm
     Friend WithEvents ListPopupMenuCopy As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuSavePos As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuLoadPos As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuSyncData As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuSyncDataTo As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuSyncDataFrom As DevComponents.DotNetBar.ButtonItem
 
 End Class

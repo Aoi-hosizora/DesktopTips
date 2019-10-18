@@ -1,5 +1,6 @@
 # DesktopTips
 + `VB.net` 编写的桌面备忘录工具
++ 安卓端 [DesktopTips_Android](https://github.com/Aoi-hosizora/DesktopTips_Android) (主要是用来更新同步信息，可能有一些 Bug)
 
 ### 环境
 + `MSVB` 2010
@@ -40,4 +41,6 @@ Public Shared StorageJsonFile As String = StorageFileDir & "\data.json"
 ```
 
 ### 截图
-![ScreenShot](./assets/ScreenShot.jpg)
+![Screenshot_1](./assets/Screenshot_1.jpg)
+![Screenshot_2](./assets/Screenshot_2.jpg)
+![Screenshot_3](./assets/Screenshot_3.jpg)

@@ -1379,8 +1379,13 @@ Public Class MainForm
 
     Private Shared QR_CODE_MAGIC As String = "DESKTOP_TIPS_ANDROID://"
 
+    Private Shared ipRe As New Regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
+    Private Shared portRe As New Regex("^([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-4]\d{4}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$")
+
+
     ''' <summary>
-    ''' 同步到移动端 (本地 C -> 安卓 S)
+    ''' 同步到移动端 (本地 C -> 安卓 S) !!! 常用
+    ''' 远程监听地址 -> 确定远程地址 -> 本地发送数据 -> 等待 ACK
     ''' </summary>
     Private Sub ListPopupMenuSyncDataTo_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuSyncDataTo.Click
         Dim input As String = InputBox("请输入移动端的地址：", "同步到移动端", "127.0.0.1:8776")
@@ -1388,15 +1393,18 @@ Public Class MainForm
         If String.IsNullOrWhiteSpace(input) Then Return ' 空内容
         Dim sp As String() = input.Split(New Char() {":"})
 
-        Dim ipRe As New Regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
-        Dim portRe As New Regex("^([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-4]\d{4}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$")
-
         Dim ip As String, port As Integer
-        If sp.Length <> 2 OrElse Not ipRe.IsMatch(sp(0)) OrElse Not portRe.IsMatch(sp(1)) OrElse Not Integer.TryParse(sp(1), port) Then
+        While sp.Length <> 2 OrElse Not ipRe.IsMatch(sp(0)) OrElse Not portRe.IsMatch(sp(1)) OrElse Not Integer.TryParse(sp(1), port)
             MessageBox.Show("所输入的地址格式不正确。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Return
-        End If
+
+            input = InputBox("请输入移动端的地址：", "同步到移动端", input)
+            If String.IsNullOrWhiteSpace(input) Then Return ' 空内容
+            sp = input.Split(New Char() {":"})
+        End While
         ip = sp(0)
+
+        ' ----------------------------------------------
+        ' Ip, Port << 发送到移动端
 
         Dim thread As New Thread(New ThreadStart(Sub() _
             SyncData.SendTabs(Ip:=ip, Port:=port, cb:= _
@@ -1409,69 +1417,82 @@ Public Class MainForm
                             MessageBox.Show("数据发送错误。" + Chr(10) + ok.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)))
                     End If
                 End Sub)))
+
         thread.Start()
 
     End Sub
 
     ''' <summary>
-    ''' 从移动端同步 (安卓 C -> 本地 S)
+    ''' 从移动端同步 (安卓 C -> 本地 S) !!! 危险
+    ''' 确定端口 -> 监听本地地址 -> 电脑端发送 -> 本地接受处理
     ''' </summary>
     Private Sub ListPopupMenuSyncDataFrom_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuSyncDataFrom.Click
         Dim ip As String = SyncData.GetLanIP()
-        If String.IsNullOrWhiteSpace(ip) Then                                                                                               ' 地址错误
+        If String.IsNullOrWhiteSpace(ip) Then ' 地址错误
             MessageBox.Show("本机获取局域网内地址错误。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return
         End If
 
         Dim input As String = InputBox("请输入本地监听的端口：", "从移动端同步", "8776")
+
         Dim port As Integer
         If String.IsNullOrWhiteSpace(input) Then Return ' 空内容
-        If Not Integer.TryParse(input, port) OrElse Not (port >= 1 And port <= 65535) Then                                                  ' 端口错误
+        While Not Integer.TryParse(input, port) OrElse Not (port >= 1 And port <= 65535) ' 端口错误
             MessageBox.Show("所输入的端口格式不正确，应为在 [1, 65535] 内的纯数字。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Return
-        End If
+
+            input = InputBox("请输入本地监听的端口：", "从移动端同步", input)
+            If String.IsNullOrWhiteSpace(input) Then Return ' 空内容
+        End While
+
+        ' ---------------------------------------------
+        ' 获得端口 << 监听
 
         Dim thread As Thread = Nothing
+        Dim cancelFlag As Boolean = False
 
-        Dim qrData As String = QR_CODE_MAGIC + ip + ":" + port.ToString
-        Dim qrGenerator As New QRCodeGenerator
-        Dim qrCodeData As QRCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.Q)
-        Dim qrCode As New QRCode(qrCodeData)
-        Dim qrCodeImg As Bitmap = qrCode.GetGraphic(7)
-
-        Dim qrCodeForm As New Form With {.Text = "连接二维码 (" & ip & ":" & port & ")", .Name = "qrCodeForm", .FormBorderStyle = Windows.Forms.FormBorderStyle.FixedDialog, _
-                                         .MaximizeBox = False, .MinimizeBox = False, .ShowInTaskbar = False, _
-                                         .StartPosition = FormStartPosition.CenterScreen, .Size = qrCodeImg.Size}
-
-        Dim pictureBox As New PictureBox With {.Name = "pictureBox", .SizeMode = PictureBoxSizeMode.Zoom, .Image = qrCodeImg}
-
-        qrCodeForm.Controls.Add(pictureBox)
-        pictureBox.Dock = DockStyle.Fill
+        Dim qrCodeForm As Form = SyncData.GetQrCodeForm(QR_CODE_MAGIC & ip & ":" & port)
+        qrCodeForm.Text = "连接二维码 (" & ip & ":" & port & ")"
         AddHandler qrCodeForm.FormClosed, _
             Sub()
-                'If SyncData.rcvServerSocket IsNot Nothing Then
-                '    SyncData.rcvServerSocket.Stop()
-                'End If
-                'If thread IsNot Nothing Then
-                '    thread.Abort()
-                'End If
+                If SyncData.rcvServerSocket IsNot Nothing Then
+                    cancelFlag = True
+                    If thread IsNot Nothing Then
+                        thread.Interrupt()
+                        thread = Nothing
+                    End If
+                    Try
+                        SyncData.rcvServerSocket.Stop()
+                    Catch ex As Exception
+                        Console.WriteLine(ex.Message)
+                    End Try
+                    SyncData.rcvServerSocket = Nothing
+                End If
             End Sub
-
-        qrCodeForm.Show(Me)
+        qrCodeForm.Show()
 
         ' 受け付け可能になっていません。このメソッドを呼び出す前に、Start() メソッドを呼び出してください。
+        ' 
         thread = New Thread(New ThreadStart(Sub() _
             SyncData.ReceiveTabs(Port:=port, cb:= _
                 Sub(ret As String, ok As Exception)
-                    Me.Invoke(New Action( _
-                        Sub()
-                            qrCodeForm.Close()
-                            If ok Is Nothing Then
-                                MessageBox.Show(ret, "")
-                            Else
-                                MessageBox.Show("数据接收错误。" + Chr(10) + ok.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                            End If
-                        End Sub))
+                    ' 待っている状態からスレッドが中断されました。
+                    Try
+                        Me.Invoke(New Action( _
+                            Sub()
+                                If cancelFlag Then ' 手动关闭
+                                    qrCodeForm.Close()
+                                Else ' 不关闭，自动关
+                                    qrCodeForm.Close()
+                                    If ok Is Nothing Then
+                                        MessageBox.Show(ret, "")
+                                    Else
+                                        MessageBox.Show("数据接收错误。" + Chr(10) + ok.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                    End If
+                                End If
+                            End Sub))
+                    Catch ex As Exception
+                        Console.WriteLine(ex.Message)
+                    End Try
                 End Sub)))
 
         thread.Start()

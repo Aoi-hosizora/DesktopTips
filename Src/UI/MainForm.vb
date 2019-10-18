@@ -6,6 +6,7 @@ Imports SU = DesktopTips.GlobalModel
 Imports DD = DevComponents.DotNetBar
 Imports QRCoder
 Imports System.Text.RegularExpressions
+Imports Newtonsoft.Json
 
 Public Class MainForm
 
@@ -1481,14 +1482,70 @@ Public Class MainForm
                             Sub()
                                 If cancelFlag Then ' 手动关闭
                                     qrCodeForm.Close()
-                                Else ' 不关闭，自动关
-                                    qrCodeForm.Close()
-                                    If ok Is Nothing Then
-                                        MessageBox.Show(ret, "")
-                                    Else
-                                        MessageBox.Show("数据接收错误。" + Chr(10) + ok.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                                    End If
+                                    Return
                                 End If
+
+                                qrCodeForm.Close() ' 不关闭，自动关
+                                If ok IsNot Nothing Then
+                                    MessageBox.Show("数据接收错误。" + Chr(10) + ok.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                    Return
+                                End If
+
+                                ' TODO
+                                Dim newList As List(Of Tab)
+                                Try
+                                    newList = JsonConvert.DeserializeObject(Of List(Of Tab))(ret)
+                                    If newList Is Nothing Then
+                                        Throw New Exception
+                                    End If
+                                Catch ex As Exception
+                                    MessageBox.Show("数据格式有问题。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                    Return
+                                End Try
+
+                                Dim backupFileName As String = GlobalModel.SaveTabData(newList)
+                                Dim isOpen As DialogResult = MessageBoxEx.Show("接收数据成功，新数据保存在 """ & backupFileName & """。", "同步", _
+                                                                               MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, _
+                                                                               New String() {"打开文件夹", "确定"})
+                                If isOpen = Windows.Forms.DialogResult.Yes Then
+                                    System.Diagnostics.Process.Start("explorer.exe", "/select,""" & backupFileName & """")
+                                End If
+
+                                ' !!!
+                                'Dim newItems As List(Of Tab) = newList.Except(GlobalModel.Tabs).ToList()
+                                'Dim deletedItems As List(Of Tab) = GlobalModel.Tabs.Except(newList).ToList()
+
+                                'Dim result As DialogResult = MessageBoxEx.Show( _
+                                '    "数据接收完成，共有 " & newItems.Count & " 条新记录，删除了" & deletedItems.Count & " 条记录。" & _
+                                '    "是否只添加新的记录，还是删除被删除的记录，或者是覆盖所有同步数据？", "同步数据", _
+                                '    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, _
+                                '    New String() {"添加", "覆盖", "取消"})
+
+                                'Dim backupFileName$ = ""
+
+                                'Select Case result
+                                '    Case Windows.Forms.DialogResult.Yes ' 添加
+                                '        backupFileName = GlobalModel.SaveTabData(GlobalModel.Tabs) ' 备份
+                                '        GlobalModel.Tabs.AddRange(newItems)
+                                '        'Case Windows.Forms.DialogResult.No ' 删除
+                                '        '    backupFileName = GlobalModel.SaveTabData(GlobalModel.Tabs)
+                                '        '    GlobalModel.Tabs.RemoveAll(New Predicate(Of Tab)(Function(item As Tab) deletedItems.IndexOf(item) <> -1))
+                                '    Case Windows.Forms.DialogResult.No ' 覆盖
+                                '        backupFileName = GlobalModel.SaveTabData(GlobalModel.Tabs)
+                                '        GlobalModel.Tabs = newList
+                                '    Case Windows.Forms.DialogResult.Cancel
+                                '        backupFileName = ""
+                                'End Select
+
+                                'If backupFileName <> "" Then
+                                '    Dim isOpen As DialogResult = MessageBoxEx.Show("已完成同步，原始数据保存在 """ & backupFileName & """。", "同步", _
+                                '                                                   MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, _
+                                '                                                   New String() {"打开文件夹", "确定"})
+                                '    If isOpen = Windows.Forms.DialogResult.Yes Then
+                                '        System.Diagnostics.Process.Start("explorer.exe", "/select,""" & backupFileName & """")
+                                '    End If
+                                'End If
+
                             End Sub))
                     Catch ex As Exception
                         Console.WriteLine(ex.Message)

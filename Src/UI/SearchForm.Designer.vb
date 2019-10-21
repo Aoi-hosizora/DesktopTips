@@ -43,16 +43,16 @@ Partial Class SearchForm
         '
         'LabelResult
         '
-        Me.LabelResult.AutoSize = True
-        Me.LabelResult.Location = New System.Drawing.Point(12, 7)
+        Me.LabelResult.Location = New System.Drawing.Point(7, 7)
         Me.LabelResult.Name = "LabelResult"
-        Me.LabelResult.Size = New System.Drawing.Size(183, 17)
+        Me.LabelResult.Size = New System.Drawing.Size(348, 17)
         Me.LabelResult.TabIndex = 1
         Me.LabelResult.Text = """xxx"" 的搜索结果：(共找到 0 项)"
         '
         'ButtonSearch
         '
         Me.ButtonSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ButtonSearch.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.ButtonSearch.Location = New System.Drawing.Point(199, 297)
         Me.ButtonSearch.Name = "ButtonSearch"
         Me.ButtonSearch.Size = New System.Drawing.Size(75, 26)
@@ -64,6 +64,7 @@ Partial Class SearchForm
         '
         Me.ButtonBack.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonBack.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.ButtonBack.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.ButtonBack.Location = New System.Drawing.Point(280, 297)
         Me.ButtonBack.Name = "ButtonBack"
         Me.ButtonBack.Size = New System.Drawing.Size(75, 26)
@@ -89,7 +90,6 @@ Partial Class SearchForm
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "搜索"
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
     Friend WithEvents ListView As System.Windows.Forms.ListBox

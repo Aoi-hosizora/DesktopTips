@@ -3,7 +3,19 @@
 Public Class SearchForm
 
     Private Sub SearchForm_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
-        LabelResult.Text = """" & MainForm.SearchText & """ 的搜索结果：(共找到 " & MainForm.SearchResult.Count & " 项)"
+        Dim ShowLabel As String = """{0}"" 的搜索结果：(共找到 " & MainForm.SearchResult.Count & " 项)"
+        Dim SearchTextLong As String = MainForm.SearchText
+
+        Dim graphics As Graphics = CreateGraphics()
+        Dim sizeF As SizeF = graphics.MeasureString(String.Format(ShowLabel, SearchTextLong), LabelResult.Font)
+
+        While sizeF.Width >= LabelResult.Width - 10
+            SearchTextLong = SearchTextLong.Substring(0, SearchTextLong.Length - 1)
+            sizeF = graphics.MeasureString(String.Format(ShowLabel, SearchTextLong), LabelResult.Font)
+        End While
+
+        ' Add Ellipsis
+        LabelResult.Text = String.Format(ShowLabel, SearchTextLong & If(MainForm.SearchText.Length <> SearchTextLong.Length, "...", ""))
 
         ListView.Items.Clear()
         For Each Tpl As Tuple(Of Integer, Integer) In MainForm.SearchResult

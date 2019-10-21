@@ -71,6 +71,9 @@ Partial Class MainForm
         Me.ListPopupMenuOpenDir = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuViewFile = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuOpenBrowser = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuSyncData = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuSyncDataTo = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuSyncDataFrom = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuLabelItemWindow = New DevComponents.DotNetBar.LabelItem()
         Me.ListPopupMenuWinSetting = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuListHeight = New DevComponents.DotNetBar.ButtonItem()
@@ -87,6 +90,8 @@ Partial Class MainForm
         Me.TabPopupMenuDeleteTab = New DevComponents.DotNetBar.ButtonItem()
         Me.TabPopupMenuRenameTab = New DevComponents.DotNetBar.ButtonItem()
         Me.TabPopupMenuMove = New DevComponents.DotNetBar.ButtonItem()
+        Me.CmdsPopupMenu = New DevComponents.DotNetBar.ButtonItem()
+        Me.CmdsPopupMenuAppend = New DevComponents.DotNetBar.ButtonItem()
         Me.TabStrip = New DevComponents.DotNetBar.SuperTabStrip()
         Me.TabItemTest = New DevComponents.DotNetBar.SuperTabItem()
         Me.TabItemTest2 = New DevComponents.DotNetBar.SuperTabItem()
@@ -95,9 +100,6 @@ Partial Class MainForm
         Me.ButtonItemDown = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonResizeFlag = New DevComponents.DotNetBar.ButtonX()
         Me.HoverToolTip = New System.Windows.Forms.ToolTip(Me.components)
-        Me.ListPopupMenuSyncData = New DevComponents.DotNetBar.ButtonItem()
-        Me.ListPopupMenuSyncDataTo = New DevComponents.DotNetBar.ButtonItem()
-        Me.ListPopupMenuSyncDataFrom = New DevComponents.DotNetBar.ButtonItem()
         CType(Me.NumericUpDownListCnt, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ContextMenuBar1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TabStrip, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -229,15 +231,14 @@ Partial Class MainForm
         '
         Me.ContextMenuBar1.AntiAlias = True
         Me.ContextMenuBar1.Font = New System.Drawing.Font("Yu Gothic UI", 9.0!)
-        Me.ContextMenuBar1.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenu, Me.TabPopupMenu})
-        Me.ContextMenuBar1.Location = New System.Drawing.Point(95, 20)
+        Me.ContextMenuBar1.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenu, Me.TabPopupMenu, Me.CmdsPopupMenu})
+        Me.ContextMenuBar1.Location = New System.Drawing.Point(46, 40)
         Me.ContextMenuBar1.Name = "ContextMenuBar1"
-        Me.ContextMenuBar1.Size = New System.Drawing.Size(174, 27)
+        Me.ContextMenuBar1.Size = New System.Drawing.Size(240, 27)
         Me.ContextMenuBar1.Stretch = True
         Me.ContextMenuBar1.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
         Me.ContextMenuBar1.TabIndex = 4
         Me.ContextMenuBar1.TabStop = False
-        Me.ContextMenuBar1.Text = "ContextMenuBar1"
         '
         'ListPopupMenu
         '
@@ -431,6 +432,22 @@ Partial Class MainForm
         Me.ListPopupMenuOpenBrowser.Name = "ListPopupMenuOpenBrowser"
         Me.ListPopupMenuOpenBrowser.Text = "打开浏览器链接(&B)"
         '
+        'ListPopupMenuSyncData
+        '
+        Me.ListPopupMenuSyncData.Name = "ListPopupMenuSyncData"
+        Me.ListPopupMenuSyncData.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuSyncDataTo, Me.ListPopupMenuSyncDataFrom})
+        Me.ListPopupMenuSyncData.Text = "数据同步(&Y)"
+        '
+        'ListPopupMenuSyncDataTo
+        '
+        Me.ListPopupMenuSyncDataTo.Name = "ListPopupMenuSyncDataTo"
+        Me.ListPopupMenuSyncDataTo.Text = "同步到移动端(&T)"
+        '
+        'ListPopupMenuSyncDataFrom
+        '
+        Me.ListPopupMenuSyncDataFrom.Name = "ListPopupMenuSyncDataFrom"
+        Me.ListPopupMenuSyncDataFrom.Text = "从移动端同步(&F)"
+        '
         'ListPopupMenuLabelItemWindow
         '
         Me.ListPopupMenuLabelItemWindow.BackColor = System.Drawing.Color.FromArgb(CType(CType(221, Byte), Integer), CType(CType(231, Byte), Integer), CType(CType(238, Byte), Integer))
@@ -539,6 +556,20 @@ Partial Class MainForm
         Me.TabPopupMenuMove.Name = "TabPopupMenuMove"
         Me.TabPopupMenuMove.Text = "移动至分组(&M)"
         '
+        'CmdsPopupMenu
+        '
+        Me.CmdsPopupMenu.AutoExpandOnClick = True
+        Me.CmdsPopupMenu.Name = "CmdsPopupMenu"
+        Me.CmdsPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.CmdsPopupMenuAppend})
+        Me.CmdsPopupMenu.Text = "Cmds"
+        Me.CmdsPopupMenu.Visible = False
+        '
+        'CmdsPopupMenuAppend
+        '
+        Me.CmdsPopupMenuAppend.Name = "CmdsPopupMenuAppend"
+        Me.CmdsPopupMenuAppend.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlV)
+        Me.CmdsPopupMenuAppend.Text = "附加"
+        '
         'TabStrip
         '
         Me.TabStrip.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
@@ -621,6 +652,7 @@ Partial Class MainForm
         Me.ButtonItemUp.Size = New System.Drawing.Size(17, 9)
         Me.ButtonItemUp.TabIndex = 7
         Me.ButtonItemUp.Tag = "True"
+        Me.ButtonItemUp.Tooltip = "上移(U)"
         '
         'ButtonItemDown
         '
@@ -634,6 +666,7 @@ Partial Class MainForm
         Me.ButtonItemDown.Size = New System.Drawing.Size(17, 9)
         Me.ButtonItemDown.TabIndex = 8
         Me.ButtonItemDown.Tag = "True"
+        Me.ButtonItemDown.Tooltip = "下移(D)"
         '
         'ButtonResizeFlag
         '
@@ -648,22 +681,6 @@ Partial Class MainForm
         Me.ButtonResizeFlag.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
         Me.ButtonResizeFlag.TabIndex = 6
         Me.ButtonResizeFlag.Text = "::"
-        '
-        'ListPopupMenuSyncData
-        '
-        Me.ListPopupMenuSyncData.Name = "ListPopupMenuSyncData"
-        Me.ListPopupMenuSyncData.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuSyncDataTo, Me.ListPopupMenuSyncDataFrom})
-        Me.ListPopupMenuSyncData.Text = "数据同步(&Y)"
-        '
-        'ListPopupMenuSyncDataTo
-        '
-        Me.ListPopupMenuSyncDataTo.Name = "ListPopupMenuSyncDataTo"
-        Me.ListPopupMenuSyncDataTo.Text = "同步到移动端(&T)"
-        '
-        'ListPopupMenuSyncDataFrom
-        '
-        Me.ListPopupMenuSyncDataFrom.Name = "ListPopupMenuSyncDataFrom"
-        Me.ListPopupMenuSyncDataFrom.Text = "从移动端同步(&F)"
         '
         'MainForm
         '
@@ -767,5 +784,7 @@ Partial Class MainForm
     Friend WithEvents ListPopupMenuSyncData As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuSyncDataTo As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuSyncDataFrom As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents CmdsPopupMenu As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents CmdsPopupMenuAppend As DevComponents.DotNetBar.ButtonItem
 
 End Class

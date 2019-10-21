@@ -644,7 +644,9 @@ Public Class MainForm
             ListView.Items.Insert(currIdx - 1, currItem)
             ListView.SetSelected(currIdx - 1, True)
             If sender.Tag = "True" Then
-                NativeMethod.mouse_event(NativeMethod.MouseEvent.MOUSEEVENTF_MOVE, 0, -10, 0, 0)
+                Dim dx As Integer = Cursor.Position.X * UInt16.MaxValue / My.Computer.Screen.Bounds.Width
+                Dim dy As Integer = (Cursor.Position.Y - 17) * UInt16.MaxValue / My.Computer.Screen.Bounds.Height
+                NativeMethod.mouse_event(NativeMethod.MouseEvent.MOUSEEVENTF_MOVE Or NativeMethod.MouseEvent.MOUSEEVENTF_ABSOLUTE, dx, dy, 0, 0)
             End If
             SaveList()
         End If
@@ -661,7 +663,9 @@ Public Class MainForm
             ListView.Items.Insert(currIdx + 1, currItem)
             ListView.SetSelected(currIdx + 1, True)
             If sender.Tag = "True" Then
-                NativeMethod.mouse_event(NativeMethod.MouseEvent.MOUSEEVENTF_MOVE, 0, 10, 0, 0)
+                Dim dx As Integer = Cursor.Position.X * UInt16.MaxValue / My.Computer.Screen.Bounds.Width
+                Dim dy As Integer = (Cursor.Position.Y + 17) * UInt16.MaxValue / My.Computer.Screen.Bounds.Height
+                NativeMethod.mouse_event(NativeMethod.MouseEvent.MOUSEEVENTF_MOVE Or NativeMethod.MouseEvent.MOUSEEVENTF_ABSOLUTE, dx, dy, 0, 0)
             End If
             SaveList()
         End If
@@ -779,6 +783,9 @@ Public Class MainForm
         ' 移动
         ListPopupMenuMove.Enabled = IsNotNull
 
+        ' 附加
+        CmdsPopupMenuAppend.Enabled = IsSingle
+
         ' 浏览器
         If IsSingle Then
             Dim item As TipItem = CType(ListView.SelectedItem, TipItem)
@@ -866,12 +873,16 @@ Public Class MainForm
     Private Sub NumericUpDownListCnt_ValueChanged(sender As System.Object, e As System.EventArgs) Handles NumericUpDownListCnt.ValueChanged
         Dim MoveY As Integer
         If Me.Height < NumericUpDownListCnt.Value * ListView.ItemHeight + 27 Then
-            MoveY = 10
+            MoveY = 17
         ElseIf Me.Height > NumericUpDownListCnt.Value * ListView.ItemHeight + 27 Then
-            MoveY = -10
+            MoveY = -17
         End If
         Me.Height = NumericUpDownListCnt.Value * ListView.ItemHeight + 27
-        NativeMethod.mouse_event(NativeMethod.MouseEvent.MOUSEEVENTF_MOVE, 0, MoveY, 0, 0)
+
+        Dim dx As Integer = Cursor.Position.X * UInt16.MaxValue / My.Computer.Screen.Bounds.Width
+        Dim dy As Integer = (Cursor.Position.Y + MoveY) * UInt16.MaxValue / My.Computer.Screen.Bounds.Height
+
+        NativeMethod.mouse_event(NativeMethod.MouseEvent.MOUSEEVENTF_MOVE Or NativeMethod.MouseEvent.MOUSEEVENTF_ABSOLUTE, dx, dy, 0, 0)
     End Sub
 
     ''' <summary>
@@ -1090,12 +1101,20 @@ Public Class MainForm
     ''' 保存位置
     ''' </summary>
     Private Sub ListPopupMenuSavePos_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuSavePos.Click
-        Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
-        setting.SaveTop = Me.Top
-        setting.SaveLeft = Me.Left
-        SettingUtil.SaveAppSettings(setting)
 
-        ListPopupMenuLoadPos.Enabled = True
+        Dim ok As DialogResult =
+            MessageBox.Show("确定保存当前位置，注意该操作会覆盖之前保存的窗口位置。",
+                            "保存位置",
+                            MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
+
+        If ok = vbOK Then
+            Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
+            setting.SaveTop = Me.Top
+            setting.SaveLeft = Me.Left
+            SettingUtil.SaveAppSettings(setting)
+
+            ListPopupMenuLoadPos.Enabled = True
+        End If
     End Sub
 
     ''' <summary>
@@ -1105,6 +1124,36 @@ Public Class MainForm
         Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
         Me.Top = setting.SaveTop
         Me.Left = setting.SaveLeft
+    End Sub
+
+#End Region
+
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+#Region "附加不可见功能"
+
+    ''' <summary>
+    ''' 粘贴附加在最后
+    ''' </summary>
+    Private Sub CmdsPopupMenuAppend_Click(sender As System.Object, e As System.EventArgs) Handles CmdsPopupMenuAppend.Click
+        Dim clip$ = Clipboard.GetText()
+        If Not String.IsNullOrWhiteSpace(clip) Then
+            Dim currIdx% = ListView.SelectedIndex
+
+            Dim tip As TipItem = SU.Tabs(SU.CurrTabIdx).Tips(currIdx)
+            Dim motoStr$ = tip.TipContent
+
+            tip.TipContent += " " & Clipboard.GetText().Trim()
+            Dim ok As DialogResult = MessageBoxEx.Show(
+                "已经添加剪贴板内容，当前选中项内容为 """ & SU.Tabs(SU.CurrTabIdx).Tips(currIdx).TipContent & """。",
+                "附加内容",
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, New String() {"OK", "元に戻す"})
+
+            If ok = Windows.Forms.DialogResult.Cancel Then
+                tip.TipContent = motoStr
+            End If
+        End If
     End Sub
 
 #End Region

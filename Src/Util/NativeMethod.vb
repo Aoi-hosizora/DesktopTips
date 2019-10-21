@@ -16,6 +16,7 @@
         MOUSEEVENTF_RIGHTDOWN = &H8     '右键按下
         MOUSEEVENTF_RIGHTUP = &H10      '右键释放
         MOUSEEVENTF_MOVE = &H1          '指针移动
+        MOUSEEVENTF_ABSOLUTE = &H8000   '绝对移动
     End Enum
 
 #End Region

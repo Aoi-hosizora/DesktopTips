@@ -250,9 +250,10 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
-    ''' 窗口关闭后保存设置
+    ''' 窗口关闭后保存文件和设置
     ''' </summary>
     Private Sub MainForm_FormClosed(sender As Object, e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
+        SaveList()
         SaveSetting()
     End Sub
 
@@ -1145,13 +1146,16 @@ Public Class MainForm
             Dim motoStr$ = tip.TipContent
 
             tip.TipContent += " " & Clipboard.GetText().Trim()
+            SaveList()
+
             Dim ok As DialogResult = MessageBoxEx.Show(
-                "已经添加剪贴板内容，当前选中项内容为 """ & SU.Tabs(SU.CurrTabIdx).Tips(currIdx).TipContent & """。",
+                "已经添加剪贴板内容，当前选中项内容为 """ & SU.Tabs(SU.CurrTabIdx).Tips(currIdx).TipContent & """，是否还原？",
                 "附加内容",
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, New String() {"OK", "元に戻す"})
 
             If ok = Windows.Forms.DialogResult.Cancel Then
                 tip.TipContent = motoStr
+                SaveList()
             End If
         End If
     End Sub

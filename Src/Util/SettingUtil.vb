@@ -1,8 +1,10 @@
 ﻿Public Class SettingUtil
 
     Private Const AppName As String = "DesktopTips"
+
     Private Const PosSection As String = "PosSize"
     Private Const FormSection As String = "FormSize"
+    Private Const NetSection As String = "NetRecord"
 
     Public Structure AppSetting
         Public Top As Integer
@@ -17,6 +19,9 @@
 
         Public SaveTop As Integer
         Public SaveLeft As Integer
+
+        Public LastMobileIP As String
+        Public LastLocalPort As String
     End Structure
 
     Public Shared Sub SaveAppSettings(ByVal appSetting As AppSetting)
@@ -35,6 +40,9 @@
 
         SaveSetting(AppName, PosSection, "SaveTop", appSetting.SaveTop)
         SaveSetting(AppName, PosSection, "SaveLeft", appSetting.SaveLeft)
+
+        SaveSetting(AppName, NetSection, "LastMobileIP", appSetting.LastMobileIP)
+        SaveSetting(AppName, NetSection, "LastLocalPort", appSetting.LastLocalPort)
     End Sub
 
     Public Shared Function LoadAppSettings() As AppSetting
@@ -51,6 +59,9 @@
 
         setting.SaveTop = GetSetting(AppName, PosSection, "SaveTop", -1)
         setting.SaveLeft = GetSetting(AppName, PosSection, "SaveLeft", -1)
+
+        setting.LastMobileIP = GetSetting(AppName, NetSection, "LastMobileIP", "127.0.0.1:8776")
+        setting.LastLocalPort = GetSetting(AppName, NetSection, "LastLocalPort", "8776")
 
         Return setting
     End Function

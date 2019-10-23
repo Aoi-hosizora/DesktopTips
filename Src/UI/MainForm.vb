@@ -2,7 +2,6 @@
 Imports System.Text
 Imports System.Threading
 
-Imports SU = DesktopTips.GlobalModel
 Imports DD = DevComponents.DotNetBar
 Imports QRCoder
 Imports System.Text.RegularExpressions
@@ -513,7 +512,7 @@ Public Class MainForm
     ''' <param name="IsAlreadyLoadTab">是否已经初始化分组 (True: 不需要更新 分组 和 Curr)</param>
     Private Sub LoadList(Optional ByVal IsAlreadyLoadTab = False)
         Try
-            SU.LoadTabTipsData()
+            GlobalModel.LoadTabTipsData()
         Catch ex As FileLoadException
             Dim Msg As String = "错误：" & ex.Message & Chr(10) & "是否打开文件位置检查文件？"
             Dim ok As MsgBoxResult = MessageBoxEx.Show(Msg, "错误", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, {"開く", "キャンセル"})
@@ -525,13 +524,13 @@ Public Class MainForm
         End Try
 
         ListView.Items.Clear()
-        For Each Tip As TipItem In SU.Tabs.Item(SU.CurrTabIdx).Tips
+        For Each Tip As TipItem In GlobalModel.Tabs.Item(GlobalModel.CurrTabIdx).Tips
             ListView.Items.Add(Tip)
         Next
 
         If Not IsAlreadyLoadTab Then
-            For i = 0 To SU.Tabs.Count - 1
-                AddTab(SU.Tabs.Item(i).Title)
+            For i = 0 To GlobalModel.Tabs.Count - 1
+                AddTab(GlobalModel.Tabs.Item(i).Title)
             Next
         End If
 
@@ -547,8 +546,8 @@ Public Class MainForm
             Tips.Add(Tip)
         Next
 
-        SU.Tabs.Item(SU.CurrTabIdx).Tips = New List(Of TipItem)(Tips)
-        SU.SaveTabData()
+        GlobalModel.Tabs.Item(GlobalModel.CurrTabIdx).Tips = New List(Of TipItem)(Tips)
+        GlobalModel.SaveTabData()
         LabelNothing.Visible = ListView.Items.Count = 0
     End Sub
 
@@ -847,10 +846,10 @@ Public Class MainForm
 
         If SearchText <> "" Then
             Dim spl() As String = SearchText.Split(" ")
-            For Each Tab As Tab In SU.Tabs
+            For Each Tab As Tab In GlobalModel.Tabs
                 For Each Tip As TipItem In Tab.Tips
                     If Tip.TipContent.ToLower.Contains(SearchText.ToLower) Then
-                        SearchResult.Add(New Tuple(Of Integer, Integer)(SU.Tabs.IndexOf(Tab), Tab.Tips.IndexOf(Tip)))
+                        SearchResult.Add(New Tuple(Of Integer, Integer)(GlobalModel.Tabs.IndexOf(Tab), Tab.Tips.IndexOf(Tip)))
                     End If
                 Next
             Next
@@ -923,7 +922,7 @@ Public Class MainForm
         'Process.Start(path)
         'C:\Users\Windows 10\AppData\Roaming\DesktopTips
 
-        System.Diagnostics.Process.Start("explorer.exe", "/select,""" & SU.StorageJsonFile & """")
+        System.Diagnostics.Process.Start("explorer.exe", "/select,""" & GlobalModel.StorageJsonFile & """")
     End Sub
 
     ''' <summary>
@@ -1085,7 +1084,7 @@ Public Class MainForm
         ListPopupMenuLabelSelItemText.Text = sb.ToString
 
         Dim HLItemCnt As Integer = 0
-        For Each Tip As TipItem In SU.Tabs.Item(SU.CurrTabIdx).Tips
+        For Each Tip As TipItem In GlobalModel.Tabs.Item(GlobalModel.CurrTabIdx).Tips
             HLItemCnt += If(Tip.IsHighLight, 1, 0)
         Next
         ListPopupMenuLabelItemList.Text = "列表 (共 " & ListView.Items.Count & " 项，高亮 " & HLItemCnt & " 项)"
@@ -1142,14 +1141,14 @@ Public Class MainForm
         If Not String.IsNullOrWhiteSpace(clip) Then
             Dim currIdx% = ListView.SelectedIndex
 
-            Dim tip As TipItem = SU.Tabs(SU.CurrTabIdx).Tips(currIdx)
+            Dim tip As TipItem = GlobalModel.Tabs(GlobalModel.CurrTabIdx).Tips(currIdx)
             Dim motoStr$ = tip.TipContent
 
             tip.TipContent += " " & Clipboard.GetText().Trim()
             SaveList()
 
             Dim ok As DialogResult = MessageBoxEx.Show(
-                "已经添加剪贴板内容，当前选中项内容为 """ & SU.Tabs(SU.CurrTabIdx).Tips(currIdx).TipContent & """，是否还原？",
+                "已经添加剪贴板内容，当前选中项内容为 """ & GlobalModel.Tabs(GlobalModel.CurrTabIdx).Tips(currIdx).TipContent & """，是否还原？",
                 "附加内容",
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, New String() {"OK", "元に戻す"})
 
@@ -1176,13 +1175,13 @@ Public Class MainForm
 
         If IsAddToStorage Then
             Dim NewTab As New Tab(Title)
-            SU.Tabs.Add(NewTab)
-            SU.SaveTabData()
+            GlobalModel.Tabs.Add(NewTab)
+            GlobalModel.SaveTabData()
         End If
 
         Dim NewSuperTabItem = New DD.SuperTabItem()
         NewSuperTabItem.GlobalItem = False
-        NewSuperTabItem.Name = "TabItemCustom_" & SU.Tabs.Count
+        NewSuperTabItem.Name = "TabItemCustom_" & GlobalModel.Tabs.Count
         NewSuperTabItem.Text = Title
 
         AddHandler NewSuperTabItem.MouseDown, AddressOf TabStrip_MouseDown
@@ -1198,7 +1197,7 @@ Public Class MainForm
         Dim tabName As String = InputBox("请输入新分组的标题: ", "新建", "分组")
         tabName = tabName.Trim()
         If tabName <> "" Then
-            If Tab.CheckDuplicateTab(tabName, SU.Tabs) IsNot Nothing Then
+            If Tab.CheckDuplicateTab(tabName, GlobalModel.Tabs) IsNot Nothing Then
                 MessageBoxEx.Show("分组标题 """ & tabName & """ 已存在。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
                 ListPopupMenuNewTab_Click(sender, New System.EventArgs)
             Else
@@ -1222,8 +1221,8 @@ Public Class MainForm
                 Dim ok As DialogResult = MessageBoxEx.Show("是否删除分组 """ + TabStrip.SelectedTab.Text + """？", "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
                 If ok = vbOK Then
                     TabStrip.Tabs.RemoveAt(TabStrip.SelectedTabIndex)
-                    SU.Tabs.RemoveAt(SU.Tabs.IndexOf(Tab.GetTabFromTitle(TabTitle)))
-                    SU.SaveTabData()
+                    GlobalModel.Tabs.RemoveAt(GlobalModel.Tabs.IndexOf(Tab.GetTabFromTitle(TabTitle)))
+                    GlobalModel.SaveTabData()
                 End If
             End If
         End If
@@ -1238,12 +1237,12 @@ Public Class MainForm
             Dim NewName As String = InputBox("重命名分组 """ & OldName & """ 为: ", "重命名", OldName)
             NewName = NewName.Trim()
             If NewName <> "" Then
-                If Tab.CheckDuplicateTab(NewName, SU.Tabs) IsNot Nothing Then
+                If Tab.CheckDuplicateTab(NewName, GlobalModel.Tabs) IsNot Nothing Then
                     MessageBoxEx.Show("分组标题 """ & NewName & """ 已存在。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
                     ListPopupMenuRenameTab_Click(sender, New System.EventArgs)
                 Else
                     Tab.GetTabFromTitle(OldName).Title = NewName
-                    SU.SaveTabData()
+                    GlobalModel.SaveTabData()
                     TabStrip.SelectedTab.Text = NewName
                 End If
             End If
@@ -1281,8 +1280,8 @@ Public Class MainForm
     ''' </summary>
     Private Sub TabStrip_SelectedTabChanged(sender As Object, e As DD.SuperTabStripSelectedTabChangedEventArgs) Handles TabStrip.SelectedTabChanged
         SetSelectedItemButtonHide()
-        If TabStrip.SelectedTabIndex <> -1 And SU.Tabs.Count <> 0 Then
-            SU.CurrTabIdx = SU.Tabs.IndexOf(Tab.GetTabFromTitle(TabStrip.SelectedTab.Text))
+        If TabStrip.SelectedTabIndex <> -1 And GlobalModel.Tabs.Count <> 0 Then
+            GlobalModel.CurrTabIdx = GlobalModel.Tabs.IndexOf(Tab.GetTabFromTitle(TabStrip.SelectedTab.Text))
             LoadList(True)
         End If
     End Sub
@@ -1295,9 +1294,9 @@ Public Class MainForm
         For Each TabItem As DD.SuperTabItem In e.NewOrder
             NewTabs.Add(Tab.GetTabFromTitle(TabItem.Text))
         Next
-        SU.Tabs = NewTabs
-        SU.CurrTabIdx = SU.Tabs.IndexOf(Tab.GetTabFromTitle(TabStrip.SelectedTab.Text))
-        SU.SaveTabData()
+        GlobalModel.Tabs = NewTabs
+        GlobalModel.CurrTabIdx = GlobalModel.Tabs.IndexOf(Tab.GetTabFromTitle(TabStrip.SelectedTab.Text))
+        GlobalModel.SaveTabData()
     End Sub
 
 #End Region
@@ -1313,8 +1312,8 @@ Public Class MainForm
         Dim Tabs As New List(Of String)
         Dim TabBtns As New List(Of DD.ButtonItem)
 
-        For Each Tab As Tab In SU.Tabs
-            If Tab.Title <> SU.Tabs.Item(SU.CurrTabIdx).Title Then
+        For Each Tab As Tab In GlobalModel.Tabs
+            If Tab.Title <> GlobalModel.Tabs.Item(GlobalModel.CurrTabIdx).Title Then
                 Tabs.Add(Tab.Title)
             End If
         Next
@@ -1359,7 +1358,7 @@ Public Class MainForm
             Me.TabPopupMenuMove.SubItems.Clear()
         End If
 
-        TabPopupMenuLabel.Text = "分组 (共 " & SU.Tabs.Count & " 组)"
+        TabPopupMenuLabel.Text = "分组 (共 " & GlobalModel.Tabs.Count & " 组)"
     End Sub
 
     ''' <summary>
@@ -1378,7 +1377,7 @@ Public Class MainForm
     ''' <remarks></remarks>
     Private Sub MoveTab(sender As System.Object, e As System.EventArgs)
 
-        Dim Src As String = SU.Tabs.Item(SU.CurrTabIdx).Title
+        Dim Src As String = GlobalModel.Tabs.Item(GlobalModel.CurrTabIdx).Title
         Dim Dest As String = sender.Tag
 
         Dim SelectItems As List(Of TipItem)
@@ -1406,7 +1405,7 @@ Public Class MainForm
                 Tab.GetTabFromTitle(Dest).Tips.Add(Item)
                 Tab.GetTabFromTitle(Src).Tips.Remove(Item)
             Next
-            SU.SaveTabData()
+            GlobalModel.SaveTabData()
 
             For Each TabItem As DD.SuperTabItem In TabStrip.Tabs
                 If TabItem.Text = Dest Then
@@ -1442,7 +1441,10 @@ Public Class MainForm
     ''' 远程监听地址 -> 确定远程地址 -> 本地发送数据 -> 等待 ACK
     ''' </summary>
     Private Sub ListPopupMenuSyncDataTo_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuSyncDataTo.Click
-        Dim input As String = InputBox("请输入移动端的地址：", "同步到移动端", "127.0.0.1:8776")
+        Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
+
+        Dim input As String = InputBox("请输入移动端的地址：", "同步到移动端", setting.LastMobileIP)
+        input = input.Replace("：", ":").Trim()
 
         If String.IsNullOrWhiteSpace(input) Then Return ' 空内容
         Dim sp As String() = input.Split(New Char() {":"})
@@ -1451,10 +1453,15 @@ Public Class MainForm
         While sp.Length <> 2 OrElse Not ipRe.IsMatch(sp(0)) OrElse Not portRe.IsMatch(sp(1)) OrElse Not Integer.TryParse(sp(1), port)
             MessageBox.Show("所输入的地址格式不正确。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
 
-            input = InputBox("请输入移动端的地址：", "同步到移动端", input)
+            input = InputBox("请输入移动端的地址：", "同步到移动端", input).Replace("：", ":").Trim()
+
             If String.IsNullOrWhiteSpace(input) Then Return ' 空内容
-            sp = input.Split(New Char() {":"})
+            sp = input.Replace("：", ":").Trim().Split(New Char() {":"})
         End While
+
+        setting.LastMobileIP = input
+        SettingUtil.SaveAppSettings(setting)
+
         ip = sp(0)
 
         ' ----------------------------------------------
@@ -1487,7 +1494,8 @@ Public Class MainForm
             Return
         End If
 
-        Dim input As String = InputBox("请输入本地监听的端口：", "从移动端同步", "8776")
+        Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
+        Dim input As String = InputBox("请输入本地监听的端口：", "从移动端同步", setting.LastLocalPort)
 
         Dim port As Integer
         If String.IsNullOrWhiteSpace(input) Then Return ' 空内容
@@ -1497,6 +1505,9 @@ Public Class MainForm
             input = InputBox("请输入本地监听的端口：", "从移动端同步", input)
             If String.IsNullOrWhiteSpace(input) Then Return ' 空内容
         End While
+
+        setting.LastLocalPort = input.Trim()
+        SettingUtil.SaveAppSettings(setting)
 
         ' ---------------------------------------------
         ' 获得端口 << 监听

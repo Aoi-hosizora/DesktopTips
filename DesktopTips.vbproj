@@ -110,6 +110,9 @@
     <Compile Include="Src\Model\GlobalModel.vb" />
     <Compile Include="Src\Model\Tab.vb" />
     <Compile Include="Src\Model\TipItem.vb" />
+    <Compile Include="Src\Service\GenQrCode.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Src\Service\SyncData.vb" />
     <Compile Include="Src\UI\MainForm.vb">
       <SubType>Form</SubType>

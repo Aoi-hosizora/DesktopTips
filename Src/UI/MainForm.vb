@@ -1515,7 +1515,8 @@ Public Class MainForm
         Dim thread As Thread = Nothing
         Dim cancelFlag As Boolean = False
 
-        Dim qrCodeForm As Form = SyncData.GetQrCodeForm(QR_CODE_MAGIC & ip & ":" & port)
+        Dim qrCodeForm As Form = GenQrCode.GetQrCodeForm(QR_CODE_MAGIC & ip & ":" & port)
+
         qrCodeForm.Text = "连接二维码 (" & ip & ":" & port & ")"
         AddHandler qrCodeForm.FormClosed, _
             Sub()

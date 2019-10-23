@@ -4,7 +4,6 @@ Imports System.Net
 Imports System.Text
 Imports Newtonsoft.Json
 Imports System.IO
-Imports QRCoder
 
 Public Class SyncData
 
@@ -164,25 +163,6 @@ eof:
             End If
         Next
         Return ip
-    End Function
-
-    Public Shared Function GetQrCodeForm(ByVal Data As String) As Form
-
-        Dim qrGenerator As New QRCodeGenerator
-        Dim qrCodeData As QRCodeData = qrGenerator.CreateQrCode(Data, QRCodeGenerator.ECCLevel.Q)
-        Dim qrCode As New QRCode(qrCodeData)
-        Dim qrCodeImg As Bitmap = qrCode.GetGraphic(7)
-
-        Dim qrCodeForm As New Form With {.Name = "qrCodeForm", .FormBorderStyle = Windows.Forms.FormBorderStyle.FixedDialog, _
-                                         .MaximizeBox = False, .MinimizeBox = False, .ShowInTaskbar = False, _
-                                         .StartPosition = FormStartPosition.CenterScreen, .Size = qrCodeImg.Size}
-
-        Dim pictureBox As New PictureBox With {.Name = "pictureBox", .SizeMode = PictureBoxSizeMode.Zoom, .Image = qrCodeImg}
-
-        qrCodeForm.Controls.Add(pictureBox)
-        pictureBox.Dock = DockStyle.Fill
-
-        Return qrCodeForm
     End Function
 
 End Class

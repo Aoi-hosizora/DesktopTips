@@ -464,7 +464,7 @@ Partial Class MainForm
         'ListPopupMenuWinSetting
         '
         Me.ListPopupMenuWinSetting.Name = "ListPopupMenuWinSetting"
-        Me.ListPopupMenuWinSetting.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuListHeight, Me.ListPopupMenuOpacity, Me.ListPopupMenuFold, Me.ListPopupMenuWinTop, Me.ListPopupMenuWinHighColor, Me.ListPopupMenuSavePos, Me.ListPopupMenuLoadPos})
+        Me.ListPopupMenuWinSetting.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuListHeight, Me.ListPopupMenuOpacity, Me.ListPopupMenuFold, Me.ListPopupMenuWinTop, Me.ListPopupMenuWinHighColor, Me.ListPopupMenuLoadPos, Me.ListPopupMenuSavePos})
         Me.ListPopupMenuWinSetting.Text = "显示设置(&S)"
         '
         'ListPopupMenuListHeight
@@ -497,12 +497,12 @@ Partial Class MainForm
         '
         'ListPopupMenuSavePos
         '
-        Me.ListPopupMenuSavePos.BeginGroup = True
         Me.ListPopupMenuSavePos.Name = "ListPopupMenuSavePos"
         Me.ListPopupMenuSavePos.Text = "保存当前位置(&S)"
         '
         'ListPopupMenuLoadPos
         '
+        Me.ListPopupMenuLoadPos.BeginGroup = True
         Me.ListPopupMenuLoadPos.Name = "ListPopupMenuLoadPos"
         Me.ListPopupMenuLoadPos.Text = "恢复保存位置(&L)"
         '

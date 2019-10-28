@@ -73,10 +73,11 @@
     <Reference Include="DevComponents.DotNetBar2, Version=10.8.0.0, Culture=neutral, PublicKeyToken=c39c3242a43eee2b, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\Windows 10\.nuget\packages\newtonsoft.json\12.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>E:\Nuget\packages\newtonsoft.json\10.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="QRCoder">
-      <HintPath>C:\Users\Windows 10\.nuget\packages\qrcoder\1.3.6\lib\net40\QRCoder.dll</HintPath>
+    <Reference Include="QRCoder, Version=1.3.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>E:\Nuget\packages\qrcoder\1.3.6\lib\net40\QRCoder.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -110,10 +111,10 @@
     <Compile Include="Src\Model\GlobalModel.vb" />
     <Compile Include="Src\Model\Tab.vb" />
     <Compile Include="Src\Model\TipItem.vb" />
-    <Compile Include="Src\Service\GenQrCode.vb">
+    <Compile Include="Src\Service\SyncData.vb" />
+    <Compile Include="Src\UI\EscCloseForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Src\Service\SyncData.vb" />
     <Compile Include="Src\UI\MainForm.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -137,6 +138,7 @@
     <Compile Include="Src\UI\SearchForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Src\Util\CommonUtil.vb" />
     <Compile Include="Src\Util\MessageBoxEx.vb">
       <SubType>Form</SubType>
     </Compile>

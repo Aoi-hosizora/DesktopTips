@@ -4,6 +4,7 @@ Imports System.Net
 Imports System.Text
 Imports Newtonsoft.Json
 Imports System.IO
+Imports QRCoder
 
 Public Class SyncData
 

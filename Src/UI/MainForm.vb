@@ -939,7 +939,7 @@ Public Class MainForm
                                          .Size = TextSize, .BackColor = Color.White, .ForeColor = TextColor, .Font = New System.Drawing.Font("Microsoft YaHei UI", 9.0!), _
                                          .Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top}
 
-        Dim Win As New Form With {.FormBorderStyle = Windows.Forms.FormBorderStyle.Sizable, .Text = Title, .Size = WinSize, .TopMost = True}
+        Dim Win As New EscCloseForm With {.FormBorderStyle = Windows.Forms.FormBorderStyle.Sizable, .Text = Title, .Size = WinSize, .TopMost = True}
         Win.Controls.Add(TextBox)
         Win.Show()
 
@@ -1005,11 +1005,13 @@ Public Class MainForm
             MessageBox.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
         Else
             Dim ok As MessageBoxButtons = _
-                MessageBox.Show("是否打开以下链接：" + Chr(10) + Chr(10) + String.Join(Chr(10), links), "打开链接", MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
+                MessageBox.Show("是否打开以下链接：" + Chr(10) + Chr(10) + String.Join(Chr(10), links), "打开链接", MessageBoxButtons.OKCancel, MessageBoxIcon.Question)
             If ok = MsgBoxResult.Ok Then
-                For Each link As String In links
-                    Process.Start(link)
-                Next
+
+                CommonUtil.OpenWebsInDefaultBrowser(links)
+                'For Each link As String In links
+                '    Process.Start(link)
+                'Next
             End If
         End If
     End Sub
@@ -1435,6 +1437,28 @@ Public Class MainForm
     Private Shared ipRe As New Regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
     Private Shared portRe As New Regex("^([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-4]\d{4}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$")
 
+    ''' <summary>
+    ''' 显示二维码窗口
+    ''' </summary>
+    Public Function GetQrCodeForm(ByVal Data As String) As EscCloseForm
+
+        Dim qrGenerator As New QRCodeGenerator
+        Dim qrCodeData As QRCodeData = qrGenerator.CreateQrCode(Data, QRCodeGenerator.ECCLevel.Q)
+        Dim qrCode As New QRCode(qrCodeData)
+        Dim qrCodeImg As Bitmap = qrCode.GetGraphic(7)
+
+        Dim qrCodeForm As New EscCloseForm With {.Name = "qrCodeForm", .FormBorderStyle = Windows.Forms.FormBorderStyle.FixedDialog, _
+                                                 .MaximizeBox = False, .MinimizeBox = False, .ShowInTaskbar = False, _
+                                                 .StartPosition = FormStartPosition.CenterScreen, .Size = qrCodeImg.Size}
+
+        Dim pictureBox As New PictureBox With {.Name = "pictureBox", .SizeMode = PictureBoxSizeMode.Zoom, .Image = qrCodeImg}
+
+        qrCodeForm.Controls.Add(pictureBox)
+        pictureBox.Dock = DockStyle.Fill
+
+        Return qrCodeForm
+
+    End Function
 
     ''' <summary>
     ''' 同步到移动端 (本地 C -> 安卓 S) !!! 常用
@@ -1515,7 +1539,7 @@ Public Class MainForm
         Dim thread As Thread = Nothing
         Dim cancelFlag As Boolean = False
 
-        Dim qrCodeForm As Form = GenQrCode.GetQrCodeForm(QR_CODE_MAGIC & ip & ":" & port)
+        Dim qrCodeForm As EscCloseForm = GetQrCodeForm(QR_CODE_MAGIC & ip & ":" & port)
 
         qrCodeForm.Text = "连接二维码 (" & ip & ":" & port & ")"
         AddHandler qrCodeForm.FormClosed, _

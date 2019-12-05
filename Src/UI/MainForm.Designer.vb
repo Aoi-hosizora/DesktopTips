@@ -81,8 +81,8 @@ Partial Class MainForm
         Me.ListPopupMenuFold = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuWinTop = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuWinHighColor = New DevComponents.DotNetBar.ColorPickerDropDown()
-        Me.ListPopupMenuSavePos = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuLoadPos = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuSavePos = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuExit = New DevComponents.DotNetBar.ButtonItem()
         Me.TabPopupMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.TabPopupMenuLabel = New DevComponents.DotNetBar.LabelItem()
@@ -465,7 +465,7 @@ Partial Class MainForm
         '
         Me.ListPopupMenuWinSetting.Name = "ListPopupMenuWinSetting"
         Me.ListPopupMenuWinSetting.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuListHeight, Me.ListPopupMenuOpacity, Me.ListPopupMenuFold, Me.ListPopupMenuWinTop, Me.ListPopupMenuWinHighColor, Me.ListPopupMenuLoadPos, Me.ListPopupMenuSavePos})
-        Me.ListPopupMenuWinSetting.Text = "显示设置(&S)"
+        Me.ListPopupMenuWinSetting.Text = "显示(&S)"
         '
         'ListPopupMenuListHeight
         '
@@ -495,16 +495,17 @@ Partial Class MainForm
         Me.ListPopupMenuWinHighColor.Name = "ListPopupMenuWinHighColor"
         Me.ListPopupMenuWinHighColor.Text = "高亮颜色(&C)"
         '
-        'ListPopupMenuSavePos
-        '
-        Me.ListPopupMenuSavePos.Name = "ListPopupMenuSavePos"
-        Me.ListPopupMenuSavePos.Text = "保存当前位置(&S)"
-        '
         'ListPopupMenuLoadPos
         '
         Me.ListPopupMenuLoadPos.BeginGroup = True
         Me.ListPopupMenuLoadPos.Name = "ListPopupMenuLoadPos"
-        Me.ListPopupMenuLoadPos.Text = "恢复保存位置(&L)"
+        Me.ListPopupMenuLoadPos.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlR)
+        Me.ListPopupMenuLoadPos.Text = "恢复位置(&L)"
+        '
+        'ListPopupMenuSavePos
+        '
+        Me.ListPopupMenuSavePos.Name = "ListPopupMenuSavePos"
+        Me.ListPopupMenuSavePos.Text = "保存当前位置(&S)"
         '
         'ListPopupMenuExit
         '

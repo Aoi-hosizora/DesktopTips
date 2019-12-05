@@ -515,7 +515,7 @@ Public Class MainForm
             GlobalModel.LoadTabTipsData()
         Catch ex As FileLoadException
             Dim Msg As String = "错误：" & ex.Message & Chr(10) & "是否打开文件位置检查文件？"
-            Dim ok As MsgBoxResult = MessageBoxEx.Show(Msg, "错误", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, {"開く", "キャンセル"})
+            Dim ok As MsgBoxResult = MessageBoxEx.Show(Msg, "错误", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, Me, {"開く", "キャンセル"})
             If ok = vbYes Then
                 ListPopupMenuOpenFile_Click(ListPopupMenuOpenDir, New EventArgs)
             End If
@@ -580,7 +580,7 @@ Public Class MainForm
             For Each item As TipItem In ListView.SelectedItems.Cast(Of TipItem)()
                 sb.AppendLine(item.TipContent)
             Next
-            Dim ok As Integer = MessageBoxEx.Show("确定删除以下 " & SelectItemIdics.Count & " 个提醒标签吗？" & Chr(10) & Chr(10) & sb.ToString, "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1)
+            Dim ok As Integer = MessageBoxEx.Show("确定删除以下 " & SelectItemIdics.Count & " 个提醒标签吗？" & Chr(10) & Chr(10) & sb.ToString, "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, Me)
             If (ok = vbOK) Then
                 For Each item As TipItem In SelectItemIdics
                     ListView.Items.Remove(item)
@@ -856,7 +856,7 @@ Public Class MainForm
 
             SearchForm.Close()
             If SearchResult.Count = 0 Then
-                MessageBoxEx.Show("未找到 """ & SearchText & """ 。", "查找", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1)
+                MessageBoxEx.Show("未找到 """ & SearchText & """ 。", "查找", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, Me)
             Else
                 SearchForm.Show(Me)
             End If
@@ -1146,16 +1146,13 @@ Public Class MainForm
             Dim tip As TipItem = GlobalModel.Tabs(GlobalModel.CurrTabIdx).Tips(currIdx)
             Dim motoStr$ = tip.TipContent
 
-            tip.TipContent += " " & Clipboard.GetText().Trim()
-            SaveList()
-
             Dim ok As DialogResult = MessageBoxEx.Show(
-                "已经添加剪贴板内容，当前选中项内容为 """ & GlobalModel.Tabs(GlobalModel.CurrTabIdx).Tips(currIdx).TipContent & """，是否还原？",
+                "是否向当前选中项 """ & GlobalModel.Tabs(GlobalModel.CurrTabIdx).Tips(currIdx).TipContent & """ 末尾添加剪贴板内容 """ & clip & """？",
                 "附加内容",
-                MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, New String() {"OK", "元に戻す"})
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, Me)
 
-            If ok = Windows.Forms.DialogResult.Cancel Then
-                tip.TipContent = motoStr
+            If ok = Windows.Forms.DialogResult.OK Then
+                tip.TipContent += " " & Clipboard.GetText().Trim()
                 SaveList()
             End If
         End If
@@ -1200,7 +1197,7 @@ Public Class MainForm
         tabName = tabName.Trim()
         If tabName <> "" Then
             If Tab.CheckDuplicateTab(tabName, GlobalModel.Tabs) IsNot Nothing Then
-                MessageBoxEx.Show("分组标题 """ & tabName & """ 已存在。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+                MessageBoxEx.Show("分组标题 """ & tabName & """ 已存在。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, Me)
                 ListPopupMenuNewTab_Click(sender, New System.EventArgs)
             Else
                 AddTab(tabName, True)
@@ -1213,14 +1210,14 @@ Public Class MainForm
     ''' </summary>
     Private Sub ListPopupMenuDeleteTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuDeleteTab.Click
         If TabStrip.Tabs.Count = 1 Then
-            MessageBoxEx.Show("无法删除最后的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+            MessageBoxEx.Show("无法删除最后的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, Me)
         Else
             Dim TabTitle As String = TabStrip.SelectedTab.Text
             Dim Tab As Tab = Tab.GetTabFromTitle(TabTitle)
             If Tab.Tips.Count <> 0 Then
-                MessageBoxEx.Show("分组内存在 " & Tab.Tips.Count & " 条记录无法删除，请先将记录移动到别的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+                MessageBoxEx.Show("分组内存在 " & Tab.Tips.Count & " 条记录无法删除，请先将记录移动到别的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, Me)
             Else
-                Dim ok As DialogResult = MessageBoxEx.Show("是否删除分组 """ + TabStrip.SelectedTab.Text + """？", "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+                Dim ok As DialogResult = MessageBoxEx.Show("是否删除分组 """ + TabStrip.SelectedTab.Text + """？", "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2, Me)
                 If ok = vbOK Then
                     TabStrip.Tabs.RemoveAt(TabStrip.SelectedTabIndex)
                     GlobalModel.Tabs.RemoveAt(GlobalModel.Tabs.IndexOf(Tab.GetTabFromTitle(TabTitle)))
@@ -1240,7 +1237,7 @@ Public Class MainForm
             NewName = NewName.Trim()
             If NewName <> "" Then
                 If Tab.CheckDuplicateTab(NewName, GlobalModel.Tabs) IsNot Nothing Then
-                    MessageBoxEx.Show("分组标题 """ & NewName & """ 已存在。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+                    MessageBoxEx.Show("分组标题 """ & NewName & """ 已存在。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, Me)
                     ListPopupMenuRenameTab_Click(sender, New System.EventArgs)
                 Else
                     Tab.GetTabFromTitle(OldName).Title = NewName
@@ -1401,7 +1398,7 @@ Public Class MainForm
                                                      & Chr(10) & Chr(10) & sb.ToString
         End If
 
-        Dim ok As MessageBoxButtons = MessageBoxEx.Show(Flag, "移动至分组...", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1)
+        Dim ok As MessageBoxButtons = MessageBoxEx.Show(Flag, "移动至分组...", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, Me)
         If ok = vbOK Then
             For Each Item As TipItem In SelectItems
                 Tab.GetTabFromTitle(Dest).Tips.Add(Item)
@@ -1595,7 +1592,7 @@ Public Class MainForm
                                 Dim backupFileName As String = GlobalModel.SaveTabData(newList)
                                 Dim isOpen As DialogResult = MessageBoxEx.Show("接收数据成功，新数据保存在 """ & backupFileName & """。", "同步", _
                                                                                MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, _
-                                                                               New String() {"打开文件夹", "确定"})
+                                                                               Me, New String() {"打开文件夹", "确定"})
                                 If isOpen = Windows.Forms.DialogResult.Yes Then
                                     System.Diagnostics.Process.Start("explorer.exe", "/select,""" & backupFileName & """")
                                 End If

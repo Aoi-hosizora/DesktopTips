@@ -3,15 +3,15 @@ Imports System.Runtime.InteropServices
 
 Public Class MessageBoxEx
 
-    Public Shared Function Show(text As String, caption As String, buttons As MessageBoxButtons, Optional buttonTitles() As String = Nothing)
-        Return Show(text, caption, buttons, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, buttonTitles)
+    Public Shared Function Show(text As String, caption As String, buttons As MessageBoxButtons, Optional mainForm As Form = Nothing, Optional buttonTitles() As String = Nothing)
+        Return Show(text, caption, buttons, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, mainForm, buttonTitles)
     End Function
 
     Public Shared Function Show(text As String, caption As String, buttons As MessageBoxButtons, _
                                 icon As MessageBoxIcon, defaultButton As MessageBoxDefaultButton, _
-                                Optional buttonTitles() As String = Nothing)
+                                Optional mainForm As Form = Nothing, Optional buttonTitles() As String = Nothing)
 
-        Dim frm As New MessageForm(buttons, buttonTitles)
+        Dim frm As New MessageForm(buttons, buttonTitles, mainForm)
         frm.Opacity = 0
         frm.Show()
         frm.WatchForActivate = True
@@ -28,10 +28,12 @@ Public Class MessageBoxEx
         Private _buttonTitles() As String = Nothing
         Private _DlgFont As New Font("Microsoft YaHei UI", SystemFonts.DefaultFont.Size - 1.1)
         Public Property WatchForActivate As Boolean
+        Private _mainForm As Form
 
-        Public Sub New(buttons As MessageBoxButtons, buttonTitles() As String)
+        Public Sub New(buttons As MessageBoxButtons, buttonTitles() As String, mainForm As Form)
             _buttons = buttons
             _buttonTitles = buttonTitles
+            _mainForm = mainForm
 
             Me.Text = ""
             Me.StartPosition = FormStartPosition.CenterScreen
@@ -43,6 +45,15 @@ Public Class MessageBoxEx
         Protected Overrides Sub OnShown(e As System.EventArgs)
             MyBase.OnShown(e)
             SetWindowPos(Me.Handle, IntPtr.Zero, 0, 0, 0, 0, 659)
+        End Sub
+
+        Protected Overrides Sub OnFormClosed(e As System.Windows.Forms.FormClosedEventArgs)
+            On Error Resume Next
+            If _mainForm IsNot Nothing Then
+                SetForegroundWindow(_mainForm.Handle)
+                _mainForm.Activate()
+            End If
+            MyBase.OnFormClosed(e)
         End Sub
 
         Protected Overrides Sub WndProc(ByRef m As System.Windows.Forms.Message)
@@ -106,6 +117,10 @@ Public Class MessageBoxEx
         Dim sb As New StringBuilder(256)
         GetClassNameW(handle, sb, sb.Capacity)
         Return sb.ToString()
+    End Function
+
+    <DllImport("user32.dll")>
+    Public Shared Function SetForegroundWindow(ByVal hWnd As IntPtr) As <MarshalAs(UnmanagedType.Bool)> Boolean
     End Function
 
 End Class

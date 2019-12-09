@@ -108,17 +108,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Src\Model\GlobalModel.vb" />
-    <Compile Include="Src\Model\Tab.vb" />
-    <Compile Include="Src\Model\TipItem.vb" />
-    <Compile Include="Src\Service\SyncData.vb" />
-    <Compile Include="Src\UI\EscCloseForm.vb">
+    <Compile Include="src\model\GlobalModel.vb" />
+    <Compile Include="src\model\Tab.vb" />
+    <Compile Include="src\model\TipItem.vb" />
+    <Compile Include="src\service\SyncData.vb" />
+    <Compile Include="src\ui\ex\EscCloseForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Src\UI\MainForm.vb">
+    <Compile Include="src\ui\MainForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Src\UI\MainForm.Designer.vb">
+    <Compile Include="src\ui\MainForm.Designer.vb">
       <DependentUpon>MainForm.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
@@ -132,21 +132,21 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Src\UI\SearchForm.Designer.vb">
+    <Compile Include="src\ui\SearchForm.Designer.vb">
       <DependentUpon>SearchForm.vb</DependentUpon>
     </Compile>
-    <Compile Include="Src\UI\SearchForm.vb">
+    <Compile Include="src\ui\SearchForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Src\Util\CommonUtil.vb" />
-    <Compile Include="Src\Util\MessageBoxEx.vb">
+    <Compile Include="src\util\CommonUtil.vb" />
+    <Compile Include="src\ui\ex\MessageBoxEx.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Src\Util\NativeMethod.vb" />
-    <Compile Include="Src\Util\SettingUtil.vb" />
+    <Compile Include="src\util\NativeMethod.vb" />
+    <Compile Include="src\util\SettingUtil.vb" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Src\UI\MainForm.resx">
+    <EmbeddedResource Include="src\ui\MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -155,7 +155,7 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Src\UI\SearchForm.resx">
+    <EmbeddedResource Include="src\ui\SearchForm.resx">
       <DependentUpon>SearchForm.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
@@ -179,7 +179,7 @@
     <None Include="Resources\DownIcon.png" />
     <None Include="Resources\UpIcon.png" />
     <None Include="Resources\Copy.png" />
-    <Content Include="Src\Util\MessageBoxEx.used.cs" />
+    <Content Include="src\ui\ex\MessageBoxEx.used.cs" />
     <None Include="Resources\SelectAll.png" />
     <None Include="Resources\Star.png" />
     <None Include="Resources\Edit.png" />

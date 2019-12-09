@@ -37,7 +37,7 @@ Partial Class MainForm
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         Me.ButtonRemoveItem = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonAddItem = New DevComponents.DotNetBar.ButtonX()
-        Me.StyleManager1 = New DevComponents.DotNetBar.StyleManager(Me.components)
+        Me.MyStyleManager = New DevComponents.DotNetBar.StyleManager(Me.components)
         Me.LabelFocus = New System.Windows.Forms.Label()
         Me.ListView = New System.Windows.Forms.ListBox()
         Me.ButtonCloseForm = New DevComponents.DotNetBar.ButtonX()
@@ -133,11 +133,11 @@ Partial Class MainForm
         Me.ButtonAddItem.TabIndex = 4
         Me.ButtonAddItem.Text = "＋"
         '
-        'StyleManager1
+        'MyStyleManager
         '
-        Me.StyleManager1.ManagerColorTint = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer))
-        Me.StyleManager1.ManagerStyle = DevComponents.DotNetBar.eStyle.Office2007Blue
-        Me.StyleManager1.MetroColorParameters = New DevComponents.DotNetBar.Metro.ColorTables.MetroColorGeneratorParameters(System.Drawing.Color.White, System.Drawing.Color.FromArgb(CType(CType(43, Byte), Integer), CType(CType(87, Byte), Integer), CType(CType(154, Byte), Integer)))
+        Me.MyStyleManager.ManagerColorTint = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(128, Byte), Integer), CType(CType(128, Byte), Integer))
+        Me.MyStyleManager.ManagerStyle = DevComponents.DotNetBar.eStyle.Office2007Blue
+        Me.MyStyleManager.MetroColorParameters = New DevComponents.DotNetBar.Metro.ColorTables.MetroColorGeneratorParameters(System.Drawing.Color.White, System.Drawing.Color.FromArgb(CType(CType(43, Byte), Integer), CType(CType(87, Byte), Integer), CType(CType(154, Byte), Integer)))
         '
         'LabelFocus
         '
@@ -724,7 +724,7 @@ Partial Class MainForm
     End Sub
     Friend WithEvents ButtonRemoveItem As DevComponents.DotNetBar.ButtonX
     Friend WithEvents ButtonAddItem As DevComponents.DotNetBar.ButtonX
-    Friend WithEvents StyleManager1 As DevComponents.DotNetBar.StyleManager
+    Friend WithEvents MyStyleManager As DevComponents.DotNetBar.StyleManager
     Friend WithEvents LabelFocus As System.Windows.Forms.Label
     Friend WithEvents ListView As System.Windows.Forms.ListBox
     Friend WithEvents ButtonCloseForm As DevComponents.DotNetBar.ButtonX

@@ -259,6 +259,7 @@ Public Class MainForm
     Private Sub MainForm_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         LoadSetting()
         Me.Refresh()
+        ' Me.Font = System.Drawing.SystemFonts.MenuFont
 
         NumericUpDownListCnt.Value = (Me.Height - 27) \ 17
         ButtonRemoveItem.Enabled = False

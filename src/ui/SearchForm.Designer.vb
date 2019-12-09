@@ -74,6 +74,7 @@ Partial Class SearchForm
         '
         'SearchForm
         '
+        Me.AcceptButton = Me.ButtonBack
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonBack

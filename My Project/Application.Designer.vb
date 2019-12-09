@@ -33,13 +33,12 @@ Namespace My
         
         <Global.System.Diagnostics.DebuggerStepThroughAttribute()> _
         Protected Overrides Sub OnCreateMainForm()
+            DD.MessageBoxEx.UseSystemLocalizedString = True
             AddHandler DD.LocalizationKeys.LocalizeString, AddressOf LocalizationKeys_LocalizeString
             Me.MainForm = Global.DesktopTips.MainForm
         End Sub
 
         Private Sub LocalizationKeys_LocalizeString(sender As Object, e As DD.LocalizeEventArgs)
-            'DD.MessageBoxEx.UseSystemLocalizedString = True
-
             Select Case e.Key
                 ' MessageBox
                 Case DD.LocalizationKeys.MessageBoxYesButton

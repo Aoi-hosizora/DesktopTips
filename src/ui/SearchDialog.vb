@@ -1,6 +1,6 @@
 ﻿Imports SU = DesktopTips.GlobalModel
 
-Public Class SearchForm
+Public Class SearchDialog
 
     Private Sub SearchForm_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         Dim ShowLabel As String = """{0}"" 的搜索结果：(共找到 " & MainForm.SearchResult.Count & " 项)"

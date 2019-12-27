@@ -76,6 +76,7 @@ Partial Class MainForm
         Me.ListPopupMenuSyncDataFrom = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuLabelItemWindow = New DevComponents.DotNetBar.LabelItem()
         Me.ListPopupMenuWinSetting = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuShotcutSetting = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuListHeight = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuOpacity = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuFold = New DevComponents.DotNetBar.ButtonItem()
@@ -464,8 +465,13 @@ Partial Class MainForm
         'ListPopupMenuWinSetting
         '
         Me.ListPopupMenuWinSetting.Name = "ListPopupMenuWinSetting"
-        Me.ListPopupMenuWinSetting.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuListHeight, Me.ListPopupMenuOpacity, Me.ListPopupMenuFold, Me.ListPopupMenuWinTop, Me.ListPopupMenuWinHighColor, Me.ListPopupMenuLoadPos, Me.ListPopupMenuSavePos})
+        Me.ListPopupMenuWinSetting.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuShotcutSetting, Me.ListPopupMenuListHeight, Me.ListPopupMenuOpacity, Me.ListPopupMenuFold, Me.ListPopupMenuWinTop, Me.ListPopupMenuWinHighColor, Me.ListPopupMenuLoadPos, Me.ListPopupMenuSavePos})
         Me.ListPopupMenuWinSetting.Text = "显示(&S)"
+        '
+        'ListPopupMenuShotcutSetting
+        '
+        Me.ListPopupMenuShotcutSetting.Name = "ListPopupMenuShotcutSetting"
+        Me.ListPopupMenuShotcutSetting.Text = "快捷键设置(&R)"
         '
         'ListPopupMenuListHeight
         '
@@ -787,5 +793,6 @@ Partial Class MainForm
     Friend WithEvents ListPopupMenuSyncDataFrom As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents CmdsPopupMenu As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents CmdsPopupMenuAppend As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuShotcutSetting As DevComponents.DotNetBar.ButtonItem
 
 End Class

@@ -121,7 +121,10 @@ Public Class MainForm
         FormOpacity_Load()
         FoldMenu(ListPopupMenuFold.Checked)
 
-        RegisterShotcut(HotKey)
+        Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
+        If setting.IsUseHotKey Then
+            RegisterShotcut(setting.HotKey)
+        End If
     End Sub
 
     Private Sub ButtonCloseForm_Click(sender As System.Object, e As System.EventArgs) Handles ButtonCloseForm.Click, ListPopupMenuExit.Click
@@ -754,27 +757,27 @@ Public Class MainForm
 
 #Region "快捷键设置 响应"
 
-    Public HotKey As Keys = Keys.F4
-
     ''' <summary>
     ''' RegisterHotKey 注册的热键 Id
     ''' </summary>
     ''' <remarks></remarks>
-    Public Const HotKeyId As Integer = 0
+    Private Const HotKeyId As Integer = 0
 
     ''' <summary>
     '''注册快捷键
     ''' </summary>
-    Private Sub RegisterShotcut(ByVal HotKey As Keys)
-        If Not NativeMethod.RegisterHotKey(Handle, HotKeyId, Nothing, HotKey) Then
+    Public Function RegisterShotcut(ByVal HotKey As Keys) As Boolean
+        If Not NativeMethod.RegisterHotKey(Handle, HotKeyId, HotKeyBox.GetKeyModifiers(HotKey), HotKeyBox.GetKeyCode(HotKey)) Then
             MessageBox.Show("快捷键已被占用，请重新设置", "快捷键", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return False
         End If
-    End Sub
+        Return True
+    End Function
 
     ''' <summary>
     ''' 注销快捷键
     ''' </summary>
-    Private Sub UnregisterShotcut()
+    Public Sub UnregisterShotcut()
         NativeMethod.UnRegisterHotKey(Handle, HotKeyId)
     End Sub
 
@@ -798,7 +801,10 @@ Public Class MainForm
     ''' Popup 快捷键设置
     ''' </summary>
     Private Sub ListPopupMenuShotcutSetting_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuShotcutSetting.Click
-
+        Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
+        HotKeyDialog.HotKeyBox1.CurrentKey = setting.HotKey
+        HotKeyDialog.CheckBoxIsValid.Checked = setting.IsUseHotKey
+        HotKeyDialog.ShowDialog(Me)
     End Sub
 
 #End Region

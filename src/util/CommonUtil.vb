@@ -3,6 +3,46 @@
 Public Class CommonUtil
 
     ''' <summary>
+    ''' 获取 Keys 的 Modifiers 部分
+    ''' </summary>
+    Public Shared Function GetModifiersFromKey(ByVal key As Keys) As Keys
+        Dim e As New KeyEventArgs(key)
+        Return e.Modifiers
+    End Function
+
+    ''' <summary>
+    ''' 获取 Keys 的 KeyCode 部分
+    ''' </summary>
+    Public Shared Function GetKeyCodeFromKey(ByVal key As Keys) As Keys
+        Dim e As New KeyEventArgs(key)
+        Return e.KeyCode
+    End Function
+
+    ''' <summary>
+    ''' 从 .NET Keys Modifiers 转 Window Modifiers
+    ''' </summary>
+    Public Shared Function GetNativeModifiers(ByVal modifiers As Keys) As NativeMethod.KeyModifiers
+        Select Case modifiers
+            Case Keys.Shift ' 1 << 16
+                Return NativeMethod.KeyModifiers.MOD_SHIFT ' 1 << 2
+            Case Keys.Control ' 1 << 17
+                Return NativeMethod.KeyModifiers.MOD_CONTROL ' 1 << 1
+            Case Keys.Alt ' 1 << 18
+                Return NativeMethod.KeyModifiers.MOD_ALT ' 1 << 0
+            Case Keys.Control Or Keys.Alt
+                Return NativeMethod.KeyModifiers.MOD_CONTROL Or NativeMethod.KeyModifiers.MOD_ALT
+            Case Keys.Control Or Keys.Shift
+                Return NativeMethod.KeyModifiers.MOD_CONTROL Or NativeMethod.KeyModifiers.MOD_SHIFT
+            Case Keys.Shift Or Keys.Alt
+                Return NativeMethod.KeyModifiers.MOD_SHIFT Or NativeMethod.KeyModifiers.MOD_ALT
+            Case Keys.Control Or Keys.Alt Or Keys.Shift
+                Return NativeMethod.KeyModifiers.MOD_CONTROL Or NativeMethod.KeyModifiers.MOD_ALT Or NativeMethod.KeyModifiers.MOD_SHIFT
+            Case Else
+                Return 0
+        End Select
+    End Function
+
+    ''' <summary>
     ''' 获取默认浏览器
     ''' </summary>
     Public Shared Function GetDefaultWebBrowserFilePath() As String

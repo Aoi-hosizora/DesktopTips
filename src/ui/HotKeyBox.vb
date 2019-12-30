@@ -16,16 +16,6 @@ Public Class HotKeyBox
         End Set
     End Property
 
-    Public Shared Function GetKeyModifiers(keys As Keys) As Keys
-        Dim e As New KeyEventArgs(keys)
-        Return e.Modifiers
-    End Function
-
-    Public Shared Function GetKeyCode(keys As Keys) As Keys
-        Dim e As New KeyEventArgs(keys)
-        Return e.KeyCode
-    End Function
-
     Private Sub ShowHotKeyValue(ByVal Modifiers As Keys, ByVal KeyCode As Keys)
         Dim hotKeyValue% = 0
         Dim hotKeyString$ = ""

@@ -67,6 +67,8 @@ Partial Class MainForm
         Me.ListPopupMenuViewHighLight = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuFind = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuMove = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuOthers = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuPasteAppend = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuLabelItemFile = New DevComponents.DotNetBar.LabelItem()
         Me.ListPopupMenuOpenDir = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuViewFile = New DevComponents.DotNetBar.ButtonItem()
@@ -91,8 +93,6 @@ Partial Class MainForm
         Me.TabPopupMenuDeleteTab = New DevComponents.DotNetBar.ButtonItem()
         Me.TabPopupMenuRenameTab = New DevComponents.DotNetBar.ButtonItem()
         Me.TabPopupMenuMove = New DevComponents.DotNetBar.ButtonItem()
-        Me.CmdsPopupMenu = New DevComponents.DotNetBar.ButtonItem()
-        Me.CmdsPopupMenuAppend = New DevComponents.DotNetBar.ButtonItem()
         Me.TabStrip = New DevComponents.DotNetBar.SuperTabStrip()
         Me.TabItemTest = New DevComponents.DotNetBar.SuperTabItem()
         Me.TabItemTest2 = New DevComponents.DotNetBar.SuperTabItem()
@@ -232,7 +232,7 @@ Partial Class MainForm
         '
         Me.ContextMenuBar1.AntiAlias = True
         Me.ContextMenuBar1.Font = New System.Drawing.Font("Yu Gothic UI", 9.0!)
-        Me.ContextMenuBar1.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenu, Me.TabPopupMenu, Me.CmdsPopupMenu})
+        Me.ContextMenuBar1.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenu, Me.TabPopupMenu})
         Me.ContextMenuBar1.Location = New System.Drawing.Point(46, 40)
         Me.ContextMenuBar1.Name = "ContextMenuBar1"
         Me.ContextMenuBar1.Size = New System.Drawing.Size(240, 27)
@@ -245,7 +245,7 @@ Partial Class MainForm
         '
         Me.ListPopupMenu.AutoExpandOnClick = True
         Me.ListPopupMenu.Name = "ListPopupMenu"
-        Me.ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList, Me.ListPopupMenuItemContainer, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuFind, Me.ListPopupMenuMove, Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuOpenBrowser, Me.ListPopupMenuSyncData, Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
+        Me.ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList, Me.ListPopupMenuItemContainer, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuFind, Me.ListPopupMenuMove, Me.ListPopupMenuOthers, Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuOpenBrowser, Me.ListPopupMenuSyncData, Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
         Me.ListPopupMenu.Text = "ListPopup"
         '
         'ListPopupMenuLabelSelItem
@@ -405,6 +405,20 @@ Partial Class MainForm
         Me.ListPopupMenuMove.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlM)
         Me.ListPopupMenuMove.Text = "移动至(&M)"
         '
+        'ListPopupMenuOthers
+        '
+        Me.ListPopupMenuOthers.BeginGroup = True
+        Me.ListPopupMenuOthers.Name = "ListPopupMenuOthers"
+        Me.ListPopupMenuOthers.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuPasteAppend})
+        Me.ListPopupMenuOthers.Text = "其他(&E)"
+        '
+        'ListPopupMenuPasteAppend
+        '
+        Me.ListPopupMenuPasteAppend.Image = Global.DesktopTips.My.Resources.Resources.PasteHS
+        Me.ListPopupMenuPasteAppend.Name = "ListPopupMenuPasteAppend"
+        Me.ListPopupMenuPasteAppend.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlV)
+        Me.ListPopupMenuPasteAppend.Text = "粘贴附加(&P)"
+        '
         'ListPopupMenuLabelItemFile
         '
         Me.ListPopupMenuLabelItemFile.BackColor = System.Drawing.Color.FromArgb(CType(CType(221, Byte), Integer), CType(CType(231, Byte), Integer), CType(CType(238, Byte), Integer))
@@ -562,20 +576,6 @@ Partial Class MainForm
         Me.TabPopupMenuMove.Image = Global.DesktopTips.My.Resources.Resources.Right
         Me.TabPopupMenuMove.Name = "TabPopupMenuMove"
         Me.TabPopupMenuMove.Text = "移动至分组(&M)"
-        '
-        'CmdsPopupMenu
-        '
-        Me.CmdsPopupMenu.AutoExpandOnClick = True
-        Me.CmdsPopupMenu.Name = "CmdsPopupMenu"
-        Me.CmdsPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.CmdsPopupMenuAppend})
-        Me.CmdsPopupMenu.Text = "Cmds"
-        Me.CmdsPopupMenu.Visible = False
-        '
-        'CmdsPopupMenuAppend
-        '
-        Me.CmdsPopupMenuAppend.Name = "CmdsPopupMenuAppend"
-        Me.CmdsPopupMenuAppend.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlV)
-        Me.CmdsPopupMenuAppend.Text = "附加"
         '
         'TabStrip
         '
@@ -791,8 +791,8 @@ Partial Class MainForm
     Friend WithEvents ListPopupMenuSyncData As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuSyncDataTo As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuSyncDataFrom As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents CmdsPopupMenu As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents CmdsPopupMenuAppend As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuPasteAppend As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuShotcutSetting As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuOthers As DevComponents.DotNetBar.ButtonItem
 
 End Class

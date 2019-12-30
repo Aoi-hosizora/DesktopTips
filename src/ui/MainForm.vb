@@ -263,7 +263,7 @@ Public Class MainForm
 
 #End Region
 
-#Region "复制 全选 查找"
+#Region "复制 全选 查找 粘贴"
 
     ''' <summary>
     ''' 复制
@@ -318,6 +318,29 @@ Public Class MainForm
                 MessageBoxEx.Show("未找到 """ & SearchText & """ 。", "查找", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, Me)
             Else
                 SearchDialog.Show(Me)
+            End If
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 粘贴附加在最后
+    ''' </summary>
+    Private Sub ListPopupMenuPasteAppend_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuPasteAppend.Click
+        Dim clip$ = Clipboard.GetText()
+        If Not String.IsNullOrWhiteSpace(clip) Then
+            Dim currIdx% = ListView.SelectedIndex
+
+            Dim tip As TipItem = GlobalModel.Tabs(GlobalModel.CurrTabIdx).Tips(currIdx)
+            Dim motoStr$ = tip.TipContent
+
+            Dim ok As DialogResult = MessageBoxEx.Show(
+                "是否向当前选中项 """ & GlobalModel.Tabs(GlobalModel.CurrTabIdx).Tips(currIdx).TipContent & """ 末尾添加剪贴板内容 """ & clip & """？",
+                "附加内容",
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, Me)
+
+            If ok = Windows.Forms.DialogResult.OK Then
+                tip.TipContent += " " & Clipboard.GetText().Trim()
+                SaveList()
             End If
         End If
     End Sub
@@ -530,7 +553,7 @@ Public Class MainForm
         ListPopupMenuMove.Enabled = IsNotNull
 
         ' 附加
-        CmdsPopupMenuAppend.Enabled = IsSingle
+        ListPopupMenuPasteAppend.Enabled = IsSingle
 
         ' 浏览器
         If IsSingle Then
@@ -767,7 +790,11 @@ Public Class MainForm
     '''注册快捷键
     ''' </summary>
     Public Function RegisterShotcut(ByVal HotKey As Keys) As Boolean
-        If Not NativeMethod.RegisterHotKey(Handle, HotKeyId, HotKeyBox.GetKeyModifiers(HotKey), HotKeyBox.GetKeyCode(HotKey)) Then
+        If Not NativeMethod.RegisterHotKey( _
+            Handle, HotKeyId, _
+            CommonUtil.GetNativeModifiers(CommonUtil.GetModifiersFromKey(HotKey)), _
+            CommonUtil.GetKeyCodeFromKey(HotKey)) Then
+
             MessageBox.Show("快捷键已被占用，请重新设置", "快捷键", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return False
         End If
@@ -802,7 +829,7 @@ Public Class MainForm
     ''' </summary>
     Private Sub ListPopupMenuShotcutSetting_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuShotcutSetting.Click
         Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
-        HotKeyDialog.HotKeyBox1.CurrentKey = setting.HotKey
+        HotKeyDialog.HotKeyEditBox.CurrentKey = setting.HotKey
         HotKeyDialog.CheckBoxIsValid.Checked = setting.IsUseHotKey
         HotKeyDialog.ShowDialog(Me)
     End Sub
@@ -810,7 +837,7 @@ Public Class MainForm
 #End Region
 
     '' '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    '' ''''''''''''''''''''''''''''''''''''''''''''''''' 分组 移动 其他 '''''''''''''''''''''''''''''''''''''''''''''''''
+    '' ''''''''''''''''''''''''''''''''''''''''''''''''''' 分组 移动 '''''''''''''''''''''''''''''''''''''''''''''''''''
 
 #Region "分组 增删改"
 
@@ -1071,33 +1098,6 @@ Public Class MainForm
                     ListView.SetSelected(Idx, True)
                 End If
             Next
-        End If
-    End Sub
-
-#End Region
-
-#Region "附加不可见功能"
-
-    ''' <summary>
-    ''' 粘贴附加在最后
-    ''' </summary>
-    Private Sub CmdsPopupMenuAppend_Click(sender As System.Object, e As System.EventArgs) Handles CmdsPopupMenuAppend.Click
-        Dim clip$ = Clipboard.GetText()
-        If Not String.IsNullOrWhiteSpace(clip) Then
-            Dim currIdx% = ListView.SelectedIndex
-
-            Dim tip As TipItem = GlobalModel.Tabs(GlobalModel.CurrTabIdx).Tips(currIdx)
-            Dim motoStr$ = tip.TipContent
-
-            Dim ok As DialogResult = MessageBoxEx.Show(
-                "是否向当前选中项 """ & GlobalModel.Tabs(GlobalModel.CurrTabIdx).Tips(currIdx).TipContent & """ 末尾添加剪贴板内容 """ & clip & """？",
-                "附加内容",
-                MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, Me)
-
-            If ok = Windows.Forms.DialogResult.OK Then
-                tip.TipContent += " " & Clipboard.GetText().Trim()
-                SaveList()
-            End If
         End If
     End Sub
 

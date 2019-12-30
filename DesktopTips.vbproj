@@ -194,6 +194,7 @@
     <None Include="Resources\DownIcon.png" />
     <None Include="Resources\UpIcon.png" />
     <None Include="Resources\Copy.png" />
+    <None Include="Resources\PasteHS.png" />
     <Content Include="src\ui\ex\MessageBoxEx.used.cs" />
     <None Include="Resources\SelectAll.png" />
     <None Include="Resources\Star.png" />

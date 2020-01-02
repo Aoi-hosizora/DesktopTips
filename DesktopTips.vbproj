@@ -124,6 +124,12 @@
     <Compile Include="src\ui\HotKeyDialog.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="src\ui\LinkDialog.Designer.vb">
+      <DependentUpon>LinkDialog.vb</DependentUpon>
+    </Compile>
+    <Compile Include="src\ui\LinkDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="src\ui\MainForm.Partial.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -160,6 +166,9 @@
   <ItemGroup>
     <EmbeddedResource Include="src\ui\HotKeyDialog.resx">
       <DependentUpon>HotKeyDialog.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\ui\LinkDialog.resx">
+      <DependentUpon>LinkDialog.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\ui\MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>

@@ -286,22 +286,11 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
-    ''' 查找结果
-    ''' </summary>
-    Public SearchResult As New List(Of Tuple(Of Integer, Integer))
-
-    ''' <summary>
-    ''' 搜索文字
-    ''' </summary>
-    ''' <remarks></remarks>
-    Public SearchText As String
-
-    ''' <summary>
     ''' 查找文字
     ''' </summary>
     Public Sub ListPopupMenuFind_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuFind.Click
-        SearchResult.Clear()
-        SearchText = InputBox("请输入查找的文字：", "查找").Trim()
+        Dim SearchResult As New List(Of Tuple(Of Integer, Integer))
+        Dim SearchText$ = InputBox("请输入查找的文字：", "查找").Trim()
 
         If SearchText <> "" Then
             Dim spl() As String = SearchText.Split(" ")
@@ -317,6 +306,8 @@ Public Class MainForm
             If SearchResult.Count = 0 Then
                 MessageBoxEx.Show("未找到 """ & SearchText & """ 。", "查找", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, Me)
             Else
+                SearchDialog._SearchText = SearchText
+                SearchDialog._SearchResult = SearchResult
                 SearchDialog.Show(Me)
             End If
         End If
@@ -401,7 +392,7 @@ Public Class MainForm
                 idx += 1
             End If
         Next
-        ShowForm("查看高亮 (共 " & idx & " 项)", sb.ToString, ListPopupMenuWinHighColor.SelectedColor)
+        ShowTextForm("查看高亮 (共 " & idx & " 项)", sb.ToString, ListPopupMenuWinHighColor.SelectedColor)
     End Sub
 
 #End Region
@@ -420,12 +411,87 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
+    ''' 浏览文件
+    ''' </summary>
+    Private Sub ListPopupMenuViewFile_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuViewFile.Click
+        Dim sb As New StringBuilder
+        For Each Item As TipItem In ListView.Items.Cast(Of TipItem)()
+            sb.AppendLine(Item.TipContent & If(Item.IsHighLight, " [高亮]", ""))
+        Next
+        ShowTextForm("浏览文件 (共 " & ListView.Items.Count & " 项)", sb.ToString(), Color.Black)
+    End Sub
+
+    ''' <summary>
+    ''' 获取当前列表所选中的所有链接
+    ''' </summary>
+    Private Function GetSelectionItemLinks() As List(Of String)
+        Dim IsSingle As Boolean = ListView.SelectedItems.Count = 1
+
+        ' 整合
+        Dim Sel As List(Of TipItem) = New List(Of TipItem)
+        If IsSingle Then
+            Sel.Add(CType(ListView.SelectedItem, TipItem))
+        Else
+            Sel = ListView.SelectedItems.Cast(Of TipItem).ToList()
+        End If
+
+        ' 结果
+        Dim links As List(Of String) = New List(Of String)
+        For Each item As TipItem In Sel
+            For Each link As String In item.TipContent.Split(New Char() {" "}, StringSplitOptions.RemoveEmptyEntries)
+                If link.StartsWith("http://") Or link.StartsWith("https://") Then
+                    links.Add(link)
+                End If
+            Next
+        Next
+
+        Return links
+    End Function
+
+    ''' <summary>
+    ''' 打开所有链接
+    ''' </summary>
+    Private Sub ListPopupMenuOpenAllLink_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuOpenAllLink.Click
+        Dim links As List(Of String) = GetSelectionItemLinks()
+        If links.Count = 0 Then
+            MessageBox.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Else
+            Dim ok As MessageBoxButtons = MessageBox.Show( _
+                "是否打开以下 " & links.Count & " 个链接：" + Chr(10) + Chr(10) + String.Join(Chr(10), links), _
+                "打开链接", MessageBoxButtons.OKCancel, MessageBoxIcon.Question)
+            If ok = MsgBoxResult.Ok Then
+                CommonUtil.OpenWebsInDefaultBrowser(links)
+            End If
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 打开部分连接
+    ''' </summary>
+    Private Sub ListPopupMenuViewAllLink_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuViewAllLink.Click
+        Dim links As List(Of String) = GetSelectionItemLinks()
+
+        LinkDialog.ListView.Items.Clear()
+        For Each link$ In links
+            LinkDialog.ListView.Items.Add(link)
+        Next
+        LinkDialog.Show(Me)
+    End Sub
+
+#End Region
+
+    '' '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    '' ''''''''''''''''''''''''''''''''''''''''''''''''' 界面 显示 菜单 '''''''''''''''''''''''''''''''''''''''''''''''''
+
+#Region "文本窗口"
+
+    ''' <summary>
     ''' 显示文本窗体
     ''' </summary>
     ''' <param name="Title">窗口标题</param>
     ''' <param name="Content">窗口文本内容</param>
     ''' <param name="TextColor">文字颜色</param>
-    Private Sub ShowForm(ByVal Title As String, ByVal Content As String, ByVal TextColor As Color)
+    Private Sub ShowTextForm(ByVal Title As String, ByVal Content As String, ByVal TextColor As Color)
         Dim WinSize As Size = New Size(500, 300)
         Dim TextSize As Size = New Size(WinSize.Width - 16, WinSize.Height - 39)
 
@@ -442,63 +508,7 @@ Public Class MainForm
         TextBox.Select(0, 0)
     End Sub
 
-    ''' <summary>
-    ''' 浏览文件
-    ''' </summary>
-    Private Sub ListPopupMenuViewFile_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuViewFile.Click
-        Dim sb As New StringBuilder
-        For Each Item As TipItem In ListView.Items.Cast(Of TipItem)()
-            sb.AppendLine(Item.TipContent & If(Item.IsHighLight, " [高亮]", ""))
-        Next
-        ShowForm("浏览文件 (共 " & ListView.Items.Count & " 项)", sb.ToString(), Color.Black)
-    End Sub
-
-    ''' <summary>
-    ''' 打开浏览器
-    ''' </summary>
-    Private Sub ListPopupMenuOpenBrowser_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuOpenBrowser.Click
-        Dim IsSingle As Boolean = ListView.SelectedItems.Count = 1
-
-        ' 整合
-        Dim Sel As List(Of TipItem) = New List(Of TipItem)
-        If IsSingle Then
-            Sel.Add(CType(ListView.SelectedItem, TipItem))
-        Else
-            Sel = ListView.SelectedItems.Cast(Of TipItem).ToList()
-        End If
-
-        ' 结果
-        Dim links As List(Of String) = New List(Of String)
-        Dim sp() As String
-        For Each item As TipItem In Sel
-            sp = item.TipContent.Split(New Char() {" "}, StringSplitOptions.RemoveEmptyEntries)
-            For Each link As String In sp
-                If link.StartsWith("http://") Or link.StartsWith("https://") Then
-                    links.Add(link)
-                End If
-            Next
-        Next
-
-        ' 打开
-        If links.Count = 0 Then
-            MessageBox.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        Else
-            Dim ok As MessageBoxButtons = _
-                MessageBox.Show("是否打开以下链接：" + Chr(10) + Chr(10) + String.Join(Chr(10), links), "打开链接", MessageBoxButtons.OKCancel, MessageBoxIcon.Question)
-            If ok = MsgBoxResult.Ok Then
-
-                CommonUtil.OpenWebsInDefaultBrowser(links)
-                'For Each link As String In links
-                '    Process.Start(link)
-                'Next
-            End If
-        End If
-    End Sub
-
 #End Region
-
-    '' '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    '' ''''''''''''''''''''''''''''''''''''''''''''''''' 界面 显示 菜单 '''''''''''''''''''''''''''''''''''''''''''''''''
 
 #Region "列表选择 可用判断 屏幕提示 右键列表"
 
@@ -558,7 +568,7 @@ Public Class MainForm
         ' 浏览器
         If IsSingle Then
             Dim item As TipItem = CType(ListView.SelectedItem, TipItem)
-            ListPopupMenuOpenBrowser.Enabled = item.TipContent.IndexOf("http://") <> -1 Or item.TipContent.IndexOf("https://") <> -1
+            ListPopupMenuBrowser.Enabled = item.TipContent.IndexOf("http://") <> -1 Or item.TipContent.IndexOf("https://") <> -1
         Else
             Dim ok As Boolean = False
             For Each item As TipItem In ListView.SelectedItems.Cast(Of TipItem)()
@@ -567,7 +577,7 @@ Public Class MainForm
                     Exit For
                 End If
             Next
-            ListPopupMenuOpenBrowser.Enabled = ok
+            ListPopupMenuBrowser.Enabled = ok
         End If
     End Sub
 
@@ -595,7 +605,6 @@ Public Class MainForm
         Dim idx As Integer = ListView.IndexFromPoint(e.X, e.Y)
         If e.Button = Windows.Forms.MouseButtons.Right AndAlso idx <> -1 AndAlso idx < ListView.Items.Count Then
             If ListView.SelectedIndices.Count <= 1 Then
-
                 ListView.ClearSelected()
                 ListView.SetSelected(idx, True)
 

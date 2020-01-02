@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class SearchDialog
+Partial Class LinkDialog
     Inherits System.Windows.Forms.Form
 
     'Form 重写 Dispose，以清理组件列表。
@@ -23,8 +23,8 @@ Partial Class SearchDialog
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.ListView = New System.Windows.Forms.ListBox()
-        Me.LabelResult = New System.Windows.Forms.Label()
-        Me.ButtonSearch = New System.Windows.Forms.Button()
+        Me.LabelTitle = New System.Windows.Forms.Label()
+        Me.ButtonOpen = New System.Windows.Forms.Button()
         Me.ButtonBack = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
@@ -41,29 +41,30 @@ Partial Class SearchDialog
         Me.ListView.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ListView.Name = "ListView"
         Me.ListView.ScrollAlwaysVisible = True
+        Me.ListView.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
         Me.ListView.Size = New System.Drawing.Size(370, 239)
         Me.ListView.TabIndex = 0
         '
-        'LabelResult
+        'LabelTitle
         '
-        Me.LabelResult.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.LabelTitle.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LabelResult.Location = New System.Drawing.Point(7, 7)
-        Me.LabelResult.Name = "LabelResult"
-        Me.LabelResult.Size = New System.Drawing.Size(370, 17)
-        Me.LabelResult.TabIndex = 1
-        Me.LabelResult.Text = """xxx"" 的搜索结果：(共找到 0 项)"
+        Me.LabelTitle.Location = New System.Drawing.Point(7, 7)
+        Me.LabelTitle.Name = "LabelTitle"
+        Me.LabelTitle.Size = New System.Drawing.Size(370, 17)
+        Me.LabelTitle.TabIndex = 1
+        Me.LabelTitle.Text = "所选内容包含了 0 个链接"
         '
-        'ButtonSearch
+        'ButtonOpen
         '
-        Me.ButtonSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ButtonSearch.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonSearch.Location = New System.Drawing.Point(221, 277)
-        Me.ButtonSearch.Name = "ButtonSearch"
-        Me.ButtonSearch.Size = New System.Drawing.Size(75, 25)
-        Me.ButtonSearch.TabIndex = 2
-        Me.ButtonSearch.Text = "新查找(&F)"
-        Me.ButtonSearch.UseVisualStyleBackColor = True
+        Me.ButtonOpen.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ButtonOpen.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.ButtonOpen.Location = New System.Drawing.Point(221, 277)
+        Me.ButtonOpen.Name = "ButtonOpen"
+        Me.ButtonOpen.Size = New System.Drawing.Size(75, 25)
+        Me.ButtonOpen.TabIndex = 2
+        Me.ButtonOpen.Text = "打开(&O)"
+        Me.ButtonOpen.UseVisualStyleBackColor = True
         '
         'ButtonBack
         '
@@ -77,7 +78,7 @@ Partial Class SearchDialog
         Me.ButtonBack.Text = "返回(&B)"
         Me.ButtonBack.UseVisualStyleBackColor = True
         '
-        'SearchDialog
+        'LinkDialog
         '
         Me.AcceptButton = Me.ButtonBack
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
@@ -85,15 +86,15 @@ Partial Class SearchDialog
         Me.CancelButton = Me.ButtonBack
         Me.ClientSize = New System.Drawing.Size(384, 311)
         Me.Controls.Add(Me.ButtonBack)
-        Me.Controls.Add(Me.ButtonSearch)
-        Me.Controls.Add(Me.LabelResult)
+        Me.Controls.Add(Me.ButtonOpen)
+        Me.Controls.Add(Me.LabelTitle)
         Me.Controls.Add(Me.ListView)
         Me.Font = New System.Drawing.Font("Microsoft YaHei UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.MinimumSize = New System.Drawing.Size(300, 250)
-        Me.Name = "SearchDialog"
+        Me.Name = "LinkDialog"
         Me.ShowIcon = False
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -103,7 +104,7 @@ Partial Class SearchDialog
 
     End Sub
     Friend WithEvents ListView As System.Windows.Forms.ListBox
-    Friend WithEvents LabelResult As System.Windows.Forms.Label
-    Friend WithEvents ButtonSearch As System.Windows.Forms.Button
+    Friend WithEvents ButtonOpen As System.Windows.Forms.Button
     Friend WithEvents ButtonBack As System.Windows.Forms.Button
+    Private WithEvents LabelTitle As System.Windows.Forms.Label
 End Class

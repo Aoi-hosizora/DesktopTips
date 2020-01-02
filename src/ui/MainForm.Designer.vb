@@ -72,7 +72,9 @@ Partial Class MainForm
         Me.ListPopupMenuLabelItemFile = New DevComponents.DotNetBar.LabelItem()
         Me.ListPopupMenuOpenDir = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuViewFile = New DevComponents.DotNetBar.ButtonItem()
-        Me.ListPopupMenuOpenBrowser = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuBrowser = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuOpenAllLink = New DevComponents.DotNetBar.ButtonItem()
+        Me.ListPopupMenuViewAllLink = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuSyncData = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuSyncDataTo = New DevComponents.DotNetBar.ButtonItem()
         Me.ListPopupMenuSyncDataFrom = New DevComponents.DotNetBar.ButtonItem()
@@ -245,7 +247,7 @@ Partial Class MainForm
         '
         Me.ListPopupMenu.AutoExpandOnClick = True
         Me.ListPopupMenu.Name = "ListPopupMenu"
-        Me.ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList, Me.ListPopupMenuItemContainer, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuFind, Me.ListPopupMenuMove, Me.ListPopupMenuOthers, Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuOpenBrowser, Me.ListPopupMenuSyncData, Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
+        Me.ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList, Me.ListPopupMenuItemContainer, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuFind, Me.ListPopupMenuMove, Me.ListPopupMenuOthers, Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuBrowser, Me.ListPopupMenuSyncData, Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
         Me.ListPopupMenu.Text = "ListPopup"
         '
         'ListPopupMenuLabelSelItem
@@ -442,13 +444,25 @@ Partial Class MainForm
         Me.ListPopupMenuViewFile.Name = "ListPopupMenuViewFile"
         Me.ListPopupMenuViewFile.Text = "浏览当前列表内容(&V)"
         '
-        'ListPopupMenuOpenBrowser
+        'ListPopupMenuBrowser
         '
-        Me.ListPopupMenuOpenBrowser.Name = "ListPopupMenuOpenBrowser"
-        Me.ListPopupMenuOpenBrowser.Text = "打开浏览器链接(&B)"
+        Me.ListPopupMenuBrowser.Name = "ListPopupMenuBrowser"
+        Me.ListPopupMenuBrowser.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuOpenAllLink, Me.ListPopupMenuViewAllLink})
+        Me.ListPopupMenuBrowser.Text = "浏览器(&B)"
+        '
+        'ListPopupMenuOpenAllLink
+        '
+        Me.ListPopupMenuOpenAllLink.Name = "ListPopupMenuOpenAllLink"
+        Me.ListPopupMenuOpenAllLink.Text = "打开所有链接(&A)"
+        '
+        'ListPopupMenuViewAllLink
+        '
+        Me.ListPopupMenuViewAllLink.Name = "ListPopupMenuViewAllLink"
+        Me.ListPopupMenuViewAllLink.Text = "打开部分链接(&P)"
         '
         'ListPopupMenuSyncData
         '
+        Me.ListPopupMenuSyncData.BeginGroup = True
         Me.ListPopupMenuSyncData.Name = "ListPopupMenuSyncData"
         Me.ListPopupMenuSyncData.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuSyncDataTo, Me.ListPopupMenuSyncDataFrom})
         Me.ListPopupMenuSyncData.Text = "数据同步(&Y)"
@@ -784,7 +798,7 @@ Partial Class MainForm
     Friend WithEvents HoverToolTip As System.Windows.Forms.ToolTip
     Friend WithEvents ListPopupMenuFind As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents LabelNothing As System.Windows.Forms.Label
-    Friend WithEvents ListPopupMenuOpenBrowser As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuBrowser As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuCopy As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuSavePos As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuLoadPos As DevComponents.DotNetBar.ButtonItem
@@ -794,5 +808,7 @@ Partial Class MainForm
     Friend WithEvents ListPopupMenuPasteAppend As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuShotcutSetting As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuOthers As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuOpenAllLink As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuViewAllLink As DevComponents.DotNetBar.ButtonItem
 
 End Class

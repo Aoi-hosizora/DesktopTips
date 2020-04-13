@@ -1,12 +1,13 @@
-﻿Public Class NativeMethod
+﻿Imports System.Runtime.InteropServices
+Imports System.Text
+
+Public Class NativeMethod
 
 #Region "光标信息与移动"
 
-    Public Declare Sub mouse_event Lib "user32" _
-        (ByVal dwFlags As Integer, ByVal dx As Integer, ByVal dy As Integer, ByVal cButtons As Integer, ByVal dwExtraInfo As Integer)
-
-    Public Declare Function SetCursorPos Lib "user32" _
-        (ByVal x As Long, ByVal y As Long) As Long
+    <DllImport("user32.dll")>
+    Public Shared Sub mouse_event(dwFlags As MouseEvent, dx As UInteger, dy As UInteger, dwData As UInteger, dwExtraInfo As Integer)
+    End Sub
 
     Public Enum MouseEvent As UInteger
         MOUSEEVENTF_LEFTDOWN = &H2      '左键按下
@@ -33,11 +34,46 @@
         MOD_WINDOWS = &H8
     End Enum
 
-    Public Declare Auto Function RegisterHotKey Lib "user32.dll" Alias "RegisterHotKey" _
-        (ByVal hwnd As IntPtr, ByVal id As Integer, ByVal fsModifiers As Integer, ByVal vk As Integer) As Boolean
+    <DllImport("user32.dll")>
+    Public Shared Function RegisterHotKey(hwnd As IntPtr, id As Integer, fsModifiers As Integer, vk As Integer) As Boolean
+    End Function
 
-    Public Declare Auto Function UnRegisterHotKey Lib "user32.dll" Alias "UnregisterHotKey" _
-        (ByVal hwnd As IntPtr, ByVal id As Integer) As Boolean
+    <DllImport("user32.dll")>
+    Public Shared Function UnregisterHotKey(hwnd As IntPtr, id As Integer) As Boolean
+    End Function
+
+#End Region
+
+#Region "窗口相关"
+
+    Public Const GW_CHILD As Integer = 5
+    Public Const GW_HWNDNEXT As Integer = 2
+
+    <DllImport("user32.dll")>
+    Public Shared Function SetForegroundWindow(ByVal hWnd As IntPtr) As <MarshalAs(UnmanagedType.Bool)> Boolean
+    End Function
+
+    <DllImport("user32.dll")>
+    Public Shared Function GetWindow(hWnd As IntPtr, uCmd As UInt32) As IntPtr
+    End Function
+
+    <DllImport("user32.dll")>
+    Public Shared Function GetClassName(hWnd As IntPtr, pClassName As StringBuilder, nMaxCount As Integer) As Integer
+    End Function
+
+    <DllImport("user32.dll")>
+    Public Shared Function SetWindowPos(hWnd As IntPtr, hWndInsertAfter As IntPtr, X As Integer, Y As Integer, cx As Integer, cy As Integer, uFlags As Integer) As Boolean
+    End Function
+
+    <DllImport("user32.dll")>
+    Public Shared Function SetWindowText(hwnd As IntPtr, lpString As String) As Boolean
+    End Function
+
+    Public Shared Function GetWindowClassName(handle As IntPtr) As String
+        Dim sb As New StringBuilder(256)
+        GetClassName(handle, sb, sb.Capacity)
+        Return sb.ToString()
+    End Function
 
 #End Region
 

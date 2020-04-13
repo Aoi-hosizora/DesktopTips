@@ -812,7 +812,7 @@ Public Class MainForm
     ''' 注销快捷键
     ''' </summary>
     Public Sub UnregisterShotcut()
-        NativeMethod.UnRegisterHotKey(Handle, HotKeyId)
+        NativeMethod.UnregisterHotKey(Handle, HotKeyId)
     End Sub
 
     ''' <summary>

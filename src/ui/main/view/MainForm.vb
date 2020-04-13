@@ -4,27 +4,43 @@ Imports DD = DevComponents.DotNetBar
 
 Public Class MainForm
 
-    '' '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    '' ''''''''''''''''''''''''''''''''''''''''''''''''' 加载 设置 文件 '''''''''''''''''''''''''''''''''''''''''''''''''
+#Region "加载设置列表 启动退出程序"
 
-#Region "LoadList SaveList"
+    Public Sub LoadSetting()
+        Dim setting As SettingUtil.AppSetting = _globalPresenter.LoadSetting()
 
-    ''' <summary>
-    ''' MyBase.Load
-    ''' </summary>
+        Me.Top = setting.Top
+        Me.Left = setting.Left
+        Me.Height = setting.Height
+        Me.Width = setting.Width
+        Me.MaxOpacity = setting.MaxOpacity
+        Me.TopMost = setting.TopMost
+
+        ListPopupMenuFold.Checked = setting.IsFold
+        ListPopupMenuWinHighColor.SelectedColor = setting.HighLightColor
+        ListPopupMenuLoadPos.Enabled = Not (setting.SaveLeft = -1 Or setting.SaveTop = -1)
+        NumericUpDownListCnt.Value = (Me.Height - 27) \ 17
+        RegisterShotcut(setting.HotKey)
+    End Sub
+
+    Public Sub SaveSetting()
+        Dim setting As SettingUtil.AppSetting = _globalPresenter.LoadSetting()
+
+        setting.Top = Me.Top
+        setting.Left = Me.Left
+        setting.Height = Me.Height
+        setting.Width = Me.Width
+        setting.MaxOpacity = Me.MaxOpacity
+        setting.TopMost = Me.TopMost
+        setting.IsFold = ListPopupMenuFold.Checked
+        setting.HighLightColor = ListPopupMenuWinHighColor.SelectedColor
+
+        _globalPresenter.SaveSetting(setting)
+    End Sub
+
     ''' <param name="IsAlreadyLoadTab">是否已经初始化分组 (True: 不需要更新 分组 和 Curr)</param>
     Private Sub LoadList(Optional ByVal IsAlreadyLoadTab = False)
-        Try
-            GlobalModel.LoadTabTipsData()
-        Catch ex As FileLoadException
-            Dim Msg As String = "错误：" & ex.Message & Chr(10) & "是否打开文件位置检查文件？"
-            Dim ok As MsgBoxResult = MessageBoxEx.Show(Msg, "错误", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, Me, {"開く", "キャンセル"})
-            If ok = vbYes Then
-                ListPopupMenuOpenFile_Click(ListPopupMenuOpenDir, New EventArgs)
-            End If
-            Application.Exit()
-            Return
-        End Try
+        _globalPresenter.LoadList()
 
         ListView.Items.Clear()
         For Each Tip As TipItem In GlobalModel.Tabs.Item(GlobalModel.CurrTabIdx).Tips
@@ -40,94 +56,17 @@ Public Class MainForm
         LabelNothing.Visible = ListView.Items.Count = 0
     End Sub
 
-    ''' <summary>
-    ''' 保存数据
-    ''' </summary>
     Private Sub SaveList()
         Dim Tips As New List(Of TipItem)
         For Each Tip As TipItem In ListView.Items.Cast(Of TipItem)()
             Tips.Add(Tip)
         Next
-
         GlobalModel.Tabs.Item(GlobalModel.CurrTabIdx).Tips = New List(Of TipItem)(Tips)
-        GlobalModel.SaveTabData()
-        LabelNothing.Visible = ListView.Items.Count = 0
-    End Sub
-
-#End Region
-
-#Region "LoadSetting SaveSetting FormClosed FormLoad"
-
-    Public Sub LoadSetting()
-        Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
-
-        Me.Top = setting.Top
-        Me.Left = setting.Left
-        Me.Height = setting.Height
-        Me.Width = setting.Width
-
-        MaxOpacity = setting.MaxOpacity
-        Me.TopMost = setting.TopMost
-        ListPopupMenuFold.Checked = setting.IsFold
-        ListPopupMenuWinHighColor.SelectedColor = setting.HighLightColor
-
-        ListPopupMenuLoadPos.Enabled = Not (setting.SaveLeft = -1 Or setting.SaveTop = -1)
-    End Sub
-
-    Public Sub SaveSetting()
-        Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
-        setting.Top = Me.Top
-        setting.Left = Me.Left
-        setting.Height = Me.Height
-        setting.Width = Me.Width
-        setting.MaxOpacity = MaxOpacity
-        setting.TopMost = Me.TopMost
-        setting.IsFold = ListPopupMenuFold.Checked
-        setting.HighLightColor = ListPopupMenuWinHighColor.SelectedColor
-
-        SettingUtil.SaveAppSettings(setting)
-    End Sub
-
-    Private Sub MainForm_FormClosed(sender As Object, e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
-        SaveList()
-        SaveSetting()
-        UnregisterShotcut()
-    End Sub
-
-    Private Sub MainForm_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
-        LoadSetting()
-        Me.Refresh()
-        ' Me.Font = System.Drawing.SystemFonts.MenuFont
-
-        NumericUpDownListCnt.Value = (Me.Height - 27) \ 17
-        ButtonRemoveItem.Enabled = False
-
-        Me.Top = Me.Top - (MaxOpacity / OpacitySpeed)
-        TimerShowForm.Enabled = True
-        TimerShowForm.Start()
-
-        ListPopupMenuWinTop.Checked = Me.TopMost
-
-        Me.TabStrip.Tabs.Remove(Me.TabItemTest)
-        Me.TabStrip.Tabs.Remove(Me.TabItemTest2)
-
-        SetupMouseEnterLeave()
-        SetupUpDownButtonsLayout()
-
-        ListView.Items.Clear()
-        LoadList()
-
-        FormOpacity_Load()
-        FoldMenu(ListPopupMenuFold.Checked)
-
-        Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
-        If setting.IsUseHotKey Then
-            RegisterShotcut(setting.HotKey)
-        End If
+        _globalPresenter.SaveList()
     End Sub
 
     Private Sub ButtonCloseForm_Click(sender As System.Object, e As System.EventArgs) Handles ButtonCloseForm.Click, ListPopupMenuExit.Click
-        Dim ok As Integer = MessageBox.Show("确定退出 DesktopTips 吗？", "关闭", _
+        Dim ok = MessageBox.Show("确定退出 DesktopTips 吗？", "关闭", _
                                             MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
         If ok = vbYes Then
             TimerMouseIn.Enabled = False
@@ -136,7 +75,36 @@ Public Class MainForm
         End If
     End Sub
 
+    Private Sub MainForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+        SaveList()
+        SaveSetting()
+        UnregisterShotcut()
+    End Sub
+
+    Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        LoadSetting()
+        Me.Top = Me.Top - (MaxOpacity / OpacitySpeed)
+        Me.Refresh()
+        TimerShowForm.Enabled = True
+        TimerShowForm.Start()
+
+        ListPopupMenuWinTop.Checked = Me.TopMost
+        ButtonRemoveItem.Enabled = False
+
+        Me.TabStrip.Tabs.Remove(Me.TabItemTest)
+        Me.TabStrip.Tabs.Remove(Me.TabItemTest2)
+
+        SetupMouseEnterLeave()
+        SetupUpDownButtonsLayout()
+
+        LoadList()
+
+        FormOpacity_Load()
+        FoldMenu(ListPopupMenuFold.Checked)
+    End Sub
+
 #End Region
+
 
     '' '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     '' ''''''''''''''''''''''''''''''''''''''''''''''''' 列表 数据 操作 '''''''''''''''''''''''''''''''''''''''''''''''''

@@ -1,6 +1,5 @@
 ﻿Imports System.IO
 Imports System.Text
-
 Imports DD = DevComponents.DotNetBar
 
 Public Class MainForm
@@ -138,7 +137,6 @@ Public Class MainForm
     End Sub
 
 #End Region
-
 
     '' '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     '' ''''''''''''''''''''''''''''''''''''''''''''''''' 列表 数据 操作 '''''''''''''''''''''''''''''''''''''''''''''''''

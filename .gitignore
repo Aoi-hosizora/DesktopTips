@@ -1,4 +1,14 @@
+### Editor ###
+.vscode/
+.ionide/
+.history/
+.idea/
+
+### Build ###
 bin/Debug/*
 bin/Release/*
 obj/x86/Debug/*
 obj/x86/Release/*
+
+### Build ###
+tmp/

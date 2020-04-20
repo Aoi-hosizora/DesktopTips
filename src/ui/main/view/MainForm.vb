@@ -102,7 +102,7 @@ Public Class MainForm
         Me.Refresh()
 
         ' 窗口显示
-        OnOpecityUp()
+        FormOpecityUp()
 
         ListPopupMenuWinTop.Checked = Me.TopMost
         ButtonRemoveItem.Enabled = False
@@ -112,6 +112,13 @@ Public Class MainForm
         FoldMenu(ListPopupMenuFold.Checked)
 
         ' 窗口动画
+        CanMouseLeave = Function() As Boolean
+                            Return ListPopupMenu.PopupControl Is Nothing AndAlso
+                                TabPopupMenu.PopupControl Is Nothing AndAlso
+                                TabStrip.ContextMenu Is Nothing AndAlso
+                                ListPopupMenuMove.PopupControl Is Nothing AndAlso
+                                isMenuPopuping = False
+                        End Function
         SetupUpDownButtonsLayout()
         FormOpacity_Load()
 
@@ -483,7 +490,7 @@ Public Class MainForm
                                          .Size = TextSize, .BackColor = Color.White, .ForeColor = TextColor, .Font = New System.Drawing.Font("Microsoft YaHei UI", 9.0!), _
                                          .Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top}
 
-        Dim Win As New EscCloseForm With {.FormBorderStyle = Windows.Forms.FormBorderStyle.Sizable, .Text = Title, .Size = WinSize, .TopMost = True}
+        Dim Win As New BaseEscCloseForm With {.FormBorderStyle = Windows.Forms.FormBorderStyle.Sizable, .Text = Title, .Size = WinSize, .TopMost = True}
         Win.Controls.Add(TextBox)
         Win.Show()
 
@@ -810,7 +817,7 @@ Public Class MainForm
                 Me.Activate()
                 Me.TopMost = True
                 Me.TopMost = False
-                OnOpecityUp()
+                FormOpecityUp()
             End If
         End If
         MyBase.WndProc(m)

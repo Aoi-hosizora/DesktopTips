@@ -1,4 +1,4 @@
-﻿Public Class EscCloseForm
+﻿Public Class BaseEscCloseForm
     Inherits Form
 
     Protected Overrides Function ProcessCmdKey(ByRef msg As System.Windows.Forms.Message, keyData As System.Windows.Forms.Keys) As Boolean

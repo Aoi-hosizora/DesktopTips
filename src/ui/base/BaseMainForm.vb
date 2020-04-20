@@ -7,17 +7,19 @@ Public Class BaseMainForm
     Inherits Form
 
     Private WithEvents TimerShowForm As Timer = New Timer() With {.Interval = 1, .Enabled = False}
-    Private WithEvents TimerHideForm As Timer = New Timer() With {.Interval = 1, .Enabled = False}
+    Private WithEvents TimerCloseForm As Timer = New Timer() With {.Interval = 1, .Enabled = False}
     Private WithEvents TimerMouseIn As Timer = New Timer() With {.Interval = 10, .Enabled = False}
     Private WithEvents TimerMouseOut As Timer = New Timer() With {.Interval = 10, .Enabled = False}
 
     Protected MaxOpacity As Double = 0.6
-    Protected OpacitySpeed As Double = 0.08
 
-    Protected Overrides Sub OnLoad(e As System.EventArgs)
+    Public Delegate Function MouseLeaveOption() As Boolean
+    Public Property CanMouseLeave As MouseLeaveOption
+
+    Protected Overrides Sub OnLoad(e As EventArgs)
         MyBase.OnLoad(e)
         Me.Opacity = 0
-        OnShowForm()
+        ShowForm()
 
         AddHandler Me.MouseMove, AddressOf FormMouseMove
         AddHandler Me.MouseLeave, AddressOf FormMouseLeave
@@ -38,15 +40,16 @@ Public Class BaseMainForm
         Next
     End Sub
 
-    Protected Overrides Sub OnClosing(e As System.ComponentModel.CancelEventArgs)
-        OnHideForm()
-        MyBase.OnClosing(e)
+    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
+        MyBase.OnFormClosing(e)
+        e.Cancel = Opacity > 0
+        CloseForm()
     End Sub
 
 #Region "Timer"
 
-    Private Sub TimerShowForm_Tick(sender As System.Object, e As System.EventArgs) Handles TimerShowForm.Tick
-        Me.Opacity += OpacitySpeed
+    Private Sub TimerShowForm_Tick(sender As Object, e As EventArgs) Handles TimerShowForm.Tick
+        Me.Opacity += 0.08
         Me.Top += 1
         If Me.Opacity >= MaxOpacity Then
             Me.Opacity = MaxOpacity
@@ -54,16 +57,16 @@ Public Class BaseMainForm
         End If
     End Sub
 
-    Private Sub TimerHideForm_Tick(sender As System.Object, e As System.EventArgs) Handles TimerHideForm.Tick
-        Me.Opacity -= OpacitySpeed
+    Private Sub TimerCloseForm_Tick(sender As Object, e As EventArgs) Handles TimerCloseForm.Tick
+        Me.Opacity -= 0.08
         Me.Top -= 1
         If Me.Opacity <= 0 Then
-            Me.Close()
-            TimerHideForm.Enabled = False
+            MyBase.Close()
+            TimerCloseForm.Enabled = False
         End If
     End Sub
 
-    Private Sub TimerMouseIn_Tick(sender As System.Object, e As System.EventArgs) Handles TimerMouseIn.Tick
+    Private Sub TimerMouseIn_Tick(sender As Object, e As EventArgs) Handles TimerMouseIn.Tick
         Me.Opacity += 0.05
         If Me.Opacity >= 1 Then
             Me.Opacity = 1
@@ -71,10 +74,10 @@ Public Class BaseMainForm
         End If
     End Sub
 
-    Private Sub TimerMouseOut_Tick(sender As System.Object, e As System.EventArgs) Handles TimerMouseOut.Tick
+    Private Sub TimerMouseOut_Tick(sender As Object, e As EventArgs) Handles TimerMouseOut.Tick
         Me.Opacity -= 0.02
-        If Me.Opacity <= MaxOpacity Then
-            Me.Opacity = MaxOpacity
+        If Me.Opacity <= Me.MaxOpacity Then
+            Me.Opacity = Me.MaxOpacity
             TimerMouseOut.Enabled = False
         End If
     End Sub
@@ -83,39 +86,41 @@ Public Class BaseMainForm
 
 #Region "Opecity"
 
-    Private Sub FormMouseMove(sender As Object, e As System.EventArgs)
+    Private Sub FormMouseMove(sender As Object, e As EventArgs)
         If Cursor.Position.X >= Me.Left And Cursor.Position.X <= Me.Right And Cursor.Position.Y >= Me.Top And Cursor.Position.Y <= Me.Bottom Then
-            OnOpecityUp()
+            FormOpecityUp()
         End If
     End Sub
 
-    Private Sub FormMouseLeave(sender As Object, e As System.EventArgs)
-        OnOpecityDown()
+    Private Sub FormMouseLeave(sender As Object, e As EventArgs)
+        If CanMouseLeave.Invoke() Then
+            FormOpecityDown()
+        End If
     End Sub
 
-    Protected Sub OnShowForm()
+    Private Sub ShowForm()
         TimerMouseIn.Enabled = False
         TimerMouseOut.Enabled = False
-        TimerHideForm.Enabled = False
+        TimerCloseForm.Enabled = False
         TimerShowForm.Enabled = True
     End Sub
 
-    Protected Sub OnHideForm()
+    Private Sub CloseForm()
         TimerMouseIn.Enabled = False
         TimerMouseOut.Enabled = False
         TimerShowForm.Enabled = False
-        TimerHideForm.Enabled = True
+        TimerCloseForm.Enabled = True
     End Sub
 
-    Protected Sub OnOpecityUp()
-        TimerHideForm.Enabled = False
+    Protected Sub FormOpecityUp()
+        TimerCloseForm.Enabled = False
         TimerShowForm.Enabled = False
         TimerMouseOut.Enabled = False
         TimerMouseIn.Enabled = True
     End Sub
 
-    Protected Sub OnOpecityDown()
-        TimerHideForm.Enabled = False
+    Protected Sub FormOpecityDown()
+        TimerCloseForm.Enabled = False
         TimerShowForm.Enabled = False
         TimerMouseIn.Enabled = False
         TimerMouseOut.Enabled = True
@@ -125,28 +130,52 @@ Public Class BaseMainForm
 
 #Region "Move"
 
-    Protected isMouseDown As Boolean
-    Protected pushDownMouseInScreen As Point
-    Protected pushDownWindowPos As Point
-    Protected pushDownWindowSize As Point
+    Protected ReadOnly Property IsMouseDown As Boolean
+        Get
+            Return _IsMouseDown
+        End Get
+    End Property
+
+    Protected ReadOnly Property PushDownMouseInScreen As Point
+        Get
+            Return _PushDownMouseInScreen
+        End Get
+    End Property
+
+    Protected ReadOnly Property PushDownWindowPos As Point
+        Get
+            Return _pushDownWindowPos
+        End Get
+    End Property
+
+    Protected ReadOnly Property PushDownWindowSize As Size
+        Get
+            Return _PushDownWindowSize
+        End Get
+    End Property
+
+    Private _isMouseDown As Boolean
+    Private _pushDownMouseInScreen As Point
+    Private _pushDownWindowPos As Point
+    Private _PushDownWindowSize As Size
 
     Private Sub FormMouseDown(sender As Object, e As MouseEventArgs)
-        isMouseDown = e.Button = MouseButtons.Left
-        pushDownMouseInScreen = Cursor.Position
-        pushDownWindowPos = New Point(Me.Left, Me.Top)
-        pushDownWindowSize = New Point(Me.Width, Me.Height)
+        _isMouseDown = e.Button = MouseButtons.Left
+        _pushDownMouseInScreen = Cursor.Position
+        _pushDownWindowPos = New Point(Me.Left, Me.Top)
+        _PushDownWindowSize = New Size(Me.Width, Me.Height)
     End Sub
 
     Private Sub FormMouseUp(sender As Object, e As MouseEventArgs)
-        isMouseDown = False
+        _isMouseDown = False
         Me.Cursor = Cursors.Default
     End Sub
 
     Private Sub FormMouseResize(sender As Object, e As MouseEventArgs)
-        If isMouseDown Then
+        If IsMouseDown Then
             Me.Cursor = Cursors.SizeAll
-            Me.Top = pushDownWindowPos.Y + Cursor.Position.Y - pushDownMouseInScreen.Y
-            Me.Left = pushDownWindowPos.X + Cursor.Position.X - pushDownMouseInScreen.X
+            Me.Top = _pushDownWindowPos.Y + Cursor.Position.Y - _pushDownMouseInScreen.Y
+            Me.Left = _pushDownWindowPos.X + Cursor.Position.X - _pushDownMouseInScreen.X
         End If
     End Sub
 

@@ -7,12 +7,15 @@ Imports DD = DevComponents.DotNetBar
 
 Partial Class MainForm
 
+    '' '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    '' ''''''''''''''''''''''''''''''''''''''''''''''''' 额外 大小透明度调整 设置 '''''''''''''''''''''''''''''''''''''''''''''''''
+
     ''' <summary>
     ''' 大小调整
     ''' </summary>
     Private Sub ButtonResizeFlag_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonResizeFlag.MouseMove
-        If isMouseDown Then
-            Me.Width = pushDownWindowSize.X + Cursor.Position.X - pushDownMouseInScreen.X
+        If IsMouseDown Then
+            Me.Width = PushDownWindowSize.Width + Cursor.Position.X - PushDownMouseInScreen.X
         End If
     End Sub
 
@@ -23,27 +26,24 @@ Partial Class MainForm
         LabelNothing.Width = ListView.Width - 2
     End Sub
 
-    '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    '''''''''''''''''''''''''''''''''''''''''''''''''' 鼠标移动 ''''''''''''''''''''''''''''''''''''''''''''''''''
+    Private isMenuPopuping As Boolean = False
 
-    'Private IsMenuPopuping As Boolean = False
+    ''' <summary>
+    ''' TabStrip 菜单弹出
+    ''' </summary>
+    Private Sub TabStrip_PopupOpen(sender As Object, e As EventArgs) Handles TabStrip.PopupOpen
+        isMenuPopuping = True
+    End Sub
 
-    ' ''' <summary>
-    ' ''' TabStrip 菜单弹出
-    ' ''' </summary>
-    'Private Sub TabStrip_PopupOpen(sender As System.Object, e As System.EventArgs) Handles TabStrip.PopupOpen
-    '    IsMenuPopuping = True
-    'End Sub
+    ''' <summary>
+    ''' Popup 关闭，不能使用 Closed
+    ''' </summary>
+    Private Sub PopMenu_PopupFinalizedAndClosed(sender As Object, e As EventArgs) Handles _
+        ListPopupMenu.PopupFinalized, TabPopupMenu.PopupFinalized, ListPopupMenuMove.PopupFinalized, TabStrip.PopupClose
 
-    ' ''' <summary>
-    ' ''' Popup 关闭，不能使用 Close
-    ' ''' </summary>
-    'Private Sub PopMenu_PopupFinalizedAndClosed(sender As Object, e As System.EventArgs) Handles _
-    '    ListPopupMenu.PopupFinalized, TabPopupMenu.PopupFinalized, ListPopupMenuMove.PopupFinalized, TabStrip.PopupClose
-
-    '    IsMenuPopuping = False
-    '    FormMouseLeave(sender, e)
-    'End Sub
+        isMenuPopuping = False
+        FormOpecityDown()
+    End Sub
 
     '' '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     '' ''''''''''''''''''''''''''''''''''''''''''''''''' 菜单 加载 折叠 '''''''''''''''''''''''''''''''''''''''''''''''''
@@ -83,7 +83,7 @@ Partial Class MainForm
             btnS.Checked = False
         Next
         btn.Checked = True
-        OnOpecityDown()
+        FormOpecityDown()
     End Sub
 
 #End Region
@@ -173,7 +173,7 @@ Partial Class MainForm
     Private Sub MainForm_Deactivate(sender As Object, e As System.EventArgs) Handles Me.Deactivate
         ListView.ClearSelected()
         If Me.Opacity <> MaxOpacity Then
-            OnOpecityDown()
+            FormOpecityDown()
         End If
     End Sub
 
@@ -228,14 +228,14 @@ Partial Class MainForm
     ''' <summary>
     ''' 显示二维码窗口
     ''' </summary>
-    Public Function GetQrCodeForm(ByVal Data As String) As EscCloseForm
+    Public Function GetQrCodeForm(ByVal Data As String) As BaseEscCloseForm
 
         Dim qrGenerator As New QRCodeGenerator
         Dim qrCodeData As QRCodeData = qrGenerator.CreateQrCode(Data, QRCodeGenerator.ECCLevel.Q)
         Dim qrCode As New QRCode(qrCodeData)
         Dim qrCodeImg As Bitmap = qrCode.GetGraphic(7)
 
-        Dim qrCodeForm As New EscCloseForm With {.Name = "qrCodeForm", .FormBorderStyle = Windows.Forms.FormBorderStyle.FixedDialog, _
+        Dim qrCodeForm As New BaseEscCloseForm With {.Name = "qrCodeForm", .FormBorderStyle = Windows.Forms.FormBorderStyle.FixedDialog, _
                                                  .MaximizeBox = False, .MinimizeBox = False, .ShowInTaskbar = False, _
                                                  .StartPosition = FormStartPosition.CenterScreen, .Size = qrCodeImg.Size}
 
@@ -327,7 +327,7 @@ Partial Class MainForm
         Dim thread As Thread = Nothing
         Dim cancelFlag As Boolean = False
 
-        Dim qrCodeForm As EscCloseForm = GetQrCodeForm(QR_CODE_MAGIC & ip & ":" & port)
+        Dim qrCodeForm As BaseEscCloseForm = GetQrCodeForm(QR_CODE_MAGIC & ip & ":" & port)
 
         qrCodeForm.Text = "连接二维码 (" & ip & ":" & port & ")"
         AddHandler qrCodeForm.FormClosed, _

@@ -86,9 +86,7 @@ Public Class MainForm
         Dim ok = MessageBox.Show("确定退出 DesktopTips 吗？",
                                  "关闭", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
         If ok = vbYes Then
-            TimerMouseIn.Enabled = False
-            TimerMouseOut.Enabled = False
-            TimerEndForm.Enabled = True
+            Me.Close()
         End If
     End Sub
 
@@ -101,12 +99,10 @@ Public Class MainForm
     Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' 加载设置
         LoadSetting()
-        Me.Top = Me.Top - (MaxOpacity / OpacitySpeed)
         Me.Refresh()
 
         ' 窗口显示
-        TimerShowForm.Enabled = True
-        TimerShowForm.Start()
+        OnOpecityUp()
 
         ListPopupMenuWinTop.Checked = Me.TopMost
         ButtonRemoveItem.Enabled = False
@@ -116,7 +112,6 @@ Public Class MainForm
         FoldMenu(ListPopupMenuFold.Checked)
 
         ' 窗口动画
-        SetupMouseEnterLeave()
         SetupUpDownButtonsLayout()
         FormOpacity_Load()
 
@@ -815,8 +810,7 @@ Public Class MainForm
                 Me.Activate()
                 Me.TopMost = True
                 Me.TopMost = False
-                TimerMouseIn.Enabled = True
-                TimerMouseIn.Start()
+                OnOpecityUp()
             End If
         End If
         MyBase.WndProc(m)

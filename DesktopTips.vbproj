@@ -115,7 +115,7 @@
     <Compile Include="src\ui\base\BaseMainForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\base\EscCloseForm.vb">
+    <Compile Include="src\ui\dialog\EscCloseForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\ui\view\HotKeyBox.vb">

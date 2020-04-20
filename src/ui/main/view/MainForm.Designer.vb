@@ -1,6 +1,6 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class MainForm
-    Inherits System.Windows.Forms.Form
+    Inherits BaseMainForm
 
     'Form 重写 Dispose，以清理组件列表。
     <System.Diagnostics.DebuggerNonUserCode()> _
@@ -43,10 +43,6 @@ Partial Class MainForm
         Me.ButtonCloseForm = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonListSetting = New DevComponents.DotNetBar.ButtonX()
         Me.NumericUpDownListCnt = New System.Windows.Forms.NumericUpDown()
-        Me.TimerShowForm = New System.Windows.Forms.Timer(Me.components)
-        Me.TimerEndForm = New System.Windows.Forms.Timer(Me.components)
-        Me.TimerMouseIn = New System.Windows.Forms.Timer(Me.components)
-        Me.TimerMouseOut = New System.Windows.Forms.Timer(Me.components)
         Me.SuperTooltip = New DevComponents.DotNetBar.SuperTooltip()
         Me.ContextMenuBar1 = New DevComponents.DotNetBar.ContextMenuBar()
         Me.ListPopupMenu = New DevComponents.DotNetBar.ButtonItem()
@@ -209,22 +205,6 @@ Partial Class MainForm
         Me.NumericUpDownListCnt.TabIndex = 3
         Me.NumericUpDownListCnt.Value = New Decimal(New Integer() {8, 0, 0, 0})
         Me.NumericUpDownListCnt.Visible = False
-        '
-        'TimerShowForm
-        '
-        Me.TimerShowForm.Interval = 1
-        '
-        'TimerEndForm
-        '
-        Me.TimerEndForm.Interval = 1
-        '
-        'TimerMouseIn
-        '
-        Me.TimerMouseIn.Interval = 10
-        '
-        'TimerMouseOut
-        '
-        Me.TimerMouseOut.Interval = 10
         '
         'SuperTooltip
         '
@@ -750,10 +730,6 @@ Partial Class MainForm
     Friend WithEvents ButtonCloseForm As DevComponents.DotNetBar.ButtonX
     Friend WithEvents ButtonListSetting As DevComponents.DotNetBar.ButtonX
     Friend WithEvents NumericUpDownListCnt As System.Windows.Forms.NumericUpDown
-    Friend WithEvents TimerShowForm As System.Windows.Forms.Timer
-    Friend WithEvents TimerEndForm As System.Windows.Forms.Timer
-    Friend WithEvents TimerMouseIn As System.Windows.Forms.Timer
-    Friend WithEvents TimerMouseOut As System.Windows.Forms.Timer
     Friend WithEvents SuperTooltip As DevComponents.DotNetBar.SuperTooltip
     Friend WithEvents ContextMenuBar1 As DevComponents.DotNetBar.ContextMenuBar
     Friend WithEvents ListPopupMenu As DevComponents.DotNetBar.ButtonItem

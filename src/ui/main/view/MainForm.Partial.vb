@@ -7,69 +7,12 @@ Imports DD = DevComponents.DotNetBar
 
 Partial Class MainForm
 
-    '' '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    '' ''''''''''''''''''''''''''''''''''''''''''''''''' 移动 大小 透明 '''''''''''''''''''''''''''''''''''''''''''''''''
-
-#Region "鼠标拖动窗口"
-
-    Private PushDownMouseInScreen As Point
-    Private PushDownWindowPos As Point
-    Private PushDownWindowSize As Point
-    Private IsMouseDown As Boolean
-
-    ''' <summary>
-    ''' 点下
-    ''' </summary>
-    Private Sub Flag_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseDown, TabStrip.MouseDown, LabelNothing.MouseDown, ButtonResizeFlag.MouseDown
-        If e.Button = Windows.Forms.MouseButtons.Left Then
-            IsMouseDown = True
-        End If
-        PushDownMouseInScreen = Cursor.Position
-        PushDownWindowPos = New Point(Me.Left, Me.Top)
-        PushDownWindowSize = New Point(Me.Width, Me.Height)
-    End Sub
-
-    ''' <summary>
-    ''' 放开
-    ''' </summary>
-    Private Sub Flag_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseUp, TabStrip.MouseUp, LabelNothing.MouseUp, ButtonResizeFlag.MouseUp
-        Me.Cursor = Cursors.Default
-        IsMouseDown = False
-        ListView.Refresh()
-    End Sub
-
-    ''' <summary>
-    ''' 重新进入
-    ''' </summary>
-    Private Sub Flag_MouseEnter(sender As Object, e As System.EventArgs) Handles ListView.MouseEnter, TabStrip.MouseEnter, LabelNothing.MouseEnter, ButtonResizeFlag.MouseEnter
-        If IsMouseDown = True Then
-            Me.Cursor = Cursors.Default
-            IsMouseDown = False
-            ListView.Refresh()
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' 窗口移动
-    ''' </summary>
-    Private Sub ListView_TabStrip_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseMove, TabStrip.MouseMove, LabelNothing.MouseMove
-        If IsMouseDown Then
-            Me.Cursor = Cursors.SizeAll
-            Me.Top = PushDownWindowPos.Y + Cursor.Position.Y - PushDownMouseInScreen.Y
-            Me.Left = PushDownWindowPos.X + Cursor.Position.X - PushDownMouseInScreen.X
-        End If
-    End Sub
-
-#End Region
-
-#Region "窗口大小调整"
-
     ''' <summary>
     ''' 大小调整
     ''' </summary>
     Private Sub ButtonResizeFlag_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonResizeFlag.MouseMove
-        If IsMouseDown Then
-            Me.Width = PushDownWindowSize.X + Cursor.Position.X - PushDownMouseInScreen.X
+        If isMouseDown Then
+            Me.Width = pushDownWindowSize.X + Cursor.Position.X - pushDownMouseInScreen.X
         End If
     End Sub
 
@@ -78,130 +21,29 @@ Partial Class MainForm
         LabelNothing.Left = ListView.Left + 1
         LabelNothing.Height = ListView.Height - 2
         LabelNothing.Width = ListView.Width - 2
-
-        ' LabelNothing.Anchor = AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top Or AnchorStyles.Bottom
-    End Sub
-
-#End Region
-
-#Region "Timer 显示关闭 移进移出"
-
-    ''' <summary>
-    ''' 透明度
-    ''' </summary>
-    Private MaxOpacity As Double = 0.6
-    ''' <summary>
-    ''' 透明速度
-    ''' </summary>
-    Private Const OpacitySpeed As Double = 0.08
-
-    '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    ''''''''''''''''''''''''''''''''''''''''''''''''''' Timer '''''''''''''''''''''''''''''''''''''''''''''''''''
-
-    Private Sub TimerShowForm_Tick(sender As System.Object, e As System.EventArgs) Handles TimerShowForm.Tick
-        Me.Opacity += OpacitySpeed
-        Me.Top += 1
-        If Me.Opacity >= MaxOpacity Then
-            Me.Opacity = MaxOpacity
-            TimerShowForm.Enabled = False
-        End If
-    End Sub
-
-    Private Sub TimerEndForm_Tick(sender As System.Object, e As System.EventArgs) Handles TimerEndForm.Tick
-        Me.Opacity -= OpacitySpeed
-        Me.Top -= 1
-        If Me.Opacity <= 0 Then
-            Me.Top = Me.Top + (1 / OpacitySpeed)
-            Me.Close()
-            TimerEndForm.Enabled = False
-        End If
-    End Sub
-
-    Private Sub TimerMouseIn_Tick(sender As System.Object, e As System.EventArgs) Handles TimerMouseIn.Tick
-        Me.Opacity += 0.05
-        If Me.Opacity >= 1 Then
-            TimerMouseIn.Stop()
-            TimerMouseIn.Enabled = False
-        End If
-    End Sub
-
-    Private Sub TimerMouseOut_Tick(sender As System.Object, e As System.EventArgs) Handles TimerMouseOut.Tick
-        Me.Opacity -= 0.02
-        If Me.Opacity <= MaxOpacity Then
-            Me.Opacity = MaxOpacity
-            TimerMouseOut.Stop()
-            TimerMouseOut.Enabled = False
-        End If
     End Sub
 
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     '''''''''''''''''''''''''''''''''''''''''''''''''' 鼠标移动 ''''''''''''''''''''''''''''''''''''''''''''''''''
 
-    ''' <summary>
-    ''' 设置移入移出事件
-    ''' </summary>
-    Private Sub SetupMouseEnterLeave()
-        AddHandler Me.MouseMove, AddressOf FormMouseMove
-        AddHandler Me.MouseLeave, AddressOf FormMouseLeave
-        For Each Ctrl As Control In Me.Controls
-            AddHandler Ctrl.MouseMove, AddressOf FormMouseMove
-            AddHandler Ctrl.MouseLeave, AddressOf FormMouseLeave
-        Next
-    End Sub
+    'Private IsMenuPopuping As Boolean = False
 
-    ''' <summary>
-    ''' 鼠标移动
-    ''' </summary>
-    Private Sub FormMouseMove(sender As Object, e As System.EventArgs)
-        If Cursor.Position.X >= Me.Left And Cursor.Position.X <= Me.Right And _
-            Cursor.Position.Y >= Me.Top And Cursor.Position.Y <= Me.Bottom Then
-            TimerMouseOut.Stop()
-            TimerMouseOut.Enabled = False
-            TimerMouseIn.Enabled = True
-            TimerMouseIn.Start()
-        End If
-    End Sub
+    ' ''' <summary>
+    ' ''' TabStrip 菜单弹出
+    ' ''' </summary>
+    'Private Sub TabStrip_PopupOpen(sender As System.Object, e As System.EventArgs) Handles TabStrip.PopupOpen
+    '    IsMenuPopuping = True
+    'End Sub
 
-    ''' <summary>
-    ''' 鼠标移出，并且没有popup
-    ''' </summary>
-    Private Sub FormMouseLeave(sender As Object, e As System.EventArgs)
-        If ListPopupMenu.PopupControl Is Nothing _
-            AndAlso TabPopupMenu.PopupControl Is Nothing _
-            AndAlso TabStrip.ContextMenu Is Nothing _
-            AndAlso ListPopupMenuMove.PopupControl Is Nothing _
-            AndAlso IsMenuPopuping = False Then
+    ' ''' <summary>
+    ' ''' Popup 关闭，不能使用 Close
+    ' ''' </summary>
+    'Private Sub PopMenu_PopupFinalizedAndClosed(sender As Object, e As System.EventArgs) Handles _
+    '    ListPopupMenu.PopupFinalized, TabPopupMenu.PopupFinalized, ListPopupMenuMove.PopupFinalized, TabStrip.PopupClose
 
-            TimerMouseIn.Stop()
-            TimerMouseIn.Enabled = False
-            TimerMouseOut.Enabled = True
-            TimerMouseOut.Start()
-        End If
-    End Sub
-
-    '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    '''''''''''''''''''''''''''''''''''''''''''''''''' 鼠标移动 ''''''''''''''''''''''''''''''''''''''''''''''''''
-
-    Private IsMenuPopuping As Boolean = False
-
-    ''' <summary>
-    ''' TabStrip 菜单弹出
-    ''' </summary>
-    Private Sub TabStrip_PopupOpen(sender As System.Object, e As System.EventArgs) Handles TabStrip.PopupOpen
-        IsMenuPopuping = True
-    End Sub
-
-    ''' <summary>
-    ''' Popup 关闭，不能使用 Close
-    ''' </summary>
-    Private Sub PopMenu_PopupFinalizedAndClosed(sender As Object, e As System.EventArgs) Handles _
-        ListPopupMenu.PopupFinalized, TabPopupMenu.PopupFinalized, ListPopupMenuMove.PopupFinalized, TabStrip.PopupClose
-
-        IsMenuPopuping = False
-        FormMouseLeave(sender, e)
-    End Sub
-
-#End Region
+    '    IsMenuPopuping = False
+    '    FormMouseLeave(sender, e)
+    'End Sub
 
     '' '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     '' ''''''''''''''''''''''''''''''''''''''''''''''''' 菜单 加载 折叠 '''''''''''''''''''''''''''''''''''''''''''''''''
@@ -241,9 +83,7 @@ Partial Class MainForm
             btnS.Checked = False
         Next
         btn.Checked = True
-
-        TimerMouseOut.Enabled = True
-        TimerMouseOut.Start()
+        OnOpecityDown()
     End Sub
 
 #End Region
@@ -333,8 +173,7 @@ Partial Class MainForm
     Private Sub MainForm_Deactivate(sender As Object, e As System.EventArgs) Handles Me.Deactivate
         ListView.ClearSelected()
         If Me.Opacity <> MaxOpacity Then
-            TimerMouseOut.Enabled = True
-            TimerMouseOut.Start()
+            OnOpecityDown()
         End If
     End Sub
 

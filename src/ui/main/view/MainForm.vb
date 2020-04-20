@@ -6,6 +6,10 @@ Public Class MainForm
 
 #Region "加载设置列表 启动退出程序"
 
+    ''' <summary>
+    ''' 加载设置，应用到UI
+    ''' MainForm_Load 用
+    ''' </summary>
     Public Sub LoadSetting()
         Dim setting As SettingUtil.AppSetting = _globalPresenter.LoadSetting()
 
@@ -23,6 +27,10 @@ Public Class MainForm
         RegisterShotcut(setting.HotKey)
     End Sub
 
+    ''' <summary>
+    ''' 保存设置
+    ''' MainForm_FormClosed 用
+    ''' </summary>
     Public Sub SaveSetting()
         Dim setting As SettingUtil.AppSetting = _globalPresenter.LoadSetting()
 
@@ -38,36 +46,45 @@ Public Class MainForm
         _globalPresenter.SaveSetting(setting)
     End Sub
 
-    ''' <param name="IsAlreadyLoadTab">是否已经初始化分组 (True: 不需要更新 分组 和 Curr)</param>
-    Private Sub LoadList(Optional ByVal IsAlreadyLoadTab = False)
-        _globalPresenter.LoadList()
+    ''' <summary>
+    ''' 加载文件，显示当前分组
+    ''' MainForm_Load TabStrip_SelectedTabChanged 用
+    ''' </summary>
+    Private Sub LoadList()
+        _globalPresenter.LoadList() ' GlobalModel 中
 
         ListView.Items.Clear()
         For Each Tip As TipItem In GlobalModel.Tabs.Item(GlobalModel.CurrTabIdx).Tips
             ListView.Items.Add(Tip)
         Next
-
-        If Not IsAlreadyLoadTab Then
-            For i = 0 To GlobalModel.Tabs.Count - 1
-                AddTabDataShow(GlobalModel.Tabs.Item(i).Title)
-            Next
-        End If
-
         LabelNothing.Visible = ListView.Items.Count = 0
     End Sub
 
+    ''' <summary>
+    ''' 保存到文件
+    ''' MainForm_FormClosed 增删改 用
+    ''' </summary>
     Private Sub SaveList()
-        Dim Tips As New List(Of TipItem)
-        For Each Tip As TipItem In ListView.Items.Cast(Of TipItem)()
-            Tips.Add(Tip)
-        Next
-        GlobalModel.Tabs.Item(GlobalModel.CurrTabIdx).Tips = New List(Of TipItem)(Tips)
-        _globalPresenter.SaveList()
+        _globalPresenter.SaveList(ListView.Items)
     End Sub
 
-    Private Sub ButtonCloseForm_Click(sender As System.Object, e As System.EventArgs) Handles ButtonCloseForm.Click, ListPopupMenuExit.Click
-        Dim ok = MessageBox.Show("确定退出 DesktopTips 吗？", "关闭", _
-                                            MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+    ''' <summary>
+    ''' 新建分组显示
+    ''' MainForm_Load TabPopupMenuNewTab_Click 用
+    ''' </summary>
+    Private Sub AddShownTab(ByVal title As String)
+        Dim newTabItem = New DD.SuperTabItem() With {
+            .GlobalItem = False,
+            .Name = "TabItemCustom_" & GlobalModel.Tabs.Count,
+            .Text = title
+        }
+        AddHandler newTabItem.MouseDown, AddressOf TabStrip_MouseDown
+        Me.TabStrip.Tabs.AddRange(New DD.BaseItem() {newTabItem})
+    End Sub
+
+    Private Sub ButtonExit_Click(sender As System.Object, e As System.EventArgs) Handles ButtonCloseForm.Click, ListPopupMenuExit.Click
+        Dim ok = MessageBox.Show("确定退出 DesktopTips 吗？",
+                                 "关闭", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
         If ok = vbYes Then
             TimerMouseIn.Enabled = False
             TimerMouseOut.Enabled = False
@@ -82,29 +99,35 @@ Public Class MainForm
     End Sub
 
     Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' 加载设置
         LoadSetting()
         Me.Top = Me.Top - (MaxOpacity / OpacitySpeed)
         Me.Refresh()
+
+        ' 窗口显示
         TimerShowForm.Enabled = True
         TimerShowForm.Start()
 
         ListPopupMenuWinTop.Checked = Me.TopMost
         ButtonRemoveItem.Enabled = False
-
         Me.TabStrip.Tabs.Remove(Me.TabItemTest)
         Me.TabStrip.Tabs.Remove(Me.TabItemTest2)
 
+        FoldMenu(ListPopupMenuFold.Checked)
+
+        ' 窗口动画
         SetupMouseEnterLeave()
         SetupUpDownButtonsLayout()
-
-        LoadList()
-
         FormOpacity_Load()
-        FoldMenu(ListPopupMenuFold.Checked)
+
+        ' 列表
+        LoadList()
+        For i = 0 To GlobalModel.Tabs.Count - 1
+            AddShownTab(GlobalModel.Tabs.Item(i).Title)
+        Next
     End Sub
 
 #End Region
-
 
     '' '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     '' ''''''''''''''''''''''''''''''''''''''''''''''''' 列表 数据 操作 '''''''''''''''''''''''''''''''''''''''''''''''''
@@ -373,7 +396,7 @@ Public Class MainForm
         'Process.Start(path)
         'C:\Users\Windows 10\AppData\Roaming\DesktopTips
 
-        System.Diagnostics.Process.Start("explorer.exe", "/select,""" & GlobalModel.StorageJsonFile & """")
+        System.Diagnostics.Process.Start("explorer.exe", "/select,""" & GlobalModel.STORAGE_FILENAME & """")
     End Sub
 
     ''' <summary>
@@ -817,42 +840,19 @@ Public Class MainForm
 #Region "分组 增删改"
 
     ''' <summary>
-    ''' 界面显示 数据更新 新分组
-    ''' ListPopupMenuNewTab_Click 和 LoadList 用
-    ''' </summary>
-    ''' <param name="Title">分组标题</param>
-    ''' <param name="IsAddToStorage">是否添加到存储</param>
-    Private Sub AddTabDataShow(ByVal Title As String, Optional ByVal IsAddToStorage As Boolean = False)
-
-        If IsAddToStorage Then
-            Dim NewTab As New Tab(Title)
-            GlobalModel.Tabs.Add(NewTab)
-            GlobalModel.SaveTabData()
-        End If
-
-        Dim NewSuperTabItem = New DD.SuperTabItem()
-        NewSuperTabItem.GlobalItem = False
-        NewSuperTabItem.Name = "TabItemCustom_" & GlobalModel.Tabs.Count
-        NewSuperTabItem.Text = Title
-
-        AddHandler NewSuperTabItem.MouseDown, AddressOf TabStrip_MouseDown
-        ' AddHandler NewSuperTabItem.DoubleClick, AddressOf ListPopupMenuRenameTab_Click
-
-        Me.TabStrip.Tabs.AddRange(New DD.BaseItem() {NewSuperTabItem})
-    End Sub
-
-    ''' <summary>
     ''' 新建分组
     ''' </summary>
-    Private Sub ListPopupMenuNewTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuNewTab.Click
+    Private Sub TabPopupMenuNewTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuNewTab.Click
         Dim tabName As String = InputBox("请输入新分组的标题: ", "新建", "分组")
         tabName = tabName.Trim()
         If tabName <> "" Then
             If Tab.CheckDuplicateTab(tabName, GlobalModel.Tabs) IsNot Nothing Then
                 MessageBoxEx.Show("分组标题 """ & tabName & """ 已存在。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, Me)
-                ListPopupMenuNewTab_Click(sender, New System.EventArgs)
+                TabPopupMenuNewTab_Click(sender, New System.EventArgs)
             Else
-                AddTabDataShow(tabName, True)
+                AddShownTab(tabName)
+                GlobalModel.Tabs.Add(New Tab(tabName))
+                GlobalModel.SaveAllData()
             End If
         End If
     End Sub
@@ -860,7 +860,7 @@ Public Class MainForm
     ''' <summary>
     ''' 删除分组
     ''' </summary>
-    Private Sub ListPopupMenuDeleteTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuDeleteTab.Click
+    Private Sub TabPopupMenuDeleteTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuDeleteTab.Click
         If TabStrip.Tabs.Count = 1 Then
             MessageBoxEx.Show("无法删除最后的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, Me)
         Else
@@ -873,7 +873,7 @@ Public Class MainForm
                 If ok = vbOK Then
                     TabStrip.Tabs.RemoveAt(TabStrip.SelectedTabIndex)
                     GlobalModel.Tabs.RemoveAt(GlobalModel.Tabs.IndexOf(Tab.GetTabFromTitle(TabTitle)))
-                    GlobalModel.SaveTabData()
+                    GlobalModel.SaveAllData()
                 End If
             End If
         End If
@@ -882,7 +882,7 @@ Public Class MainForm
     ''' <summary>
     ''' 重命名分组 !!!
     ''' </summary>
-    Private Sub ListPopupMenuRenameTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuRenameTab.Click
+    Private Sub TabPopupMenuRenameTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuRenameTab.Click
         If TabStrip.SelectedTabIndex <> -1 Then
             Dim OldName As String = TabStrip.SelectedTab.Text
             Dim NewName As String = InputBox("重命名分组 """ & OldName & """ 为: ", "重命名", OldName)
@@ -890,10 +890,10 @@ Public Class MainForm
             If NewName <> "" Then
                 If Tab.CheckDuplicateTab(NewName, GlobalModel.Tabs) IsNot Nothing Then
                     MessageBoxEx.Show("分组标题 """ & NewName & """ 已存在。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, Me)
-                    ListPopupMenuRenameTab_Click(sender, New System.EventArgs)
+                    TabPopupMenuRenameTab_Click(sender, New System.EventArgs)
                 Else
                     Tab.GetTabFromTitle(OldName).Title = NewName
-                    GlobalModel.SaveTabData()
+                    GlobalModel.SaveAllData()
                     TabStrip.SelectedTab.Text = NewName
                 End If
             End If
@@ -906,9 +906,9 @@ Public Class MainForm
     Private Sub TabStrip_DoubleClick(sender As Object, e As System.EventArgs) Handles TabStrip.DoubleClick
         Dim ePos As New Point(Cursor.Position.X - Me.Left - sender.Left, Cursor.Position.Y - Me.Top - sender.Top)
         If TabStrip.GetItemFromPoint(ePos) Is Nothing Then
-            ListPopupMenuNewTab_Click(sender, New EventArgs)
+            TabPopupMenuNewTab_Click(sender, New EventArgs)
         Else
-            ListPopupMenuRenameTab_Click(sender, New EventArgs)
+            TabPopupMenuRenameTab_Click(sender, New EventArgs)
         End If
     End Sub
 
@@ -935,7 +935,7 @@ Public Class MainForm
         SetSelectedItemButtonHide()
         If TabStrip.SelectedTabIndex <> -1 And GlobalModel.Tabs.Count <> 0 Then
             GlobalModel.CurrTabIdx = GlobalModel.Tabs.IndexOf(Tab.GetTabFromTitle(TabStrip.SelectedTab.Text))
-            LoadList(True)
+            LoadList()
         End If
     End Sub
 
@@ -949,7 +949,7 @@ Public Class MainForm
         Next
         GlobalModel.Tabs = NewTabs
         GlobalModel.CurrTabIdx = GlobalModel.Tabs.IndexOf(Tab.GetTabFromTitle(TabStrip.SelectedTab.Text))
-        GlobalModel.SaveTabData()
+        GlobalModel.SaveAllData()
     End Sub
 
 #End Region
@@ -1058,7 +1058,7 @@ Public Class MainForm
                 Tab.GetTabFromTitle(Dest).Tips.Add(Item)
                 Tab.GetTabFromTitle(Src).Tips.Remove(Item)
             Next
-            GlobalModel.SaveTabData()
+            GlobalModel.SaveAllData()
 
             For Each TabItem As DD.SuperTabItem In TabStrip.Tabs
                 If TabItem.Text = Dest Then

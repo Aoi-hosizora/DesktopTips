@@ -541,7 +541,7 @@ Partial Class MainForm
                                     Return
                                 End Try
 
-                                Dim backupFileName As String = GlobalModel.SaveTabData(newList)
+                                Dim backupFileName As String = GlobalModel.SaveBackupData(newList)
                                 Dim isOpen As DialogResult = MessageBoxEx.Show("接收数据成功，新数据保存在 """ & backupFileName & """。", "同步", _
                                                                                MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, _
                                                                                Me, New String() {"打开文件夹", "确定"})
@@ -563,13 +563,13 @@ Partial Class MainForm
 
                                 'Select Case result
                                 '    Case Windows.Forms.DialogResult.Yes ' 添加
-                                '        backupFileName = GlobalModel.SaveTabData(GlobalModel.Tabs) ' 备份
+                                '        backupFileName = GlobalModel.SaveBackupData(GlobalModel.Tabs) ' 备份
                                 '        GlobalModel.Tabs.AddRange(newItems)
                                 '        'Case Windows.Forms.DialogResult.No ' 删除
-                                '        '    backupFileName = GlobalModel.SaveTabData(GlobalModel.Tabs)
+                                '        '    backupFileName = GlobalModel.SaveBackupData(GlobalModel.Tabs)
                                 '        '    GlobalModel.Tabs.RemoveAll(New Predicate(Of Tab)(Function(item As Tab) deletedItems.IndexOf(item) <> -1))
                                 '    Case Windows.Forms.DialogResult.No ' 覆盖
-                                '        backupFileName = GlobalModel.SaveTabData(GlobalModel.Tabs)
+                                '        backupFileName = GlobalModel.SaveBackupData(GlobalModel.Tabs)
                                 '        GlobalModel.Tabs = newList
                                 '    Case Windows.Forms.DialogResult.Cancel
                                 '        backupFileName = ""

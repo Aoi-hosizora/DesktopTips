@@ -28,10 +28,12 @@ Public Class MainFormGlobalPresenter
     ''' </summary>
     Public Sub LoadList() Implements MainFormContract.IGlobalPresenter.LoadList
         Try
-            GlobalModel.LoadTabTipsData()
+            GlobalModel.LoadAllData()
         Catch ex As FileLoadException
-            Dim Msg As String = "错误：" & ex.Message & Chr(10) & "是否打开文件位置检查文件？"
-            Dim ok As MsgBoxResult = MessageBoxEx.Show(Msg, "错误", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, _view.GetMe(), {"開く", "キャンセル"})
+            Dim ok As MsgBoxResult = MessageBoxEx.Show(
+                "错误：" & ex.Message & Chr(10) & "是否打开文件位置检查文件？",
+                "错误", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1,
+                _view.GetMe(), {"開く", "キャンセル"})
             If ok = vbYes Then
                 OpenFileDir()
             End If
@@ -43,15 +45,20 @@ Public Class MainFormGlobalPresenter
     ''' <summary>
     ''' 保存列表文件
     ''' </summary>
-    Public Sub SaveList() Implements MainFormContract.IGlobalPresenter.SaveList
-        GlobalModel.SaveTabData()
+    Public Sub SaveList(items As ListBox.ObjectCollection) Implements MainFormContract.IGlobalPresenter.SaveList
+        Dim Tips As New List(Of TipItem)
+        For Each Tip As TipItem In items.Cast(Of TipItem)()
+            Tips.Add(Tip)
+        Next
+        GlobalModel.CurrentTab.Tips = New List(Of TipItem)(Tips) ' 当前列表
+        GlobalModel.SaveAllData()
     End Sub
 
     ''' <summary>
     ''' 打开文件所在位置
     ''' </summary>
     Public Sub OpenFileDir() Implements MainFormContract.IGlobalPresenter.OpenFileDir
-        Process.Start("explorer.exe", "/select,""" & GlobalModel.StorageJsonFile & """")
+        Process.Start("explorer.exe", "/select,""" & GlobalModel.STORAGE_FILENAME & """")
     End Sub
 
 End Class

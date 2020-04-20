@@ -8,7 +8,7 @@
         Function LoadSetting() As SettingUtil.AppSetting    ' 加载设置
         Sub SaveSetting(setting As SettingUtil.AppSetting)  ' 保存设置
         Sub LoadList()                                      ' 加载列表文件
-        Sub SaveList()                                      ' 保存列表文件
+        Sub SaveList(items As ListBox.ObjectCollection)     ' 保存列表文件
         Sub OpenFileDir()                                   ' 打开文件所在位置
     End Interface
 
@@ -26,7 +26,6 @@
         'Sub SelectAll()     ' 全选
         'Sub Search()        ' 搜索
         'Sub OpenLinks()     ' 打开链接
-        'Sub ViewFile()      ' 浏览当前分组内容
     End Interface
 
     Public Interface IGroupPresenter

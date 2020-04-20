@@ -107,14 +107,18 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="src\model\GlobalModel.LS.vb" />
     <Compile Include="src\model\GlobalModel.vb" />
     <Compile Include="src\model\Tab.vb" />
     <Compile Include="src\model\TipItem.vb" />
     <Compile Include="src\service\SyncData.vb" />
+    <Compile Include="src\ui\base\BaseMainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="src\ui\base\EscCloseForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\ex\HotKeyBox.vb">
+    <Compile Include="src\ui\view\HotKeyBox.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="src\ui\dialog\HotKeyDialog.Designer.vb">
@@ -165,7 +169,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\util\CommonUtil.vb" />
-    <Compile Include="src\ui\ex\MessageBoxEx.vb">
+    <Compile Include="src\ui\view\MessageBoxEx.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\util\NativeMethod.vb" />
@@ -213,7 +217,7 @@
     <None Include="Resources\UpIcon.png" />
     <None Include="Resources\Copy.png" />
     <None Include="Resources\PasteHS.png" />
-    <Content Include="src\ui\ex\MessageBoxEx.Ref.cs" />
+    <Content Include="src\ui\view\MessageBoxEx.Ref.cs" />
     <None Include="Resources\SelectAll.png" />
     <None Include="Resources\Star.png" />
     <None Include="Resources\Edit.png" />

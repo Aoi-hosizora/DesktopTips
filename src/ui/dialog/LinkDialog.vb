@@ -30,7 +30,7 @@
         End If
     End Sub
 
-    Private Sub LoadListViewLabel(sender As System.Object, e As System.EventArgs) Handles MyBase.Load, ListView.SelectedValueChanged
+    Private Sub LoadListAndTabsViewLabel(sender As System.Object, e As System.EventArgs) Handles MyBase.Load, ListView.SelectedValueChanged
         Dim count% = ListView.Items.Count()
         Dim selCount% = ListView.SelectedItems.Count()
         Me.LabelTitle.Text = String.Format("所选内容包含了 {0} 个链接 (选中 {1} 项)", count, selCount)

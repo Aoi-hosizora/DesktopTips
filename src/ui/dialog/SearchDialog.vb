@@ -2,12 +2,12 @@
 
 Public Class SearchDialog
 
-    Public Property _SearchText As String
-    Public Property _SearchResult As List(Of Tuple(Of Integer, Integer))
+    Public Property SearchText As String
+    Public Property SearchResult As List(Of Tuple(Of Integer, Integer))
 
     Private Sub SearchForm_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
         Dim ShowLabel As String = """{0}"" 的搜索结果：(共找到 " & _SearchResult.Count & " 项)"
-        Dim SearchTextLong As String = _SearchText
+        Dim SearchTextLong As String = SearchText
 
         Dim graphics As Graphics = CreateGraphics()
         Dim sizeF As SizeF = graphics.MeasureString(String.Format(ShowLabel, SearchTextLong), LabelResult.Font)
@@ -18,10 +18,10 @@ Public Class SearchDialog
         End While
 
         ' Add Ellipsis
-        LabelResult.Text = String.Format(ShowLabel, SearchTextLong & If(_SearchText.Length <> SearchTextLong.Length, "...", ""))
+        LabelResult.Text = String.Format(ShowLabel, SearchTextLong & If(SearchText.Length <> SearchTextLong.Length, "...", ""))
 
         ListView.Items.Clear()
-        For Each Tpl As Tuple(Of Integer, Integer) In _SearchResult
+        For Each Tpl As Tuple(Of Integer, Integer) In SearchResult
             Dim tab As Tab = SU.Tabs.Item(Tpl.Item1)
             ListView.Items.Add("[" & tab.Title & "] - " & tab.Tips.Item(Tpl.Item2).TipContent)
         Next
@@ -40,7 +40,7 @@ Public Class SearchDialog
     Private Sub ListView_DoubleClick(sender As Object, e As System.EventArgs) Handles ListView.DoubleClick
         If ListView.SelectedIndex <> -1 And ListView.SelectedIndex <> 65535 Then
             MainForm.Focus()
-            Dim Tpl As Tuple(Of Integer, Integer) = _SearchResult.ElementAt(ListView.SelectedIndex)
+            Dim Tpl As Tuple(Of Integer, Integer) = SearchResult.ElementAt(ListView.SelectedIndex)
             MainForm.TabStrip.SelectedTabIndex = Tpl.Item1
             MainForm.ListView.SelectedIndex = Tpl.Item2
         End If

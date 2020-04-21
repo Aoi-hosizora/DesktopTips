@@ -20,6 +20,24 @@ Public Class NativeMethod
         MOUSEEVENTF_ABSOLUTE = &H8000   '绝对移动
     End Enum
 
+    ''' <summary>
+    ''' 鼠标上移
+    ''' </summary>
+    Public Shared Sub MouseMoveUp(currPos As Point, px As Integer)
+        Dim dx As Integer = currPos.X * UInt16.MaxValue / My.Computer.Screen.Bounds.Width
+        Dim dy As Integer = (currPos.Y - px) * UInt16.MaxValue / My.Computer.Screen.Bounds.Height
+        mouse_event(MouseEvent.MOUSEEVENTF_MOVE Or MouseEvent.MOUSEEVENTF_ABSOLUTE, dx, dy, 0, 0)
+    End Sub
+
+    ''' <summary>
+    ''' 鼠标下移
+    ''' </summary>
+    Public Shared Sub MouseMoveDown(currPos As Point, px As Integer)
+        Dim dx As Integer = currPos.X * UInt16.MaxValue / My.Computer.Screen.Bounds.Width
+        Dim dy As Integer = (currPos.Y + px) * UInt16.MaxValue / My.Computer.Screen.Bounds.Height
+        mouse_event(MouseEvent.MOUSEEVENTF_MOVE Or MouseEvent.MOUSEEVENTF_ABSOLUTE, dx, dy, 0, 0)
+    End Sub
+
 #End Region
 
 #Region "全局快捷键"

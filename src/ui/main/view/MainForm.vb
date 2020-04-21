@@ -4,7 +4,7 @@ Imports DD = DevComponents.DotNetBar
 
 Public Class MainForm
 
-#Region "加载设置列表 启动退出程序"
+#Region "加载设置 加载列表内容和界面 启动关闭窗口"
 
     ''' <summary>
     ''' 加载设置，应用到UI
@@ -20,11 +20,14 @@ Public Class MainForm
         Me.MaxOpacity = setting.MaxOpacity
         Me.TopMost = setting.TopMost
 
-        ListPopupMenuFold.Checked = setting.IsFold
-        ListPopupMenuWinHighColor.SelectedColor = setting.HighLightColor
-        ListPopupMenuLoadPos.Enabled = Not (setting.SaveLeft = -1 Or setting.SaveTop = -1)
-        NumericUpDownListCnt.Value = (Me.Height - 27) \ 17
-        RegisterShotcut(setting.HotKey)
+        ListPopupMenuFold.Checked = setting.IsFold                                          ' 折叠菜单
+        ListPopupMenuWinHighColor.SelectedColor = setting.HighLightColor                    ' 高亮颜色
+        ListPopupMenuLoadPos.Enabled = Not (setting.SaveLeft = -1 Or setting.SaveTop = -1)  ' 恢复位置
+        NumericUpDownListCnt.Value = (Me.Height - 27) \ 17                                  ' 列表高度
+        ListPopupMenuWinTop.Checked = setting.TopMost                                       ' 窗口置顶
+
+        RegisterShotcut(setting.HotKey)                                                     ' 注册快捷键
+        FoldMenu(setting.IsFold)                                                            ' 折叠菜单
     End Sub
 
     ''' <summary>
@@ -54,8 +57,8 @@ Public Class MainForm
         _globalPresenter.LoadList() ' GlobalModel 中
 
         ListView.Items.Clear()
-        For Each Tip As TipItem In GlobalModel.Tabs.Item(GlobalModel.CurrTabIdx).Tips
-            ListView.Items.Add(Tip)
+        For Each tip As TipItem In GlobalModel.CurrentTab.Tips
+            ListView.Items.Add(tip)
         Next
         LabelNothing.Visible = ListView.Items.Count = 0
     End Sub
@@ -66,6 +69,7 @@ Public Class MainForm
     ''' </summary>
     Private Sub SaveList()
         _globalPresenter.SaveList(ListView.Items)
+        ListView.Refresh()
     End Sub
 
     ''' <summary>
@@ -82,34 +86,30 @@ Public Class MainForm
         Me.TabStrip.Tabs.AddRange(New DD.BaseItem() {newTabItem})
     End Sub
 
-    Private Sub ButtonExit_Click(sender As System.Object, e As System.EventArgs) Handles ButtonCloseForm.Click, ListPopupMenuExit.Click
-        Dim ok = MessageBox.Show("确定退出 DesktopTips 吗？",
-                                 "关闭", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
-        If ok = vbYes Then
-            Me.Close()
-        End If
-    End Sub
-
+    ''' <summary>
+    ''' 窗口关闭之后处理
+    ''' </summary>
     Private Sub MainForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         SaveList()
         SaveSetting()
         UnregisterShotcut()
     End Sub
 
+    ''' <summary>
+    ''' 窗口加载
+    ''' </summary>
     Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' 加载设置
         LoadSetting()
         Me.Refresh()
-
-        ' 窗口显示
         FormOpecityUp()
 
-        ListPopupMenuWinTop.Checked = Me.TopMost
-        ButtonRemoveItem.Enabled = False
+        ' 窗口显示
         Me.TabStrip.Tabs.Remove(Me.TabItemTest)
         Me.TabStrip.Tabs.Remove(Me.TabItemTest2)
-
-        FoldMenu(ListPopupMenuFold.Checked)
+        ButtonRemoveItem.Enabled = False
+        SetupUpDownButtonsLayout()
+        SetupOpecityButtonsLayout()
 
         ' 窗口动画
         CanMouseLeave = Function() As Boolean
@@ -119,8 +119,6 @@ Public Class MainForm
                                 ListPopupMenuMove.PopupControl Is Nothing AndAlso
                                 isMenuPopuping = False
                         End Function
-        SetupUpDownButtonsLayout()
-        FormOpacity_Load()
 
         ' 列表
         LoadList()
@@ -131,19 +129,17 @@ Public Class MainForm
 
 #End Region
 
-    '' '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    '' ''''''''''''''''''''''''''''''''''''''''''''''''' 列表 数据 操作 '''''''''''''''''''''''''''''''''''''''''''''''''
+#Region "列表内容"
 
-#Region "增删改 移动 置顶"
+#Region "增删改 移动 置顶 复制粘贴 全选 查找"
 
     ''' <summary>
-    ''' 增 ButtonAddItem ListPopupMenuAddItem
+    ''' 增
     ''' </summary>
-    Private Sub ButtonAddItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonAddItem.Click, ListPopupMenuAddItem.Click, LabelNothing.DoubleClick
-        Dim msg As String = InputBox("新的提醒标签：", "添加")
-        If msg <> "" Then
-            ListView.Items.Add(New TipItem(msg.Trim()))
-            ListView.SetSelected(0, True)
+    Private Sub ButtonAddItem_Click(sender As Object, e As EventArgs) Handles ButtonAddItem.Click, ListPopupMenuAddItem.Click, LabelNothing.DoubleClick
+        Dim item As TipItem = _listPresenter.Insert()
+        If item IsNot Nothing Then
+            ListView.Items.Add(item)
             ListView.ClearSelected()
             ListView.SetSelected(ListView.Items.Count() - 1, True)
             SaveList()
@@ -151,53 +147,42 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
-    ''' 删 ButtonRemoveItem ListPopupMenuRemoveItem
+    ''' 删
     ''' </summary>
-    Private Sub ButtonRemoveItem_Click(sender As System.Object, e As System.EventArgs) Handles ButtonRemoveItem.Click, ListPopupMenuRemoveItem.Click
+    Private Sub ButtonRemoveItem_Click(sender As Object, e As EventArgs) Handles ButtonRemoveItem.Click, ListPopupMenuRemoveItem.Click
         If ListView.SelectedItem IsNot Nothing Then
-            Dim SelectItemIdics As New List(Of TipItem)(ListView.SelectedItems.Cast(Of TipItem)())
-
-            Dim sb As New StringBuilder
-            For Each item As TipItem In ListView.SelectedItems.Cast(Of TipItem)()
-                sb.AppendLine(item.TipContent)
-            Next
-            Dim ok As Integer = MessageBoxEx.Show("确定删除以下 " & SelectItemIdics.Count & " 个提醒标签吗？" & Chr(10) & Chr(10) & sb.ToString, "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, Me)
-            If (ok = vbOK) Then
-                For Each item As TipItem In SelectItemIdics
+            Dim selected As New List(Of TipItem)(ListView.SelectedItems.Cast(Of TipItem)())
+            If _listPresenter.Delete(selected) Then
+                For Each item As TipItem In selected
                     ListView.Items.Remove(item)
                 Next
                 SaveList()
-                ListView.Refresh()
             End If
         End If
     End Sub
 
     ''' <summary>
-    ''' 改 ListView.DoubleClick ListPopupMenuEditItem
+    ''' 改
     ''' </summary>
-    Private Sub ListView_DoubleClick(sender As Object, e As System.EventArgs) Handles ListView.DoubleClick, ListPopupMenuEditItem.Click
-        Dim tmpIdx As Integer = ListView.SelectedIndex
+    Private Sub ListView_DoubleClick(sender As Object, e As EventArgs) Handles ListView.DoubleClick, ListPopupMenuEditItem.Click
         If ListView.SelectedItem IsNot Nothing AndAlso ListView.SelectedIndices.Count = 1 Then
+            Dim thisIdx As Integer = ListView.SelectedIndex
             Dim tip As TipItem = CType(ListView.SelectedItem, TipItem)
-            Dim newstr As String = InputBox("修改提醒标签 """ & tip.TipContent & """ 为：", "修改", tip.TipContent)
-            If newstr <> "" Then
-                tip.TipContent = newstr.Trim()
-                ListView.Items(tmpIdx) = tip
-                ListView.SelectedIndex = tmpIdx
+            If _listPresenter.Update(tip) Then
+                ListView.Items(thisIdx) = tip
+                ListView.SelectedIndex = thisIdx
                 SaveList()
             End If
-        Else
-            ButtonAddItem_Click(sender, New System.EventArgs)
         End If
     End Sub
 
     ''' <summary>
     ''' 置顶
     ''' </summary>
-    Private Sub ListPopupMenuMoveTop_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuMoveTop.Click
-        Dim currItem As Object = ListView.SelectedItem
-        ListView.Items.Remove(currItem)
-        ListView.Items.Insert(0, currItem)
+    Private Sub ListPopupMenuMoveTop_Click(sender As Object, e As EventArgs) Handles ListPopupMenuMoveTop.Click
+        Dim item As TipItem = CType(ListView.SelectedItem, TipItem)
+        ListView.Items.Remove(item)
+        ListView.Items.Insert(0, item)
         ListView.SetSelected(0, True)
         SaveList()
     End Sub
@@ -205,11 +190,10 @@ Public Class MainForm
     ''' <summary>
     ''' 置底
     ''' </summary>
-    Private Sub ListPopupMenuMoveBottom_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuMoveBottom.Click
-        'Dim currIdx As Integer = ListView.SelectedIndex
-        Dim currItem As Object = ListView.SelectedItem
-        ListView.Items.Remove(currItem)
-        ListView.Items.Insert(ListView.Items.Count, currItem)
+    Private Sub ListPopupMenuMoveBottom_Click(sender As Object, e As EventArgs) Handles ListPopupMenuMoveBottom.Click
+        Dim item As TipItem = CType(ListView.SelectedItem, TipItem)
+        ListView.Items.Remove(item)
+        ListView.Items.Insert(ListView.Items.Count, item)
         ListView.SetSelected(ListView.Items.Count - 1, True)
         SaveList()
     End Sub
@@ -217,18 +201,14 @@ Public Class MainForm
     ''' <summary>
     ''' 上移
     ''' </summary>
-    Private Sub MoveUp_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuMoveUp.Click, ButtonItemUp.Click
+    Private Sub MoveUp_Click(sender As Object, e As EventArgs) Handles ListPopupMenuMoveUp.Click, ButtonItemUp.Click
         Dim currIdx As Integer = ListView.SelectedIndex
         If currIdx >= 1 Then
-            Dim currItem As Object = ListView.SelectedItem
-            ListView.Items.Remove(currItem)
-            ListView.Items.Insert(currIdx - 1, currItem)
+            Dim item As TipItem = CType(ListView.SelectedItem, TipItem)
+            ListView.Items.Remove(item)
+            ListView.Items.Insert(currIdx - 1, item)
             ListView.SetSelected(currIdx - 1, True)
-            If sender.Tag = "True" Then
-                Dim dx As Integer = Cursor.Position.X * UInt16.MaxValue / My.Computer.Screen.Bounds.Width
-                Dim dy As Integer = (Cursor.Position.Y - 17) * UInt16.MaxValue / My.Computer.Screen.Bounds.Height
-                NativeMethod.mouse_event(NativeMethod.MouseEvent.MOUSEEVENTF_MOVE Or NativeMethod.MouseEvent.MOUSEEVENTF_ABSOLUTE, dx, dy, 0, 0)
-            End If
+            If sender.Tag = "True" Then NativeMethod.MouseMoveUp(Cursor.Position, 17) ' 如果是辅助按钮
             SaveList()
         End If
     End Sub
@@ -236,41 +216,44 @@ Public Class MainForm
     ''' <summary>
     ''' 下移
     ''' </summary>
-    Private Sub MoveDown_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuMoveDown.Click, ButtonItemDown.Click
+    Private Sub MoveDown_Click(sender As Object, e As EventArgs) Handles ListPopupMenuMoveDown.Click, ButtonItemDown.Click
         Dim currIdx As Integer = ListView.SelectedIndex
         If currIdx <= ListView.Items.Count() - 2 Then
-            Dim currItem As Object = ListView.SelectedItem
-            ListView.Items.Remove(currItem)
-            ListView.Items.Insert(currIdx + 1, currItem)
+            Dim item As TipItem = CType(ListView.SelectedItem, TipItem)
+            ListView.Items.Remove(item)
+            ListView.Items.Insert(currIdx + 1, item)
             ListView.SetSelected(currIdx + 1, True)
-            If sender.Tag = "True" Then
-                Dim dx As Integer = Cursor.Position.X * UInt16.MaxValue / My.Computer.Screen.Bounds.Width
-                Dim dy As Integer = (Cursor.Position.Y + 17) * UInt16.MaxValue / My.Computer.Screen.Bounds.Height
-                NativeMethod.mouse_event(NativeMethod.MouseEvent.MOUSEEVENTF_MOVE Or NativeMethod.MouseEvent.MOUSEEVENTF_ABSOLUTE, dx, dy, 0, 0)
-            End If
+            If sender.Tag = "True" Then NativeMethod.MouseMoveDown(Cursor.Position, 17) ' 如果是辅助按钮
             SaveList()
         End If
     End Sub
 
-#End Region
-
-#Region "复制 全选 查找 粘贴"
-
     ''' <summary>
     ''' 复制
     ''' </summary>
-    Private Sub ListPopupMenuCopy_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuCopy.Click
-        Dim Sb As New StringBuilder
-        For Each item As TipItem In ListView.SelectedItems.Cast(Of TipItem)()
-            Sb.AppendLine(item.TipContent)
-        Next
-        Clipboard.SetText(Sb.ToString())
+    Private Sub ListPopupMenuCopy_Click(sender As Object, e As EventArgs) Handles ListPopupMenuCopy.Click
+        _listPresenter.Copy(ListView.SelectedItems.Cast(Of TipItem)())
+    End Sub
+
+    ''' <summary>
+    ''' 粘贴附加在最后
+    ''' </summary>
+    Private Sub ListPopupMenuPasteAppend_Click(sender As Object, e As EventArgs) Handles ListPopupMenuPasteAppend.Click
+        If ListView.SelectedItem IsNot Nothing AndAlso ListView.SelectedIndices.Count = 1 Then
+            Dim thisIdx As Integer = ListView.SelectedIndex
+            Dim item As TipItem = CType(ListView.SelectedItem, TipItem)
+            If _listPresenter.Paste(item) Then
+                ListView.Items(thisIdx) = item
+                ListView.SelectedIndex = thisIdx
+                SaveList()
+            End If
+        End If
     End Sub
 
     ''' <summary>
     ''' 全选
     ''' </summary>
-    Private Sub ListPopupMenuSelectAll_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuSelectAll.Click
+    Private Sub ListPopupMenuSelectAll_Click(sender As Object, e As EventArgs) Handles ListPopupMenuSelectAll.Click
         For i = 0 To ListView.Items.Count - 1
             ListView.SetSelected(i, True)
         Next
@@ -279,65 +262,57 @@ Public Class MainForm
     ''' <summary>
     ''' 查找文字
     ''' </summary>
-    Public Sub ListPopupMenuFind_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuFind.Click
-        Dim SearchResult As New List(Of Tuple(Of Integer, Integer))
-        Dim SearchText$ = InputBox("请输入查找的文字：", "查找").Trim()
-
-        If SearchText <> "" Then
-            Dim spl() As String = SearchText.Split(" ")
-            For Each Tab As Tab In GlobalModel.Tabs
-                For Each Tip As TipItem In Tab.Tips
-                    If Tip.TipContent.ToLower.Contains(SearchText.ToLower) Then
-                        SearchResult.Add(New Tuple(Of Integer, Integer)(GlobalModel.Tabs.IndexOf(Tab), Tab.Tips.IndexOf(Tip)))
-                    End If
-                Next
-            Next
-
-            SearchDialog.Close()
-            If SearchResult.Count = 0 Then
-                MessageBoxEx.Show("未找到 """ & SearchText & """ 。", "查找", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, Me)
-            Else
-                SearchDialog._SearchText = SearchText
-                SearchDialog._SearchResult = SearchResult
-                SearchDialog.Show(Me)
-            End If
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' 粘贴附加在最后
-    ''' </summary>
-    Private Sub ListPopupMenuPasteAppend_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuPasteAppend.Click
-        Dim clip$ = Clipboard.GetText()
-        If Not String.IsNullOrWhiteSpace(clip) Then
-            Dim currIdx% = ListView.SelectedIndex
-
-            Dim tip As TipItem = GlobalModel.Tabs(GlobalModel.CurrTabIdx).Tips(currIdx)
-            Dim motoStr$ = tip.TipContent
-
-            Dim ok As DialogResult = MessageBoxEx.Show(
-                "是否向当前选中项 """ & GlobalModel.Tabs(GlobalModel.CurrTabIdx).Tips(currIdx).TipContent & """ 末尾添加剪贴板内容 """ & clip & """？",
-                "附加内容",
-                MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, Me)
-
-            If ok = Windows.Forms.DialogResult.OK Then
-                tip.TipContent += " " & Clipboard.GetText().Trim()
-                SaveList()
-            End If
-        End If
+    Public Sub ListPopupMenuFind_Click(sender As Object, e As EventArgs) Handles ListPopupMenuFind.Click
+        SaveList()
+        _listPresenter.Search()
     End Sub
 
 #End Region
 
-#Region "高亮 列表绘制"
+#Region "打开浏览文件 浏览器 高亮 列表绘制"
 
     ''' <summary>
-    ''' 高亮，可多选
+    ''' 打开文件所在位置
     ''' </summary>
-    Private Sub ListPopupMenuHighLight_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuHighLight.Click
-        Dim IsHighLight As Boolean = CType(ListView.SelectedItems(0), TipItem).IsHighLight
-        For Each Item As TipItem In ListView.SelectedItems
-            Item.IsHighLight = Not IsHighLight
+    Private Sub ListPopupMenuOpenFile_Click(sender As Object, e As EventArgs) Handles ListPopupMenuOpenDir.Click
+        _globalPresenter.OpenFileDir()
+    End Sub
+
+    ''' <summary>
+    ''' 浏览当前列表
+    ''' </summary>
+    Private Sub ListPopupMenuViewFile_Click(sender As Object, e As EventArgs) Handles ListPopupMenuViewFile.Click
+        _listPresenter.ViewCurrentList(ListView.Items.Cast(Of TipItem)())
+    End Sub
+
+    ''' <summary>
+    ''' 浏览高亮部分
+    ''' </summary>
+    Private Sub ListPopupMenuHighLightList_Click(sender As Object, e As EventArgs) Handles ListPopupMenuViewHighLight.Click
+        _listPresenter.ViewHighlightList(ListView.Items.Cast(Of TipItem)(), ListPopupMenuWinHighColor.SelectedColor)
+    End Sub
+
+    ''' <summary>
+    ''' 打开所有链接
+    ''' </summary>
+    Private Sub ListPopupMenuOpenAllLink_Click(sender As Object, e As EventArgs) Handles ListPopupMenuOpenAllLink.Click
+        _listPresenter.OpenAllLinks(ListView.SelectedItems.Cast(Of TipItem)())
+    End Sub
+
+    ''' <summary>
+    ''' 打开部分连接
+    ''' </summary>
+    Private Sub ListPopupMenuViewAllLink_Click(sender As Object, e As EventArgs) Handles ListPopupMenuViewAllLink.Click
+        _listPresenter.OpenSomeLinks(ListView.SelectedItems.Cast(Of TipItem)())
+    End Sub
+
+    ''' <summary>
+    ''' 高亮
+    ''' </summary>
+    Private Sub ListPopupMenuHighLight_Click(sender As Object, e As EventArgs) Handles ListPopupMenuHighLight.Click
+        Dim highLight As Boolean = CType(ListView.SelectedItems(0), TipItem).IsHighLight
+        For Each item As TipItem In ListView.SelectedItems
+            item.IsHighLight = Not highLight
         Next
         SaveList()
         ListView.Refresh()
@@ -346,160 +321,28 @@ Public Class MainForm
     ''' <summary>
     ''' 高亮颜色修改
     ''' </summary>
-    Private Sub ListPopupMenuWinHighColor_SelectedColorChanged(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuWinHighColor.SelectedColorChanged
+    Private Sub ListPopupMenuWinHighColor_SelectedColorChanged(sender As Object, e As EventArgs) Handles ListPopupMenuWinHighColor.SelectedColorChanged
         ListView.Refresh()
     End Sub
 
     ''' <summary>
     ''' 重写绘制 高亮
     ''' </summary>
-    Private Sub ListView_DrawItem(sender As Object, e As System.Windows.Forms.DrawItemEventArgs) Handles ListView.DrawItem
+    Private Sub ListView_DrawItem(sender As Object, e As DrawItemEventArgs) Handles ListView.DrawItem
         If e.Index <> -1 Then
             e.DrawBackground()
             e.DrawFocusRectangle()
-
-            Dim NowItem = ListView.Items(e.Index)
-            Dim ColoredBrush As SolidBrush = New SolidBrush(Color.Black)
-
-            If CType(NowItem, TipItem).IsHighLight Then
-                ColoredBrush = New SolidBrush(ListPopupMenuWinHighColor.SelectedColor)
-            Else
-                ColoredBrush = New SolidBrush(e.ForeColor)
-            End If
-
-            e.Graphics.DrawString(NowItem.ToString, e.Font, ColoredBrush, e.Bounds, StringFormat.GenericDefault)
+            Dim currItem = ListView.Items(e.Index)
+            Dim brush As New SolidBrush(If(CType(currItem, TipItem).IsHighLight, ListPopupMenuWinHighColor.SelectedColor, e.ForeColor))
+            e.Graphics.DrawString(currItem.ToString, e.Font, brush, e.Bounds, StringFormat.GenericDefault)
         End If
-    End Sub
-
-    ''' <summary>
-    ''' 显示高亮部分
-    ''' </summary>
-    Private Sub ListPopupMenuHighLightList_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuViewHighLight.Click
-        Dim sb As New StringBuilder
-        Dim idx As Integer = 0
-        For Each Item As TipItem In ListView.Items.Cast(Of TipItem)()
-            If Item.IsHighLight Then
-                sb.AppendLine(Item.TipContent)
-                idx += 1
-            End If
-        Next
-        ShowTextForm("查看高亮 (共 " & idx & " 项)", sb.ToString, ListPopupMenuWinHighColor.SelectedColor)
     End Sub
 
 #End Region
 
-#Region "打开文件 浏览文件 浏览器"
-
-    ''' <summary>
-    ''' 打开文件所在位置
-    ''' </summary>
-    Private Sub ListPopupMenuOpenFile_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuOpenDir.Click
-        'Dim path As String = FileDir
-        'Process.Start(path)
-        'C:\Users\Windows 10\AppData\Roaming\DesktopTips
-
-        System.Diagnostics.Process.Start("explorer.exe", "/select,""" & GlobalModel.STORAGE_FILENAME & """")
-    End Sub
-
-    ''' <summary>
-    ''' 浏览文件
-    ''' </summary>
-    Private Sub ListPopupMenuViewFile_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuViewFile.Click
-        Dim sb As New StringBuilder
-        For Each Item As TipItem In ListView.Items.Cast(Of TipItem)()
-            sb.AppendLine(Item.TipContent & If(Item.IsHighLight, " [高亮]", ""))
-        Next
-        ShowTextForm("浏览文件 (共 " & ListView.Items.Count & " 项)", sb.ToString(), Color.Black)
-    End Sub
-
-    ''' <summary>
-    ''' 获取当前列表所选中的所有链接
-    ''' </summary>
-    Private Function GetSelectionItemLinks() As List(Of String)
-        Dim IsSingle As Boolean = ListView.SelectedItems.Count = 1
-
-        ' 整合
-        Dim Sel As List(Of TipItem) = New List(Of TipItem)
-        If IsSingle Then
-            Sel.Add(CType(ListView.SelectedItem, TipItem))
-        Else
-            Sel = ListView.SelectedItems.Cast(Of TipItem).ToList()
-        End If
-
-        ' 结果
-        Dim links As List(Of String) = New List(Of String)
-        For Each item As TipItem In Sel
-            For Each link As String In item.TipContent.Split(New Char() {" "}, StringSplitOptions.RemoveEmptyEntries)
-                If link.StartsWith("http://") Or link.StartsWith("https://") Then
-                    links.Add(link)
-                End If
-            Next
-        Next
-
-        Return links
-    End Function
-
-    ''' <summary>
-    ''' 打开所有链接
-    ''' </summary>
-    Private Sub ListPopupMenuOpenAllLink_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuOpenAllLink.Click
-        Dim links As List(Of String) = GetSelectionItemLinks()
-        If links.Count = 0 Then
-            MessageBox.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        Else
-            Dim ok As MessageBoxButtons = MessageBox.Show( _
-                "是否打开以下 " & links.Count & " 个链接：" + Chr(10) + Chr(10) + String.Join(Chr(10), links), _
-                "打开链接", MessageBoxButtons.OKCancel, MessageBoxIcon.Question)
-            If ok = MsgBoxResult.Ok Then
-                CommonUtil.OpenWebsInDefaultBrowser(links)
-            End If
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' 打开部分连接
-    ''' </summary>
-    Private Sub ListPopupMenuViewAllLink_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuViewAllLink.Click
-        Dim links As List(Of String) = GetSelectionItemLinks()
-
-        LinkDialog.ListView.Items.Clear()
-        For Each link$ In links
-            LinkDialog.ListView.Items.Add(link)
-        Next
-        LinkDialog.Show(Me)
-    End Sub
-
 #End Region
 
-    '' '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    '' ''''''''''''''''''''''''''''''''''''''''''''''''' 界面 显示 菜单 '''''''''''''''''''''''''''''''''''''''''''''''''
-
-#Region "文本窗口"
-
-    ''' <summary>
-    ''' 显示文本窗体
-    ''' </summary>
-    ''' <param name="Title">窗口标题</param>
-    ''' <param name="Content">窗口文本内容</param>
-    ''' <param name="TextColor">文字颜色</param>
-    Private Sub ShowTextForm(ByVal Title As String, ByVal Content As String, ByVal TextColor As Color)
-        Dim WinSize As Size = New Size(500, 300)
-        Dim TextSize As Size = New Size(WinSize.Width - 16, WinSize.Height - 39)
-
-        Dim TextBox As New TextBox With {.Text = Content, .ReadOnly = True, .Multiline = True, .ScrollBars = ScrollBars.Both, .WordWrap = False, _
-                                         .Size = TextSize, .BackColor = Color.White, .ForeColor = TextColor, .Font = New System.Drawing.Font("Microsoft YaHei UI", 9.0!), _
-                                         .Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top}
-
-        Dim Win As New BaseEscCloseForm With {.FormBorderStyle = Windows.Forms.FormBorderStyle.Sizable, .Text = Title, .Size = WinSize, .TopMost = True}
-        Win.Controls.Add(TextBox)
-        Win.Show()
-
-        Win.Top = Me.Top
-        Win.Left = Me.Left - WinSize.Width - 15
-        TextBox.Select(0, 0)
-    End Sub
-
-#End Region
+#Region "界面显示"
 
 #Region "列表选择 可用判断 屏幕提示 右键列表"
 
@@ -737,7 +580,18 @@ Public Class MainForm
 
 #End Region
 
-#Region "置顶 加载位置 保存位置"
+#Region "关闭窗口 置顶 加载位置 保存位置"
+
+    ''' <summary>
+    ''' 关闭窗口
+    ''' </summary>
+    Private Sub ButtonExit_Click(sender As System.Object, e As System.EventArgs) Handles ButtonCloseForm.Click, ListPopupMenuExit.Click
+        Dim ok = MessageBox.Show("确定退出 DesktopTips 吗？",
+                                 "关闭", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+        If ok = vbYes Then
+            Me.Close()
+        End If
+    End Sub
 
     ''' <summary>
     ''' Popup 置顶
@@ -835,8 +689,9 @@ Public Class MainForm
 
 #End Region
 
-    '' '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    '' ''''''''''''''''''''''''''''''''''''''''''''''''''' 分组 移动 '''''''''''''''''''''''''''''''''''''''''''''''''''
+#End Region
+
+#Region "分组"
 
 #Region "分组 增删改"
 
@@ -1076,6 +931,8 @@ Public Class MainForm
             Next
         End If
     End Sub
+
+#End Region
 
 #End Region
 

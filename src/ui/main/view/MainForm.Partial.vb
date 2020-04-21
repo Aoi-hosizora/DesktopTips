@@ -56,7 +56,7 @@ Partial Class MainForm
     ''' <summary>
     ''' 动态添加透明度
     ''' </summary>
-    Private Sub FormOpacity_Load()
+    Private Sub SetupOpecityButtonsLayout()
         For i = 0 To ops.Length - 1
             opBtns(i) = New DD.ButtonItem With { _
                 .Name = "ListPopupMenuOpacity" & CInt(ops(i) * 100), _

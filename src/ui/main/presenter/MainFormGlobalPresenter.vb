@@ -58,6 +58,7 @@ Public Class MainFormGlobalPresenter
     ''' 打开文件所在位置
     ''' </summary>
     Public Sub OpenFileDir() Implements MainFormContract.IGlobalPresenter.OpenFileDir
+        'C:\Users\Windows 10\AppData\Roaming\DesktopTips
         Process.Start("explorer.exe", "/select,""" & GlobalModel.STORAGE_FILENAME & """")
     End Sub
 

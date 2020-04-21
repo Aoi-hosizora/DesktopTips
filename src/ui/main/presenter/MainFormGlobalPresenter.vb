@@ -62,4 +62,39 @@ Public Class MainFormGlobalPresenter
         Process.Start("explorer.exe", "/select,""" & GlobalModel.STORAGE_FILENAME & """")
     End Sub
 
+    ''' <summary>
+    ''' 注册快捷键
+    ''' </summary>
+    Public Function RegisterShotcut(handle As IntPtr, key As Keys, id As Integer) As Boolean Implements MainFormContract.IGlobalPresenter.RegisterShotcut
+        If Not NativeMethod.RegisterHotKey(handle, id, CommonUtil.GetNativeModifiers(CommonUtil.GetModifiersFromKey(key)), CommonUtil.GetKeyCodeFromKey(key)) Then
+            MessageBox.Show("快捷键已被占用，请重新设置", "快捷键", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return False
+        End If
+        Return True
+    End Function
+
+    ''' <summary>
+    ''' 注销快捷键
+    ''' </summary>
+    Public Sub UnregisterShotcut(handle As IntPtr, id As Integer) Implements MainFormContract.IGlobalPresenter.UnregisterShotcut
+        NativeMethod.UnregisterHotKey(handle, id)
+    End Sub
+
+    ''' <summary>
+    ''' 设置快捷键
+    ''' </summary>
+    Public Sub SetupHotKey(handle As IntPtr, id As Integer) Implements MainFormContract.IGlobalPresenter.SetupHotKey
+        Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
+        HotKeyDialog.HotKeyEditBox.CurrentKey = setting.HotKey
+        HotKeyDialog.CheckBoxIsValid.Checked = setting.IsUseHotKey
+        HotKeyDialog.OkCallback = Sub(key As Keys, use As Boolean)
+                                      UnregisterShotcut(handle, id)
+                                      If Not use OrElse RegisterShotcut(handle, key, id) Then
+                                          setting.IsUseHotKey = use
+                                          setting.HotKey = key
+                                          SettingUtil.SaveAppSettings(setting)
+                                      End If
+                                  End Sub
+        HotKeyDialog.ShowDialog(_view.GetMe())
+    End Sub
 End Class

@@ -6,11 +6,14 @@
     End Interface
 
     Public Interface IGlobalPresenter
-        Function LoadSetting() As SettingUtil.AppSetting    ' 加载设置
-        Sub SaveSetting(setting As SettingUtil.AppSetting)  ' 保存设置
-        Sub LoadList()                                      ' 加载列表文件
-        Sub SaveList(items As ListBox.ObjectCollection)     ' 保存列表文件
-        Sub OpenFileDir()                                   ' 打开文件所在位置
+        Function LoadSetting() As SettingUtil.AppSetting                                    ' 加载设置
+        Sub SaveSetting(setting As SettingUtil.AppSetting)                                  ' 保存设置
+        Sub LoadList()                                                                      ' 加载列表文件
+        Sub SaveList(items As ListBox.ObjectCollection)                                     ' 保存列表文件
+        Sub OpenFileDir()                                                                   ' 打开文件所在位置
+        Sub SetupHotKey(handle As IntPtr, id As Integer)                                    ' 设置快捷键
+        Function RegisterShotcut(handle As IntPtr, key As Keys, id As Integer) As Boolean   ' 注册快捷键
+        Sub UnregisterShotcut(handle As IntPtr, id As Integer)                              ' 注销快捷键
     End Interface
 
     Public Interface IListPresenter

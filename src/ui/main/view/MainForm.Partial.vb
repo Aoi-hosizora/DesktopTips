@@ -7,8 +7,7 @@ Imports DD = DevComponents.DotNetBar
 
 Partial Class MainForm
 
-    '' '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    '' ''''''''''''''''''''''''''''''''''''''''''''''''' 额外 大小透明度调整 设置 '''''''''''''''''''''''''''''''''''''''''''''''''
+#Region "大小调整"
 
     ''' <summary>
     ''' 大小调整
@@ -26,6 +25,16 @@ Partial Class MainForm
         LabelNothing.Width = ListView.Width - 2
     End Sub
 
+    Private Sub ListView_SizeChanged(sender As Object, e As System.EventArgs) Handles ListView.SizeChanged
+        If ButtonItemUp.Visible = True AndAlso ListView.SelectedIndices.Count = 1 Then
+            ShowAssistButtons()
+        End If
+    End Sub
+
+#End Region
+
+#Region "弹出按钮"
+
     Private isMenuPopuping As Boolean = False
 
     ''' <summary>
@@ -42,47 +51,6 @@ Partial Class MainForm
         ListPopupMenu.PopupFinalized, TabPopupMenu.PopupFinalized, ListPopupMenuMove.PopupFinalized, TabStrip.PopupClose
 
         isMenuPopuping = False
-        FormOpecityDown()
-    End Sub
-
-    '' '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    '' ''''''''''''''''''''''''''''''''''''''''''''''''' 菜单 加载 折叠 '''''''''''''''''''''''''''''''''''''''''''''''''
-
-#Region "透明度选项加载"
-
-    Dim ops() As Double = {0.2, 0.4, 0.6, 0.7, 0.8, 1.0}
-    Dim opBtns(ops.Length - 1) As DD.ButtonItem
-
-    ''' <summary>
-    ''' 动态添加透明度
-    ''' </summary>
-    Private Sub SetupOpecityButtonsLayout()
-        For i = 0 To ops.Length - 1
-            opBtns(i) = New DD.ButtonItem With { _
-                .Name = "ListPopupMenuOpacity" & CInt(ops(i) * 100), _
-                .Tag = ops(i), _
-                .Text = CInt(ops(i) * 100) & "%"
-            }
-
-            AddHandler opBtns(i).Click, AddressOf ListPopupMenuOpacity_Click
-            Me.ListPopupMenuOpacity.SubItems.Add(opBtns(i))
-
-            If MaxOpacity = opBtns(i).Tag Then
-                opBtns(i).Checked = True
-            End If
-        Next
-    End Sub
-
-    ''' <summary>
-    ''' 透明度点击
-    ''' </summary>
-    Private Sub ListPopupMenuOpacity_Click(sender As System.Object, e As System.EventArgs)
-        Dim btn As DD.ButtonItem = CType(sender, DD.ButtonItem)
-        MaxOpacity = CDbl(btn.Tag())
-        For Each btnS In opBtns
-            btnS.Checked = False
-        Next
-        btn.Checked = True
         FormOpecityDown()
     End Sub
 
@@ -152,10 +120,7 @@ Partial Class MainForm
 
 #End Region
 
-    '' '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    '' ''''''''''''''''''''''''''''''''''''''''''''''''' 焦点 选中 滚动 '''''''''''''''''''''''''''''''''''''''''''''''''
-
-#Region "焦点 取消选择"
+#Region "焦点选择"
 
     ''' <summary>
     ''' 按钮焦点
@@ -204,19 +169,16 @@ Partial Class MainForm
     ' Me.Left + ListView.Left + ListView.Width - 20
     Private Sub ListView_MouseCaptureChanged(sender As Object, e As System.EventArgs) Handles ListView.MouseCaptureChanged
         If Cursor.Position.X > Me.Left + ListView.Left + ListView.Width - 20 Then
-            SetSelectedItemButtonHide()
+            HideAssistButtons()
         End If
     End Sub
 
     ' 滚动
     Private Sub ListView_MouseWheel(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseWheel
-        SetSelectedItemButtonHide()
+        HideAssistButtons()
     End Sub
 
 #End Region
-
-    '' '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    '' '''''''''''''''''''''''''''''''''''''''''''''''''''' 数据同步 ''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 #Region "数据同步"
 

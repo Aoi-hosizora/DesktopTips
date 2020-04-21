@@ -4,7 +4,7 @@ Imports DD = DevComponents.DotNetBar
 
 Public Class MainForm
 
-#Region "加载设置 加载列表内容和界面 启动关闭窗口"
+#Region "加载设置 加载列表内容和界面 启动关闭窗口 系统响应"
 
     ''' <summary>
     ''' 加载设置，应用到UI
@@ -26,7 +26,7 @@ Public Class MainForm
         NumericUpDownListCnt.Value = (Me.Height - 27) \ 17                                  ' 列表高度
         ListPopupMenuWinTop.Checked = setting.TopMost                                       ' 窗口置顶
 
-        RegisterShotcut(setting.HotKey)                                                     ' 注册快捷键
+        _globalPresenter.RegisterShotcut(Handle, setting.HotKey, HOTKEY_ID)                 ' 注册快捷键
         FoldMenu(setting.IsFold)                                                            ' 折叠菜单
     End Sub
 
@@ -87,12 +87,32 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
+    ''' RegisterHotKey 注册的热键 Id
+    ''' </summary>
+    Private Const HOTKEY_ID As Integer = 0
+
+    ''' <summary>
+    ''' 设置快捷键响应
+    ''' </summary>
+    Protected Overrides Sub WndProc(ByRef m As Message)
+        If m.Msg = NativeMethod.WM_HOTKEY Then
+            If m.WParam.ToInt32() = HOTKEY_ID Then
+                Me.Activate()
+                Me.TopMost = True
+                Me.TopMost = False
+                FormOpecityUp()
+            End If
+        End If
+        MyBase.WndProc(m)
+    End Sub
+
+    ''' <summary>
     ''' 窗口关闭之后处理
     ''' </summary>
     Private Sub MainForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
         SaveList()
         SaveSetting()
-        UnregisterShotcut()
+        _globalPresenter.UnregisterShotcut(Handle, HOTKEY_ID)
     End Sub
 
     ''' <summary>
@@ -108,7 +128,7 @@ Public Class MainForm
         Me.TabStrip.Tabs.Remove(Me.TabItemTest)
         Me.TabStrip.Tabs.Remove(Me.TabItemTest2)
         ButtonRemoveItem.Enabled = False
-        SetupUpDownButtonsLayout()
+        SetupAssistButtonsLayout()
         SetupOpecityButtonsLayout()
 
         ' 窗口动画
@@ -344,120 +364,50 @@ Public Class MainForm
 
 #Region "界面显示"
 
-#Region "列表选择 可用判断 屏幕提示 右键列表"
+#Region "透明度 辅助按钮"
+
+    Dim _opecities() As Double = {0.2, 0.4, 0.6, 0.7, 0.8, 1.0}
+    Dim _opecityButtons(_opecities.Length - 1) As DD.ButtonItem
 
     ''' <summary>
-    ''' 列表选择 -> 辅助按钮显示 可用判断
+    ''' 动态添加透明度
+    ''' MainForm_Load 用
     ''' </summary>
-    Private Sub ListView_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles ListView.SelectedIndexChanged
-        If ListView.SelectedIndices.Count = 1 Then
-            SetSelectedItemButtonShow(ListView.GetItemRectangle(ListView.SelectedIndex))
-        Else
-            SetSelectedItemButtonHide()
-        End If
+    Private Sub SetupOpecityButtonsLayout()
+        For i = 0 To _opecities.Length - 1
+            _opecityButtons(i) = New DD.ButtonItem With { _
+                .Name = "ListPopupMenuOpacity" & CInt(_opecities(i) * 100), _
+                .Tag = _opecities(i), _
+                .Text = CInt(_opecities(i) * 100) & "%"
+            }
 
-        CheckListPopupEnable()
-        ListView.Refresh()
-    End Sub
+            AddHandler _opecityButtons(i).Click, AddressOf ListPopupMenuOpacity_Click
+            Me.ListPopupMenuOpacity.SubItems.Add(_opecityButtons(i))
 
-    ''' <summary>
-    ''' 选择可用性
-    ''' ListView_SelectedIndexChanged 和 ButtonListSetting_Click 用
-    ''' </summary>
-    Private Sub CheckListPopupEnable()
-        Dim IsNotNull As Boolean = ListView.SelectedIndex <> -1
-        Dim IsSingle As Boolean = ListView.SelectedIndices.Count = 1
-        Dim IsTop As Boolean = ListView.SelectedIndex = 0
-        Dim IsBottom As Boolean = ListView.SelectedIndex = ListView.Items.Count() - 1
-
-        ' 辅助按钮
-        ButtonItemUp.Enabled = IsNotNull And IsSingle And Not IsTop
-        ButtonItemDown.Enabled = IsNotNull And IsSingle And Not IsBottom
-
-        ' 位置按钮
-        ListPopupMenuMoveUp.Enabled = IsNotNull And IsSingle And Not IsTop
-        ListPopupMenuMoveTop.Enabled = IsNotNull And IsSingle And Not IsTop
-        ListPopupMenuMoveBottom.Enabled = IsNotNull And IsSingle And Not IsBottom
-        ListPopupMenuMoveDown.Enabled = IsNotNull And IsSingle And Not IsBottom
-
-        ' 删改复制
-        ButtonRemoveItem.Enabled = IsNotNull
-        ListPopupMenuRemoveItem.Enabled = IsNotNull
-        ListPopupMenuEditItem.Enabled = IsSingle
-        ListPopupMenuHighLight.Enabled = IsNotNull
-        ListPopupMenuCopy.Enabled = IsNotNull
-
-        If IsNotNull Then
-            ListPopupMenuHighLight.Checked = CType(ListView.SelectedItem, TipItem).IsHighLight
-        Else
-            ListPopupMenuHighLight.Checked = False
-        End If
-
-        ' 移动
-        ListPopupMenuMove.Enabled = IsNotNull
-
-        ' 附加
-        ListPopupMenuPasteAppend.Enabled = IsSingle
-
-        ' 浏览器
-        If IsSingle Then
-            Dim item As TipItem = CType(ListView.SelectedItem, TipItem)
-            ListPopupMenuBrowser.Enabled = item.TipContent.IndexOf("http://") <> -1 Or item.TipContent.IndexOf("https://") <> -1
-        Else
-            Dim ok As Boolean = False
-            For Each item As TipItem In ListView.SelectedItems.Cast(Of TipItem)()
-                If item.TipContent.IndexOf("http://") <> -1 Or item.TipContent.IndexOf("https://") <> -1 Then
-                    ok = True
-                    Exit For
-                End If
-            Next
-            ListPopupMenuBrowser.Enabled = ok
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' ListView_MouseMoveHover 用
-    ''' </summary>
-    Dim HoverIdx As Integer = -1
-
-    ''' <summary>
-    ''' 悬浮弹出提示
-    ''' </summary>
-    Private Sub ListView_MouseMove(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseMove
-        Dim Idx = ListView.IndexFromPoint(e.Location)
-        If HoverIdx <> Idx AndAlso Idx <> -1 AndAlso Idx < ListView.Items.Count Then
-            HoverToolTip.Hide(ListView)
-            HoverToolTip.SetToolTip(ListView, CType(ListView.Items.Item(Idx), TipItem).TipContent)
-            HoverIdx = Idx
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' 右键列表同时选中项
-    ''' </summary>
-    Private Sub ListView_RightMouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ListView.MouseUp
-        Dim idx As Integer = ListView.IndexFromPoint(e.X, e.Y)
-        If e.Button = Windows.Forms.MouseButtons.Right AndAlso idx <> -1 AndAlso idx < ListView.Items.Count Then
-            If ListView.SelectedIndices.Count <= 1 Then
-                ListView.ClearSelected()
-                ListView.SetSelected(idx, True)
-
-                If ListView.Items.Count > 0 Then
-                    Dim rect As Rectangle = ListView.GetItemRectangle(ListView.Items.Count - 1)
-                    If e.Y > rect.Top + rect.Height Then ListView.ClearSelected()
-                End If
+            If Me.MaxOpacity = _opecityButtons(i).Tag Then
+                _opecityButtons(i).Checked = True
             End If
-        End If
+        Next
     End Sub
 
-#End Region
-
-#Region "辅助按钮"
+    ''' <summary>
+    ''' 透明度点击
+    ''' </summary>
+    Private Sub ListPopupMenuOpacity_Click(sender As Object, e As EventArgs)
+        Dim btn As DD.ButtonItem = CType(sender, DD.ButtonItem)
+        Me.MaxOpacity = CDbl(btn.Tag())
+        For Each opBtn In _opecityButtons
+            opBtn.Checked = False
+        Next
+        btn.Checked = True
+        FormOpecityDown()
+    End Sub
 
     ''' <summary>
     ''' 设置辅助按钮布局
+    ''' MainForm_Load 用
     ''' </summary>
-    Private Sub SetupUpDownButtonsLayout()
+    Private Sub SetupAssistButtonsLayout()
         Dim height As Integer = ListView.ItemHeight
 
         ButtonItemUp.Visible = False
@@ -472,8 +422,8 @@ Public Class MainForm
     ''' <summary>
     ''' 显示辅助按钮
     ''' </summary>
-    ''' <param name="rect">ListView.GetItemRectangle(ListView.SelectedIndex)</param>
-    Private Sub SetSelectedItemButtonShow(ByVal rect As Rectangle)
+    Private Sub ShowAssistButtons()
+        Dim rect As Rectangle = ListView.GetItemRectangle(ListView.SelectedIndex)
         rect.Offset(ListView.Location)
         rect.Offset(2, 2)
 
@@ -489,19 +439,94 @@ Public Class MainForm
     ''' <summary>
     ''' 隐藏辅助按钮
     ''' </summary>
-    Private Sub SetSelectedItemButtonHide()
+    Private Sub HideAssistButtons()
         ButtonItemUp.Visible = False
         ButtonItemDown.Visible = False
     End Sub
 
+#End Region
+
+#Region "可用性判断 列表选择 屏幕提示 右键列表"
+
     ''' <summary>
-    ''' 辅助按钮位置调整
+    ''' 选择可用性
+    ''' ListView_SelectedIndexChanged 和 ButtonListSetting_Click 用
     ''' </summary>
-    Private Sub ListView_SizeChanged(sender As Object, e As System.EventArgs) Handles ListView.SizeChanged
-        ' ListView.Refresh()
-        If ButtonItemUp.Visible = True AndAlso ListView.SelectedIndices.Count = 1 Then
-            Dim Rect As Rectangle = ListView.GetItemRectangle(ListView.SelectedIndex)
-            SetSelectedItemButtonShow(Rect)
+    Private Sub CheckItemEnabled()
+        Dim isNotNull As Boolean = ListView.SelectedIndex <> -1
+        Dim isSingle As Boolean = ListView.SelectedIndices.Count = 1
+        Dim isTop As Boolean = ListView.SelectedIndex = 0
+        Dim isBottom As Boolean = ListView.SelectedIndex = ListView.Items.Count() - 1
+
+        ' 辅助按钮
+        ButtonItemUp.Enabled = isNotNull And isSingle And Not isTop
+        ButtonItemDown.Enabled = isNotNull And isSingle And Not isBottom
+
+        ' 位置按钮
+        ListPopupMenuMoveUp.Enabled = isNotNull And isSingle And Not isTop
+        ListPopupMenuMoveTop.Enabled = isNotNull And isSingle And Not isTop
+        ListPopupMenuMoveBottom.Enabled = isNotNull And isSingle And Not isBottom
+        ListPopupMenuMoveDown.Enabled = isNotNull And isSingle And Not isBottom
+
+        ' 删改复制
+        ButtonRemoveItem.Enabled = isNotNull
+        ListPopupMenuRemoveItem.Enabled = isNotNull
+        ListPopupMenuEditItem.Enabled = isSingle
+        ListPopupMenuHighLight.Enabled = isNotNull
+        ListPopupMenuHighLight.Checked = If(isNotNull, CType(ListView.SelectedItem, TipItem).IsHighLight, False)
+        ListPopupMenuCopy.Enabled = isNotNull
+
+        ' 移动
+        ListPopupMenuMove.Enabled = isNotNull
+
+        ' 附加
+        ListPopupMenuPasteAppend.Enabled = isSingle
+
+        ' 浏览器
+        Dim has = ListView.SelectedItems.Cast(Of TipItem)().Where(Function(item As TipItem) item.TipContent.IndexOf("http://") <> -1 Or item.TipContent.IndexOf("https://") <> -1).Count >= 1
+        ListPopupMenuBrowser.Enabled = has
+    End Sub
+
+    ''' <summary>
+    ''' 列表选择, 辅助按钮显示 可用判断
+    ''' </summary>
+    Private Sub ListView_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView.SelectedIndexChanged
+        CheckItemEnabled()
+        If ListView.SelectedIndices.Count = 1 Then
+            ShowAssistButtons()
+        Else
+            HideAssistButtons()
+        End If
+        ListView.Refresh()
+    End Sub
+
+    ''' <summary>
+    ''' 悬浮弹出提示
+    ''' </summary>
+    Private Sub ListView_MouseMove(sender As Object, e As MouseEventArgs) Handles ListView.MouseMove
+        Static hoverIdx As Integer = -1
+        Dim idx = ListView.IndexFromPoint(e.Location)
+        If hoverIdx <> idx AndAlso idx <> -1 AndAlso idx < ListView.Items.Count Then
+            HoverToolTip.Hide(ListView)
+            HoverToolTip.SetToolTip(ListView, CType(ListView.Items.Item(idx), TipItem).TipContent)
+            hoverIdx = idx
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 右键列表同时选中项
+    ''' </summary>
+    Private Sub ListView_RightMouseUp(sender As Object, e As MouseEventArgs) Handles ListView.MouseUp
+        Dim idx As Integer = ListView.IndexFromPoint(e.X, e.Y)
+        If e.Button = MouseButtons.Right And
+            idx >= 0 And idx < ListView.Items.Count And ListView.SelectedIndices.Count <= 1 Then
+
+            ListView.ClearSelected()
+            ListView.SetSelected(idx, True)
+            If ListView.Items.Count > 0 Then
+                Dim rect As Rectangle = ListView.GetItemRectangle(ListView.Items.Count - 1)
+                If e.Y > rect.Top + rect.Height Then ListView.ClearSelected()
+            End If
         End If
     End Sub
 
@@ -539,7 +564,7 @@ Public Class MainForm
     ''' 显示弹出菜单
     ''' </summary>
     Private Sub ButtonListSetting_Click(sender As System.Object, e As System.EventArgs) Handles ButtonListSetting.Click
-        CheckListPopupEnable()
+        CheckItemEnabled()
         ListPopupMenu.Popup(Me.Left + sender.Left, Me.Top + sender.Top + sender.Height - 1)
     End Sub
 
@@ -576,6 +601,13 @@ Public Class MainForm
         Dim dy As Integer = (Cursor.Position.Y + MoveY) * UInt16.MaxValue / My.Computer.Screen.Bounds.Height
 
         NativeMethod.mouse_event(NativeMethod.MouseEvent.MOUSEEVENTF_MOVE Or NativeMethod.MouseEvent.MOUSEEVENTF_ABSOLUTE, dx, dy, 0, 0)
+    End Sub
+
+    ''' <summary>
+    ''' Popup 快捷键设置
+    ''' </summary>
+    Private Sub ListPopupMenuShotcutSetting_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuShotcutSetting.Click
+        _globalPresenter.SetupHotKey(Handle, HOTKEY_ID)
     End Sub
 
 #End Region
@@ -628,63 +660,6 @@ Public Class MainForm
 
             ListPopupMenuLoadPos.Enabled = True
         End If
-    End Sub
-
-#End Region
-
-#Region "快捷键设置 响应"
-
-    ''' <summary>
-    ''' RegisterHotKey 注册的热键 Id
-    ''' </summary>
-    ''' <remarks></remarks>
-    Private Const HotKeyId As Integer = 0
-
-    ''' <summary>
-    '''注册快捷键
-    ''' </summary>
-    Public Function RegisterShotcut(ByVal HotKey As Keys) As Boolean
-        If Not NativeMethod.RegisterHotKey( _
-            Handle, HotKeyId, _
-            CommonUtil.GetNativeModifiers(CommonUtil.GetModifiersFromKey(HotKey)), _
-            CommonUtil.GetKeyCodeFromKey(HotKey)) Then
-
-            MessageBox.Show("快捷键已被占用，请重新设置", "快捷键", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Return False
-        End If
-        Return True
-    End Function
-
-    ''' <summary>
-    ''' 注销快捷键
-    ''' </summary>
-    Public Sub UnregisterShotcut()
-        NativeMethod.UnregisterHotKey(Handle, HotKeyId)
-    End Sub
-
-    ''' <summary>
-    ''' 设置快捷键响应
-    ''' </summary>
-    Protected Overrides Sub WndProc(ByRef m As System.Windows.Forms.Message)
-        If m.Msg = NativeMethod.WM_HOTKEY Then
-            If m.WParam.ToInt32() = HotKeyId Then
-                Me.Activate()
-                Me.TopMost = True
-                Me.TopMost = False
-                FormOpecityUp()
-            End If
-        End If
-        MyBase.WndProc(m)
-    End Sub
-
-    ''' <summary>
-    ''' Popup 快捷键设置
-    ''' </summary>
-    Private Sub ListPopupMenuShotcutSetting_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuShotcutSetting.Click
-        Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
-        HotKeyDialog.HotKeyEditBox.CurrentKey = setting.HotKey
-        HotKeyDialog.CheckBoxIsValid.Checked = setting.IsUseHotKey
-        HotKeyDialog.ShowDialog(Me)
     End Sub
 
 #End Region
@@ -788,7 +763,7 @@ Public Class MainForm
     ''' Tab 选择更改
     ''' </summary>
     Private Sub TabStrip_SelectedTabChanged(sender As Object, e As DD.SuperTabStripSelectedTabChangedEventArgs) Handles TabStrip.SelectedTabChanged
-        SetSelectedItemButtonHide()
+        HideAssistButtons()
         If TabStrip.SelectedTabIndex <> -1 And GlobalModel.Tabs.Count <> 0 Then
             GlobalModel.CurrTabIdx = GlobalModel.Tabs.IndexOf(Tab.GetTabFromTitle(TabStrip.SelectedTab.Text))
             LoadList()

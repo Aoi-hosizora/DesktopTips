@@ -30,11 +30,10 @@
     End Interface
 
     Public Interface IGroupPresenter
-        'Sub Insert()    ' 插入
-        'Sub Delete()    ' 删除
-        'Sub Update()    ' 更新
-        'Sub MoveGroup() ' 移动分组顺序
-        'Sub MoveItems() ' 移动记录到分组
+        Function Insert() As Tab    ' 插入
+        Function Delete(title As String) As Boolean    ' 删除
+        Function Update(oldName As String) As String   ' 更新
+        Function MoveItems(isAll As Boolean, items As IEnumerable(Of TipItem), src As String, dest As String) As Boolean ' 移动记录到分组
     End Interface
 
 End Interface

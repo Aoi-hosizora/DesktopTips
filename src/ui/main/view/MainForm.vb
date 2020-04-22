@@ -541,7 +541,7 @@ Public Class MainForm
 
         Dim cnt As Integer = ListView.SelectedIndices.Count
         Dim hlCnt As Integer = 0
-        For Each Tip As TipItem In GlobalModel.Tabs.Item(GlobalModel.CurrTabIdx).Tips
+        For Each Tip As TipItem In GlobalModel.CurrentTab.Tips
             If Tip.IsHighLight Then hlCnt += 1
         Next
 
@@ -652,89 +652,12 @@ Public Class MainForm
 
 #Region "分组"
 
-#Region "分组 增删改"
-
-    ''' <summary>
-    ''' 新建分组
-    ''' </summary>
-    Private Sub TabPopupMenuNewTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuNewTab.Click
-        Dim tabName As String = InputBox("请输入新分组的标题: ", "新建", "分组")
-        tabName = tabName.Trim()
-        If tabName <> "" Then
-            If Tab.CheckDuplicateTab(tabName, GlobalModel.Tabs) IsNot Nothing Then
-                MessageBoxEx.Show("分组标题 """ & tabName & """ 已存在。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, Me)
-                TabPopupMenuNewTab_Click(sender, New System.EventArgs)
-            Else
-                AddShownTab(tabName)
-                GlobalModel.Tabs.Add(New Tab(tabName))
-                GlobalModel.SaveAllData()
-            End If
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' 删除分组
-    ''' </summary>
-    Private Sub TabPopupMenuDeleteTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuDeleteTab.Click
-        If TabStrip.Tabs.Count = 1 Then
-            MessageBoxEx.Show("无法删除最后的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, Me)
-        Else
-            Dim TabTitle As String = TabStrip.SelectedTab.Text
-            Dim Tab As Tab = Tab.GetTabFromTitle(TabTitle)
-            If Tab.Tips.Count <> 0 Then
-                MessageBoxEx.Show("分组内存在 " & Tab.Tips.Count & " 条记录无法删除，请先将记录移动到别的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, Me)
-            Else
-                Dim ok As DialogResult = MessageBoxEx.Show("是否删除分组 """ + TabStrip.SelectedTab.Text + """？", "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2, Me)
-                If ok = vbOK Then
-                    TabStrip.Tabs.RemoveAt(TabStrip.SelectedTabIndex)
-                    GlobalModel.Tabs.RemoveAt(GlobalModel.Tabs.IndexOf(Tab.GetTabFromTitle(TabTitle)))
-                    GlobalModel.SaveAllData()
-                End If
-            End If
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' 重命名分组 !!!
-    ''' </summary>
-    Private Sub TabPopupMenuRenameTab_Click(sender As System.Object, e As System.EventArgs) Handles TabPopupMenuRenameTab.Click
-        If TabStrip.SelectedTabIndex <> -1 Then
-            Dim OldName As String = TabStrip.SelectedTab.Text
-            Dim NewName As String = InputBox("重命名分组 """ & OldName & """ 为: ", "重命名", OldName)
-            NewName = NewName.Trim()
-            If NewName <> "" Then
-                If Tab.CheckDuplicateTab(NewName, GlobalModel.Tabs) IsNot Nothing Then
-                    MessageBoxEx.Show("分组标题 """ & NewName & """ 已存在。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, Me)
-                    TabPopupMenuRenameTab_Click(sender, New System.EventArgs)
-                Else
-                    Tab.GetTabFromTitle(OldName).Title = NewName
-                    GlobalModel.SaveAllData()
-                    TabStrip.SelectedTab.Text = NewName
-                End If
-            End If
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' 双击Tab，新建或重命名
-    ''' </summary>
-    Private Sub TabStrip_DoubleClick(sender As Object, e As System.EventArgs) Handles TabStrip.DoubleClick
-        Dim ePos As New Point(Cursor.Position.X - Me.Left - sender.Left, Cursor.Position.Y - Me.Top - sender.Top)
-        If TabStrip.GetItemFromPoint(ePos) Is Nothing Then
-            TabPopupMenuNewTab_Click(sender, New EventArgs)
-        Else
-            TabPopupMenuRenameTab_Click(sender, New EventArgs)
-        End If
-    End Sub
-
-#End Region
-
-#Region "分组选择 位置移动"
+#Region "分组 选择 双击"
 
     ''' <summary>
     ''' 右键点击 Tab 选中
     ''' </summary>
-    Private Sub TabStrip_MouseDown(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles TabStrip.MouseDown
+    Private Sub TabStrip_MouseDown(sender As Object, e As MouseEventArgs) Handles TabStrip.MouseDown
         If e.Button = Windows.Forms.MouseButtons.Right Then
             Dim sel As DD.BaseItem = TabStrip.GetItemFromPoint(e.Location)
             If sel IsNot Nothing Then
@@ -755,14 +678,65 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
+    ''' 双击Tab，新建或重命名
+    ''' </summary>
+    Private Sub TabStrip_DoubleClick(sender As Object, e As EventArgs) Handles TabStrip.DoubleClick
+        Dim pos As New Point(Cursor.Position.X - Me.Left - sender.Left, Cursor.Position.Y - Me.Top - sender.Top)
+        If TabStrip.GetItemFromPoint(pos) Is Nothing Then
+            TabPopupMenuNewTab_Click(sender, New EventArgs)
+        Else
+            TabPopupMenuRenameTab_Click(sender, New EventArgs)
+        End If
+    End Sub
+
+#End Region
+
+#Region "分组 增删改 位置移动"
+
+    ''' <summary>
+    ''' 新建分组
+    ''' </summary>
+    Private Sub TabPopupMenuNewTab_Click(sender As Object, e As EventArgs) Handles TabPopupMenuNewTab.Click
+        Dim tab As Tab = _groupPresenter.Insert()
+        If tab IsNot Nothing Then
+            AddShownTab(tab.Title)
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 删除分组
+    ''' </summary>
+    Private Sub TabPopupMenuDeleteTab_Click(sender As Object, e As EventArgs) Handles TabPopupMenuDeleteTab.Click
+        If TabStrip.Tabs.Count = 1 Then
+            MessageBoxEx.Show("无法删除最后的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, Me)
+        Else
+            If _groupPresenter.Delete(TabStrip.SelectedTab.Text) Then
+                TabStrip.Tabs.RemoveAt(TabStrip.SelectedTabIndex)
+            End If
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 重命名分组
+    ''' </summary>
+    Private Sub TabPopupMenuRenameTab_Click(sender As Object, e As EventArgs) Handles TabPopupMenuRenameTab.Click
+        If TabStrip.SelectedTabIndex <> -1 Then
+            Dim newName As String = _groupPresenter.Update(TabStrip.SelectedTab.Text)
+            If Not String.IsNullOrWhiteSpace(newName) Then
+                TabStrip.SelectedTab.Text = newName
+            End If
+        End If
+    End Sub
+
+    ''' <summary>
     ''' Tab 顺序更改
     ''' </summary>
     Private Sub TabStrip_TabMoved(sender As Object, e As DD.SuperTabStripTabMovedEventArgs) Handles TabStrip.TabMoved
-        Dim NewTabs As New List(Of Tab)
+        Dim newTabs As New List(Of Tab)
         For Each TabItem As DD.SuperTabItem In e.NewOrder
-            NewTabs.Add(Tab.GetTabFromTitle(TabItem.Text))
+            newTabs.Add(Tab.GetTabFromTitle(TabItem.Text))
         Next
-        GlobalModel.Tabs = NewTabs
+        GlobalModel.Tabs = newTabs
         GlobalModel.CurrTabIdx = GlobalModel.Tabs.IndexOf(Tab.GetTabFromTitle(TabStrip.SelectedTab.Text))
         GlobalModel.SaveAllData()
     End Sub
@@ -774,42 +748,41 @@ Public Class MainForm
     ''' <summary>
     ''' 获得非活动分组集，移动至分组 用
     ''' </summary>
-    ''' <param name="ClassNamePreFix">分组类名前缀 ListPopupMenuMove / TabPopupMenuMove</param>
-    ''' <returns>分组按钮</returns>
-    Private Function GetUnActivityTabMoveButtonList(ByVal ClassNamePreFix As String) As List(Of DD.ButtonItem)
-        Dim Tabs As New List(Of String)
-        Dim TabBtns As New List(Of DD.ButtonItem)
+    ''' <param name="prefix">分组类名前缀 ListPopupMenuMove / TabPopupMenuMove</param>
+    Private Function GetUnactivityTabMoveButtonList(ByVal prefix As String) As List(Of DD.ButtonItem)
+        Dim tabs As New List(Of String)
+        Dim btns As New List(Of DD.ButtonItem)
 
-        For Each Tab As Tab In GlobalModel.Tabs
-            If Tab.Title <> GlobalModel.Tabs.Item(GlobalModel.CurrTabIdx).Title Then
-                Tabs.Add(Tab.Title)
+        For Each tab As Tab In GlobalModel.Tabs
+            If tab.Title <> GlobalModel.CurrentTab.Title Then
+                tabs.Add(tab.Title)
             End If
         Next
 
         For i = 0 To Tabs.Count - 1
-            Dim Btn As New DD.ButtonItem With { _
-                .Name = ClassNamePreFix & Tabs.Item(i), _
-                .Tag = Tabs.Item(i), _
-                .Text = Tabs.Item(i) & If(i < 10, "(&" & i & ")", "")
+            Dim btn As New DD.ButtonItem With {
+                .Name = prefix & tabs.Item(i),
+                .Tag = tabs.Item(i),
+                .Text = tabs.Item(i) & If(i < 10, "(&" & i & ")", "")
             }
-            AddHandler Btn.Click, AddressOf MoveTab
-
-            TabBtns.Add(Btn)
+            AddHandler btn.Click, AddressOf MoveTab
+            btns.Add(Btn)
         Next
-        Return TabBtns
+
+        Return btns
     End Function
 
     ''' <summary>
     ''' 弹出列表右键菜单
     ''' </summary>
     Private Sub ListPopMenu_PopupOpen_Move(sender As Object, e As DD.PopupOpenEventArgs) Handles ListPopupMenu.PopupOpen
-        Me.ListPopupMenuMove.SubItems.Clear()
-        For Each Btn As DD.ButtonItem In GetUnActivityTabMoveButtonList("ListPopupMenuMove")
-            Me.ListPopupMenuMove.SubItems.Add(Btn)
+        ListPopupMenuMove.SubItems.Clear()
+        For Each btn As DD.ButtonItem In GetUnactivityTabMoveButtonList("ListPopupMenuMove")
+            ListPopupMenuMove.SubItems.Add(btn)
         Next
-        Me.ListPopupMenuMove.Enabled = Not Me.ListPopupMenuMove.SubItems.Count = 0 And Not ListView.Items.Count = 0
-        If Not Me.ListPopupMenuMove.Enabled Then
-            Me.ListPopupMenuMove.SubItems.Clear()
+        ListPopupMenuMove.Enabled = Not Me.ListPopupMenuMove.SubItems.Count = 0 And Not ListView.Items.Count = 0
+        If Not ListPopupMenuMove.Enabled Then
+            ListPopupMenuMove.SubItems.Clear()
         End If
     End Sub
 
@@ -817,22 +790,22 @@ Public Class MainForm
     ''' 弹出分组右键菜单
     ''' </summary>
     Private Sub TabPopupMenu_PopupOpen(sender As Object, e As DD.PopupOpenEventArgs) Handles TabPopupMenu.PopupOpen
-        Me.TabPopupMenuMove.SubItems.Clear()
-        For Each Btn As DD.ButtonItem In GetUnActivityTabMoveButtonList("TabPopupMenuMove")
-            Me.TabPopupMenuMove.SubItems.Add(Btn)
-        Next
-        Me.TabPopupMenuMove.Enabled = Not Me.TabPopupMenuMove.SubItems.Count = 0 And Not ListView.Items.Count = 0
-        If Not Me.TabPopupMenuMove.Enabled Then
-            Me.TabPopupMenuMove.SubItems.Clear()
-        End If
-
         TabPopupMenuLabel.Text = "分组 (共 " & GlobalModel.Tabs.Count & " 组)"
+
+        TabPopupMenuMove.SubItems.Clear()
+        For Each Btn As DD.ButtonItem In GetUnactivityTabMoveButtonList("TabPopupMenuMove")
+            TabPopupMenuMove.SubItems.Add(Btn)
+        Next
+        TabPopupMenuMove.Enabled = Not Me.TabPopupMenuMove.SubItems.Count = 0 And Not ListView.Items.Count = 0
+        If Not TabPopupMenuMove.Enabled Then
+            TabPopupMenuMove.SubItems.Clear()
+        End If
     End Sub
 
     ''' <summary>
     ''' 快捷键弹出 移动至分组
     ''' </summary>
-    Private Sub ListPopupMenuMove_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuMove.Click
+    Private Sub ListPopupMenuMove_Click(sender As Object, e As EventArgs) Handles ListPopupMenuMove.Click
         If ListView.SelectedIndices.Count <> 0 AndAlso Not DD.BaseItem.IsOnPopup(ListPopupMenuMove) Then
             ListPopMenu_PopupOpen_Move(sender, New DD.PopupOpenEventArgs)
             ListPopupMenuMove.Popup(Me.Left + ButtonListSetting.Left, Me.Top + ButtonListSetting.Top + ButtonListSetting.Height - 1)
@@ -843,49 +816,22 @@ Public Class MainForm
     ''' 移动至分组
     ''' </summary>
     ''' <remarks></remarks>
-    Private Sub MoveTab(sender As System.Object, e As System.EventArgs)
-
-        Dim Src As String = GlobalModel.Tabs.Item(GlobalModel.CurrTabIdx).Title
-        Dim Dest As String = sender.Tag
-
-        Dim SelectItems As List(Of TipItem)
-        Dim Flag As String
-
-        If ListView.SelectedItem Is Nothing Then
-            ' 移动全部
-            SelectItems = New List(Of TipItem)(ListView.Items.Cast(Of TipItem)())
-            Flag = "确定将当前分组 """ & Src & """ 的全部内容 (共 " & ListView.Items.Count & " 项) 移动至分组 """ & Dest & """ 吗？"
-        Else
-            ' 移动已选
-            SelectItems = New List(Of TipItem)(ListView.SelectedItems.Cast(Of TipItem)())
-            Dim sb As New StringBuilder
-            For Each Item As TipItem In SelectItems
-                sb.AppendLine(Item.TipContent)
-            Next
-            Flag = "确定将当前分组 """ & Src & """ 所选内容 (共 " & _
-                                                     ListView.SelectedItems.Count & " 项) 移动至分组 """ & Dest & """ 吗？" _
-                                                     & Chr(10) & Chr(10) & sb.ToString
-        End If
-
-        Dim ok As MessageBoxButtons = MessageBoxEx.Show(Flag, "移动至分组...", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, Me)
-        If ok = vbOK Then
-            For Each Item As TipItem In SelectItems
-                Tab.GetTabFromTitle(Dest).Tips.Add(Item)
-                Tab.GetTabFromTitle(Src).Tips.Remove(Item)
-            Next
-            GlobalModel.SaveAllData()
-
-            For Each TabItem As DD.SuperTabItem In TabStrip.Tabs
-                If TabItem.Text = Dest Then
-                    TabStrip.SelectedTab = TabItem
+    Private Sub MoveTab(sender As Object, e As EventArgs)
+        Dim src As String = GlobalModel.CurrentTab.Title
+        Dim dest As String = sender.Tag
+        Dim all As Boolean = ListView.SelectedItem Is Nothing
+        Dim items As New List(Of TipItem)(If(all, ListView.Items.Cast(Of TipItem)(), ListView.SelectedItems.Cast(Of TipItem)()))
+        If _groupPresenter.MoveItems(all, items, src, dest) Then
+            For Each item As DD.SuperTabItem In TabStrip.Tabs
+                If item.Text = dest Then
+                    TabStrip.SelectedTab = item
                     Exit For
                 End If
             Next
-
-            For Each Item As TipItem In SelectItems
-                Dim Idx As Integer = TipItem.GetIndexFromContent(Item.TipContent, Tab.GetTabFromTitle(Dest).Tips)
-                If Idx <> -1 Then
-                    ListView.SetSelected(Idx, True)
+            For Each item As TipItem In items
+                Dim idx As Integer = TipItem.GetIndexFromContent(item.TipContent, Tab.GetTabFromTitle(dest).Tips)
+                If idx <> -1 Then
+                    ListView.SetSelected(idx, True)
                 End If
             Next
         End If

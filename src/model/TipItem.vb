@@ -6,6 +6,8 @@ Public Class TipItem
     <JsonProperty(PropertyName:="Content")>
     Public Property TipContent As String
     Public Property IsHighLight As Boolean = False
+    <JsonIgnore()>
+    Public Property HighLightColor As TipListBox.ColorPair
 
     Public Sub New(ByVal Content As String, Optional ByVal IsHighLight As Boolean = False)
         Me.TipContent = Content

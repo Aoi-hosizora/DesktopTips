@@ -11,7 +11,6 @@
 Option Strict On
 Option Explicit On
 
-Imports DD = DevComponents.DotNetBar
 
 Namespace My
     
@@ -31,102 +30,9 @@ Namespace My
             Me.ShutDownStyle = Global.Microsoft.VisualBasic.ApplicationServices.ShutdownMode.AfterMainFormCloses
         End Sub
         
-        <Global.System.Diagnostics.DebuggerStepThroughAttribute()> _
+        <Global.System.Diagnostics.DebuggerStepThroughAttribute()>  _
         Protected Overrides Sub OnCreateMainForm()
-            DD.MessageBoxEx.UseSystemLocalizedString = True
-            AddHandler DD.LocalizationKeys.LocalizeString, AddressOf LocalizationKeys_LocalizeString
             Me.MainForm = Global.DesktopTips.MainForm
         End Sub
-
-        Private Sub LocalizationKeys_LocalizeString(sender As Object, e As DD.LocalizeEventArgs)
-            Select Case e.Key
-                ' MessageBox
-                Case DD.LocalizationKeys.MessageBoxYesButton
-                    e.LocalizedValue = "是"
-                    e.Handled = True
-                Case DD.LocalizationKeys.MessageBoxNoButton
-                    e.LocalizedValue = "否"
-                    e.Handled = True
-                Case DD.LocalizationKeys.MessageBoxOkButton
-                    e.LocalizedValue = "确定"
-                    e.Handled = True
-                Case DD.LocalizationKeys.MessageBoxCancelButton
-                    e.LocalizedValue = "取消"
-                    e.Handled = True
-                Case DD.LocalizationKeys.MessageBoxHelpButton
-                    e.LocalizedValue = "帮助"
-                    e.Handled = True
-                Case DD.LocalizationKeys.MessageBoxIgnoreButton
-                    e.LocalizedValue = "忽略"
-                    e.Handled = True
-                Case DD.LocalizationKeys.MessageBoxTryAgainButton
-                    e.LocalizedValue = "重试"
-                    e.Handled = True
-                Case DD.LocalizationKeys.MessageBoxRetryButton
-                    e.LocalizedValue = "重试"
-                    e.Handled = True
-                Case DD.LocalizationKeys.MessageBoxContinueButton
-                    e.LocalizedValue = "继续"
-                    e.Handled = True
-                Case DD.LocalizationKeys.MessageBoxCloseButton
-                    e.LocalizedValue = "关闭"
-                    e.Handled = True
-                Case DD.LocalizationKeys.MessageBoxAbortButton
-                    e.LocalizedValue = "终止"
-                    e.Handled = True
-
-                    ' Color
-
-                Case DD.LocalizationKeys.ColorPickerCaption
-                    e.LocalizedValue = "选择颜色"
-                    e.Handled = True
-                Case DD.LocalizationKeys.ColorPickerDialogRedLabel
-                    e.LocalizedValue = "R："
-                    e.Handled = True
-                Case DD.LocalizationKeys.ColorPickerDialogGreenLabel
-                    e.LocalizedValue = "G："
-                    e.Handled = True
-                Case DD.LocalizationKeys.ColorPickerDialogBlueLabel
-                    e.LocalizedValue = "B："
-                    e.Handled = True
-                Case DD.LocalizationKeys.ColorPickerMoreColorsMenuItem
-                    e.LocalizedValue = "更多颜色(&M)..."
-                    e.Handled = True
-                Case DD.LocalizationKeys.ColorPickerStandardColorsLabel
-                    e.LocalizedValue = "标准颜色"
-                    e.Handled = True
-                Case DD.LocalizationKeys.ColorPickerThemeColorsLabel
-                    e.LocalizedValue = "主题颜色"
-                    e.Handled = True
-                Case DD.LocalizationKeys.ColorPickerTabStandard
-                    e.LocalizedValue = "标准"
-                    e.Handled = True
-                Case DD.LocalizationKeys.ColorPickerTabCustom
-                    e.LocalizedValue = "自定义"
-                    e.Handled = True
-                Case DD.LocalizationKeys.ColorPickerDialogOKButton
-                    e.LocalizedValue = "确定"
-                    e.Handled = True
-                Case DD.LocalizationKeys.ColorPickerDialogCancelButton
-                    e.LocalizedValue = "取消"
-                    e.Handled = True
-                Case DD.LocalizationKeys.ColorPickerDialogColorModelLabel
-                    e.LocalizedValue = "颜色模型"
-                    e.Handled = True
-                Case DD.LocalizationKeys.ColorPickerDialogNewColorLabel
-                    e.LocalizedValue = "新"
-                    e.Handled = True
-                Case DD.LocalizationKeys.ColorPickerDialogCurrentColorLabel
-                    e.LocalizedValue = "当前"
-                    e.Handled = True
-                Case DD.LocalizationKeys.ColorPickerDialogCustomColorsLabel
-                    e.LocalizedValue = "  颜色："
-                    e.Handled = True
-                Case DD.LocalizationKeys.ColorPickerDialogStandardColorsLabel
-                    e.LocalizedValue = "  颜色："
-                    e.Handled = True
-            End Select
-        End Sub
     End Class
-
 End Namespace

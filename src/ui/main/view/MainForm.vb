@@ -443,9 +443,83 @@ Public Class MainForm
         ButtonItemDown.Visible = False
     End Sub
 
+    ''' <summary>
+    ''' 调整大小 隐藏辅助按钮
+    ''' </summary>
+    Private Sub ListView_SizeChanged(sender As Object, e As EventArgs) Handles ListView.SizeChanged
+        If ButtonItemUp.Visible = True AndAlso ListView.SelectedIndices.Count = 1 Then
+            ShowAssistButtons()
+        End If
+    End Sub
+
 #End Region
 
-#Region "可用性判断 列表选择 屏幕提示"
+#Region "窗口焦点 弹出菜单标记 大小调整"
+
+    ''' <summary>
+    ''' 窗口失去焦点，取消选择
+    ''' </summary>
+    Private Sub MainForm_Deactivate(sender As Object, e As EventArgs) Handles Me.Deactivate
+        ListView.ClearSelected()
+        If Me.Opacity <> MaxOpacity Then
+            FormOpecityDown()
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 没有选择列表项，取消选择
+    ''' </summary>
+    Private Sub ListView_MouseDown_Sel(sender As Object, e As MouseEventArgs) Handles ListView.MouseDown, TabStrip.MouseDown
+        ListView_SelectedIndexChanged(sender, New System.EventArgs)
+
+        If ListView.Items.Count > 0 Then
+            Dim rect As Rectangle = ListView.GetItemRectangle(ListView.Items.Count - 1)
+            If e.Y > rect.Top + rect.Height Then ListView.ClearSelected()
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 判断透明度是否可以变化
+    ''' </summary>
+    Private isMenuPopuping As Boolean = False
+
+    ''' <summary>
+    ''' TabStrip 菜单弹出
+    ''' </summary>
+    Private Sub TabStrip_PopupOpen(sender As Object, e As EventArgs) Handles TabStrip.PopupOpen
+        isMenuPopuping = True
+    End Sub
+
+    ''' <summary>
+    ''' 菜单关闭
+    ''' </summary>
+    Private Sub PopMenu_PopupFinalizedAndClosed(sender As Object, e As EventArgs) Handles ListPopupMenu.PopupFinalized, TabPopupMenu.PopupFinalized, ListPopupMenuMove.PopupFinalized, TabStrip.PopupClose
+        isMenuPopuping = False
+        FormOpecityDown()
+    End Sub
+
+    ''' <summary>
+    ''' 大小调整
+    ''' </summary>
+    Private Sub ButtonResizeFlag_MouseMove(sender As Object, e As MouseEventArgs) Handles ButtonResizeFlag.MouseMove
+        If IsMouseDown Then
+            Me.Width = PushDownWindowSize.Width + Cursor.Position.X - PushDownMouseInScreen.X
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 窗口调整大小更新 Label
+    ''' </summary>
+    Private Sub MainForm_SizeChanged(sender As Object, e As EventArgs) Handles Me.SizeChanged
+        LabelNothing.Top = ListView.Top + 1
+        LabelNothing.Left = ListView.Left + 1
+        LabelNothing.Height = ListView.Height - 2
+        LabelNothing.Width = ListView.Width - 2
+    End Sub
+
+#End Region
+
+#Region "可用性判断 列表选择 滚动条 屏幕提示"
 
     ''' <summary>
     ''' 选择可用性
@@ -497,6 +571,18 @@ Public Class MainForm
             HideAssistButtons()
         End If
         ListView.Refresh()
+    End Sub
+
+    ' 滚动条获得焦点
+    Private Sub ListView_MouseCaptureChanged(sender As Object, e As EventArgs) Handles ListView.MouseCaptureChanged
+        If Cursor.Position.X > Me.Left + ListView.Left + ListView.Width - 20 Then
+            HideAssistButtons()
+        End If
+    End Sub
+
+    ' 滚动
+    Private Sub ListView_MouseWheel(sender As Object, e As MouseEventArgs) Handles ListView.MouseWheel
+        HideAssistButtons()
     End Sub
 
     ''' <summary>
@@ -687,6 +773,13 @@ Public Class MainForm
         Else
             TabPopupMenuRenameTab_Click(sender, New EventArgs)
         End If
+    End Sub
+
+    ''' <summary>
+    ''' 边栏点击，取消选择
+    ''' </summary>
+    Private Sub TabStrip_Click(sender As Object, e As EventArgs) Handles TabStrip.Click
+        ListView.ClearSelected()
     End Sub
 
 #End Region

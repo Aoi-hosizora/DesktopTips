@@ -6,10 +6,11 @@
 Public Class BaseMainForm
     Inherits Form
 
-    Private WithEvents TimerShowForm As Timer = New Timer() With {.Interval = 1, .Enabled = False}
-    Private WithEvents TimerCloseForm As Timer = New Timer() With {.Interval = 1, .Enabled = False}
-    Private WithEvents TimerMouseIn As Timer = New Timer() With {.Interval = 10, .Enabled = False}
-    Private WithEvents TimerMouseOut As Timer = New Timer() With {.Interval = 10, .Enabled = False}
+    Private WithEvents TimerShowForm As New Timer() With {.Interval = 1, .Enabled = False}
+    Private WithEvents TimerCloseForm As New Timer() With {.Interval = 1, .Enabled = False}
+    Private WithEvents TimerMouseIn As New Timer() With {.Interval = 10, .Enabled = False}
+    Private WithEvents TimerMouseOut As New Timer() With {.Interval = 10, .Enabled = False}
+    Private WithEvents LabelFocus As New Label() With {.Visible = False}
 
     Protected MaxOpacity As Double = 0.6
 
@@ -18,6 +19,7 @@ Public Class BaseMainForm
 
     Protected Overrides Sub OnLoad(e As EventArgs)
         MyBase.OnLoad(e)
+        Me.Controls.Add(LabelFocus)
         Me.Opacity = 0
         ShowForm()
 
@@ -37,13 +39,23 @@ Public Class BaseMainForm
             If ctrl.GetType() <> GetType(Button) And ctrl.GetType() <> GetType(DD.ButtonX) Then
                 AddHandler ctrl.MouseMove, AddressOf FormMouseResize
             End If
+
+            If ctrl.GetType() = GetType(DD.ButtonX) Then
+                AddHandler ctrl.MouseDown, AddressOf HideButtonXFocus
+            End If
         Next
+        HideButtonXFocus(Me, e)
     End Sub
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
         MyBase.OnFormClosing(e)
         e.Cancel = Opacity > 0
         CloseForm()
+    End Sub
+
+    Private Sub HideButtonXFocus(sender As Object, e As EventArgs)
+        LabelFocus.Focus()
+        LabelFocus.Select()
     End Sub
 
 #Region "Timer"

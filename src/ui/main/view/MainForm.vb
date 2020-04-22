@@ -98,8 +98,7 @@ Public Class MainForm
         If m.Msg = NativeMethod.WM_HOTKEY Then
             If m.WParam.ToInt32() = HOTKEY_ID Then
                 Me.Activate()
-                Me.TopMost = True
-                Me.TopMost = False
+                NativeMethod.SetForegroundWindow(Handle)
                 FormOpecityUp()
             End If
         End If
@@ -446,7 +445,7 @@ Public Class MainForm
 
 #End Region
 
-#Region "可用性判断 列表选择 屏幕提示 右键列表"
+#Region "可用性判断 列表选择 屏幕提示"
 
     ''' <summary>
     ''' 选择可用性
@@ -483,8 +482,8 @@ Public Class MainForm
         ListPopupMenuPasteAppend.Enabled = isSingle
 
         ' 浏览器
-        Dim has = ListView.SelectedItems.Cast(Of TipItem)().Where(Function(item As TipItem) item.TipContent.IndexOf("http://") <> -1 Or item.TipContent.IndexOf("https://") <> -1).Count >= 1
-        ListPopupMenuBrowser.Enabled = has
+        ListPopupMenuBrowser.Enabled = ListView.SelectedItems.Cast(Of TipItem)().
+            Where(Function(item As TipItem) item.TipContent.IndexOf("http://") <> -1 Or item.TipContent.IndexOf("https://") <> -1).Count >= 1
     End Sub
 
     ''' <summary>
@@ -513,14 +512,16 @@ Public Class MainForm
         End If
     End Sub
 
+#End Region
+
+#Region "弹出菜单 列表高度 快捷键"
+
     ''' <summary>
     ''' 右键列表同时选中项
     ''' </summary>
     Private Sub ListView_RightMouseUp(sender As Object, e As MouseEventArgs) Handles ListView.MouseUp
         Dim idx As Integer = ListView.IndexFromPoint(e.X, e.Y)
-        If e.Button = MouseButtons.Right And
-            idx >= 0 And idx < ListView.Items.Count And ListView.SelectedIndices.Count <= 1 Then
-
+        If e.Button = MouseButtons.Right And idx >= 0 And idx < ListView.Items.Count And ListView.SelectedIndices.Count <= 1 Then
             ListView.ClearSelected()
             ListView.SetSelected(idx, True)
             If ListView.Items.Count > 0 Then
@@ -530,32 +531,28 @@ Public Class MainForm
         End If
     End Sub
 
-#End Region
-
-#Region "弹出菜单 调整列表高度"
-
     ''' <summary>
-    ''' 显示菜单标题
+    ''' 弹出菜单 调整标题
     ''' </summary>
     Private Sub ListPopMenu_PopupOpen(sender As Object, e As DD.PopupOpenEventArgs) Handles ListPopupMenu.PopupOpen
         e.Cancel = True
         ListPopupMenuLabelSelItem.Visible = ListView.SelectedIndex <> -1
         ListPopupMenuLabelSelItemText.Visible = ListView.SelectedIndex <> -1
 
-        ListPopupMenuLabelSelItem.Text = "当前选中 (共 " & ListView.SelectedIndices.Count & " 项)"
+        Dim cnt As Integer = ListView.SelectedIndices.Count
+        Dim hlCnt As Integer = 0
+        For Each Tip As TipItem In GlobalModel.Tabs.Item(GlobalModel.CurrTabIdx).Tips
+            If Tip.IsHighLight Then hlCnt += 1
+        Next
 
         Dim sb As New StringBuilder
         For Each item As TipItem In ListView.SelectedItems.Cast(Of TipItem)()
             sb.AppendLine(item.TipContent)
         Next
+
         ListPopupMenuLabelSelItemText.Text = sb.ToString
-
-        Dim HLItemCnt As Integer = 0
-        For Each Tip As TipItem In GlobalModel.Tabs.Item(GlobalModel.CurrTabIdx).Tips
-            HLItemCnt += If(Tip.IsHighLight, 1, 0)
-        Next
-        ListPopupMenuLabelItemList.Text = "列表 (共 " & ListView.Items.Count & " 项，高亮 " & HLItemCnt & " 项)"
-
+        ListPopupMenuLabelItemList.Text = "列表 (共 " & cnt & " 项，高亮 " & hlCnt & " 项)"
+        ListPopupMenuLabelSelItem.Text = "当前选中 (共 " & cnt & " 项)"
         e.Cancel = False
         ListPopupMenu.Refresh()
     End Sub
@@ -563,32 +560,15 @@ Public Class MainForm
     ''' <summary>
     ''' 显示弹出菜单
     ''' </summary>
-    Private Sub ButtonListSetting_Click(sender As System.Object, e As System.EventArgs) Handles ButtonListSetting.Click
+    Private Sub ButtonListSetting_Click(sender As Object, e As EventArgs) Handles ButtonListSetting.Click
         CheckItemEnabled()
         ListPopupMenu.Popup(Me.Left + sender.Left, Me.Top + sender.Top + sender.Height - 1)
     End Sub
 
     ''' <summary>
-    ''' Popup 显示调整大小
+    ''' 调整大小
     ''' </summary>
-    Private Sub ListPopupMenuListHeight_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuListHeight.Click
-        NumericUpDownListCnt.Visible = ListPopupMenuListHeight.Checked
-    End Sub
-
-    ''' <summary>
-    ''' 右键 Setting 显示调整大小
-    ''' </summary>
-    Private Sub ButtonSetting_MouseUp(sender As Object, e As System.Windows.Forms.MouseEventArgs) Handles ButtonListSetting.MouseUp
-        If e.Button = Windows.Forms.MouseButtons.Right Then
-            ListPopupMenuListHeight.Checked = Not ListPopupMenuListHeight.Checked
-            ListPopupMenuListHeight_Click(sender, New System.EventArgs)
-        End If
-    End Sub
-
-    ''' <summary>
-    ''' Popup 调整大小
-    ''' </summary>
-    Private Sub NumericUpDownListCnt_ValueChanged(sender As System.Object, e As System.EventArgs) Handles NumericUpDownListCnt.ValueChanged
+    Private Sub NumericUpDownListCnt_ValueChanged(sender As Object, e As EventArgs) Handles NumericUpDownListCnt.ValueChanged
         Dim MoveY As Integer
         If Me.Height < NumericUpDownListCnt.Value * ListView.ItemHeight + 27 Then
             MoveY = 17
@@ -604,20 +584,28 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
-    ''' Popup 快捷键设置
+    ''' 显示调整大小
     ''' </summary>
-    Private Sub ListPopupMenuShotcutSetting_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuShotcutSetting.Click
+    Private Sub ListPopupMenuListHeight_Click(sender As Object, e As EventArgs) Handles ListPopupMenuListHeight.Click
+        ListPopupMenuListHeight.Checked = Not ListPopupMenuListHeight.Checked
+        NumericUpDownListCnt.Visible = ListPopupMenuListHeight.Checked
+    End Sub
+
+    ''' <summary>
+    ''' 快捷键设置
+    ''' </summary>
+    Private Sub ListPopupMenuShotcutSetting_Click(sender As Object, e As EventArgs) Handles ListPopupMenuShotcutSetting.Click
         _globalPresenter.SetupHotKey(Handle, HOTKEY_ID)
     End Sub
 
 #End Region
 
-#Region "关闭窗口 置顶 加载位置 保存位置"
+#Region "退出程序 置顶 加载位置 保存位置"
 
     ''' <summary>
-    ''' 关闭窗口
+    ''' 退出程序
     ''' </summary>
-    Private Sub ButtonExit_Click(sender As System.Object, e As System.EventArgs) Handles ButtonCloseForm.Click, ListPopupMenuExit.Click
+    Private Sub ButtonExit_Click(sender As Object, e As EventArgs) Handles ButtonCloseForm.Click, ListPopupMenuExit.Click
         Dim ok = MessageBox.Show("确定退出 DesktopTips 吗？",
                                  "关闭", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
         If ok = vbYes Then
@@ -626,38 +614,34 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
-    ''' Popup 置顶
+    ''' 置顶
     ''' </summary>
-    Private Sub ListPopupMenuWinTop_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuWinTop.Click
+    Private Sub ListPopupMenuWinTop_Click(sender As Object, e As EventArgs) Handles ListPopupMenuWinTop.Click
         ListPopupMenuWinTop.Checked = Not ListPopupMenuWinTop.Checked
         Me.TopMost = ListPopupMenuWinTop.Checked
     End Sub
 
     ''' <summary>
-    ''' Popup 加载位置
+    ''' 加载位置
     ''' </summary>
-    Private Sub ListPopupMenuLoadPos_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuLoadPos.Click
-        Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
+    Private Sub ListPopupMenuLoadPos_Click(sender As Object, e As EventArgs) Handles ListPopupMenuLoadPos.Click
+        Dim setting As SettingUtil.AppSetting = _globalPresenter.LoadSetting()
         Me.Top = setting.SaveTop
         Me.Left = setting.SaveLeft
     End Sub
 
     ''' <summary>
-    ''' Popup 保存位置
+    ''' 保存位置
     ''' </summary>
-    Private Sub ListPopupMenuSavePos_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuSavePos.Click
-
-        Dim ok As DialogResult =
-            MessageBox.Show("确定保存当前位置，注意该操作会覆盖之前保存的窗口位置。",
-                            "保存位置",
-                            MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
-
+    Private Sub ListPopupMenuSavePos_Click(sender As Object, e As EventArgs) Handles ListPopupMenuSavePos.Click
+        Dim ok As DialogResult = MessageBox.Show(
+            "确定保存当前位置，注意该操作会覆盖之前保存的窗口位置。",
+            "保存位置", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
         If ok = vbOK Then
-            Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
+            Dim setting As SettingUtil.AppSetting = _globalPresenter.LoadSetting()
             setting.SaveTop = Me.Top
             setting.SaveLeft = Me.Left
-            SettingUtil.SaveAppSettings(setting)
-
+            _globalPresenter.SaveSetting(setting)
             ListPopupMenuLoadPos.Enabled = True
         End If
     End Sub

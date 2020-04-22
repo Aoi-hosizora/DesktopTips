@@ -191,7 +191,7 @@ Partial Class MainForm
         Me.ButtonListSetting.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
         Me.ButtonListSetting.Size = New System.Drawing.Size(24, 23)
         Me.ButtonListSetting.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
-        Me.SuperTooltip.SetSuperTooltip(Me.ButtonListSetting, New DevComponents.DotNetBar.SuperTooltipInfo("设置", "", "左键单击显示弹出菜单，右键点击显示设置列表高度。", Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(180, 68)))
+        Me.SuperTooltip.SetSuperTooltip(Me.ButtonListSetting, New DevComponents.DotNetBar.SuperTooltipInfo("设置", "", "显示列表上下文菜单。", Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(180, 68)))
         Me.ButtonListSetting.TabIndex = 2
         Me.ButtonListSetting.Text = "≡"
         '
@@ -483,7 +483,6 @@ Partial Class MainForm
         '
         'ListPopupMenuListHeight
         '
-        Me.ListPopupMenuListHeight.AutoCheckOnClick = True
         Me.ListPopupMenuListHeight.Name = "ListPopupMenuListHeight"
         Me.ListPopupMenuListHeight.Text = "列表高度设置(&E)"
         '

@@ -17,7 +17,7 @@ Public Class MainFormListPresenter
         Return Nothing
     End Function
 
-    Public Function Delete(items As List(Of TipItem)) As Boolean Implements MainFormContract.IListPresenter.Delete
+    Public Function Delete(items As IEnumerable(Of TipItem)) As Boolean Implements MainFormContract.IListPresenter.Delete
         Dim sb As New StringBuilder
         For Each item As TipItem In items
             sb.AppendLine(item.TipContent)
@@ -41,7 +41,7 @@ Public Class MainFormListPresenter
         Return False
     End Function
 
-    Public Sub Copy(items As List(Of TipItem)) Implements MainFormContract.IListPresenter.Copy
+    Public Sub Copy(items As IEnumerable(Of TipItem)) Implements MainFormContract.IListPresenter.Copy
         Dim sb As New StringBuilder
         For Each item As TipItem In items
             sb.AppendLine(item.TipContent)
@@ -92,7 +92,7 @@ Public Class MainFormListPresenter
         End If
     End Sub
 
-    Public Sub ViewCurrentList(items As List(Of TipItem)) Implements MainFormContract.IListPresenter.ViewCurrentList
+    Public Sub ViewCurrentList(items As IEnumerable(Of TipItem)) Implements MainFormContract.IListPresenter.ViewCurrentList
         Dim sb As New StringBuilder
         For Each Item As TipItem In items.Cast(Of TipItem)()
             sb.AppendLine(Item.TipContent & If(Item.IsHighLight, " [高亮]", ""))
@@ -103,7 +103,7 @@ Public Class MainFormListPresenter
     ''' <summary>
     ''' 获取当前列表所选中的所有链接
     ''' </summary>
-    Private Function getLinks(items As List(Of TipItem)) As List(Of String)
+    Private Function getLinks(items As IEnumerable(Of TipItem)) As List(Of String)
         Dim res As New List(Of String)
         For Each item In items
             Dim sp As String() = item.TipContent.Split(New Char() {" "}, StringSplitOptions.RemoveEmptyEntries)
@@ -116,7 +116,7 @@ Public Class MainFormListPresenter
         Return res
     End Function
 
-    Public Sub OpenAllLinks(items As List(Of TipItem)) Implements MainFormContract.IListPresenter.OpenAllLinks
+    Public Sub OpenAllLinks(items As IEnumerable(Of TipItem)) Implements MainFormContract.IListPresenter.OpenAllLinks
         Dim links As List(Of String) = getLinks(items)
         If links.Count = 0 Then
             MessageBox.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -130,7 +130,7 @@ Public Class MainFormListPresenter
         End If
     End Sub
 
-    Public Sub OpenSomeLinks(items As List(Of TipItem)) Implements MainFormContract.IListPresenter.OpenSomeLinks
+    Public Sub OpenSomeLinks(items As IEnumerable(Of TipItem)) Implements MainFormContract.IListPresenter.OpenSomeLinks
         Dim links As List(Of String) = getLinks(items)
         If links.Count = 0 Then
             MessageBox.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -139,11 +139,11 @@ Public Class MainFormListPresenter
             For Each link As String In links
                 LinkDialog.ListView.Items.Add(link)
             Next
-            LinkDialog.Show(Me)
+            LinkDialog.Show(_view.GetMe())
         End If
     End Sub
 
-    Public Sub ViewHighlightList(items As List(Of TipItem), color As Color) Implements MainFormContract.IListPresenter.ViewHighlightList
+    Public Sub ViewHighlightList(items As IEnumerable(Of TipItem), color As Color) Implements MainFormContract.IListPresenter.ViewHighlightList
         Dim sb As New StringBuilder
         Dim idx As Integer = 0
         For Each Item As TipItem In items.Cast(Of TipItem)()

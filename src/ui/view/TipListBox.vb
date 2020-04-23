@@ -1,47 +1,103 @@
-﻿Public Class TipListBox
+﻿Imports System.ComponentModel
+
+Public Class TipListBox
     Inherits ListBox
 
-    Public Class ColorPair
-        Public Property Fore As Boolean
-        Public Property Color As Color
-
-        Public Sub New(fore As Boolean, color As Color)
-            Me.Fore = fore
-            Me.Color = color
-        End Sub
-    End Class
-
-    Public Property Colors As IEnumerable(Of ColorPair)
-    Public Overloads Property DataSource As IEnumerable(Of TipItem)
-    Public Overloads Property Items As IEnumerable(Of TipItem)
-
-    Public Overloads ReadOnly Property SelectedItem As TipItem
-        Get
-            Return CType(MyBase.SelectedItem, TipItem)
-        End Get
-    End Property
-
-    Public Overloads ReadOnly Property SelectedItems As IEnumerable(Of TipItem)
-        Get
-            Return MyBase.SelectedItems.Cast(Of TipItem)()
-        End Get
-    End Property
-
-    Public Sub SetSelectedOnly(id As Integer)
-        ClearSelected()
-        SetSelected(id, True)
+    Public Sub New()
+        _items = New TipListBoxItemCollection(Me)
+        DrawMode = DrawMode.OwnerDrawFixed
     End Sub
+
+    Private _items As TipListBoxItemCollection
+    <DesignerSerializationVisibility(DesignerSerializationVisibility.Content)>
+    Public Overloads ReadOnly Property Items As TipListBoxItemCollection
+        Get
+            Return _items
+        End Get
+    End Property
+
+    Private ReadOnly Property baseItems As ObjectCollection
+        Get
+            Return MyBase.Items
+        End Get
+    End Property
+
+    Public Overloads Property SelectedItem As TipItem
+        Get
+            Return DirectCast(MyBase.SelectedItem, TipItem)
+        End Get
+        Set(ByVal value As TipItem)
+            MyBase.SelectedItem = value
+        End Set
+    End Property
+
+    Public Overloads ReadOnly Property SelectedItems As TipListBoxSelectedItemCollection
+        Get
+            Dim items As New TipListBoxSelectedItemCollection()
+            For Each item As Object In MyBase.SelectedItems
+                items.Add(DirectCast(item, TipItem))
+            Next
+            Return items
+        End Get
+    End Property
 
     Protected Overrides Sub OnDrawItem(e As DrawItemEventArgs)
         MyBase.OnDrawItem(e)
-        If e.Index <> -1 Then
-            e.DrawBackground()
-            e.DrawFocusRectangle()
+        e.DrawBackground()
+        e.DrawFocusRectangle()
+        If e.Index >= 0 AndAlso e.Index < Me.Items.Count Then
             Dim curr As TipItem = Items(e.Index)
-            Dim color As ColorPair = curr.HighLightColor
-            Dim brush As New SolidBrush(If(color Is Nothing Or color.Fore, e.ForeColor, color.Color))
-            e.Graphics.DrawString(curr.ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault)
+            If curr IsNot Nothing Then
+                Dim color As ColorPair = curr.HighLightColor
+                Dim brush As New SolidBrush(If(color Is Nothing OrElse color.Fore, e.ForeColor, color.Color))
+                e.Graphics.DrawString(curr.ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault)
+            End If
         End If
     End Sub
+
+    Public Class TipListBoxItemCollection
+        Inherits ObjectModel.Collection(Of TipItem)
+
+        Private _listBox As TipListBox
+
+        Public Sub New(ByVal listBox As TipListBox)
+            _listBox = listBox
+        End Sub
+
+        Public Overloads Function Add(ByVal item As TipItem) As TipItem
+            Me.InsertItem(Me.Items.Count, item)
+            Return item
+        End Function
+
+        Protected Overrides Sub InsertItem(ByVal index As Integer, ByVal item As TipItem)
+            MyBase.InsertItem(index, item)
+            _listBox.baseItems.Insert(index, item)
+        End Sub
+
+        Protected Overrides Sub RemoveItem(ByVal index As Integer)
+            MyBase.RemoveItem(index)
+            _listBox.baseItems.RemoveAt(index)
+        End Sub
+
+        Protected Overrides Sub SetItem(ByVal index As Integer, ByVal item As TipItem)
+            MyBase.SetItem(index, item)
+            _listBox.baseItems(index) = item
+        End Sub
+
+        Protected Overrides Sub ClearItems()
+            MyBase.ClearItems()
+            _listBox.baseItems.Clear()
+        End Sub
+
+        Public Sub AddRange(ByVal items As IEnumerable(Of TipItem))
+            For Each item As TipItem In items
+                Me.InsertItem(Me.Items.Count, item)
+            Next
+        End Sub
+    End Class
+
+    Public Class TipListBoxSelectedItemCollection
+        Inherits ObjectModel.Collection(Of TipItem)
+    End Class
 
 End Class

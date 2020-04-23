@@ -7,11 +7,12 @@ Public Class TipItem
     Public Property TipContent As String
     Public Property IsHighLight As Boolean = False
     <JsonIgnore()>
-    Public Property HighLightColor As TipListBox.ColorPair
+    Public Property HighLightColor As ColorPair
 
-    Public Sub New(ByVal Content As String, Optional ByVal IsHighLight As Boolean = False)
-        Me.TipContent = Content
-        Me.IsHighLight = IsHighLight
+    Public Sub New(content As String, Optional highLight As Boolean = False, Optional color As ColorPair = Nothing)
+        Me.TipContent = content
+        Me.IsHighLight = highLight
+        Me.HighLightColor = color
     End Sub
 
     Public Overrides Function ToString() As String

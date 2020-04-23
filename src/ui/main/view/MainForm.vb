@@ -374,9 +374,9 @@ Public Class MainForm
     ''' </summary>
     Private Sub SetupOpecityButtonsLayout()
         For i = 0 To _opecities.Length - 1
-            _opecityButtons(i) = New DD.ButtonItem With { _
-                .Name = "ListPopupMenuOpacity" & CInt(_opecities(i) * 100), _
-                .Tag = _opecities(i), _
+            _opecityButtons(i) = New DD.ButtonItem With {
+                .Name = "ListPopupMenuOpacity" & CInt(_opecities(i) * 100),
+                .Tag = _opecities(i),
                 .Text = CInt(_opecities(i) * 100) & "%"
             }
 

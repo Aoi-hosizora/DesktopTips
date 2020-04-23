@@ -1,9 +1,14 @@
 ﻿Public Class GlobalModel
 
     ''' <summary>
-    ''' 分组集
+    ''' 分组集合
     ''' </summary>
     Public Shared Tabs As New List(Of Tab)
+
+    ''' <summary>
+    ''' 颜色集合
+    ''' </summary>
+    Public Shared Colors As New List(Of TipColor)
 
     ''' <summary>
     ''' 当前分组编号

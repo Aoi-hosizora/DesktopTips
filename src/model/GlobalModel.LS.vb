@@ -49,7 +49,7 @@ Partial Public Class GlobalModel
         End Try
 
         For Each Tab As Tab In Tabs
-            Dim dup As Tab = Tab.CheckDuplicateTab(Tab.Title, Tabs)
+            Dim dup As Tab = GlobalModel.CheckDuplicateTab(Tab.Title, Tabs)
             If dup IsNot Nothing AndAlso Not dup.Equals(Tab) Then
                 Throw New FileLoadException("文件中存在重复分组，请检查文件。")
             End If

@@ -758,7 +758,7 @@ Public Class MainForm
     Private Sub TabStrip_SelectedTabChanged(sender As Object, e As DD.SuperTabStripSelectedTabChangedEventArgs) Handles TabStrip.SelectedTabChanged
         HideAssistButtons()
         If TabStrip.SelectedTabIndex <> -1 And GlobalModel.Tabs.Count <> 0 Then
-            GlobalModel.CurrTabIdx = GlobalModel.Tabs.IndexOf(Tab.GetTabFromTitle(TabStrip.SelectedTab.Text))
+            GlobalModel.CurrTabIdx = GlobalModel.Tabs.IndexOf(GlobalModel.GetTabFromTitle(TabStrip.SelectedTab.Text))
             LoadList()
         End If
     End Sub
@@ -827,10 +827,10 @@ Public Class MainForm
     Private Sub TabStrip_TabMoved(sender As Object, e As DD.SuperTabStripTabMovedEventArgs) Handles TabStrip.TabMoved
         Dim newTabs As New List(Of Tab)
         For Each TabItem As DD.SuperTabItem In e.NewOrder
-            newTabs.Add(Tab.GetTabFromTitle(TabItem.Text))
+            newTabs.Add(GlobalModel.GetTabFromTitle(TabItem.Text))
         Next
         GlobalModel.Tabs = newTabs
-        GlobalModel.CurrTabIdx = GlobalModel.Tabs.IndexOf(Tab.GetTabFromTitle(TabStrip.SelectedTab.Text))
+        GlobalModel.CurrTabIdx = GlobalModel.Tabs.IndexOf(GlobalModel.GetTabFromTitle(TabStrip.SelectedTab.Text))
         GlobalModel.SaveAllData()
     End Sub
 
@@ -922,7 +922,7 @@ Public Class MainForm
                 End If
             Next
             For Each item As TipItem In items
-                Dim idx As Integer = TipItem.GetIndexFromContent(item.TipContent, Tab.GetTabFromTitle(dest).Tips)
+                Dim idx As Integer = GlobalModel.GetIndexFromContent(item.TipContent, GlobalModel.GetTabFromTitle(dest).Tips)
                 If idx <> -1 Then
                     ListView.SetSelected(idx, True)
                 End If

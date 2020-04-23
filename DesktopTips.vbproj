@@ -108,6 +108,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="src\model\ColorPair.vb" />
+    <Compile Include="src\model\GlobalModel.Assist.vb" />
     <Compile Include="src\model\GlobalModel.LS.vb" />
     <Compile Include="src\model\GlobalModel.vb" />
     <Compile Include="src\model\Tab.vb" />

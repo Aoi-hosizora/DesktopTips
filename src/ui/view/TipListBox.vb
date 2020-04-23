@@ -46,11 +46,11 @@ Public Class TipListBox
         e.DrawBackground()
         e.DrawFocusRectangle()
         If e.Index >= 0 AndAlso e.Index < Me.Items.Count Then
-            Dim curr As TipItem = Items(e.Index)
-            If curr IsNot Nothing Then
-                Dim color As ColorPair = curr.HighLightColor
-                Dim brush As New SolidBrush(If(color Is Nothing OrElse color.Fore, e.ForeColor, color.Color))
-                e.Graphics.DrawString(curr.ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault)
+            Dim item As TipItem = Items(e.Index)
+            If item IsNot Nothing Then
+                Dim color As TipColor = item.HighLightColor
+                Dim brush As New SolidBrush(If(color Is Nothing, e.ForeColor, color.Color))
+                e.Graphics.DrawString(item.ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault)
             End If
         End If
     End Sub

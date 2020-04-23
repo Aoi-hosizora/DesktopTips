@@ -18,35 +18,4 @@ Public Class Tab
     Public Overrides Function ToString() As String
         Return Title
     End Function
-
-    ''' <summary>
-    ''' 判断是否重复分组标题
-    ''' </summary>
-    Public Shared Function CheckDuplicateTab(ByVal NewTitle As String, ByRef Tabs As List(Of Tab)) As Tab
-        For Each Tab As Tab In Tabs
-            If Tab.Title = NewTitle.Trim() Then
-                Return Tab
-            End If
-        Next
-        Return Nothing
-    End Function
-
-    ''' <summary>
-    ''' TabTitle -> Tab
-    ''' </summary>
-    Public Shared Function GetTabFromTitle(ByVal Title As String, ByRef Tabs As List(Of Tab)) As Tab
-        For Each Tab As Tab In Tabs
-            If Tab.Title = Title Then
-                Return Tab
-            End If
-        Next
-        Return Nothing
-    End Function
-
-    ''' <summary>
-    ''' TabTitle -> Tab
-    ''' </summary>
-    Public Shared Function GetTabFromTitle(ByVal Title As String) As Tab
-        Return GetTabFromTitle(Title, GlobalModel.Tabs)
-    End Function
 End Class

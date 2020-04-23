@@ -13,7 +13,7 @@ Public Class MainFormGroupPresenter
         Dim tabName As String = InputBox("请输入新分组的标题: ", "新建", "分组")
         tabName = tabName.Trim()
         If tabName <> "" Then
-            If Tab.CheckDuplicateTab(tabName, GlobalModel.Tabs) IsNot Nothing Then
+            If GlobalModel.CheckDuplicateTab(tabName, GlobalModel.Tabs) IsNot Nothing Then
                 MessageBoxEx.Show("分组标题 """ & tabName & """ 已存在。",
                                   "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1,
                                   _view.GetMe())
@@ -28,7 +28,7 @@ Public Class MainFormGroupPresenter
     End Function
 
     Public Function Delete(title As String) As Boolean Implements MainFormContract.IGroupPresenter.Delete
-        Dim tab As Tab = tab.GetTabFromTitle(title)
+        Dim tab As Tab = GlobalModel.GetTabFromTitle(title)
         If tab.Tips.Count <> 0 Then
             MessageBoxEx.Show("分组内存在 " & tab.Tips.Count & " 条记录无法删除，请先将记录移动到别的分组。",
                               "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1,
@@ -50,12 +50,12 @@ Public Class MainFormGroupPresenter
         Dim newName As String = InputBox("重命名分组 """ & oldName & """ 为: ", "重命名", oldName)
         newName = newName.Trim()
         If newName <> "" Then
-            If Tab.CheckDuplicateTab(newName, GlobalModel.Tabs) IsNot Nothing Then
+            If GlobalModel.CheckDuplicateTab(newName, GlobalModel.Tabs) IsNot Nothing Then
                 MessageBoxEx.Show("分组标题 """ & newName & """ 已存在。",
                                   "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1,
                                   _view.GetMe())
             Else
-                Tab.GetTabFromTitle(oldName).Title = newName
+                GlobalModel.GetTabFromTitle(oldName).Title = newName
                 GlobalModel.SaveAllData()
                 Return newName
             End If
@@ -78,8 +78,8 @@ Public Class MainFormGroupPresenter
         Dim ok = MessageBoxEx.Show(flag, "移动至分组...", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, _view.GetMe())
         If ok = vbOK Then
             For Each item As TipItem In items
-                Tab.GetTabFromTitle(dest).Tips.Add(item)
-                Tab.GetTabFromTitle(src).Tips.Remove(item)
+                GlobalModel.GetTabFromTitle(dest).Tips.Add(item)
+                GlobalModel.GetTabFromTitle(src).Tips.Remove(item)
             Next
             GlobalModel.SaveAllData()
             Return True

@@ -141,6 +141,9 @@
     <Compile Include="src\ui\main\view\TempForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="src\ui\main\view\TempForm.View.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="src\ui\view\HotKeyBox.vb">
       <SubType>Component</SubType>
     </Compile>

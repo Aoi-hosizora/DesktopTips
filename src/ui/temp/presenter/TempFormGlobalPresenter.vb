@@ -1,0 +1,82 @@
+﻿Imports System.IO
+
+Public Class TempFormGlobalPresenter
+    Implements TempFormContract.IGlobalPresenter
+
+    Private ReadOnly _view As TempFormContract.IView
+
+    Public Sub New(view As TempFormContract.IView)
+        _view = view
+    End Sub
+
+    ''' <summary>
+    ''' 加载列表文件
+    ''' </summary>
+    Public Sub LoadList() Implements TempFormContract.IGlobalPresenter.LoadList
+        Try
+            GlobalModel.LoadAllData()
+        Catch ex As FileLoadException
+            Dim ok As MsgBoxResult = MessageBoxEx.Show(
+                "错误：" & ex.Message & Chr(10) & "是否打开文件位置检查文件？",
+                "错误", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1,
+                _view.GetMe(), {"開く", "キャンセル"})
+            If ok = vbYes Then
+                OpenFileDir()
+            End If
+            Application.Exit()
+        End Try
+    End Sub
+
+    ''' <summary>
+    ''' 保存列表文件
+    ''' </summary>
+    Public Sub SaveList() Implements TempFormContract.IGlobalPresenter.SaveList
+        GlobalModel.SaveAllData()
+    End Sub
+
+    ''' <summary>
+    ''' 打开文件所在位置
+    ''' </summary>
+    Public Sub OpenFileDir() Implements TempFormContract.IGlobalPresenter.OpenFileDir
+        'C:\Users\Windows 10\AppData\Roaming\DesktopTips
+        Process.Start("explorer.exe", "/select,""" & GlobalModel.STORAGE_FILENAME & """")
+    End Sub
+
+    ''' <summary>
+    ''' 注册快捷键
+    ''' </summary>
+    Public Function RegisterShotcut(handle As IntPtr, key As Keys, id As Integer) As Boolean Implements TempFormContract.IGlobalPresenter.RegisterShotcut
+        If Not NativeMethod.RegisterHotKey(handle, id, CommonUtil.GetNativeModifiers(CommonUtil.GetModifiersFromKey(key)), CommonUtil.GetKeyCodeFromKey(key)) Then
+            MessageBox.Show("快捷键已被占用，请重新设置", "快捷键", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return False
+        End If
+        Return True
+    End Function
+
+    ''' <summary>
+    ''' 注销快捷键
+    ''' </summary>
+    Public Sub UnregisterShotcut(handle As IntPtr, id As Integer) Implements TempFormContract.IGlobalPresenter.UnregisterShotcut
+        NativeMethod.UnregisterHotKey(handle, id)
+    End Sub
+
+    ''' <summary>
+    ''' 设置快捷键
+    ''' </summary>
+    Public Sub SetupHotKey(handle As IntPtr, id As Integer) Implements TempFormContract.IGlobalPresenter.SetupHotKey
+        Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
+        HotKeyDialog.HotKeyEditBox.CurrentKey = setting.HotKey
+        HotKeyDialog.CheckBoxIsValid.Checked = setting.IsUseHotKey
+        HotKeyDialog.OkCallback = _
+            Sub(key As Keys, use As Boolean)
+                UnregisterShotcut(handle, id)
+                If Not use OrElse RegisterShotcut(handle, key, id) Then
+                    setting.IsUseHotKey = use
+                    setting.HotKey = key
+                    SettingUtil.SaveAppSettings(setting)
+                End If
+            End Sub
+        HotKeyDialog.ShowDialog(_view.GetMe())
+    End Sub
+
+End Class

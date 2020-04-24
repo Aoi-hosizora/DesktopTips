@@ -32,9 +32,6 @@
     <Setting Name="LastMobileIP" Type="System.String" Scope="User">
       <Value Profile="(Default)">127.0.0.1:8776</Value>
     </Setting>
-    <Setting Name="LastLocalPort" Type="System.String" Scope="User">
-      <Value Profile="(Default)">8776</Value>
-    </Setting>
     <Setting Name="IsUseHotKey" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>

@@ -176,18 +176,6 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("8776")>  _
-        Public Property LastLocalPort() As String
-            Get
-                Return CType(Me("LastLocalPort"),String)
-            End Get
-            Set
-                Me("LastLocalPort") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
         Public Property IsUseHotKey() As Boolean
             Get

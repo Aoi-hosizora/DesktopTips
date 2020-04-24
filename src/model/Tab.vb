@@ -13,6 +13,10 @@ Public Class Tab
         Me.New("默认", New List(Of TipItem))
     End Sub
 
+    Public Sub New(title As String)
+        Me.New(title, New List(Of TipItem))
+    End Sub
+
     Public Sub New(title As String, tabs As List(Of TipItem))
         Me.Title = title
         Me.Tips = tabs

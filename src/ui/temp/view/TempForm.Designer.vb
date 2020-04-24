@@ -28,7 +28,7 @@ Partial Class TempForm
         Me.ButtonAddItem = New DevComponents.DotNetBar.ButtonX()
         Me.MyStyleManager = New DevComponents.DotNetBar.StyleManager(Me.components)
         Me.LabelFocus = New System.Windows.Forms.Label()
-        Me.ListView = New System.Windows.Forms.ListBox()
+        Me.ListView = New TipListBox()
         Me.ButtonCloseForm = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonListSetting = New DevComponents.DotNetBar.ButtonX()
         Me.NumericUpDownListCnt = New System.Windows.Forms.NumericUpDown()
@@ -714,7 +714,7 @@ Partial Class TempForm
     Friend WithEvents ButtonAddItem As DevComponents.DotNetBar.ButtonX
     Friend WithEvents MyStyleManager As DevComponents.DotNetBar.StyleManager
     Friend WithEvents LabelFocus As System.Windows.Forms.Label
-    Friend WithEvents ListView As System.Windows.Forms.ListBox
+    Friend WithEvents ListView As TipListBox
     Friend WithEvents ButtonCloseForm As DevComponents.DotNetBar.ButtonX
     Friend WithEvents ButtonListSetting As DevComponents.DotNetBar.ButtonX
     Friend WithEvents NumericUpDownListCnt As System.Windows.Forms.NumericUpDown

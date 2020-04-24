@@ -12,7 +12,10 @@ Public Class BaseMainForm
     Private WithEvents TimerMouseOut As New Timer() With {.Interval = 10, .Enabled = False}
     Private WithEvents LabelFocus As New Label() With {.Visible = False}
 
-    Protected MaxOpacity As Double = 0.6
+    ''' <summary>
+    ''' 窗口在未透明时的最大透明度
+    ''' </summary>
+    Public Property MaxOpacity As Double = 0.6
 
     Public Delegate Function MouseLeaveOption() As Boolean
     Public Property CanMouseLeave As MouseLeaveOption

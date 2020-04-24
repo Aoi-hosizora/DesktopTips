@@ -13,15 +13,21 @@
     ''' <summary>
     ''' 当前分组编号
     ''' </summary>
-    Public Shared CurrTabIdx As Integer = -1
+    Private Shared currentTabIndex As Integer = -1
 
     ''' <summary>
     ''' 当前分组
     ''' </summary>
-    Public Shared ReadOnly Property CurrentTab() As Tab
+    Public Shared Property CurrentTab() As Tab
         Get
-            Return Tabs.ElementAt(CurrTabIdx)
+            If currentTabIndex < 0 Then
+                Return Nothing
+            End If
+            Return Tabs.ElementAt(currentTabIndex)
         End Get
+        Set(value As Tab)
+            currentTabIndex = Tabs.IndexOf(value)
+        End Set
     End Property
 
 End Class

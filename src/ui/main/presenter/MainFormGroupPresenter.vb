@@ -70,7 +70,7 @@ Public Class MainFormGroupPresenter
         Else
             Dim sb As New StringBuilder
             For Each Item As TipItem In items
-                sb.AppendLine(Item.TipContent)
+                sb.AppendLine(Item.Content)
             Next
             flag = "确定将当前分组 """ & src & """ 所选内容 (共 " & items.Count & " 项) 移动至分组 """ & dest & """ 吗？" & Chr(10) & Chr(10) & sb.ToString()
         End If

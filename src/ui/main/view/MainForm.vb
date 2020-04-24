@@ -331,7 +331,7 @@ Public Class MainForm
     Private Sub ListPopupMenuHighLight_Click(sender As Object, e As EventArgs) Handles ListPopupMenuHighLight.Click
         Dim highLight As Boolean = CType(ListView.SelectedItems(0), TipItem).IsHighLight
         For Each item As TipItem In ListView.SelectedItems
-            item.IsHighLight = Not highLight
+            '  item.IsHighLight = Not highLight
         Next
         SaveList()
         ListView.Refresh()
@@ -557,7 +557,7 @@ Public Class MainForm
 
         ' 浏览器
         ListPopupMenuBrowser.Enabled = ListView.SelectedItems.Cast(Of TipItem)().
-            Where(Function(item As TipItem) item.TipContent.IndexOf("http://") <> -1 Or item.TipContent.IndexOf("https://") <> -1).Count >= 1
+            Where(Function(item As TipItem) item.Content.IndexOf("http://") <> -1 Or item.Content.IndexOf("https://") <> -1).Count >= 1
     End Sub
 
     ''' <summary>
@@ -593,7 +593,7 @@ Public Class MainForm
         Dim idx = ListView.IndexFromPoint(e.Location)
         If hoverIdx <> idx AndAlso idx <> -1 AndAlso idx < ListView.Items.Count Then
             HoverToolTip.Hide(ListView)
-            HoverToolTip.SetToolTip(ListView, CType(ListView.Items.Item(idx), TipItem).TipContent)
+            HoverToolTip.SetToolTip(ListView, CType(ListView.Items.Item(idx), TipItem).Content)
             hoverIdx = idx
         End If
     End Sub
@@ -633,7 +633,7 @@ Public Class MainForm
 
         Dim sb As New StringBuilder
         For Each item As TipItem In ListView.SelectedItems.Cast(Of TipItem)()
-            sb.AppendLine(item.TipContent)
+            sb.AppendLine(item.Content)
         Next
 
         ListPopupMenuLabelSelItemText.Text = sb.ToString
@@ -758,7 +758,7 @@ Public Class MainForm
     Private Sub TabStrip_SelectedTabChanged(sender As Object, e As DD.SuperTabStripSelectedTabChangedEventArgs) Handles TabStrip.SelectedTabChanged
         HideAssistButtons()
         If TabStrip.SelectedTabIndex <> -1 And GlobalModel.Tabs.Count <> 0 Then
-            GlobalModel.CurrTabIdx = GlobalModel.Tabs.IndexOf(GlobalModel.GetTabFromTitle(TabStrip.SelectedTab.Text))
+            GlobalModel.CurrentTab = GlobalModel.GetTabFromTitle(TabStrip.SelectedTab.Text)
             LoadList()
         End If
     End Sub
@@ -830,7 +830,7 @@ Public Class MainForm
             newTabs.Add(GlobalModel.GetTabFromTitle(TabItem.Text))
         Next
         GlobalModel.Tabs = newTabs
-        GlobalModel.CurrTabIdx = GlobalModel.Tabs.IndexOf(GlobalModel.GetTabFromTitle(TabStrip.SelectedTab.Text))
+        GlobalModel.CurrentTab = GlobalModel.GetTabFromTitle(TabStrip.SelectedTab.Text)
         GlobalModel.SaveAllData()
     End Sub
 
@@ -922,7 +922,7 @@ Public Class MainForm
                 End If
             Next
             For Each item As TipItem In items
-                Dim idx As Integer = GlobalModel.GetIndexFromContent(item.TipContent, GlobalModel.GetTabFromTitle(dest).Tips)
+                Dim idx As Integer = GlobalModel.GetIndexFromContent(item.Content, GlobalModel.GetTabFromTitle(dest).Tips)
                 If idx <> -1 Then
                     ListView.SetSelected(idx, True)
                 End If

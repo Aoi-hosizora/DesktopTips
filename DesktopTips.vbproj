@@ -107,23 +107,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="src\model\ColorPair.vb" />
     <Compile Include="src\model\GlobalModel.Assist.vb" />
     <Compile Include="src\model\GlobalModel.LS.vb" />
     <Compile Include="src\model\GlobalModel.vb" />
     <Compile Include="src\model\Tab.vb" />
+    <Compile Include="src\model\TipColor.vb" />
     <Compile Include="src\model\TipItem.vb" />
     <Compile Include="src\service\SyncData.vb" />
     <Compile Include="src\ui\base\BaseMainForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\ui\base\BaseEscCloseForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\ui\main\view\TempForm.Designer.vb">
-      <DependentUpon>TempForm.vb</DependentUpon>
-    </Compile>
-    <Compile Include="src\ui\main\view\TempForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\ui\view\HotKeyBox.vb">
@@ -205,9 +199,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\ui\dialog\SearchDialog.resx">
       <DependentUpon>SearchDialog.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\ui\main\view\TempForm.resx">
-      <DependentUpon>TempForm.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

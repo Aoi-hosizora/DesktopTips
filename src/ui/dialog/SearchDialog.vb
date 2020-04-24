@@ -23,7 +23,7 @@ Public Class SearchDialog
         ListView.Items.Clear()
         For Each Tpl As Tuple(Of Integer, Integer) In SearchResult
             Dim tab As Tab = SU.Tabs.Item(Tpl.Item1)
-            ListView.Items.Add("[" & tab.Title & "] - " & tab.Tips.Item(Tpl.Item2).TipContent)
+            ListView.Items.Add("[" & tab.Title & "] - " & tab.Tips.Item(Tpl.Item2).Content)
         Next
     End Sub
 

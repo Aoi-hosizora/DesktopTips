@@ -20,7 +20,7 @@ Public Class MainFormListPresenter
     Public Function Delete(items As IEnumerable(Of TipItem)) As Boolean Implements MainFormContract.IListPresenter.Delete
         Dim sb As New StringBuilder
         For Each item As TipItem In items
-            sb.AppendLine(item.TipContent)
+            sb.AppendLine(item.Content)
         Next
         Dim ok As Integer = MessageBoxEx.Show(
             "确定删除以下 " & items.Count & " 个提醒标签吗？" & Chr(10) & Chr(10) & sb.ToString,
@@ -33,9 +33,9 @@ Public Class MainFormListPresenter
     End Function
 
     Public Function Update(ByRef item As TipItem) As Boolean Implements MainFormContract.IListPresenter.Update
-        Dim newstr As String = InputBox("修改提醒标签 """ & item.TipContent & """ 为：", "修改", item.TipContent)
-        If newstr <> "" And newstr <> item.TipContent Then
-            item.TipContent = newstr.Trim()
+        Dim newstr As String = InputBox("修改提醒标签 """ & item.Content & """ 为：", "修改", item.Content)
+        If newstr <> "" And newstr <> item.Content Then
+            item.Content = newstr.Trim()
             Return True
         End If
         Return False
@@ -44,7 +44,7 @@ Public Class MainFormListPresenter
     Public Sub Copy(items As IEnumerable(Of TipItem)) Implements MainFormContract.IListPresenter.Copy
         Dim sb As New StringBuilder
         For Each item As TipItem In items
-            sb.AppendLine(item.TipContent)
+            sb.AppendLine(item.Content)
         Next
         Clipboard.SetText(sb.ToString())
     End Sub
@@ -53,12 +53,12 @@ Public Class MainFormListPresenter
         Dim clip As String = Clipboard.GetText
         If Not String.IsNullOrWhiteSpace(clip) Then
             Dim ok As DialogResult = MessageBoxEx.Show(
-               "是否向当前选中项 """ & item.TipContent & """ 末尾添加剪贴板内容 """ & clip & """？",
+               "是否向当前选中项 """ & item.Content & """ 末尾添加剪贴板内容 """ & clip & """？",
                "附加内容", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1,
                _view.GetMe())
 
             If ok = vbOK Then
-                item.TipContent += " " & Clipboard.GetText().Trim()
+                item.Content += " " & Clipboard.GetText().Trim()
                 Return True
             End If
         End If
@@ -74,7 +74,7 @@ Public Class MainFormListPresenter
 
         For Each tab As Tab In GlobalModel.Tabs
             For Each tip As TipItem In tab.Tips
-                If tip.TipContent.ToLower.Contains(text.ToLower) Then
+                If tip.Content.ToLower.Contains(text.ToLower) Then
                     result.Add(New Tuple(Of Integer, Integer)(GlobalModel.Tabs.IndexOf(tab), tab.Tips.IndexOf(tip)))
                 End If
             Next
@@ -95,7 +95,7 @@ Public Class MainFormListPresenter
     Public Sub ViewCurrentList(items As IEnumerable(Of TipItem)) Implements MainFormContract.IListPresenter.ViewCurrentList
         Dim sb As New StringBuilder
         For Each Item As TipItem In items.Cast(Of TipItem)()
-            sb.AppendLine(Item.TipContent & If(Item.IsHighLight, " [高亮]", ""))
+            sb.AppendLine(Item.Content & If(Item.Content, " [高亮]", ""))
         Next
         _view.ShowTextForm("浏览文件 (共 " & items.Count & " 项)", sb.ToString(), Color.Black)
     End Sub
@@ -106,7 +106,7 @@ Public Class MainFormListPresenter
     Private Function getLinks(items As IEnumerable(Of TipItem)) As List(Of String)
         Dim res As New List(Of String)
         For Each item In items
-            Dim sp As String() = item.TipContent.Split(New Char() {" "}, StringSplitOptions.RemoveEmptyEntries)
+            Dim sp As String() = item.Content.Split(New Char() {" "}, StringSplitOptions.RemoveEmptyEntries)
             For Each link In sp
                 If link.StartsWith("http://") Or link.StartsWith("https://") Then
                     res.Add(link)
@@ -148,7 +148,7 @@ Public Class MainFormListPresenter
         Dim idx As Integer = 0
         For Each Item As TipItem In items.Cast(Of TipItem)()
             If Item.IsHighLight Then
-                sb.AppendLine(Item.TipContent)
+                sb.AppendLine(Item.Content)
                 idx += 1
             End If
         Next

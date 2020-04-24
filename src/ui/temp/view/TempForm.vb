@@ -77,6 +77,156 @@ Public Class TempForm
         MyBase.WndProc(m)
     End Sub
 
+    ''' <summary>
+    ''' 窗口关闭之后处理
+    ''' </summary>
+    Private Sub MainForm_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+        SaveList()
+        _globalPresenter.UnregisterShotcut(Handle, HOTKEY_ID)
+    End Sub
+
+    ''' <summary>
+    ''' 窗口加载
+    ''' </summary>
+    Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' 窗口显示
+        LoadSetting()
+        Me.Refresh()
+        Me.TabStrip.Tabs.Remove(Me.TabItemTest)
+        Me.TabStrip.Tabs.Remove(Me.TabItemTest2)
+        ButtonRemoveItem.Enabled = False
+        ' SetupAssistButtonsLayout()
+        ' SetupOpecityButtonsLayout()
+
+        ' 窗口动画
+        CanMouseLeave = Function() As Boolean
+                            Return ListPopupMenu.PopupControl Is Nothing AndAlso
+                                TabPopupMenu.PopupControl Is Nothing AndAlso
+                                TabStrip.ContextMenu Is Nothing AndAlso
+                                ListPopupMenuMove.PopupControl Is Nothing 'AndAlso isMenuPopuping = False
+                        End Function
+
+        ' 列表
+        LoadList()
+        For i = 0 To GlobalModel.Tabs.Count - 1
+            AddShownTab(GlobalModel.Tabs.Item(i).Title)
+        Next
+    End Sub
+
+#End Region
+
+#Region "列表内容"
+
+#Region "增删改 移动 置顶 复制粘贴 全选 查找"
+
+    ''' <summary>
+    ''' 增
+    ''' </summary>
+    Private Sub InsertTip(sender As Object, e As EventArgs) Handles ButtonAddItem.Click, ListPopupMenuAddItem.Click, LabelNothing.DoubleClick
+        _listPresenter.Insert()
+        ListView.Refresh()
+    End Sub
+
+    ''' <summary>
+    ''' 删
+    ''' </summary>
+    Private Sub DeleteTip(sender As Object, e As EventArgs) Handles ButtonRemoveItem.Click, ListPopupMenuRemoveItem.Click
+        If ListView.SelectedItems IsNot Nothing Then
+            _listPresenter.Delete(ListView.SelectedItems.ToTipItems())
+            ListView.Refresh()
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 改
+    ''' </summary>
+    Private Sub UpdateTip(sender As Object, e As EventArgs) Handles ListView.DoubleClick, ListPopupMenuEditItem.Click
+        If ListView.SelectedItem IsNot Nothing AndAlso ListView.SelectedCount = 1 Then
+            _listPresenter.Update(ListView.SelectedItem)
+            ListView.Refresh()
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 置顶
+    ''' </summary>
+    Private Sub ListPopupMenuMoveTop_Click(sender As Object, e As EventArgs) Handles ListPopupMenuMoveTop.Click
+        Dim item As TipItem = CType(ListView.SelectedItem, TipItem)
+        ListView.Items.Remove(item)
+        ListView.Items.Insert(0, item)
+        ListView.SetSelected(0, True)
+        SaveList()
+    End Sub
+
+    ''' <summary>
+    ''' 置底
+    ''' </summary>
+    Private Sub ListPopupMenuMoveBottom_Click(sender As Object, e As EventArgs) Handles ListPopupMenuMoveBottom.Click
+        Dim item As TipItem = CType(ListView.SelectedItem, TipItem)
+        ListView.Items.Remove(item)
+        ListView.Items.Insert(ListView.Items.Count, item)
+        ListView.SetSelected(ListView.Items.Count - 1, True)
+        SaveList()
+    End Sub
+
+    ''' <summary>
+    ''' 上移
+    ''' </summary>
+    Private Sub MoveUp_Click(sender As Object, e As EventArgs) Handles ListPopupMenuMoveUp.Click, ButtonItemUp.Click
+        Dim currIdx As Integer = ListView.SelectedIndex
+        If currIdx >= 1 Then
+            Dim item As TipItem = CType(ListView.SelectedItem, TipItem)
+            ListView.Items.Remove(item)
+            ListView.Items.Insert(currIdx - 1, item)
+            ListView.SetSelected(currIdx - 1, True)
+            If sender.Tag = "True" Then NativeMethod.MouseMoveUp(Cursor.Position, 17) ' 如果是辅助按钮
+            SaveList()
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 下移
+    ''' </summary>
+    Private Sub MoveDown_Click(sender As Object, e As EventArgs) Handles ListPopupMenuMoveDown.Click, ButtonItemDown.Click
+        Dim currIdx As Integer = ListView.SelectedIndex
+        If currIdx <= ListView.Items.Count() - 2 Then
+            Dim item As TipItem = CType(ListView.SelectedItem, TipItem)
+            ListView.Items.Remove(item)
+            ListView.Items.Insert(currIdx + 1, item)
+            ListView.SetSelected(currIdx + 1, True)
+            If sender.Tag = "True" Then NativeMethod.MouseMoveDown(Cursor.Position, 17) ' 如果是辅助按钮
+            SaveList()
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 复制
+    ''' </summary>
+    Private Sub ListPopupMenuCopy_Click(sender As Object, e As EventArgs) Handles ListPopupMenuCopy.Click
+        _listPresenter.Copy(ListView.SelectedItems.Cast(Of TipItem)())
+    End Sub
+
+    ''' <summary>
+    ''' 粘贴附加在最后
+    ''' </summary>
+    Private Sub ListPopupMenuPasteAppend_Click(sender As Object, e As EventArgs) Handles ListPopupMenuPasteAppend.Click
+        If ListView.SelectedItem IsNot Nothing AndAlso ListView.SelectedIndices.Count = 1 Then
+            _listPresenter.Paste(ListView.SelectedItem)
+            ListView.Refresh()
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 全选
+    ''' </summary>
+    Private Sub ListPopupMenuSelectAll_Click(sender As Object, e As EventArgs) Handles ListPopupMenuSelectAll.Click
+        For i = 0 To ListView.Items.Count - 1
+            ListView.SetSelected(i, True)
+        Next
+    End Sub
+
+#End Region
+
 #End Region
 
 End Class

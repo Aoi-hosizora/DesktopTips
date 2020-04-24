@@ -9,6 +9,7 @@ Public Class TipListBox
     End Sub
 
     Private _items As TipListBoxItemCollection
+
     <DesignerSerializationVisibility(DesignerSerializationVisibility.Content)>
     Public Overloads ReadOnly Property Items As TipListBoxItemCollection
         Get
@@ -38,6 +39,12 @@ Public Class TipListBox
                 items.Add(DirectCast(item, TipItem))
             Next
             Return items
+        End Get
+    End Property
+
+    Public Overloads ReadOnly Property SelectedCount As Integer
+        Get
+            Return SelectedIndices.Count
         End Get
     End Property
 
@@ -94,10 +101,18 @@ Public Class TipListBox
                 Me.InsertItem(Me.Items.Count, item)
             Next
         End Sub
+
+        Public Function ToTipItems() As List(Of TipItem)
+            Return Cast(Of TipItem)()
+        End Function
     End Class
 
     Public Class TipListBoxSelectedItemCollection
         Inherits ObjectModel.Collection(Of TipItem)
+
+        Public Function ToTipItems() As List(Of TipItem)
+            Return Cast(Of TipItem)()
+        End Function
     End Class
 
 End Class

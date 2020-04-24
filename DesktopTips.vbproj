@@ -107,9 +107,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="src\model\GlobalModel.Assist.vb" />
-    <Compile Include="src\model\GlobalModel.LS.vb" />
-    <Compile Include="src\model\GlobalModel.vb" />
+    <Compile Include="src\global\ColorConverter.vb" />
+    <Compile Include="src\global\FileModel.vb" />
+    <Compile Include="src\global\GlobalModel.Assist.vb" />
+    <Compile Include="src\global\GlobalModel.vb" />
     <Compile Include="src\model\Tab.vb" />
     <Compile Include="src\model\TipColor.vb" />
     <Compile Include="src\model\TipItem.vb" />
@@ -118,6 +119,26 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\ui\base\BaseEscCloseForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\ui\main\view\MainForm.Designer.vb">
+      <DependentUpon>MainForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="src\ui\main\view\MainForm.Partial.vb">
+      <DependentUpon>MainForm.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\ui\main\view\MainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\ui\main\view\MainForm.View.vb">
+      <DependentUpon>MainForm.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\ui\main\view\TempForm.Designer.vb">
+      <DependentUpon>TempForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="src\ui\main\view\TempForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\ui\view\HotKeyBox.vb">
@@ -139,17 +160,6 @@
     <Compile Include="src\ui\main\presenter\MainFormListPresenter.vb" />
     <Compile Include="src\ui\main\presenter\MainFormGlobalPresenter.vb" />
     <Compile Include="src\ui\main\presenter\MainFormGroupPresenter.vb" />
-    <Compile Include="src\ui\main\view\MainForm.Partial.vb">
-      <DependentUpon>MainForm.vb</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\ui\main\view\MainForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\ui\main\view\MainForm.Designer.vb">
-      <DependentUpon>MainForm.vb</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -164,10 +174,6 @@
       <DependentUpon>SearchDialog.vb</DependentUpon>
     </Compile>
     <Compile Include="src\ui\dialog\SearchDialog.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\ui\main\view\MainForm.View.vb">
-      <DependentUpon>MainForm.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\ui\view\TipListBox.vb">
@@ -187,10 +193,6 @@
     <EmbeddedResource Include="src\ui\dialog\LinkDialog.resx">
       <DependentUpon>LinkDialog.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ui\main\view\MainForm.resx">
-      <DependentUpon>MainForm.vb</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
@@ -199,6 +201,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\ui\dialog\SearchDialog.resx">
       <DependentUpon>SearchDialog.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\ui\main\view\MainForm.resx">
+      <DependentUpon>MainForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

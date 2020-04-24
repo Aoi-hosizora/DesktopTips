@@ -1,7 +1,7 @@
 ﻿Imports DD = DevComponents.DotNetBar
 
 ''' <summary>
-''' 实现了 透明度动画 窗口拖动
+''' 实现了 透明度动画 窗口拖动 状态栏不显示
 ''' </summary>
 Public Class BaseMainForm
     Inherits Form
@@ -57,6 +57,17 @@ Public Class BaseMainForm
         LabelFocus.Focus()
         LabelFocus.Select()
     End Sub
+
+    Protected Overrides ReadOnly Property CreateParams As System.Windows.Forms.CreateParams
+        Get
+            Const WS_EX_APPWINDOW As Integer = 16384
+            Const WS_EX_TOOLWINDOW As Integer = 128
+            Dim cp As CreateParams = MyBase.CreateParams
+            cp.ExStyle = cp.ExStyle And Not WS_EX_APPWINDOW ' 不显示在TaskBar
+            cp.ExStyle = cp.ExStyle Or WS_EX_TOOLWINDOW ' 不显示在Alt-Tab
+            Return cp
+        End Get
+    End Property
 
 #Region "Timer"
 

@@ -14,17 +14,6 @@ Partial Class MainForm
         End Try
     End Sub
 
-    Protected Overrides ReadOnly Property CreateParams As System.Windows.Forms.CreateParams
-        Get
-            Const WS_EX_APPWINDOW As Integer = 16384
-            Const WS_EX_TOOLWINDOW As Integer = 128
-            Dim cp As CreateParams = MyBase.CreateParams
-            cp.ExStyle = cp.ExStyle And (Not WS_EX_APPWINDOW) '不显示在TaskBar
-            cp.ExStyle = cp.ExStyle Or WS_EX_TOOLWINDOW '不显示在Alt-Tab
-            Return cp
-        End Get
-    End Property
-
     'Windows 窗体设计器所必需的
     Private components As System.ComponentModel.IContainer
 

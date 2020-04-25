@@ -228,6 +228,46 @@ Public Class TempForm
 
 #End Region
 
+#Region "查找 打开浏览文件 浏览器"
+
+    ''' <summary>
+    ''' 查找
+    ''' </summary>
+    Public Sub ListPopupMenuFind_Click(sender As Object, e As EventArgs) Handles ListPopupMenuFind.Click
+        _listPresenter.Search()
+    End Sub
+
+    ''' <summary>
+    ''' 打开文件所在位置
+    ''' </summary>
+    Private Sub ListPopupMenuOpenFile_Click(sender As Object, e As EventArgs) Handles ListPopupMenuOpenDir.Click
+        _globalPresenter.OpenFileDir()
+    End Sub
+
+    ''' <summary>
+    ''' 浏览当前列表
+    ''' </summary>
+    Private Sub ListPopupMenuViewFile_Click(sender As Object, e As EventArgs) Handles ListPopupMenuViewFile.Click
+        _listPresenter.ViewCurrentList(ListView.Items.ToTipItems())
+    End Sub
+
+    ''' <summary>
+    ''' 打开所有链接
+    ''' </summary>
+    Private Sub ListPopupMenuOpenAllLink_Click(sender As Object, e As EventArgs) Handles ListPopupMenuOpenAllLink.Click
+        _listPresenter.OpenAllLinks(ListView.SelectedItems.ToTipItems())
+    End Sub
+
+    ''' <summary>
+    ''' 打开部分连接
+    ''' </summary>
+    Private Sub ListPopupMenuViewAllLink_Click(sender As Object, e As EventArgs) Handles ListPopupMenuViewAllLink.Click
+        _listPresenter.OpenSomeLinks(ListView.SelectedItems.ToTipItems())
+    End Sub
+
+
+#End Region
+
 #End Region
 
 End Class

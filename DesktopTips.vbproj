@@ -135,16 +135,6 @@
       <DependentUpon>MainForm.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\main\view\TempForm.Designer.vb">
-      <DependentUpon>TempForm.vb</DependentUpon>
-    </Compile>
-    <Compile Include="src\ui\main\view\TempForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\ui\main\view\TempForm.View.vb">
-      <DependentUpon>TempForm.vb</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="src\ui\temp\contract\TempFormContract.vb" />
     <Compile Include="src\ui\temp\presenter\TempFormGlobalPresenter.vb" />
     <Compile Include="src\ui\temp\presenter\TempFormListPresenter.vb" />

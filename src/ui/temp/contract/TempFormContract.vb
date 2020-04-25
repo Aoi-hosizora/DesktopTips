@@ -15,21 +15,19 @@
     End Interface
 
     Public Interface IListPresenter
-        Sub Insert()                                        ' 插入
-        Sub Delete(ByRef items As IEnumerable(Of TipItem))  ' 删除
-        Sub Update(ByRef item As TipItem)                   ' 更新
-        Sub Copy(items As IEnumerable(Of TipItem))          ' 复制
-        Sub Paste(ByRef item As TipItem)                    ' 粘贴插入
-        Sub MoveUp(item As TipItem)                         ' 上移
-        Sub MoveDown(item As TipItem)                       ' 下移
-        Sub MoveTop(item As TipItem)                        ' 置顶
-        Sub MoveBottom(item As TipItem)                     ' 置底
-
-        'Sub Search()                                                                ' 搜索
-        'Sub OpenAllLinks(items As IEnumerable(Of TipItem))                          ' 打开所有链接
-        'Sub OpenSomeLinks(items As IEnumerable(Of TipItem))                         ' 打开部分链接
-        'Sub ViewCurrentList(items As IEnumerable(Of TipItem))                       ' 浏览当前列表
-        'Sub ViewHighlightList(items As IEnumerable(Of TipItem), color As Color)     ' 浏览列表高亮
+        Sub Insert()                                            ' 插入
+        Sub Delete(ByRef items As IEnumerable(Of TipItem))      ' 删除
+        Sub Update(ByRef item As TipItem)                       ' 更新
+        Sub Copy(items As IEnumerable(Of TipItem))              ' 复制
+        Sub Paste(ByRef item As TipItem)                        ' 粘贴插入
+        Sub MoveUp(item As TipItem)                             ' 上移
+        Sub MoveDown(item As TipItem)                           ' 下移
+        Sub MoveTop(item As TipItem)                            ' 置顶
+        Sub MoveBottom(item As TipItem)                         ' 置底
+        Sub Search()                                            ' 搜索
+        Sub OpenAllLinks(items As IEnumerable(Of TipItem))      ' 打开所有链接
+        Sub OpenSomeLinks(items As IEnumerable(Of TipItem))     ' 打开部分链接
+        Sub ViewCurrentList(items As IEnumerable(Of TipItem))   ' 浏览当前列表
     End Interface
 
 End Interface

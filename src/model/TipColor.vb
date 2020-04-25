@@ -9,7 +9,7 @@ Public Class TipColor
     <JsonProperty("name")>
     Public Property Name As String
 
-    <JsonProperty("color"), JsonConverter(GetType(ColorConverter))>
+    <JsonProperty("color")>
     Public Property Color As Color
 
     Public Sub New()

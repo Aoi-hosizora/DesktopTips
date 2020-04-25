@@ -62,6 +62,12 @@ Public Class TipListBox
         End If
     End Sub
 
+    Public Sub SetSelectOnly(index As Integer)
+        MyBase.SetSelected(0, True)
+        MyBase.ClearSelected()
+        MyBase.SetSelected(index, True)
+    End Sub
+
     Public Class TipListBoxItemCollection
         Inherits ObjectModel.Collection(Of TipItem)
 

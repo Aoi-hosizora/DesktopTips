@@ -133,7 +133,7 @@ Public Class TempFormListPresenter
     Public Function MoveBottom(item As TipItem) As Boolean Implements TempFormContract.IListPresenter.MoveBottom
         Dim idx = GlobalModel.CurrentTab.Tips.IndexOf(item)
         GlobalModel.CurrentTab.Tips.RemoveAt(idx)
-        GlobalModel.CurrentTab.Tips.Insert(GlobalModel.CurrentTab.Tips.Count - 1, item)
+        GlobalModel.CurrentTab.Tips.Add(item)
         _globalPresenter.SaveFile()
         Return True
     End Function

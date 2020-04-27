@@ -1,4 +1,5 @@
-﻿Imports DD = DevComponents.DotNetBar
+﻿Imports System.ComponentModel
+Imports DD = DevComponents.DotNetBar
 
 Public Class TempForm
 
@@ -16,12 +17,12 @@ Public Class TempForm
         Me.MaxOpacity = My.Settings.Opacity
         Me.TopMost = My.Settings.TopMost
 
-        ListPopupMenuFold.Checked = My.Settings.IsFold                                              ' 折叠菜单
-        ListPopupMenuLoadPos.Enabled = Not (My.Settings.SaveLeft = - 1 Or My.Settings.SaveTop = - 1)  ' 恢复位置
-        NumericUpDownListCnt.Value = (Me.Height - 27) \ 17                                          ' 列表高度
-        ListPopupMenuWinTop.Checked = My.Settings.TopMost                                           ' 窗口置顶键
-        _globalPresenter.RegisterHotKey(Handle, My.Settings.HotKey, HOTKEY_ID)                      ' 注册快捷
-        FoldMenu(My.Settings.IsFold)                                                                ' 折叠菜单
+        ListPopupMenuFold.Checked = My.Settings.IsFold                                                  ' 折叠菜单
+        ListPopupMenuLoadPos.Enabled = Not (My.Settings.SaveLeft = - 1 Or My.Settings.SaveTop = - 1)    ' 恢复位置
+        NumericUpDownListCnt.Value = (Me.Height - 27) \ 17                                              ' 列表高度
+        ListPopupMenuWinTop.Checked = My.Settings.TopMost                                               ' 窗口置顶键
+        _globalPresenter.RegisterHotKey(Handle, My.Settings.HotKey, HOTKEY_ID)                          ' 注册快捷
+        FoldMenu(My.Settings.IsFold)                                                                    ' 折叠菜单
     End Sub
 
     ''' <summary>
@@ -126,7 +127,6 @@ Public Class TempForm
         If _listPresenter.Insert() Then
             ListView.Update()
             ListView.Refresh()
-            MsgBox(ListView.ItemCount)
             ListView.SetSelectOnly(ListView.ItemCount - 1)
         End If
     End Sub

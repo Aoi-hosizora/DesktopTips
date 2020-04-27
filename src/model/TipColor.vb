@@ -12,7 +12,7 @@ Public Class TipColor
     Public Property Color As Color
 
     Public Sub New()
-        Me.New(0, "默认", Color.Black)
+        Me.New(0, "默认", Color.FromArgb(0, 0, 0))
     End Sub
 
     Public Sub New(id As Integer, name As String, color As Color)

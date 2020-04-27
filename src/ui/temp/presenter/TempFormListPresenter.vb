@@ -14,15 +14,16 @@ Public Class TempFormListPresenter
     ''' <summary>
     ''' 插入标签
     ''' </summary>
-    Public Sub Insert() Implements TempFormContract.IListPresenter.Insert
-        Dim msg As String = InputBox("新的提醒标签：", "添加")
-        msg = msg.Trim()
-        If String.IsNullOrWhiteSpace(msg) Then
+    Public Function Insert() As Boolean Implements TempFormContract.IListPresenter.Insert
+        Dim msg As String = InputBox("新的提醒标签：", "添加").Trim()
+        If msg <> "" Then
             Dim tip As New TipItem(msg)
             GlobalModel.CurrentTab.Tips.Add(tip)
             _globalPresenter.SaveFile()
+            Return True
         End If
-    End Sub
+        Return False
+    End Function
 
     ''' <summary>
     ''' 删除标签

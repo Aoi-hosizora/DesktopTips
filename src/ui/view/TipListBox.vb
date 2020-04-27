@@ -4,8 +4,8 @@ Public Class TipListBox
     Inherits ListBox
 
     Public Sub New()
-        Items = New TipListBoxItemCollection(Me)
         DrawMode = DrawMode.OwnerDrawFixed
+        DisplayMember = "Content"
     End Sub
 
     Private ReadOnly Property baseItems As ObjectCollection
@@ -14,11 +14,12 @@ Public Class TipListBox
         End Get
     End Property
 
-
 #Region "Properties and functions"
 
     <DesignerSerializationVisibility(DesignerSerializationVisibility.Content)>
-    Public Overloads ReadOnly Property Items As TipListBoxItemCollection
+    Public Overloads ReadOnly Property Items As New TipListBoxItemCollection(Me)
+
+    Public ReadOnly Property ItemCount As Integer = Items.Count
 
     Public Overloads Property SelectedItem As TipItem
         Get
@@ -46,7 +47,7 @@ Public Class TipListBox
         MyBase.OnDrawItem(e)
         e.DrawBackground()
         e.DrawFocusRectangle()
-        If e.Index >= 0 AndAlso e.Index < Me.Items.Count Then
+        If e.Index >= 0 AndAlso e.Index < Items.Count Then
             Dim item As TipItem = Items(e.Index)
             If item IsNot Nothing Then
                 e.Graphics.SmoothingMode = Drawing2D.SmoothingMode.HighQuality

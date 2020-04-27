@@ -5,7 +5,7 @@
 .idea/
 
 ### Project ###
-.user
+*.user
 
 ### Build ###
 bin/

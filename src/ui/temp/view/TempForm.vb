@@ -32,7 +32,7 @@ Public Class TempForm
         _globalPresenter.LoadFile()
         ListView.DataSource = GlobalModel.CurrentTab.Tips
         ListView.Refresh()
-        LabelNothing.Visible = ListView.Items.Count = 0
+        LabelNothing.Visible = ListView.ItemCount = 0
     End Sub
 
     ''' <summary>
@@ -123,10 +123,12 @@ Public Class TempForm
     ''' 插入标签
     ''' </summary>
     Private Sub InsertTip(sender As Object, e As EventArgs) Handles ButtonAddItem.Click, ListPopupMenuAddItem.Click, LabelNothing.DoubleClick
-        _listPresenter.Insert()
-        ListView.Update()
-        ListView.Refresh()
-        ListView.SetSelectOnly(ListView.Items.Count - 1)
+        If _listPresenter.Insert() Then
+            ListView.Update()
+            ListView.Refresh()
+            MsgBox(ListView.ItemCount)
+            ListView.SetSelectOnly(ListView.ItemCount - 1)
+        End If
     End Sub
 
     ''' <summary>
@@ -172,7 +174,7 @@ Public Class TempForm
         _listPresenter.MoveBottom(ListView.SelectedItem)
         ListView.Update()
         ListView.Refresh()
-        ListView.SetSelectOnly(ListView.Items.Count - 1)
+        ListView.SetSelectOnly(ListView.ItemCount - 1)
     End Sub
 
     ''' <summary>
@@ -196,7 +198,7 @@ Public Class TempForm
     ''' </summary>
     Private Sub MoveDownTip(sender As Object, e As EventArgs) Handles ListPopupMenuMoveDown.Click, ButtonItemDown.Click
         Dim currIdx = ListView.SelectedIndex
-        If currIdx <= ListView.Items.Count() - 2 Then
+        If currIdx <= ListView.ItemCount - 2 Then
             _listPresenter.MoveDown(ListView.SelectedItem)
             ListView.Update()
             ListView.Refresh()
@@ -229,7 +231,7 @@ Public Class TempForm
     ''' 全选
     ''' </summary>
     Private Sub SelectAllTips(sender As Object, e As EventArgs) Handles ListPopupMenuSelectAll.Click
-        For i = 0 To ListView.Items.Count - 1
+        For i = 0 To ListView.ItemCount - 1
             ListView.SetSelected(i, True)
         Next
     End Sub
@@ -277,7 +279,14 @@ Public Class TempForm
 
 #End Region
 
-    Private Sub ExitApplication(sender As System.Object, e As EventArgs) Handles ButtonCloseForm.Click
-        Me.Close()
+    ''' <summary>
+    ''' 退出程序
+    ''' </summary>
+    Private Sub ExitApplication(sender As Object, e As EventArgs) Handles ButtonCloseForm.Click, ListPopupMenuExit.Click
+        Dim ok = MessageBox.Show("确定退出 DesktopTips 吗？",
+            "关闭", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+        If ok = vbYes Then
+            Me.Close()
+        End If
     End Sub
 End Class

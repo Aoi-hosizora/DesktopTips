@@ -14,7 +14,7 @@
     End Interface
 
     Public Interface IListPresenter
-        Sub Insert()                                            ' 插入
+        Function Insert() As Boolean                            ' 插入
         Sub Delete(ByRef items As IEnumerable(Of TipItem))      ' 删除
         Sub Update(ByRef item As TipItem)                       ' 更新
         Sub Copy(items As IEnumerable(Of TipItem))              ' 复制

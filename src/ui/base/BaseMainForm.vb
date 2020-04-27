@@ -124,7 +124,7 @@ Public Class BaseMainForm
     End Sub
 
     Private Sub ShowForm()
-        _timerMouseIn.Enabled = False
+        ' _timerMouseIn.Enabled = False
         _timerMouseOut.Enabled = False
         _timerCloseForm.Enabled = False
         _timerShowForm.Enabled = True
@@ -132,20 +132,20 @@ Public Class BaseMainForm
 
     Private Sub CloseForm()
         _timerMouseIn.Enabled = False
-        _timerMouseOut.Enabled = False
+        ' _timerMouseOut.Enabled = False
         _timerShowForm.Enabled = False
         _timerCloseForm.Enabled = True
     End Sub
 
     Protected Sub FormOpacityUp()
         _timerCloseForm.Enabled = False
-        _timerShowForm.Enabled = False
+        ' _timerShowForm.Enabled = False
         _timerMouseOut.Enabled = False
         _timerMouseIn.Enabled = True
     End Sub
 
     Protected Sub FormOpacityDown()
-        _timerCloseForm.Enabled = False
+        ' _timerCloseForm.Enabled = False
         _timerShowForm.Enabled = False
         _timerMouseIn.Enabled = False
         _timerMouseOut.Enabled = True

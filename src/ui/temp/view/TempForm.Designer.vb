@@ -148,7 +148,6 @@ Partial Class TempForm
         Me.ListView.ItemHeight = 17
         Me.ListView.Location = New System.Drawing.Point(23, 0)
         Me.ListView.Name = "ListView"
-        Me.ListView.SelectedItem = Nothing
         Me.ListView.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
         Me.ListView.Size = New System.Drawing.Size(303, 240)
         Me.ListView.TabIndex = 0

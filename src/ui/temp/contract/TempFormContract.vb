@@ -14,18 +14,18 @@
     End Interface
 
     Public Interface IListPresenter
-        Function Insert() As Boolean                            ' 插入
-        Sub Delete(ByRef items As IEnumerable(Of TipItem))      ' 删除
-        Sub Update(ByRef item As TipItem)                       ' 更新
-        Sub Copy(items As IEnumerable(Of TipItem))              ' 复制
-        Sub Paste(ByRef item As TipItem)                        ' 粘贴插入
-        Sub MoveUp(item As TipItem)                             ' 上移
-        Sub MoveDown(item As TipItem)                           ' 下移
-        Sub MoveTop(item As TipItem)                            ' 置顶
-        Sub MoveBottom(item As TipItem)                         ' 置底
-        Sub Search()                                            ' 搜索
-        Sub ViewCurrentList(items As IEnumerable(Of TipItem))   ' 浏览当前列表
-        Sub OpenAllLinks(items As IEnumerable(Of TipItem))      ' 打开所有链接
-        Sub ViewAllLinks(items As IEnumerable(Of TipItem))      ' 浏览所有链接
+        Function Insert() As Boolean                                            ' 插入
+        Function Delete(ByRef items As IEnumerable(Of TipItem)) As Boolean      ' 删除
+        Function Update(ByRef item As TipItem) As Boolean                       ' 更新
+        Sub Copy(items As IEnumerable(Of TipItem))                              ' 复制
+        Function Paste(ByRef item As TipItem) As Boolean                        ' 粘贴插入
+        Function MoveUp(item As TipItem) As Boolean                             ' 上移
+        Function MoveDown(item As TipItem) As Boolean                           ' 下移
+        Function MoveTop(item As TipItem) As Boolean                            ' 置顶
+        Function MoveBottom(item As TipItem) As Boolean                         ' 置底
+        Sub Search()                                                            ' 搜索
+        Sub ViewCurrentList(items As IEnumerable(Of TipItem))                   ' 浏览当前列表
+        Sub OpenAllLinks(items As IEnumerable(Of TipItem))                      ' 打开所有链接
+        Sub ViewAllLinks(items As IEnumerable(Of TipItem))                      ' 浏览所有链接
     End Interface
 End Interface

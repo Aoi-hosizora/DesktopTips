@@ -9,12 +9,20 @@ Public Class TipItem
     Public Property ColorIndex As Integer
 
     <JsonIgnore>
-    Public ReadOnly Property Color As TipColor = GlobalModel.Colors.ElementAtOrDefault(ColorIndex)
+    Public ReadOnly Property Color As TipColor
+        Get
+            Return GlobalModel.Colors.ElementAtOrDefault(ColorIndex)
+        End Get
+    End Property
 
     <JsonIgnore>
-    Public ReadOnly Property IsHighLight As Boolean = Color IsNot Nothing AndAlso Color.Color <> Drawing.Color.Black
+    Public ReadOnly Property IsHighLight As Boolean
+        Get
+            Return Color IsNot Nothing AndAlso Color.Color <> Drawing.Color.Black
+        End Get
+    End Property
 
-    Public Sub New(content As String, Optional colorIndex As Integer = - 1)
+    Public Sub New(content As String, Optional colorIndex As Integer = 0)
         Me.Content = content
         Me.ColorIndex = colorIndex
     End Sub

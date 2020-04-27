@@ -28,7 +28,7 @@ Public Class TempFormListPresenter
     ''' <summary>
     ''' 删除标签
     ''' </summary>
-    Public Sub Delete(ByRef items As IEnumerable(Of TipItem)) Implements TempFormContract.IListPresenter.Delete
+    Public Function Delete(ByRef items As IEnumerable(Of TipItem)) As Boolean Implements TempFormContract.IListPresenter.Delete
         Dim sb As New StringBuilder
         For Each item As TipItem In items
             sb.AppendLine(item.Content)
@@ -40,20 +40,24 @@ Public Class TempFormListPresenter
             For Each item In items
                 GlobalModel.CurrentTab.Tips.Remove(item)
             Next
+            _globalPresenter.SaveFile()
+            Return True
         End If
-        _globalPresenter.SaveFile()
-    End Sub
+        Return False
+    End Function
 
     ''' <summary>
     ''' 修改标签
     ''' </summary>
-    Public Sub Update(ByRef item As TipItem) Implements TempFormContract.IListPresenter.Update
+    Public Function Update(ByRef item As TipItem) As Boolean Implements TempFormContract.IListPresenter.Update
         Dim newStr As String = InputBox($"修改提醒标签 ""{item.Content}"" 为：", "修改", item.Content).Trim()
         If newStr <> "" And newStr <> item.Content Then
             item.Content = newStr
             _globalPresenter.SaveFile()
+            Return True
         End If
-    End Sub
+        Return False
+    End Function
 
     ''' <summary>
     ''' 复制标签
@@ -69,7 +73,7 @@ Public Class TempFormListPresenter
     ''' <summary>
     ''' 粘贴到最后
     ''' </summary>
-    Public Sub Paste(ByRef item As TipItem) Implements TempFormContract.IListPresenter.Paste
+    Public Function Paste(ByRef item As TipItem) As Boolean Implements TempFormContract.IListPresenter.Paste
         Dim clip As String = Clipboard.GetText().Trim()
         If Not String.IsNullOrWhiteSpace(clip) Then
             Dim ok = MessageBoxEx.Show($"是否向当前选中项 ""{item.Content}"" 末尾添加剪贴板内容 ""{clip}""？",
@@ -78,53 +82,61 @@ Public Class TempFormListPresenter
             If ok = vbOK Then
                 item.Content += " " & clip
                 _globalPresenter.SaveFile()
+                Return True
             End If
         End If
-    End Sub
+        Return False
+    End Function
 
     ''' <summary>
     ''' 上移
     ''' </summary>
-    Public Sub MoveUp(item As TipItem) Implements TempFormContract.IListPresenter.MoveUp
+    Public Function MoveUp(item As TipItem) As Boolean Implements TempFormContract.IListPresenter.MoveUp
         Dim idx = GlobalModel.CurrentTab.Tips.IndexOf(item)
         If idx >= 1 Then
             GlobalModel.CurrentTab.Tips.RemoveAt(idx)
             GlobalModel.CurrentTab.Tips.Insert(idx - 1, item)
             _globalPresenter.SaveFile()
+            Return True
         End If
-    End Sub
+        Return False
+    End Function
 
     ''' <summary>
     ''' 下移
     ''' </summary>
-    Public Sub MoveDown(item As TipItem) Implements TempFormContract.IListPresenter.MoveDown
+    Public Function MoveDown(item As TipItem) As Boolean Implements TempFormContract.IListPresenter.MoveDown
         Dim idx = GlobalModel.CurrentTab.Tips.IndexOf(item)
         If idx <= GlobalModel.CurrentTab.Tips.Count - 2 Then
             GlobalModel.CurrentTab.Tips.RemoveAt(idx)
             GlobalModel.CurrentTab.Tips.Insert(idx + 1, item)
             _globalPresenter.SaveFile()
+            Return True
         End If
-    End Sub
+        Return False
+    End Function
 
     ''' <summary>
     ''' 置顶
     ''' </summary>
-    Public Sub MoveTop(item As TipItem) Implements TempFormContract.IListPresenter.MoveTop
+    Public Function MoveTop(item As TipItem) As Boolean Implements TempFormContract.IListPresenter.MoveTop
         Dim idx = GlobalModel.CurrentTab.Tips.IndexOf(item)
         GlobalModel.CurrentTab.Tips.RemoveAt(idx)
         GlobalModel.CurrentTab.Tips.Insert(0, item)
         _globalPresenter.SaveFile()
-    End Sub
+        Return True
+    End Function
 
     ''' <summary>
     ''' 置底
     ''' </summary>
-    Public Sub MoveBottom(item As TipItem) Implements TempFormContract.IListPresenter.MoveBottom
+    Public Function MoveBottom(item As TipItem) As Boolean Implements TempFormContract.IListPresenter.MoveBottom
         Dim idx = GlobalModel.CurrentTab.Tips.IndexOf(item)
         GlobalModel.CurrentTab.Tips.RemoveAt(idx)
         GlobalModel.CurrentTab.Tips.Insert(GlobalModel.CurrentTab.Tips.Count - 1, item)
         _globalPresenter.SaveFile()
-    End Sub
+        Return True
+    End Function
 
     ''' <summary>
     ''' 搜索
@@ -162,7 +174,7 @@ Public Class TempFormListPresenter
     Public Sub ViewCurrentList(items As IEnumerable(Of TipItem)) Implements TempFormContract.IListPresenter.ViewCurrentList
         Dim sb As New StringBuilder
         For Each item As TipItem In items.Cast(Of TipItem)()
-            sb.AppendLine(item.Content & If(item.Content, " [高亮]", ""))
+            sb.AppendLine(item.Content & If(item.IsHighLight, " [高亮]", ""))
         Next
         _view.ShowTextForm($"浏览文件 (共 {items.Count} 项)", sb.ToString(), Color.Black)
     End Sub

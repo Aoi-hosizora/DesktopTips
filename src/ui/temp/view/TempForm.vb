@@ -136,8 +136,7 @@ Public Class TempForm
     ''' </summary>
     Private Sub DeleteTip(sender As Object, e As EventArgs) Handles ButtonRemoveItem.Click, ListPopupMenuRemoveItem.Click
         Dim index = ListView.SelectedIndex
-        If ListView.SelectedItems IsNot Nothing Then
-            _listPresenter.Delete(ListView.SelectedItems.ToTipItems())
+        If ListView.SelectedItems IsNot Nothing AndAlso _listPresenter.Delete(ListView.SelectedItems) Then
             ListView.Update()
             ListView.Refresh()
             ListView.SetSelectOnly(index)
@@ -149,8 +148,7 @@ Public Class TempForm
     ''' </summary>
     Private Sub UpdateTip(sender As Object, e As EventArgs) Handles ListView.DoubleClick, ListPopupMenuEditItem.Click
         Dim index = ListView.SelectedIndex
-        If ListView.SelectedCount = 1 Then
-            _listPresenter.Update(ListView.SelectedItem)
+        If ListView.SelectedCount = 1 AndAlso _listPresenter.Update(ListView.SelectedItem) Then
             ListView.Update()
             ListView.Refresh()
             ListView.SetSelectOnly(index)
@@ -161,20 +159,22 @@ Public Class TempForm
     ''' 置顶
     ''' </summary>
     Private Sub MoveTipTop(sender As Object, e As EventArgs) Handles ListPopupMenuMoveTop.Click
-        _listPresenter.MoveTop(ListView.SelectedItem)
-        ListView.Update()
-        ListView.Refresh()
-        ListView.SetSelectOnly(0)
+        If _listPresenter.MoveTop(ListView.SelectedItem) Then
+            ListView.Update()
+            ListView.Refresh()
+            ListView.SetSelectOnly(0)
+        End If
     End Sub
 
     ''' <summary>
     ''' 置底
     ''' </summary>
     Private Sub MoveTipBottom(sender As Object, e As EventArgs) Handles ListPopupMenuMoveBottom.Click
-        _listPresenter.MoveBottom(ListView.SelectedItem)
-        ListView.Update()
-        ListView.Refresh()
-        ListView.SetSelectOnly(ListView.ItemCount - 1)
+        If _listPresenter.MoveBottom(ListView.SelectedItem) Then
+            ListView.Update()
+            ListView.Refresh()
+            ListView.SetSelectOnly(ListView.ItemCount - 1)
+        End If
     End Sub
 
     ''' <summary>
@@ -182,8 +182,7 @@ Public Class TempForm
     ''' </summary>
     Private Sub MoveTipUp(sender As Object, e As EventArgs) Handles ListPopupMenuMoveUp.Click, ButtonItemUp.Click
         Dim currIdx = ListView.SelectedIndex
-        If currIdx >= 1 Then
-            _listPresenter.MoveUp(ListView.SelectedItem)
+        If currIdx >= 1 AndAlso _listPresenter.MoveUp(ListView.SelectedItem) Then
             ListView.Update()
             ListView.Refresh()
             ListView.SetSelectOnly(currIdx - 1)
@@ -198,8 +197,7 @@ Public Class TempForm
     ''' </summary>
     Private Sub MoveDownTip(sender As Object, e As EventArgs) Handles ListPopupMenuMoveDown.Click, ButtonItemDown.Click
         Dim currIdx = ListView.SelectedIndex
-        If currIdx <= ListView.ItemCount - 2 Then
-            _listPresenter.MoveDown(ListView.SelectedItem)
+        If currIdx <= ListView.ItemCount - 2 AndAlso _listPresenter.MoveDown(ListView.SelectedItem) Then
             ListView.Update()
             ListView.Refresh()
             ListView.SetSelectOnly(currIdx + 1)
@@ -213,15 +211,14 @@ Public Class TempForm
     ''' 复制标签
     ''' </summary>
     Private Sub CopyTip(sender As Object, e As EventArgs) Handles ListPopupMenuCopy.Click
-        _listPresenter.Copy(ListView.SelectedItems.ToTipItems())
+        _listPresenter.Copy(ListView.SelectedItems)
     End Sub
 
     ''' <summary>
     ''' 粘贴到最后
     ''' </summary>
     Private Sub PasteAppendToTip(sender As Object, e As EventArgs) Handles ListPopupMenuPasteAppend.Click
-        If ListView.SelectedIndices.Count = 1 Then
-            _listPresenter.Paste(ListView.SelectedItem)
+        If ListView.SelectedIndices.Count = 1 AndAlso _listPresenter.Paste(ListView.SelectedItem) Then
             ListView.Update()
             ListView.Refresh()
         End If
@@ -258,21 +255,21 @@ Public Class TempForm
     ''' 浏览当前列表
     ''' </summary>
     Private Sub ViewCurrentTipList(sender As Object, e As EventArgs) Handles ListPopupMenuViewFile.Click
-        _listPresenter.ViewCurrentList(ListView.Items.ToTipItems())
+        _listPresenter.ViewCurrentList(ListView.Items)
     End Sub
 
     ''' <summary>
     ''' 打开所有链接
     ''' </summary>
     Private Sub OpenTipAllLinks(sender As Object, e As EventArgs) Handles ListPopupMenuOpenAllLink.Click
-        _listPresenter.OpenAllLinks(ListView.SelectedItems.ToTipItems())
+        _listPresenter.OpenAllLinks(ListView.SelectedItems)
     End Sub
 
     ''' <summary>
     ''' 浏览所有链接，打开部分链接
     ''' </summary>
     Private Sub ViewTipAllLinks(sender As Object, e As EventArgs) Handles ListPopupMenuViewAllLink.Click
-        _listPresenter.ViewAllLinks(ListView.SelectedItems.ToTipItems())
+        _listPresenter.ViewAllLinks(ListView.SelectedItems)
     End Sub
 
 #End Region

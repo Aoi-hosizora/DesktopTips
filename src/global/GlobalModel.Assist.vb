@@ -9,6 +9,13 @@ Partial Public Class GlobalModel
     Public Shared STORAGE_FILENAME As String = STORAGE_FILEPATH & "\model.json"
     Public Shared STORAGE_BACKUP_FILENAME As String = STORAGE_FILEPATH & "\model.backup.%s.json"
 
+    Private Shared Function getDefaultModel() As FileModel
+        Dim colors As New List(Of TipColor) From {New TipColor(), New TipColor(1, "红色", Color.Red), New TipColor(2, "蓝色", Color.Blue)}
+        Dim tabs As New List(Of Tab) From {New Tab()}
+        tabs.First().Tips.AddRange({New TipItem("实例普通标签"), New TipItem("实例红色高亮标签", 1), New TipItem("实例蓝色高亮标签", 2)})
+        Return New FileModel With {.Colors = colors, .Tabs = tabs}
+    End Function
+
     Private Shared Function load(name As String) As String
         Dim fs As New FileStream(name, FileMode.OpenOrCreate)
         Dim reader As New StreamReader(fs, System.Text.Encoding.UTF8)
@@ -17,9 +24,7 @@ Partial Public Class GlobalModel
         fs.Close()
 
         If String.IsNullOrWhiteSpace(json) Then
-            Dim obj As New FileModel With {.Colors = New List(Of TipColor), .Tabs = New List(Of Tab)}
-            obj.Colors.Add(New TipColor())
-            obj.Tabs.Add(New Tab())
+            Dim obj = getDefaultModel()
             json = JsonConvert.SerializeObject(obj, Formatting.Indented)
         End If
         Return json
@@ -53,7 +58,7 @@ Partial Public Class GlobalModel
         CurrentTab = obj.Tabs.FirstOrDefault()
 
         For Each tab As Tab In Tabs
-            Dim dup As Tab = GlobalModel.CheckDuplicateTab(tab.Title, Tabs)
+            Dim dup As Tab = CheckDuplicateTab(tab.Title, Tabs)
             If dup IsNot Nothing AndAlso Not dup.Equals(tab) Then
                 Throw New FileLoadException("文件中存在重复分组，请检查文件。")
             End If

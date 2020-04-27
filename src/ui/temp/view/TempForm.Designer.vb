@@ -23,12 +23,11 @@ Partial Class TempForm
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainForm))
         Me.ButtonRemoveItem = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonAddItem = New DevComponents.DotNetBar.ButtonX()
         Me.MyStyleManager = New DevComponents.DotNetBar.StyleManager(Me.components)
         Me.LabelFocus = New System.Windows.Forms.Label()
-        Me.ListView = New TipListBox()
+        Me.ListView = New DesktopTips.TipListBox()
         Me.ButtonCloseForm = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonListSetting = New DevComponents.DotNetBar.ButtonX()
         Me.NumericUpDownListCnt = New System.Windows.Forms.NumericUpDown()
@@ -147,9 +146,9 @@ Partial Class TempForm
         Me.ListView.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
         Me.ListView.FormattingEnabled = True
         Me.ListView.ItemHeight = 17
-        Me.ListView.Items.AddRange(New Object() {"Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test", "Test"})
         Me.ListView.Location = New System.Drawing.Point(23, 0)
         Me.ListView.Name = "ListView"
+        Me.ListView.SelectedItem = Nothing
         Me.ListView.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
         Me.ListView.Size = New System.Drawing.Size(303, 240)
         Me.ListView.TabIndex = 0
@@ -642,6 +641,7 @@ Partial Class TempForm
         Me.ButtonItemUp.TabIndex = 7
         Me.ButtonItemUp.Tag = "True"
         Me.ButtonItemUp.Tooltip = "上移(U)"
+        Me.ButtonItemUp.Visible = False
         '
         'ButtonItemDown
         '
@@ -656,6 +656,7 @@ Partial Class TempForm
         Me.ButtonItemDown.TabIndex = 8
         Me.ButtonItemDown.Tag = "True"
         Me.ButtonItemDown.Tooltip = "下移(D)"
+        Me.ButtonItemDown.Visible = False
         '
         'ButtonResizeFlag
         '
@@ -671,7 +672,7 @@ Partial Class TempForm
         Me.ButtonResizeFlag.TabIndex = 6
         Me.ButtonResizeFlag.Text = "::"
         '
-        'MainForm
+        'TempForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -692,12 +693,11 @@ Partial Class TempForm
         Me.Controls.Add(Me.TabStrip)
         Me.Font = New System.Drawing.Font("Microsoft YaHei UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
-        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.MinimumSize = New System.Drawing.Size(136, 112)
-        Me.Name = "MainForm"
+        Me.Name = "TempForm"
         Me.Opacity = 0.0R
         Me.ShowIcon = False
         Me.ShowInTaskbar = False

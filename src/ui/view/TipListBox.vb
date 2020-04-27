@@ -8,6 +8,14 @@ Public Class TipListBox
         DrawMode = DrawMode.OwnerDrawFixed
     End Sub
 
+    Private ReadOnly Property baseItems() As ObjectCollection
+        Get
+            Return MyBase.Items
+        End Get
+    End Property
+
+#Region "Properties and functions"
+
     Private _items As TipListBoxItemCollection
 
     <DesignerSerializationVisibility(DesignerSerializationVisibility.Content)>
@@ -17,28 +25,18 @@ Public Class TipListBox
         End Get
     End Property
 
-    Private ReadOnly Property baseItems As ObjectCollection
-        Get
-            Return MyBase.Items
-        End Get
-    End Property
-
     Public Overloads Property SelectedItem As TipItem
         Get
-            Return DirectCast(MyBase.SelectedItem, TipItem)
+            Return CType(MyBase.SelectedItem, TipItem)
         End Get
-        Set(ByVal value As TipItem)
+        Set(value As TipItem)
             MyBase.SelectedItem = value
         End Set
     End Property
 
     Public Overloads ReadOnly Property SelectedItems As TipListBoxSelectedItemCollection
         Get
-            Dim items As New TipListBoxSelectedItemCollection()
-            For Each item As Object In MyBase.SelectedItems
-                items.Add(DirectCast(item, TipItem))
-            Next
-            Return items
+            Return MyBase.SelectedItems.Cast(Of TipItem)()
         End Get
     End Property
 
@@ -55,6 +53,7 @@ Public Class TipListBox
         If e.Index >= 0 AndAlso e.Index < Me.Items.Count Then
             Dim item As TipItem = Items(e.Index)
             If item IsNot Nothing Then
+                e.Graphics.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
                 Dim color As TipColor = item.Color
                 Dim brush As New SolidBrush(If(color Is Nothing, e.ForeColor, color.Color))
                 e.Graphics.DrawString(item.ToString(), e.Font, brush, e.Bounds, StringFormat.GenericDefault)
@@ -68,57 +67,67 @@ Public Class TipListBox
         MyBase.SetSelected(index, True)
     End Sub
 
+#End Region
+
+#Region "Collection Class"
+
     Public Class TipListBoxItemCollection
-        Inherits ObjectModel.Collection(Of TipItem)
+        Inherits System.Collections.ObjectModel.Collection(Of TipItem)
 
         Private _listBox As TipListBox
 
-        Public Sub New(ByVal listBox As TipListBox)
+        Public Sub New(listBox As TipListBox)
             _listBox = listBox
         End Sub
 
-        Public Overloads Function Add(ByVal item As TipItem) As TipItem
+        Public Function ToTipItems() As IEnumerable(Of TipItem)
+            Return Cast(Of TipItem)()
+        End Function
+
+        Public Overloads Function Add(item As TipItem) As TipItem
             Me.InsertItem(Me.Items.Count, item)
             Return item
         End Function
-
-        Protected Overrides Sub InsertItem(ByVal index As Integer, ByVal item As TipItem)
-            MyBase.InsertItem(index, item)
-            _listBox.baseItems.Insert(index, item)
-        End Sub
-
-        Protected Overrides Sub RemoveItem(ByVal index As Integer)
-            MyBase.RemoveItem(index)
-            _listBox.baseItems.RemoveAt(index)
-        End Sub
-
-        Protected Overrides Sub SetItem(ByVal index As Integer, ByVal item As TipItem)
-            MyBase.SetItem(index, item)
-            _listBox.baseItems(index) = item
-        End Sub
 
         Protected Overrides Sub ClearItems()
             MyBase.ClearItems()
             _listBox.baseItems.Clear()
         End Sub
 
-        Public Sub AddRange(ByVal items As IEnumerable(Of TipItem))
+        Protected Overrides Sub InsertItem(index As Integer, item As TipItem)
+            MyBase.InsertItem(index, item)
+            _listBox.baseItems.Insert(index, item)
+        End Sub
+
+        Protected Overrides Sub RemoveItem(index As Integer)
+            MyBase.RemoveItem(index)
+            _listBox.baseItems.RemoveAt(index)
+        End Sub
+
+        Protected Overrides Sub SetItem(index As Integer, item As TipItem)
+            MyBase.SetItem(index, item)
+            _listBox.baseItems(index) = item
+        End Sub
+
+        Public Sub AddRange(items As IEnumerable(Of TipItem))
             For Each item As TipItem In items
                 Me.InsertItem(Me.Items.Count, item)
             Next
         End Sub
-
-        Public Function ToTipItems() As List(Of TipItem)
-            Return Cast(Of TipItem)()
-        End Function
     End Class
 
     Public Class TipListBoxSelectedItemCollection
-        Inherits ObjectModel.Collection(Of TipItem)
+        Inherits System.Collections.ObjectModel.Collection(Of TipItem)
 
-        Public Function ToTipItems() As List(Of TipItem)
+        Public Sub New(listBox As TipListBox)
+            MyBase.New(listBox)
+        End Sub
+
+        Public Function ToTipItems() As IEnumerable(Of TipItem)
             Return Cast(Of TipItem)()
         End Function
     End Class
+
+#End Region
 
 End Class

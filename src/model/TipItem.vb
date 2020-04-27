@@ -12,11 +12,7 @@ Public Class TipItem
     <JsonIgnore()>
     Public ReadOnly Property Color As TipColor
         Get
-            If ColorIndex < 0 Or ColorIndex >= GlobalModel.Colors.Count Then
-                Return Nothing
-            Else
-                Return GlobalModel.Colors.ElementAt(ColorIndex)
-            End If
+            Return GlobalModel.Colors.ElementAtOrDefault(ColorIndex)
         End Get
     End Property
 

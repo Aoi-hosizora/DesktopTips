@@ -6,12 +6,12 @@
     End Interface
 
     Public Interface IGlobalPresenter
-        Sub LoadList()                                                                      ' 加载列表文件
-        Sub SaveList()                                                                      ' 保存列表文件
+        Sub LoadFile()                                                                      ' 加载文件
+        Sub SaveFile()                                                                      ' 保存文件
         Sub OpenFileDir()                                                                   ' 打开文件所在位置
         Sub SetupHotKey(handle As IntPtr, id As Integer)                                    ' 设置快捷键
-        Function RegisterShotcut(handle As IntPtr, key As Keys, id As Integer) As Boolean   ' 注册快捷键
-        Sub UnregisterShotcut(handle As IntPtr, id As Integer)                              ' 注销快捷键
+        Function RegisterHotKey(handle As IntPtr, key As Keys, id As Integer) As Boolean    ' 注册快捷键
+        Sub UnregisterHotKey(handle As IntPtr, id As Integer)                               ' 注销快捷键
     End Interface
 
     Public Interface IListPresenter
@@ -25,9 +25,9 @@
         Sub MoveTop(item As TipItem)                            ' 置顶
         Sub MoveBottom(item As TipItem)                         ' 置底
         Sub Search()                                            ' 搜索
-        Sub OpenAllLinks(items As IEnumerable(Of TipItem))      ' 打开所有链接
-        Sub OpenSomeLinks(items As IEnumerable(Of TipItem))     ' 打开部分链接
         Sub ViewCurrentList(items As IEnumerable(Of TipItem))   ' 浏览当前列表
+        Sub OpenAllLinks(items As IEnumerable(Of TipItem))      ' 打开所有链接
+        Sub ViewAllLinks(items As IEnumerable(Of TipItem))      ' 浏览所有链接
     End Interface
 
 End Interface

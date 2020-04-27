@@ -20,7 +20,7 @@ Public Class TempFormListPresenter
         If String.IsNullOrWhiteSpace(msg) Then
             Dim tip As TipItem = New TipItem(msg)
             GlobalModel.CurrentTab.Tips.Add(tip)
-            _globalPresenter.SaveList()
+            _globalPresenter.SaveFile()
         End If
     End Sub
 
@@ -39,7 +39,7 @@ Public Class TempFormListPresenter
                 GlobalModel.CurrentTab.Tips.Remove(item)
             Next
         End If
-        _globalPresenter.SaveList()
+        _globalPresenter.SaveFile()
     End Sub
 
     ''' <summary>
@@ -50,7 +50,7 @@ Public Class TempFormListPresenter
         newstr = newstr.Trim()
         If newstr <> "" And newstr <> item.Content Then
             item.Content = newstr
-            _globalPresenter.SaveList()
+            _globalPresenter.SaveFile()
         End If
     End Sub
 
@@ -75,7 +75,7 @@ Public Class TempFormListPresenter
                "附加内容", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, _view.GetMe())
             If ok = vbOK Then
                 item.Content += " " & clip
-                _globalPresenter.SaveList()
+                _globalPresenter.SaveFile()
             End If
         End If
     End Sub
@@ -88,7 +88,7 @@ Public Class TempFormListPresenter
         If idx >= 1 Then
             GlobalModel.CurrentTab.Tips.RemoveAt(idx)
             GlobalModel.CurrentTab.Tips.Insert(idx - 1, item)
-            _globalPresenter.SaveList()
+            _globalPresenter.SaveFile()
         End If
     End Sub
 
@@ -100,7 +100,7 @@ Public Class TempFormListPresenter
         If idx <= GlobalModel.CurrentTab.Tips.Count - 2 Then
             GlobalModel.CurrentTab.Tips.RemoveAt(idx)
             GlobalModel.CurrentTab.Tips.Insert(idx + 1, item)
-            _globalPresenter.SaveList()
+            _globalPresenter.SaveFile()
         End If
     End Sub
 
@@ -111,7 +111,7 @@ Public Class TempFormListPresenter
         Dim idx = GlobalModel.CurrentTab.Tips.IndexOf(item)
         GlobalModel.CurrentTab.Tips.RemoveAt(idx)
         GlobalModel.CurrentTab.Tips.Insert(0, item)
-        _globalPresenter.SaveList()
+        _globalPresenter.SaveFile()
     End Sub
 
     ''' <summary>
@@ -121,7 +121,7 @@ Public Class TempFormListPresenter
         Dim idx = GlobalModel.CurrentTab.Tips.IndexOf(item)
         GlobalModel.CurrentTab.Tips.RemoveAt(idx)
         GlobalModel.CurrentTab.Tips.Insert(GlobalModel.CurrentTab.Tips.Count - 1, item)
-        _globalPresenter.SaveList()
+        _globalPresenter.SaveFile()
     End Sub
 
     ''' <summary>
@@ -151,6 +151,17 @@ Public Class TempFormListPresenter
             SearchDialog.SearchResult = result
             SearchDialog.Show(_view.GetMe())
         End If
+    End Sub
+
+    ''' <summary>
+    ''' 浏览当前列表
+    ''' </summary>
+    Public Sub ViewCurrentList(items As IEnumerable(Of TipItem)) Implements TempFormContract.IListPresenter.ViewCurrentList
+        Dim sb As New StringBuilder
+        For Each Item As TipItem In items.Cast(Of TipItem)()
+            sb.AppendLine(Item.Content & If(Item.Content, " [高亮]", ""))
+        Next
+        _view.ShowTextForm("浏览文件 (共 " & items.Count & " 项)", sb.ToString(), Color.Black)
     End Sub
 
     ''' <summary>
@@ -185,9 +196,9 @@ Public Class TempFormListPresenter
     End Sub
 
     ''' <summary>
-    ''' 打开部分链接
+    ''' 浏览所有链接
     ''' </summary>
-    Public Sub OpenSomeLinks(items As IEnumerable(Of TipItem)) Implements TempFormContract.IListPresenter.OpenSomeLinks
+    Public Sub ViewAllLinks(items As IEnumerable(Of TipItem)) Implements TempFormContract.IListPresenter.ViewAllLinks
         Dim links As List(Of String) = getLinks(items)
         If links.Count = 0 Then
             MessageBox.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -200,14 +211,4 @@ Public Class TempFormListPresenter
         End If
     End Sub
 
-    ''' <summary>
-    ''' 浏览当前列表
-    ''' </summary>
-    Public Sub ViewCurrentList(items As IEnumerable(Of TipItem)) Implements TempFormContract.IListPresenter.ViewCurrentList
-        Dim sb As New StringBuilder
-        For Each Item As TipItem In items.Cast(Of TipItem)()
-            sb.AppendLine(Item.Content & If(Item.Content, " [高亮]", ""))
-        Next
-        _view.ShowTextForm("浏览文件 (共 " & items.Count & " 项)", sb.ToString(), Color.Black)
-    End Sub
 End Class

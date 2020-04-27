@@ -11,7 +11,7 @@ Partial Public Class TempForm
     ''' <summary>
     ''' 折叠菜单
     ''' </summary>
-    Private Sub ListPopupMenuFold_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuFold.Click
+    Private Sub ListPopupMenuFold_Click(sender As System.Object, e As EventArgs) Handles ListPopupMenuFold.Click
         ListPopupMenuFold.Checked = Not ListPopupMenuFold.Checked
         FoldMenu(ListPopupMenuFold.Checked)
     End Sub
@@ -20,8 +20,8 @@ Partial Public Class TempForm
     ''' 折叠菜单
     ''' </summary>
     ''' <param name="IsFold"></param>
-    Private Sub FoldMenu(ByVal IsFold As Boolean)
-        If IsFold Then
+    Private Sub FoldMenu(isFold As Boolean)
+        If isFold Then
             Me.ListPopupMenuItemContainer.SubItems.Clear()
             Me.ListPopupMenu.SubItems.Clear()
 
@@ -41,12 +41,12 @@ Partial Public Class TempForm
             Me.ListPopupMenuMoveTop.BeginGroup = True
             Me.ListPopupMenuCopy.BeginGroup = True
 
-            For Each Item As DD.ButtonItem In Me.ListPopupMenuItemContainer.SubItems
-                Item.Tooltip = Item.Text
+            For Each item As DD.ButtonItem In Me.ListPopupMenuItemContainer.SubItems
+                item.Tooltip = item.Text
             Next
         Else
-            For Each Item As DD.ButtonItem In Me.ListPopupMenuItemContainer.SubItems
-                Item.Tooltip = ""
+            For Each item As DD.ButtonItem In Me.ListPopupMenuItemContainer.SubItems
+                item.Tooltip = ""
             Next
 
             Me.ListPopupMenuAddItem.BeginGroup = False
@@ -71,22 +71,22 @@ Partial Public Class TempForm
 
 #Region "数据同步"
 
-    Private Shared QR_CODE_MAGIC As String = "DESKTOP_TIPS_ANDROID://"
+    Private Shared ReadOnly QR_CODE_MAGIC As String = "DESKTOP_TIPS_ANDROID://"
 
-    Private Shared IP_RE As New Regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
-    Private Shared PORT_RE As New Regex("^([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-4]\d{4}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$")
+    Private Shared ReadOnly IP_RE As New Regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
+    Private Shared ReadOnly PORT_RE As New Regex("^([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-4]\d{4}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$")
 
     ''' <summary>
     ''' 显示二维码窗口
     ''' </summary>
-    Public Function GetQrCodeForm(ByVal Data As String) As BaseEscCloseForm
+    private Function getQrCodeForm(data As String) As BaseEscCloseForm
         Dim qrGenerator As New QRCodeGenerator
-        Dim qrCodeData As QRCodeData = qrGenerator.CreateQrCode(Data, QRCodeGenerator.ECCLevel.Q)
+        Dim qrCodeData As QRCodeData = qrGenerator.CreateQrCode(data, QRCodeGenerator.ECCLevel.Q)
         Dim qrCode As New QRCode(qrCodeData)
         Dim qrCodeImg As Bitmap = qrCode.GetGraphic(7)
 
         Dim qrCodeForm As New BaseEscCloseForm With {
-            .Name = "qrCodeForm", .FormBorderStyle = Windows.Forms.FormBorderStyle.FixedDialog,
+            .Name = "qrCodeForm", .FormBorderStyle = FormBorderStyle.FixedDialog,
             .MaximizeBox = False, .MinimizeBox = False, .ShowInTaskbar = False,
             .StartPosition = FormStartPosition.CenterScreen, .Size = qrCodeImg.Size
         }
@@ -101,7 +101,7 @@ Partial Public Class TempForm
     ''' 同步到移动端 (本地 C -> 安卓 S) !!! 常用
     ''' 远程监听地址 -> 确定远程地址 -> 本地发送数据 -> 等待 ACK
     ''' </summary>
-    Private Sub ListPopupMenuSyncDataTo_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuSyncDataTo.Click
+    Private Sub ListPopupMenuSyncDataTo_Click(sender As System.Object, e As EventArgs) Handles ListPopupMenuSyncDataTo.Click
         Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
 
         Dim input As String = InputBox("请输入移动端的地址：", "同步到移动端", setting.LastMobileIP)
@@ -148,7 +148,7 @@ Partial Public Class TempForm
     ''' 从移动端同步 (安卓 C -> 本地 S) !!! 危险
     ''' 确定端口 -> 监听本地地址 -> 电脑端发送 -> 本地接受处理
     ''' </summary>
-    Private Sub ListPopupMenuSyncDataFrom_Click(sender As System.Object, e As System.EventArgs) Handles ListPopupMenuSyncDataFrom.Click
+    Private Sub ListPopupMenuSyncDataFrom_Click(sender As System.Object, e As EventArgs) Handles ListPopupMenuSyncDataFrom.Click
         Dim ip As String = SyncData.GetLanIP()
         If String.IsNullOrWhiteSpace(ip) Then ' 地址错误
             MessageBox.Show("本机获取局域网内地址错误。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -170,11 +170,11 @@ Partial Public Class TempForm
         setting.LastLocalPort = input.Trim()
         SettingUtil.SaveAppSettings(setting)
 
-        ' ---------------------------------------------
+        ' ------------------------d---------------------
         ' 获得端口 << 监听
 
         Dim thread As Thread = Nothing
-        Dim cancelFlag As Boolean = False
+        Dim cancelFlag = False
 
         Dim qrCodeForm As BaseEscCloseForm = GetQrCodeForm(QR_CODE_MAGIC & ip & ":" & port)
 
@@ -233,8 +233,8 @@ Partial Public Class TempForm
                                 Dim isOpen As DialogResult = MessageBoxEx.Show("接收数据成功，新数据保存在 """ & backupFileName & """。", "同步", _
                                                                                MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, _
                                                                                Me, New String() {"打开文件夹", "确定"})
-                                If isOpen = Windows.Forms.DialogResult.Yes Then
-                                    System.Diagnostics.Process.Start("explorer.exe", "/select,""" & backupFileName & """")
+                                If isOpen = DialogResult.Yes Then
+                                    Process.Start("explorer.exe", "/select,""" & backupFileName & """")
                                 End If
 
                                 ' !!!

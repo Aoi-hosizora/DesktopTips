@@ -12,7 +12,7 @@ Public Class TempFormGlobalPresenter
     ''' <summary>
     ''' 加载列表文件
     ''' </summary>
-    Public Sub LoadList() Implements TempFormContract.IGlobalPresenter.LoadList
+    Public Sub LoadFile() Implements TempFormContract.IGlobalPresenter.LoadFile
         Try
             GlobalModel.LoadAllData()
         Catch ex As FileLoadException
@@ -30,7 +30,7 @@ Public Class TempFormGlobalPresenter
     ''' <summary>
     ''' 保存列表文件
     ''' </summary>
-    Public Sub SaveList() Implements TempFormContract.IGlobalPresenter.SaveList
+    Public Sub SaveFile() Implements TempFormContract.IGlobalPresenter.SaveFile
         GlobalModel.SaveAllData()
     End Sub
 
@@ -45,7 +45,7 @@ Public Class TempFormGlobalPresenter
     ''' <summary>
     ''' 注册快捷键
     ''' </summary>
-    Public Function RegisterShotcut(handle As IntPtr, key As Keys, id As Integer) As Boolean Implements TempFormContract.IGlobalPresenter.RegisterShotcut
+    Public Function RegisterHotKey(handle As IntPtr, key As Keys, id As Integer) As Boolean Implements TempFormContract.IGlobalPresenter.RegisterHotKey
         If Not NativeMethod.RegisterHotKey(handle, id, CommonUtil.GetNativeModifiers(CommonUtil.GetModifiersFromKey(key)), CommonUtil.GetKeyCodeFromKey(key)) Then
             MessageBox.Show("快捷键已被占用，请重新设置", "快捷键", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return False
@@ -56,7 +56,7 @@ Public Class TempFormGlobalPresenter
     ''' <summary>
     ''' 注销快捷键
     ''' </summary>
-    Public Sub UnregisterShotcut(handle As IntPtr, id As Integer) Implements TempFormContract.IGlobalPresenter.UnregisterShotcut
+    Public Sub UnregisterHotKey(handle As IntPtr, id As Integer) Implements TempFormContract.IGlobalPresenter.UnregisterHotKey
         NativeMethod.UnregisterHotKey(handle, id)
     End Sub
 
@@ -69,8 +69,8 @@ Public Class TempFormGlobalPresenter
         HotKeyDialog.CheckBoxIsValid.Checked = setting.IsUseHotKey
         HotKeyDialog.OkCallback = _
             Sub(key As Keys, use As Boolean)
-                UnregisterShotcut(handle, id)
-                If Not use OrElse RegisterShotcut(handle, key, id) Then
+                UnregisterHotKey(handle, id)
+                If Not use OrElse RegisterHotKey(handle, key, id) Then
                     setting.IsUseHotKey = use
                     setting.HotKey = key
                     SettingUtil.SaveAppSettings(setting)

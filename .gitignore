@@ -4,11 +4,13 @@
 .history/
 .idea/
 
-### Build ###
-bin/Debug/*
-bin/Release/*
-obj/x86/Debug/*
-obj/x86/Release/*
+### Project ###
+.user
 
 ### Build ###
-tmp/
+bin/
+obj/
+Debug/
+Release/
+x86/
+x64/

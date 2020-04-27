@@ -1,8 +1,7 @@
 ﻿Imports Newtonsoft.Json
 
-<JsonObject()>
+<JsonObject>
 Public Class Tab
-
     <JsonProperty("title")>
     Public Property Title As String
 
@@ -25,5 +24,4 @@ Public Class Tab
     Public Overrides Function ToString() As String
         Return Me.Title
     End Function
-
 End Class

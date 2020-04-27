@@ -1,11 +1,10 @@
 ﻿Imports Microsoft.Win32
 
 Public Class CommonUtil
-
     ''' <summary>
     ''' 获取 Keys 的 Modifiers 部分
     ''' </summary>
-    Public Shared Function GetModifiersFromKey(ByVal key As Keys) As Keys
+    Public Shared Function GetModifiersFromKey(key As Keys) As Keys
         Dim e As New KeyEventArgs(key)
         Return e.Modifiers
     End Function
@@ -13,7 +12,7 @@ Public Class CommonUtil
     ''' <summary>
     ''' 获取 Keys 的 KeyCode 部分
     ''' </summary>
-    Public Shared Function GetKeyCodeFromKey(ByVal key As Keys) As Keys
+    Public Shared Function GetKeyCodeFromKey(key As Keys) As Keys
         Dim e As New KeyEventArgs(key)
         Return e.KeyCode
     End Function
@@ -21,7 +20,7 @@ Public Class CommonUtil
     ''' <summary>
     ''' 从 .NET Keys Modifiers 转 Window Modifiers
     ''' </summary>
-    Public Shared Function GetNativeModifiers(ByVal modifiers As Keys) As NativeMethod.KeyModifiers
+    Public Shared Function GetNativeModifiers(modifiers As Keys) As NativeMethod.KeyModifiers
         Select Case modifiers
             Case Keys.Shift ' 1 << 16
                 Return NativeMethod.KeyModifiers.MOD_SHIFT ' 1 << 2
@@ -45,7 +44,7 @@ Public Class CommonUtil
     ''' <summary>
     ''' 获取默认浏览器
     ''' </summary>
-    Public Shared Function GetDefaultWebBrowserFilePath() As String
+    Private Shared Function GetDefaultWebBrowserFilePath() As String
         ' コンピューター\HKEY_CURRENT_USER\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice
         Dim UserChoiceKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice")
         If UserChoiceKey Is Nothing Then UserChoiceKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\Shell\Associations\UrlAssociations\https\UserChoice")
@@ -69,7 +68,7 @@ Public Class CommonUtil
     ''' 在浏览器 (新窗口 if Chrome) 打开所有页面
     ''' </summary>
     ''' <remarks></remarks>
-    Public Shared Sub OpenWebsInDefaultBrowser(ByVal links As List(Of String))
+    Public Shared Sub OpenWebsInDefaultBrowser(links As List(Of String))
         Dim DefaultBrowserPath$ = GetDefaultWebBrowserFilePath()
         If DefaultBrowserPath.ToLower().Contains("chrome") Then
             Dim p As New Process()
@@ -83,5 +82,4 @@ Public Class CommonUtil
             Next
         End If
     End Sub
-
 End Class

@@ -1,24 +1,25 @@
 ﻿Imports System.IO
+Imports System.Text
 Imports Newtonsoft.Json
 
 Partial Public Class GlobalModel
 
 #Region "存储"
 
-    Public Shared STORAGE_FILEPATH As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\DesktopTips"
+    Private Shared STORAGE_FILEPATH As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\DesktopTips"
     Public Shared STORAGE_FILENAME As String = STORAGE_FILEPATH & "\model.json"
-    Public Shared STORAGE_BACKUP_FILENAME As String = STORAGE_FILEPATH & "\model.backup.%s.json"
+    Private Shared STORAGE_BACKUP_FILENAME As String = STORAGE_FILEPATH & "\model.backup.%s.json"
 
     Private Shared Function getDefaultModel() As FileModel
-        Dim colors As New List(Of TipColor) From {New TipColor(), New TipColor(1, "红色", Color.Red), New TipColor(2, "蓝色", Color.Blue)}
-        Dim tabs As New List(Of Tab) From {New Tab()}
-        tabs.First().Tips.AddRange({New TipItem("实例普通标签"), New TipItem("实例红色高亮标签", 1), New TipItem("实例蓝色高亮标签", 2)})
-        Return New FileModel With {.Colors = colors, .Tabs = tabs}
+        Dim colorList As New List(Of TipColor) From {New TipColor(), New TipColor(1, "红色", Color.Red), New TipColor(2, "蓝色", Color.Blue)}
+        Dim tabList As New List(Of Tab) From {New Tab()}
+        tabList.First().Tips.AddRange({New TipItem("实例普通标签"), New TipItem("实例红色高亮标签", 1), New TipItem("实例蓝色高亮标签", 2)})
+        Return New FileModel With {.Colors = colorList, .Tabs = tabList}
     End Function
 
-    Private Shared Function load(name As String) As String
+    Private Shared Function Load(name As String) As String
         Dim fs As New FileStream(name, FileMode.OpenOrCreate)
-        Dim reader As New StreamReader(fs, System.Text.Encoding.UTF8)
+        Dim reader As New StreamReader(fs, Encoding.UTF8)
         Dim json As String = reader.ReadToEnd()
         reader.Close()
         fs.Close()
@@ -32,21 +33,21 @@ Partial Public Class GlobalModel
 
     Private Shared Sub save(json As String, name As String)
         Dim fs As New FileStream(name, FileMode.Create)
-        Dim writer As New StreamWriter(fs, System.Text.Encoding.UTF8)
+        Dim writer As New StreamWriter(fs, Encoding.UTF8)
         writer.Write(json)
         writer.Close()
         fs.Close()
     End Sub
 
-    Private Shared Sub save(tabs As List(Of Tab), colors As List(Of TipColor), name As String)
-        Dim obj As New FileModel With {.Tabs = tabs, .Colors = colors}
+    Private Shared Sub save(tabList As List(Of Tab), colorList As List(Of TipColor), name As String)
+        Dim obj As New FileModel With {.Tabs = tabList, .Colors = colorList}
         Dim json As String = JsonConvert.SerializeObject(obj, Formatting.Indented)
         save(json, name)
     End Sub
 
     Public Shared Sub LoadAllData()
         Dim obj As FileModel
-        Dim json As String = load(STORAGE_FILENAME)
+        Dim json As String = Load(STORAGE_FILENAME)
         Try
             obj = JsonConvert.DeserializeObject(Of FileModel)(json)
         Catch ex As Exception
@@ -85,30 +86,30 @@ Partial Public Class GlobalModel
                 Return tips.IndexOf(tip)
             End If
         Next
-        Return -1
+        Return - 1
     End Function
 
     Public Shared Function GetIndexFromContent(content As String) As Integer
-        Return GetIndexFromContent(content, GlobalModel.CurrentTab().Tips)
+        Return GetIndexFromContent(content, CurrentTab().Tips)
     End Function
 
-    Public Shared Function GetTabFromTitle(Title As String, Tabs As List(Of Tab)) As Tab
-        For Each Tab As Tab In Tabs
-            If Tab.Title = Title Then
-                Return Tab
+    Public Shared Function GetTabFromTitle(title As String, tabList As List(Of Tab)) As Tab
+        For Each tab As Tab In tabList
+            If tab.Title = title Then
+                Return tab
             End If
         Next
         Return Nothing
     End Function
 
-    Public Shared Function GetTabFromTitle(Title As String) As Tab
-        Return GetTabFromTitle(Title, GlobalModel.Tabs)
+    Public Shared Function GetTabFromTitle(title As String) As Tab
+        Return GetTabFromTitle(title, Tabs)
     End Function
 
-    Public Shared Function CheckDuplicateTab(newTitle As String, tabs As List(Of Tab)) As Tab
-        For Each Tab As Tab In tabs
-            If Tab.Title = newTitle.Trim() Then
-                Return Tab
+    Public Shared Function CheckDuplicateTab(newTitle As String, tabList As List(Of Tab)) As Tab
+        For Each tab As Tab In tabList
+            If tab.Title = newTitle.Trim() Then
+                Return tab
             End If
         Next
         Return Nothing
@@ -119,5 +120,4 @@ Partial Public Class GlobalModel
     End Function
 
 #End Region
-
 End Class

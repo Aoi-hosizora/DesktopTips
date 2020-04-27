@@ -18,7 +18,7 @@ Public Class TempFormListPresenter
         Dim msg As String = InputBox("新的提醒标签：", "添加")
         msg = msg.Trim()
         If String.IsNullOrWhiteSpace(msg) Then
-            Dim tip As TipItem = New TipItem(msg)
+            Dim tip As New TipItem(msg)
             GlobalModel.CurrentTab.Tips.Add(tip)
             _globalPresenter.SaveFile()
         End If
@@ -32,8 +32,9 @@ Public Class TempFormListPresenter
         For Each item As TipItem In items
             sb.AppendLine(item.Content)
         Next
-        Dim ok As Integer = MessageBoxEx.Show("确定删除以下 " & items.Count & " 个提醒标签吗？" & Chr(10) & Chr(10) & sb.ToString,
-            "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, _view.GetMe())
+        Dim ok = MessageBoxEx.Show($"确定删除以下 {items.Count} 个提醒标签吗？{vbNewLine}{vbNewLine}{sb.ToString()}",
+            "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1,
+            _view.GetMe())
         If ok = vbOK Then
             For Each item In items
                 GlobalModel.CurrentTab.Tips.Remove(item)
@@ -46,10 +47,9 @@ Public Class TempFormListPresenter
     ''' 修改标签
     ''' </summary>
     Public Sub Update(ByRef item As TipItem) Implements TempFormContract.IListPresenter.Update
-        Dim newstr As String = InputBox("修改提醒标签 """ & item.Content & """ 为：", "修改", item.Content)
-        newstr = newstr.Trim()
-        If newstr <> "" And newstr <> item.Content Then
-            item.Content = newstr
+        Dim newStr As String = InputBox($"修改提醒标签 ""{item.Content}"" 为：", "修改", item.Content).Trim()
+        If newStr <> "" And newStr <> item.Content Then
+            item.Content = newStr
             _globalPresenter.SaveFile()
         End If
     End Sub
@@ -71,8 +71,9 @@ Public Class TempFormListPresenter
     Public Sub Paste(ByRef item As TipItem) Implements TempFormContract.IListPresenter.Paste
         Dim clip As String = Clipboard.GetText().Trim()
         If Not String.IsNullOrWhiteSpace(clip) Then
-            Dim ok As DialogResult = MessageBoxEx.Show("是否向当前选中项 """ & item.Content & """ 末尾添加剪贴板内容 """ & clip & """？",
-               "附加内容", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, _view.GetMe())
+            Dim ok = MessageBoxEx.Show($"是否向当前选中项 ""{item.Content}"" 末尾添加剪贴板内容 ""{clip}""？",
+                "附加内容", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1,
+                _view.GetMe())
             If ok = vbOK Then
                 item.Content += " " & clip
                 _globalPresenter.SaveFile()
@@ -144,8 +145,9 @@ Public Class TempFormListPresenter
 
         SearchDialog.Close()
         If result.Count = 0 Then
-            MessageBoxEx.Show("未找到 """ & text & """ 。",
-                              "查找", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, _view.GetMe())
+            MessageBoxEx.Show($"未找到 ""{text}"" 。",
+                "查找", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1,
+                _view.GetMe())
         Else
             SearchDialog.SearchText = text
             SearchDialog.SearchResult = result
@@ -158,10 +160,10 @@ Public Class TempFormListPresenter
     ''' </summary>
     Public Sub ViewCurrentList(items As IEnumerable(Of TipItem)) Implements TempFormContract.IListPresenter.ViewCurrentList
         Dim sb As New StringBuilder
-        For Each Item As TipItem In items.Cast(Of TipItem)()
-            sb.AppendLine(Item.Content & If(Item.Content, " [高亮]", ""))
+        For Each item As TipItem In items.Cast(Of TipItem)()
+            sb.AppendLine(item.Content & If(item.Content, " [高亮]", ""))
         Next
-        _view.ShowTextForm("浏览文件 (共 " & items.Count & " 项)", sb.ToString(), Color.Black)
+        _view.ShowTextForm($"浏览文件 (共 {items.Count} 项)", sb.ToString(), Color.Black)
     End Sub
 
     ''' <summary>
@@ -187,7 +189,8 @@ Public Class TempFormListPresenter
         If links.Count = 0 Then
             MessageBox.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
         Else
-            Dim ok = MessageBox.Show("是否打开以下 " & links.Count & " 个链接：" + Chr(10) + Chr(10) + String.Join(Chr(10), links),
+            Dim linksString As String = String.Join(vbNewLine, links)
+            Dim ok = MessageBox.Show($"是否打开以下 {links.Count} 个链接：{vbNewLine}{vbNewLine}{linksString}",
                 "打开链接", MessageBoxButtons.OKCancel, MessageBoxIcon.Question)
             If ok = vbOK Then
                 CommonUtil.OpenWebsInDefaultBrowser(links)
@@ -210,5 +213,4 @@ Public Class TempFormListPresenter
             LinkDialog.Show(_view.GetMe())
         End If
     End Sub
-
 End Class

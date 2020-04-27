@@ -16,8 +16,7 @@ Public Class TempFormGlobalPresenter
         Try
             GlobalModel.LoadAllData()
         Catch ex As FileLoadException
-            Dim ok As MsgBoxResult = MessageBoxEx.Show(
-                "错误：" & ex.Message & Chr(10) & "是否打开文件位置检查文件？",
+            Dim ok = MessageBoxEx.Show($"错误：{ex.Message}{vbNewLine}是否打开文件位置检查文件？",
                 "错误", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1,
                 _view.GetMe(), {"開く", "キャンセル"})
             If ok = vbYes Then
@@ -39,7 +38,7 @@ Public Class TempFormGlobalPresenter
     ''' </summary>
     Public Sub OpenFileDir() Implements TempFormContract.IGlobalPresenter.OpenFileDir
         'C:\Users\Windows 10\AppData\Roaming\DesktopTips
-        Process.Start("explorer.exe", "/select,""" & GlobalModel.STORAGE_FILENAME & """")
+        Process.Start("explorer.exe", $"/select,""{GlobalModel.STORAGE_FILENAME}""")
     End Sub
 
     ''' <summary>
@@ -67,7 +66,7 @@ Public Class TempFormGlobalPresenter
         Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
         HotKeyDialog.HotKeyEditBox.CurrentKey = setting.HotKey
         HotKeyDialog.CheckBoxIsValid.Checked = setting.IsUseHotKey
-        HotKeyDialog.OkCallback = _
+        HotKeyDialog.OkCallback =
             Sub(key As Keys, use As Boolean)
                 UnregisterHotKey(handle, id)
                 If Not use OrElse RegisterHotKey(handle, key, id) Then
@@ -78,5 +77,4 @@ Public Class TempFormGlobalPresenter
             End Sub
         HotKeyDialog.ShowDialog(_view.GetMe())
     End Sub
-
 End Class

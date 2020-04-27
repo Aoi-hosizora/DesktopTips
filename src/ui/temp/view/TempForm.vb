@@ -17,7 +17,7 @@ Public Class TempForm
         Me.TopMost = My.Settings.TopMost
 
         ListPopupMenuFold.Checked = My.Settings.IsFold                                              ' 折叠菜单
-        ListPopupMenuLoadPos.Enabled = Not (My.Settings.SaveLeft = -1 Or My.Settings.SaveTop = -1)  ' 恢复位置
+        ListPopupMenuLoadPos.Enabled = Not (My.Settings.SaveLeft = - 1 Or My.Settings.SaveTop = - 1)  ' 恢复位置
         NumericUpDownListCnt.Value = (Me.Height - 27) \ 17                                          ' 列表高度
         ListPopupMenuWinTop.Checked = My.Settings.TopMost                                           ' 窗口置顶键
         _globalPresenter.RegisterHotKey(Handle, My.Settings.HotKey, HOTKEY_ID)                      ' 注册快捷
@@ -53,7 +53,7 @@ Public Class TempForm
             .GlobalItem = False,
             .Name = "TabItemCustom_" & GlobalModel.Tabs.Count,
             .Text = title
-        }
+            }
         ' AddHandler newTabItem.MouseDown, AddressOf TabStrip_MouseDown
         Me.TabStrip.Tabs.AddRange(New DD.BaseItem() {newTabItem})
     End Sub
@@ -71,7 +71,7 @@ Public Class TempForm
             If m.WParam.ToInt32() = HOTKEY_ID Then
                 Me.Activate()
                 NativeMethod.SetForegroundWindow(Handle)
-                FormOpecityUp()
+                FormOpacityUp()
             End If
         End If
         MyBase.WndProc(m)
@@ -100,11 +100,11 @@ Public Class TempForm
 
         ' 窗口动画
         CanMouseLeave = Function() As Boolean
-                            Return ListPopupMenu.PopupControl Is Nothing AndAlso
-                                TabPopupMenu.PopupControl Is Nothing AndAlso
-                                TabStrip.ContextMenu Is Nothing AndAlso
-                                ListPopupMenuMove.PopupControl Is Nothing 'AndAlso isMenuPopuping = False
-                        End Function
+            Return ListPopupMenu.PopupControl Is Nothing AndAlso
+                   TabPopupMenu.PopupControl Is Nothing AndAlso
+                   TabStrip.ContextMenu Is Nothing AndAlso
+                   ListPopupMenuMove.PopupControl Is Nothing ' AndAlso isMenuPopuping = False
+        End Function
 
         ' 列表
         LoadList()

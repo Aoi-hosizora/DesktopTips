@@ -1,5 +1,4 @@
 ﻿Public Class GlobalModel
-
     ''' <summary>
     ''' 分组集合
     ''' </summary>
@@ -13,21 +12,20 @@
     ''' <summary>
     ''' 当前分组编号
     ''' </summary>
-    Private Shared currentTabIndex As Integer = -1
+    Private Shared _currentTabIndex As Integer = - 1
 
     ''' <summary>
     ''' 当前分组
     ''' </summary>
-    Public Shared Property CurrentTab() As Tab
+    Public Shared Property CurrentTab As Tab
         Get
-            If currentTabIndex < 0 Then
+            If _currentTabIndex < 0 Then
                 Return Nothing
             End If
-            Return Tabs.ElementAt(currentTabIndex)
+            Return Tabs.ElementAt(_currentTabIndex)
         End Get
-        Set(value As Tab)
-            currentTabIndex = Tabs.IndexOf(value)
+        Set
+            _currentTabIndex = Tabs.IndexOf(value)
         End Set
     End Property
-
 End Class

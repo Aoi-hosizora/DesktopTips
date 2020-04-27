@@ -1,5 +1,4 @@
 ﻿Public Class SettingUtil
-
     Private Const AppName As String = "DesktopTips"
 
     Private Const PosSection As String = "PosSize"
@@ -32,14 +31,14 @@
         Public HotKey As Integer
     End Structure
 
-    Public Shared Sub SaveAppSettings(ByVal appSetting As AppSetting)
+    Public Shared Sub SaveAppSettings(appSetting As AppSetting)
         SaveSetting(AppName, PosSection, "Top", appSetting.Top)
         SaveSetting(AppName, PosSection, "Left", appSetting.Left)
         SaveSetting(AppName, PosSection, "Height", appSetting.Height)
         SaveSetting(AppName, PosSection, "Width", appSetting.Width)
 
-        appSetting.SaveTop = If(appSetting.SaveTop = 0, -1, appSetting.SaveTop)
-        appSetting.SaveLeft = If(appSetting.SaveLeft = 0, -1, appSetting.SaveLeft)
+        appSetting.SaveTop = If(appSetting.SaveTop = 0, - 1, appSetting.SaveTop)
+        appSetting.SaveLeft = If(appSetting.SaveLeft = 0, - 1, appSetting.SaveLeft)
         SaveSetting(AppName, PosSection, "SaveTop", appSetting.SaveTop)
         SaveSetting(AppName, PosSection, "SaveLeft", appSetting.SaveLeft)
 
@@ -62,8 +61,8 @@
         setting.Height = GetSetting(AppName, PosSection, "Height", 163)
         setting.Width = GetSetting(AppName, PosSection, "Width", 200)
 
-        setting.SaveTop = GetSetting(AppName, PosSection, "SaveTop", -1)
-        setting.SaveLeft = GetSetting(AppName, PosSection, "SaveLeft", -1)
+        setting.SaveTop = GetSetting(AppName, PosSection, "SaveTop", - 1)
+        setting.SaveLeft = GetSetting(AppName, PosSection, "SaveLeft", - 1)
 
         setting.MaxOpacity = GetSetting(AppName, FormSection, "Opacity", 0.6)
         setting.TopMost = GetSetting(AppName, FormSection, "TopMost", False)

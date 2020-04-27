@@ -4,47 +4,43 @@ Public Class TipListBox
     Inherits ListBox
 
     Public Sub New()
-        _items = New TipListBoxItemCollection(Me)
+        Items = New TipListBoxItemCollection(Me)
         DrawMode = DrawMode.OwnerDrawFixed
     End Sub
 
-    Private ReadOnly Property baseItems() As ObjectCollection
+    Private ReadOnly Property baseItems As ObjectCollection
         Get
-            Return MyBase.Items
+            return MyBase.Items
         End Get
     End Property
+
 
 #Region "Properties and functions"
 
-    Private _items As TipListBoxItemCollection
-
     <DesignerSerializationVisibility(DesignerSerializationVisibility.Content)>
     Public Overloads ReadOnly Property Items As TipListBoxItemCollection
-        Get
-            Return _items
-        End Get
-    End Property
 
     Public Overloads Property SelectedItem As TipItem
         Get
             Return CType(MyBase.SelectedItem, TipItem)
         End Get
-        Set(value As TipItem)
+        Set
             MyBase.SelectedItem = value
         End Set
     End Property
 
     Public Overloads ReadOnly Property SelectedItems As TipListBoxSelectedItemCollection
         Get
-            Return MyBase.SelectedItems.Cast(Of TipItem)()
+            Dim i As New TipListBoxSelectedItemCollection()
+            For Each item As Object In MyBase.SelectedItems
+                i.Add(CType(item, TipItem))
+            Next
+            Return i
         End Get
     End Property
 
-    Public Overloads ReadOnly Property SelectedCount As Integer
-        Get
-            Return SelectedIndices.Count
-        End Get
-    End Property
+
+    Public Overloads ReadOnly Property SelectedCount As Integer = SelectedIndices.Count
 
     Protected Overrides Sub OnDrawItem(e As DrawItemEventArgs)
         MyBase.OnDrawItem(e)
@@ -72,9 +68,9 @@ Public Class TipListBox
 #Region "Collection Class"
 
     Public Class TipListBoxItemCollection
-        Inherits System.Collections.ObjectModel.Collection(Of TipItem)
+        Inherits ObjectModel.Collection(Of TipItem)
 
-        Private _listBox As TipListBox
+        Private ReadOnly _listBox As TipListBox
 
         Public Sub New(listBox As TipListBox)
             _listBox = listBox
@@ -84,9 +80,9 @@ Public Class TipListBox
             Return Cast(Of TipItem)()
         End Function
 
-        Public Overloads Function Add(item As TipItem) As TipItem
-            Me.InsertItem(Me.Items.Count, item)
-            Return item
+        Public Overloads Function Add(i As TipItem) As TipItem
+            Me.InsertItem(Me.Items.Count, i)
+            Return i
         End Function
 
         Protected Overrides Sub ClearItems()
@@ -94,9 +90,9 @@ Public Class TipListBox
             _listBox.baseItems.Clear()
         End Sub
 
-        Protected Overrides Sub InsertItem(index As Integer, item As TipItem)
-            MyBase.InsertItem(index, item)
-            _listBox.baseItems.Insert(index, item)
+        Protected Overrides Sub InsertItem(index As Integer, i As TipItem)
+            MyBase.InsertItem(index, i)
+            _listBox.baseItems.Insert(index, i)
         End Sub
 
         Protected Overrides Sub RemoveItem(index As Integer)
@@ -104,23 +100,22 @@ Public Class TipListBox
             _listBox.baseItems.RemoveAt(index)
         End Sub
 
-        Protected Overrides Sub SetItem(index As Integer, item As TipItem)
-            MyBase.SetItem(index, item)
-            _listBox.baseItems(index) = item
+        Protected Overrides Sub SetItem(index As Integer, i As TipItem)
+            MyBase.SetItem(index, i)
+            _listBox.baseItems(index) = i
         End Sub
 
-        Public Sub AddRange(items As IEnumerable(Of TipItem))
-            For Each item As TipItem In items
-                Me.InsertItem(Me.Items.Count, item)
+        Public Sub AddRange(i As IEnumerable(Of TipItem))
+            For Each k As TipItem In i
+                Me.InsertItem(Me.Items.Count, k)
             Next
         End Sub
     End Class
 
     Public Class TipListBoxSelectedItemCollection
-        Inherits System.Collections.ObjectModel.Collection(Of TipItem)
+        Inherits ObjectModel.Collection(Of TipItem)
 
-        Public Sub New(listBox As TipListBox)
-            MyBase.New(listBox)
+        Public Sub New()
         End Sub
 
         Public Function ToTipItems() As IEnumerable(Of TipItem)
@@ -129,5 +124,4 @@ Public Class TipListBox
     End Class
 
 #End Region
-
 End Class

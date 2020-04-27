@@ -1,8 +1,7 @@
 ﻿Imports Newtonsoft.Json
 
-<JsonObject()>
+<JsonObject>
 Public Class TipItem
-
     <JsonProperty("content")>
     Public Property Content As String
 
@@ -23,7 +22,7 @@ Public Class TipItem
         End Get
     End Property
 
-    Public Sub New(content As String, Optional colorIndex As Integer = -1)
+    Public Sub New(content As String, Optional colorIndex As Integer = - 1)
         Me.Content = content
         Me.ColorIndex = colorIndex
     End Sub
@@ -31,5 +30,4 @@ Public Class TipItem
     Public Overrides Function ToString() As String
         Return Content
     End Function
-
 End Class

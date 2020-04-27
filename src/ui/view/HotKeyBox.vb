@@ -1,6 +1,4 @@
-﻿Imports System.ComponentModel
-
-Public Class HotKeyBox
+﻿Public Class HotKeyBox
     Inherits TextBox
 
     Private _CurrentKey As Keys = Keys.None
@@ -9,14 +7,14 @@ Public Class HotKeyBox
         Get
             Return _CurrentKey
         End Get
-        Set(value As Keys)
+        Set
             _CurrentKey = value
             Dim e As New KeyEventArgs(value)
             ShowHotKeyValue(e.Modifiers, e.KeyCode)
         End Set
     End Property
 
-    Private Sub ShowHotKeyValue(ByVal Modifiers As Keys, ByVal KeyCode As Keys)
+    Private Sub ShowHotKeyValue(modifiers As Keys, keyCode As Keys)
         Dim hotKeyValue% = 0
         Dim hotKeyString$ = ""
         If Modifiers <> Keys.None Then
@@ -44,13 +42,13 @@ Public Class HotKeyBox
         Else
             If KeyCode = Keys.Delete Or KeyCode = Keys.Back Then
                 hotKeyString = ""
-                hotKeyValue = -1
+                hotKeyValue = - 1
             ElseIf KeyCode <> Keys.None Then
                 hotKeyString += KeyCodeToString(KeyCode)
                 hotKeyValue += CInt(KeyCode)
             End If
         End If
-        hotKeyValue = If(hotKeyValue = 0, -1, hotKeyValue)
+        hotKeyValue = If(hotKeyValue = 0, - 1, hotKeyValue)
 
         If Me.CurrentKey <> hotKeyValue Then
             Me.CurrentKey = hotKeyValue
@@ -59,7 +57,7 @@ Public Class HotKeyBox
         Me.SelectionStart = Me.Text.Length
     End Sub
 
-    Private Function KeyCodeToString(ByVal KeyCode As Keys) As String
+    Private Shared Function KeyCodeToString(keyCode As Keys) As String
         If KeyCode >= Keys.D0 And KeyCode <= Keys.D9 Then
             Return KeyCode.ToString().Remove(0, 1)
         ElseIf KeyCode >= Keys.NumPad0 And KeyCode <= Keys.NumPad9 Then
@@ -71,7 +69,7 @@ Public Class HotKeyBox
 
     Private Sub CheckHotkey()
         If Me.Text.Trim().EndsWith("+") Or String.IsNullOrWhiteSpace(Me.Text) Then
-            Me.CurrentKey = -1
+            Me.CurrentKey = - 1
             Me.Text = ""
             Me.SelectionStart = 0
         End If
@@ -79,24 +77,24 @@ Public Class HotKeyBox
 
     '' ''''''''''
 
-    Protected Overrides Sub OnKeyDown(e As System.Windows.Forms.KeyEventArgs)
+    Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
         MyBase.OnKeyDown(e)
         e.SuppressKeyPress = False
         e.Handled = True
         ShowHotKeyValue(e.Modifiers, e.KeyCode)
     End Sub
 
-    Protected Overrides Sub OnKeyPress(e As System.Windows.Forms.KeyPressEventArgs)
+    Protected Overrides Sub OnKeyPress(e As KeyPressEventArgs)
         MyBase.OnKeyPress(e)
         e.Handled = True
     End Sub
 
-    Protected Overrides Sub OnKeyUp(e As System.Windows.Forms.KeyEventArgs)
+    Protected Overrides Sub OnKeyUp(e As KeyEventArgs)
         MyBase.OnKeyUp(e)
         CheckHotkey()
     End Sub
 
-    Protected Overrides Sub OnLostFocus(e As System.EventArgs)
+    Protected Overrides Sub OnLostFocus(e As EventArgs)
         MyBase.OnLostFocus(e)
         CheckHotkey()
     End Sub

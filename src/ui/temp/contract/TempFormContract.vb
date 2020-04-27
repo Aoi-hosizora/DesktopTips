@@ -1,5 +1,4 @@
 ﻿Public Interface TempFormContract
-
     Public Interface IView
         Function GetMe() As TempForm                                                        ' 获得 this 指针
         Sub ShowTextForm(title As String, content As String, textColor As Color)            ' 显示文本对话框
@@ -29,5 +28,4 @@
         Sub OpenAllLinks(items As IEnumerable(Of TipItem))      ' 打开所有链接
         Sub ViewAllLinks(items As IEnumerable(Of TipItem))      ' 浏览所有链接
     End Interface
-
 End Interface

@@ -25,16 +25,18 @@ Partial Public Class TempForm
             Me.ListPopupMenuItemContainer.SubItems.Clear()
             Me.ListPopupMenu.SubItems.Clear()
 
-            Me.ListPopupMenuItemContainer.SubItems.AddRange(
-                New DD.BaseItem() {Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem,
-                                   Me.ListPopupMenuEditItem, Me.ListPopupMenuCopy, Me.ListPopupMenuSelectAll, Me.ListPopupMenuHighLight})
+            Me.ListPopupMenuItemContainer.SubItems.AddRange(New DD.BaseItem() { _
+                Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem,
+                Me.ListPopupMenuEditItem, Me.ListPopupMenuCopy, Me.ListPopupMenuSelectAll, Me.ListPopupMenuHighLight
+            })
 
-            Me.ListPopupMenu.SubItems.AddRange(
-                New DD.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList,
-                                   Me.ListPopupMenuItemContainer,
-                                   Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuFind, Me.ListPopupMenuMove, Me.ListPopupMenuOthers,
-                                   Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuBrowser, Me.ListPopupMenuSyncData,
-                                   Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
+            Me.ListPopupMenu.SubItems.AddRange(New DD.BaseItem() { _
+                Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList,
+                Me.ListPopupMenuItemContainer,
+                Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuFind, Me.ListPopupMenuMove, Me.ListPopupMenuOthers,
+                Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuBrowser, Me.ListPopupMenuSyncData,
+                Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit
+            })
 
             Me.ListPopupMenuAddItem.BeginGroup = True
             Me.ListPopupMenuMoveUp.BeginGroup = True
@@ -56,14 +58,15 @@ Partial Public Class TempForm
 
             Me.ListPopupMenuItemContainer.SubItems.Clear()
             Me.ListPopupMenu.SubItems.Clear()
-            Me.ListPopupMenu.SubItems.AddRange(
-                New DD.BaseItem() {Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList,
-                                   Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem, Me.ListPopupMenuEditItem,
-                                   Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom,
-                                   Me.ListPopupMenuCopy, Me.ListPopupMenuSelectAll, Me.ListPopupMenuHighLight, Me.ListPopupMenuViewHighLight,
-                                   Me.ListPopupMenuFind, Me.ListPopupMenuMove, Me.ListPopupMenuOthers,
-                                   Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuBrowser, Me.ListPopupMenuSyncData,
-                                   Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit})
+            Me.ListPopupMenu.SubItems.AddRange(New DD.BaseItem() { _
+                Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList,
+                Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem, Me.ListPopupMenuEditItem,
+                Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom,
+                Me.ListPopupMenuCopy, Me.ListPopupMenuSelectAll, Me.ListPopupMenuHighLight, Me.ListPopupMenuViewHighLight,
+                Me.ListPopupMenuFind, Me.ListPopupMenuMove, Me.ListPopupMenuOthers,
+                Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuBrowser, Me.ListPopupMenuSyncData,
+                Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit
+            })
         End If
     End Sub
 
@@ -89,10 +92,10 @@ Partial Public Class TempForm
             .Name = "qrCodeForm", .FormBorderStyle = FormBorderStyle.FixedDialog,
             .MaximizeBox = False, .MinimizeBox = False, .ShowInTaskbar = False,
             .StartPosition = FormStartPosition.CenterScreen, .Size = qrCodeImg.Size
-        }
+            }
         Dim pictureBox As New PictureBox With {
             .Name = "pictureBox", .SizeMode = PictureBoxSizeMode.Zoom, .Image = qrCodeImg, .Dock = DockStyle.Fill
-        }
+            }
         qrCodeForm.Controls.Add(pictureBox)
         Return qrCodeForm
     End Function
@@ -128,20 +131,18 @@ Partial Public Class TempForm
         ' ----------------------------------------------
         ' Ip, Port << 发送到移动端
 
-        Dim thread As New Thread(New ThreadStart(Sub() _
-            SyncData.SendTabs(Ip:=ip, Port:=port, cb:= _
+        Dim thread As New Thread(New ThreadStart(Sub() 
+            SyncData.SendTabs(Ip := ip, Port := port, cb :=
                 Sub(ok As Exception)
                     If ok Is Nothing Then
-                        Me.Invoke(New Action(Sub() _
-                            MessageBox.Show("数据发送成功，请在移动端确认。", "同步到移动端", MessageBoxButtons.OK, MessageBoxIcon.Information)))
+                        Me.Invoke(New Action(Sub() MessageBox.Show("数据发送成功，请在移动端确认。", "同步到移动端", MessageBoxButtons.OK, MessageBoxIcon.Information)))
                     Else
-                        Me.Invoke(New Action(Sub() _
-                            MessageBox.Show("数据发送错误。" + Chr(10) + ok.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)))
+                        Me.Invoke(New Action(Sub() MessageBox.Show($"数据发送错误：{vbNewLine}{ok.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)))
                     End If
-                End Sub)))
+                End Sub)
+        end sub))
 
         thread.Start()
-
     End Sub
 
     ''' <summary>
@@ -162,7 +163,6 @@ Partial Public Class TempForm
         If String.IsNullOrWhiteSpace(input) Then Return ' 空内容
         While Not Integer.TryParse(input, port) OrElse Not (port >= 1 And port <= 65535) ' 端口错误
             MessageBox.Show("所输入的端口格式不正确，应为在 [1, 65535] 内的纯数字。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
-
             input = InputBox("请输入本地监听的端口：", "从移动端同步", input)
             If String.IsNullOrWhiteSpace(input) Then Return ' 空内容
         End While
@@ -179,7 +179,7 @@ Partial Public Class TempForm
         Dim qrCodeForm As BaseEscCloseForm = GetQrCodeForm(QR_CODE_MAGIC & ip & ":" & port)
 
         qrCodeForm.Text = "连接二维码 (" & ip & ":" & port & ")"
-        AddHandler qrCodeForm.FormClosed, _
+        AddHandler qrCodeForm.FormClosed,
             Sub()
                 If SyncData.rcvServerSocket IsNot Nothing Then
                     cancelFlag = True
@@ -198,13 +198,12 @@ Partial Public Class TempForm
         qrCodeForm.Show()
 
         ' 受け付け可能になっていません。このメソッドを呼び出す前に、Start() メソッドを呼び出してください。
-        ' 
-        thread = New Thread(New ThreadStart(Sub() _
-            SyncData.ReceiveTabs(Port:=port, cb:= _
+        thread = New Thread(New ThreadStart(Sub() 
+            SyncData.ReceiveTabs(Port := port, cb :=
                 Sub(ret As String, ok As Exception)
                     ' 待っている状態からスレッドが中断されました。
                     Try
-                        Me.Invoke(New Action( _
+                        Me.Invoke(New Action(
                             Sub()
                                 If cancelFlag Then ' 手动关闭
                                     qrCodeForm.Close()
@@ -213,7 +212,7 @@ Partial Public Class TempForm
 
                                 qrCodeForm.Close() ' 不关闭，自动关
                                 If ok IsNot Nothing Then
-                                    MessageBox.Show("数据接收错误。" + Chr(10) + ok.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                    MessageBox.Show($"数据接收错误：{vbNewLine}{ok.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
                                     Return
                                 End If
 
@@ -230,58 +229,20 @@ Partial Public Class TempForm
                                 End Try
 
                                 Dim backupFileName As String = GlobalModel.SaveBackupData(newList)
-                                Dim isOpen As DialogResult = MessageBoxEx.Show("接收数据成功，新数据保存在 """ & backupFileName & """。", "同步", _
-                                                                               MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, _
-                                                                               Me, New String() {"打开文件夹", "确定"})
+                                Dim isOpen = MessageBoxEx.Show($"接收数据成功，新数据保存在 ""{backupFileName}""。", "同步",
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1,
+                                    Me, New String() {"打开文件夹", "确定"})
                                 If isOpen = DialogResult.Yes Then
-                                    Process.Start("explorer.exe", "/select,""" & backupFileName & """")
+                                    Process.Start("explorer.exe", $"/select,""{backupFileName}""")
                                 End If
-
-                                ' !!!
-                                'Dim newItems As List(Of Tab) = newList.Except(GlobalModel.Tabs).ToList()
-                                'Dim deletedItems As List(Of Tab) = GlobalModel.Tabs.Except(newList).ToList()
-
-                                'Dim result As DialogResult = MessageBoxEx.Show( _
-                                '    "数据接收完成，共有 " & newItems.Count & " 条新记录，删除了" & deletedItems.Count & " 条记录。" & _
-                                '    "是否只添加新的记录，还是删除被删除的记录，或者是覆盖所有同步数据？", "同步数据", _
-                                '    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, _
-                                '    New String() {"添加", "覆盖", "取消"})
-
-                                'Dim backupFileName$ = ""
-
-                                'Select Case result
-                                '    Case Windows.Forms.DialogResult.Yes ' 添加
-                                '        backupFileName = GlobalModel.SaveBackupData(GlobalModel.Tabs) ' 备份
-                                '        GlobalModel.Tabs.AddRange(newItems)
-                                '        'Case Windows.Forms.DialogResult.No ' 删除
-                                '        '    backupFileName = GlobalModel.SaveBackupData(GlobalModel.Tabs)
-                                '        '    GlobalModel.Tabs.RemoveAll(New Predicate(Of Tab)(Function(item As Tab) deletedItems.IndexOf(item) <> -1))
-                                '    Case Windows.Forms.DialogResult.No ' 覆盖
-                                '        backupFileName = GlobalModel.SaveBackupData(GlobalModel.Tabs)
-                                '        GlobalModel.Tabs = newList
-                                '    Case Windows.Forms.DialogResult.Cancel
-                                '        backupFileName = ""
-                                'End Select
-
-                                'If backupFileName <> "" Then
-                                '    Dim isOpen As DialogResult = MessageBoxEx.Show("已完成同步，原始数据保存在 """ & backupFileName & """。", "同步", _
-                                '                                                   MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, _
-                                '                                                   New String() {"打开文件夹", "确定"})
-                                '    If isOpen = Windows.Forms.DialogResult.Yes Then
-                                '        System.Diagnostics.Process.Start("explorer.exe", "/select,""" & backupFileName & """")
-                                '    End If
-                                'End If
-
                             End Sub))
                     Catch ex As Exception
                         Console.WriteLine(ex.Message)
                     End Try
-                End Sub)))
-
+                End Sub)
+        end sub))
         thread.Start()
-
     End Sub
 
 #End Region
-
 End Class

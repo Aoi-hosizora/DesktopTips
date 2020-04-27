@@ -1,11 +1,7 @@
-﻿Imports System.Text
-Imports System.Runtime.InteropServices
-
-''' <summary>
+﻿''' <summary>
 ''' MessageBox 帮助类
 ''' </summary>
 Public Class MessageBoxEx
-
     Public Shared Function Show(text As String,
                                 caption As String,
                                 buttons As MessageBoxButtons,
@@ -14,23 +10,22 @@ Public Class MessageBoxEx
                                 Optional mainForm As Form = Nothing,
                                 Optional buttonTitles() As String = Nothing)
 
-        Dim frm As New MessageForm(buttons, buttonTitles, mainForm) With {.Opacity = 0, .WatchForActivate = True}
+        Dim frm As New MessageForm(buttonTitles, mainForm) With {.Opacity = 0, .WatchForActivate = True}
         Dim result As DialogResult = MessageBox.Show(frm, text, caption, buttons, icon, defaultButton)
         frm.Close()
         Return result
     End Function
 
-    Private Class MessageForm : Inherits Form
+    Private Class MessageForm
+        Inherits Form
 
         Private _handle As IntPtr
-        Private _buttons As MessageBoxButtons
-        Private _buttonTitles() As String = Nothing
-        Private _mainForm As Form
+        Private ReadOnly _buttonTitles() As String = Nothing
+        Private ReadOnly _mainForm As Form
 
         Public Property WatchForActivate As Boolean
 
-        Public Sub New(buttons As MessageBoxButtons, buttonTitles() As String, mainForm As Form)
-            _buttons = buttons
+        Public Sub New(buttonTitles() As String, mainForm As Form)
             _buttonTitles = buttonTitles
             _mainForm = mainForm
 
@@ -39,12 +34,12 @@ Public Class MessageBoxEx
             Me.ShowInTaskbar = False
         End Sub
 
-        Protected Overrides Sub OnShown(e As System.EventArgs)
+        Protected Overrides Sub OnShown(e As EventArgs)
             MyBase.OnShown(e)
             NativeMethod.SetWindowPos(Me.Handle, IntPtr.Zero, 0, 0, 0, 0, 659)
         End Sub
 
-        Protected Overrides Sub OnFormClosed(e As System.Windows.Forms.FormClosedEventArgs)
+        Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
             If _mainForm IsNot Nothing Then
                 NativeMethod.SetForegroundWindow(_mainForm.Handle)
                 _mainForm.Activate()
@@ -52,7 +47,7 @@ Public Class MessageBoxEx
             MyBase.OnFormClosed(e)
         End Sub
 
-        Protected Overrides Sub WndProc(ByRef m As System.Windows.Forms.Message)
+        Protected Overrides Sub WndProc(ByRef m As Message)
             If WatchForActivate And m.Msg = &H6 Then
                 _WatchForActivate = False
                 _handle = m.LParam
@@ -63,12 +58,12 @@ Public Class MessageBoxEx
 
         Private Sub HookMsgBox()
             Dim h As IntPtr = NativeMethod.GetWindow(_handle, NativeMethod.GW_CHILD)
-            Dim buttonTitleIndex As Integer = 0
+            Dim buttonTitleIndex = 0
 
             While h <> IntPtr.Zero
                 If NativeMethod.GetWindowClassName(h).Equals("Button") AndAlso
-                    _buttonTitles IsNot Nothing AndAlso _buttonTitles.Length <> 0 AndAlso
-                    _buttonTitles.Length > buttonTitleIndex Then
+                   _buttonTitles IsNot Nothing AndAlso _buttonTitles.Length <> 0 AndAlso
+                   _buttonTitles.Length > buttonTitleIndex Then
 
                     NativeMethod.SetWindowText(h, _buttonTitles(buttonTitleIndex))
                     buttonTitleIndex += 1
@@ -77,5 +72,4 @@ Public Class MessageBoxEx
             End While
         End Sub
     End Class
-
 End Class

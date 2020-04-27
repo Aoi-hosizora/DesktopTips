@@ -1,8 +1,7 @@
 ﻿Imports Newtonsoft.Json
 
-<JsonObject()>
+<JsonObject>
 Public Class TipColor
-
     <JsonProperty("id")>
     Public Property Id As Integer
 
@@ -21,5 +20,4 @@ Public Class TipColor
         Me.Name = name
         Me.Color = color
     End Sub
-
 End Class

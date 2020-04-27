@@ -99,7 +99,7 @@ Public Class MainForm
             If m.WParam.ToInt32() = HOTKEY_ID Then
                 Me.Activate()
                 NativeMethod.SetForegroundWindow(Handle)
-                FormOpecityUp()
+                FormOpacityUp()
             End If
         End If
         MyBase.WndProc(m)
@@ -121,7 +121,7 @@ Public Class MainForm
         ' 加载设置
         LoadSetting()
         Me.Refresh()
-        FormOpecityUp()
+        FormOpacityUp()
 
         ' 窗口显示
         Me.TabStrip.Tabs.Remove(Me.TabItemTest)
@@ -399,7 +399,7 @@ Public Class MainForm
             opBtn.Checked = False
         Next
         btn.Checked = True
-        FormOpecityDown()
+        FormOpacityDown()
     End Sub
 
     ''' <summary>
@@ -462,7 +462,7 @@ Public Class MainForm
     Private Sub MainForm_Deactivate(sender As Object, e As EventArgs) Handles Me.Deactivate
         ListView.ClearSelected()
         If Me.Opacity <> MaxOpacity Then
-            FormOpecityDown()
+            FormOpacityDown()
         End If
     End Sub
 
@@ -495,7 +495,7 @@ Public Class MainForm
     ''' </summary>
     Private Sub PopMenu_PopupFinalizedAndClosed(sender As Object, e As EventArgs) Handles ListPopupMenu.PopupFinalized, TabPopupMenu.PopupFinalized, ListPopupMenuMove.PopupFinalized, TabStrip.PopupClose
         isMenuPopuping = False
-        FormOpecityDown()
+        FormOpacityDown()
     End Sub
 
     ''' <summary>

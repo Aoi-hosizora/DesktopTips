@@ -96,6 +96,7 @@ Partial Class TempForm
         Me.ButtonRemoveItem.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.ButtonRemoveItem.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonRemoveItem.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
+        Me.ButtonRemoveItem.Enabled = False
         Me.ButtonRemoveItem.Location = New System.Drawing.Point(293, 239)
         Me.ButtonRemoveItem.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ButtonRemoveItem.Name = "ButtonRemoveItem"
@@ -757,9 +758,10 @@ Partial Class TempForm
     Friend WithEvents ListPopupMenuSyncDataTo As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuSyncDataFrom As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuPasteAppend As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents ListPopupMenuShotcutSetting As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuHotkeySetting As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuOthers As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuOpenAllLink As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuViewAllLink As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents ListPopupMenuShotcutSetting As DevComponents.DotNetBar.ButtonItem
 
 End Class

@@ -465,7 +465,7 @@ Partial Class MainForm
         Me.ListPopupMenuWinSetting.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.ListPopupMenuShotcutSetting, Me.ListPopupMenuListHeight, Me.ListPopupMenuOpacity, Me.ListPopupMenuFold, Me.ListPopupMenuWinTop, Me.ListPopupMenuWinHighColor, Me.ListPopupMenuLoadPos, Me.ListPopupMenuSavePos})
         Me.ListPopupMenuWinSetting.Text = "显示(&S)"
         '
-        'ListPopupMenuShotcutSetting
+        'ListPopupMenuHotkeySetting
         '
         Me.ListPopupMenuShotcutSetting.Name = "ListPopupMenuShotcutSetting"
         Me.ListPopupMenuShotcutSetting.Text = "快捷键设置(&R)"

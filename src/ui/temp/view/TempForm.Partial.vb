@@ -8,64 +8,52 @@ Partial Public Class TempForm
 
 #Region "折叠菜单"
 
-    ''' <summary>
-    ''' 折叠菜单
-    ''' </summary>
-    Private Sub ListPopupMenuFold_Click(sender As System.Object, e As EventArgs) Handles ListPopupMenuFold.Click
-        ListPopupMenuFold.Checked = Not ListPopupMenuFold.Checked
-        FoldMenu(ListPopupMenuFold.Checked)
-    End Sub
+    Private Sub foldMenu(doFold As Boolean)
+        If doFold Then
+            Me.m_popup_ListItemContainer.SubItems.Clear()
+            Me.m_menu_ListPopupMenu.SubItems.Clear()
 
-    ''' <summary>
-    ''' 折叠菜单
-    ''' </summary>
-    ''' <param name="IsFold"></param>
-    Private Sub FoldMenu(isFold As Boolean)
-        If isFold Then
-            Me.ListPopupMenuItemContainer.SubItems.Clear()
-            Me.ListPopupMenu.SubItems.Clear()
-
-            Me.ListPopupMenuItemContainer.SubItems.AddRange(New DD.BaseItem() { _
-                Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem,
-                Me.ListPopupMenuEditItem, Me.ListPopupMenuCopy, Me.ListPopupMenuSelectAll, Me.ListPopupMenuHighLight
+            Me.m_popup_ListItemContainer.SubItems.AddRange(New DD.BaseItem() { _
+                Me.m_popup_MoveTipUp, Me.m_popup_MoveTipDown, Me.m_popup_InsertTip, Me.m_popup_RemoveTips,
+                Me.m_popup_UpdateTip, Me.m_popup_CopyTips, Me.m_popup_SelectAllTips, Me.m_popup_HighlightTip
             })
 
-            Me.ListPopupMenu.SubItems.AddRange(New DD.BaseItem() { _
-                Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList,
-                Me.ListPopupMenuItemContainer,
-                Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom, Me.ListPopupMenuViewHighLight, Me.ListPopupMenuFind, Me.ListPopupMenuMove, Me.ListPopupMenuOthers,
-                Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuBrowser, Me.ListPopupMenuSyncData,
-                Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit
+            Me.m_menu_ListPopupMenu.SubItems.AddRange(New DD.BaseItem() { _
+                Me.m_popup_SelectedTipsCountLabel, Me.m_popup_SelectedTipsTextLabel, Me.m_popup_TipsCountLabel,
+                Me.m_popup_ListItemContainer,
+                Me.m_popup_MoveTopTop, Me.m_popup_MoveTipBottom, Me.m_popup_ViewHighlightTips, Me.m_popup_FileTips, Me.m_menu_MoveTipsSubMenu, Me.m_menu_OtherSubMenu,
+                Me.m_menu_FileSubMenu, Me.m_popup_OpenDir, Me.m_popup_ViewTabList, Me.m_menu_BrowserSubMenu, Me.m_menu_SyncDataSubMenu,
+                Me.m_popup_WindowLabel, Me.m_menu_WindowSubMenu, Me.m_popup_Exit
             })
 
-            Me.ListPopupMenuAddItem.BeginGroup = True
-            Me.ListPopupMenuMoveUp.BeginGroup = True
-            Me.ListPopupMenuMoveTop.BeginGroup = True
-            Me.ListPopupMenuCopy.BeginGroup = True
+            Me.m_popup_InsertTip.BeginGroup = True
+            Me.m_popup_MoveTipUp.BeginGroup = True
+            Me.m_popup_MoveTopTop.BeginGroup = True
+            Me.m_popup_CopyTips.BeginGroup = True
 
-            For Each item As DD.ButtonItem In Me.ListPopupMenuItemContainer.SubItems
+            For Each item As DD.ButtonItem In Me.m_popup_ListItemContainer.SubItems
                 item.Tooltip = item.Text
             Next
         Else
-            For Each item As DD.ButtonItem In Me.ListPopupMenuItemContainer.SubItems
+            For Each item As DD.ButtonItem In Me.m_popup_ListItemContainer.SubItems
                 item.Tooltip = ""
             Next
 
-            Me.ListPopupMenuAddItem.BeginGroup = False
-            Me.ListPopupMenuMoveUp.BeginGroup = True
-            Me.ListPopupMenuMoveTop.BeginGroup = False
-            Me.ListPopupMenuCopy.BeginGroup = True
+            Me.m_popup_InsertTip.BeginGroup = False
+            Me.m_popup_MoveTipUp.BeginGroup = True
+            Me.m_popup_MoveTopTop.BeginGroup = False
+            Me.m_popup_CopyTips.BeginGroup = True
 
-            Me.ListPopupMenuItemContainer.SubItems.Clear()
-            Me.ListPopupMenu.SubItems.Clear()
-            Me.ListPopupMenu.SubItems.AddRange(New DD.BaseItem() { _
-                Me.ListPopupMenuLabelSelItem, Me.ListPopupMenuLabelSelItemText, Me.ListPopupMenuLabelItemList,
-                Me.ListPopupMenuAddItem, Me.ListPopupMenuRemoveItem, Me.ListPopupMenuEditItem,
-                Me.ListPopupMenuMoveUp, Me.ListPopupMenuMoveDown, Me.ListPopupMenuMoveTop, Me.ListPopupMenuMoveBottom,
-                Me.ListPopupMenuCopy, Me.ListPopupMenuSelectAll, Me.ListPopupMenuHighLight, Me.ListPopupMenuViewHighLight,
-                Me.ListPopupMenuFind, Me.ListPopupMenuMove, Me.ListPopupMenuOthers,
-                Me.ListPopupMenuLabelItemFile, Me.ListPopupMenuOpenDir, Me.ListPopupMenuViewFile, Me.ListPopupMenuBrowser, Me.ListPopupMenuSyncData,
-                Me.ListPopupMenuLabelItemWindow, Me.ListPopupMenuWinSetting, Me.ListPopupMenuExit
+            Me.m_popup_ListItemContainer.SubItems.Clear()
+            Me.m_menu_ListPopupMenu.SubItems.Clear()
+            Me.m_menu_ListPopupMenu.SubItems.AddRange(New DD.BaseItem() { _
+                Me.m_popup_SelectedTipsCountLabel, Me.m_popup_SelectedTipsTextLabel, Me.m_popup_TipsCountLabel,
+                Me.m_popup_InsertTip, Me.m_popup_RemoveTips, Me.m_popup_UpdateTip,
+                Me.m_popup_MoveTipUp, Me.m_popup_MoveTipDown, Me.m_popup_MoveTopTop, Me.m_popup_MoveTipBottom,
+                Me.m_popup_CopyTips, Me.m_popup_SelectAllTips, Me.m_popup_HighlightTip, Me.m_popup_ViewHighlightTips,
+                Me.m_popup_FileTips, Me.m_menu_MoveTipsSubMenu, Me.m_menu_OtherSubMenu,
+                Me.m_menu_FileSubMenu, Me.m_popup_OpenDir, Me.m_popup_ViewTabList, Me.m_menu_BrowserSubMenu, Me.m_menu_SyncDataSubMenu,
+                Me.m_popup_WindowLabel, Me.m_menu_WindowSubMenu, Me.m_popup_Exit
             })
         End If
     End Sub
@@ -79,10 +67,7 @@ Partial Public Class TempForm
     Private Shared ReadOnly IP_RE As New Regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
     Private Shared ReadOnly PORT_RE As New Regex("^([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-4]\d{4}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$")
 
-    ''' <summary>
-    ''' 显示二维码窗口
-    ''' </summary>
-    private Function getQrCodeForm(data As String) As BaseEscCloseForm
+    Private Function getQrCodeForm(data As String) As BaseEscCloseForm
         Dim qrGenerator As New QRCodeGenerator
         Dim qrCodeData As QRCodeData = qrGenerator.CreateQrCode(data, QRCodeGenerator.ECCLevel.Q)
         Dim qrCode As New QRCode(qrCodeData)
@@ -101,10 +86,10 @@ Partial Public Class TempForm
     End Function
 
     ''' <summary>
-    ''' 同步到移动端 (本地 C -> 安卓 S) !!! 常用
+    ''' 同步到移动端 (本地 C -> 安卓 S) !!!
     ''' 远程监听地址 -> 确定远程地址 -> 本地发送数据 -> 等待 ACK
     ''' </summary>
-    Private Sub ListPopupMenuSyncDataTo_Click(sender As System.Object, e As EventArgs) Handles ListPopupMenuSyncDataTo.Click
+    Private Sub ListPopupMenuSyncDataTo_Click(sender As System.Object, e As EventArgs) Handles m_popup_SyncDataTo.Click
         Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
 
         Dim input As String = InputBox("请输入移动端的地址：", "同步到移动端", setting.LastMobileIP)
@@ -149,7 +134,7 @@ Partial Public Class TempForm
     ''' 从移动端同步 (安卓 C -> 本地 S) !!! 危险
     ''' 确定端口 -> 监听本地地址 -> 电脑端发送 -> 本地接受处理
     ''' </summary>
-    Private Sub ListPopupMenuSyncDataFrom_Click(sender As System.Object, e As EventArgs) Handles ListPopupMenuSyncDataFrom.Click
+    Private Sub ListPopupMenuSyncDataFrom_Click(sender As System.Object, e As EventArgs) Handles m_popup_SyncDataFrom.Click
         Dim ip As String = SyncData.GetLanIP()
         If String.IsNullOrWhiteSpace(ip) Then ' 地址错误
             MessageBox.Show("本机获取局域网内地址错误。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)

@@ -4,16 +4,10 @@
     Private ReadOnly _globalPresenter As TempFormContract.IGlobalPresenter = New TempFormGlobalPresenter(Me)
     Private ReadOnly _listPresenter As TempFormContract.IListPresenter = New TempFormListPresenter(Me)
 
-    ''' <summary>
-    ''' 引用 Form
-    ''' </summary>
     Public Function GetMe() As TempForm Implements TempFormContract.IView.GetMe
         Return Me
     End Function
 
-    ''' <summary>
-    ''' 显示文本窗体
-    ''' </summary>
     Public Sub ShowTextForm(title As String, content As String, textColor As Color) Implements TempFormContract.IView.ShowTextForm
         Dim formSize = New Size(500, 300)
 

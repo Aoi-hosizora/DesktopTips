@@ -129,12 +129,12 @@ Namespace My
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("0.6")>  _
-        Public Property Opacity() As Double
+        Public Property MaxOpacity() As Double
             Get
-                Return CType(Me("Opacity"),Double)
+                Return CType(Me("MaxOpacity"),Double)
             End Get
             Set
-                Me("Opacity") = value
+                Me("MaxOpacity") = value
             End Set
         End Property
         

@@ -10,6 +10,12 @@
 
     ' https://docs.microsoft.com/en-us/dotnet/visual-basic/programming-guide/language-features/procedures/auto-implemented-properties
 
+    Public Overloads ReadOnly Property TipItems As IEnumerable(Of TipItem)
+        Get
+            Return MyBase.Items.Cast(Of TipItem)()
+        End Get
+    End Property
+
     Public Overloads Property SelectedItem As TipItem
         Get
             Return CType(MyBase.SelectedItem, TipItem)
@@ -44,8 +50,10 @@
         MyBase.Update()
     End Sub
 
-    Public Sub SetSelectOnly(index As Integer)
-        SetSelected(0, True)
+    Public Sub SetSelectOnly(index As Integer, Optional toTop As Boolean = False)
+        If toTop Then
+            SetSelected(0, True)
+        End If
         ClearSelected()
         SetSelected(index, True)
     End Sub
@@ -53,7 +61,6 @@
 #End Region
 
 #Region "Draw"
-
 
     Private ReadOnly HOVER_BACK_COLOR As Color = Color.FromArgb(229, 243, 255)
     Private ReadOnly FOCUS_BACK_COLOR As Color = Color.FromArgb(205, 232, 255)

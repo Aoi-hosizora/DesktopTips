@@ -27,6 +27,7 @@ Partial Public Class GlobalModel
         If String.IsNullOrWhiteSpace(json) Then
             Dim obj = getDefaultModel()
             json = JsonConvert.SerializeObject(obj, Formatting.Indented)
+            save(json, STORAGE_FILENAME)
         End If
         Return json
     End Function

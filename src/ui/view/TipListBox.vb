@@ -6,11 +6,11 @@
         DisplayMember = "Content"
     End Sub
 
-#Region "Properties And Methods"
+#Region "属性 自定义函数"
 
     ' https://docs.microsoft.com/en-us/dotnet/visual-basic/programming-guide/language-features/procedures/auto-implemented-properties
 
-    Public Overloads ReadOnly Property TipItems As IEnumerable(Of TipItem)
+    Public Overloads ReadOnly Property Items As IEnumerable(Of TipItem)
         Get
             Return MyBase.Items.Cast(Of TipItem)()
         End Get
@@ -58,9 +58,14 @@
         SetSelected(index, True)
     End Sub
 
+    Public Function PointOutOfRange(p as Point) As Boolean
+        Dim rect As Rectangle = GetItemRectangle(ItemCount - 1)
+        Return p.Y > rect.Top + rect.Height
+    End Function
+
 #End Region
 
-#Region "Draw"
+#Region "重绘 悬浮"
 
     Private ReadOnly HOVER_BACK_COLOR As Color = Color.FromArgb(229, 243, 255)
     Private ReadOnly FOCUS_BACK_COLOR As Color = Color.FromArgb(205, 232, 255)
@@ -100,7 +105,11 @@
     Protected Overrides Sub OnMouseMove(e As MouseEventArgs)
         MyBase.OnMouseMove(e)
         Dim index = IndexFromPoint(e.Location)
-        If index <> _mouseIndex Then
+        If Not PointOutOfRange(e.Location) AndAlso index <> _mouseIndex Then
+            If index > - 1 Then
+                _hoverTooltip.Hide(Me)
+                _hoverTooltip.SetToolTip(Me, Items(index).Content)
+            End If
             If _mouseIndex > - 1 Then Invalidate(GetItemRectangle(_mouseIndex))
             _mouseIndex = Index
             If _mouseIndex > - 1 Then Invalidate(GetItemRectangle(_mouseIndex))
@@ -113,6 +122,43 @@
             If _mouseIndex > - 1 Then Invalidate(GetItemRectangle(_mouseIndex))
             _mouseIndex = - 1
             If _mouseIndex > - 1 Then Invalidate(GetItemRectangle(_mouseIndex))
+        End If
+    End Sub
+
+#End Region
+
+#Region "其他: 右键选中 文本提示 滚动条"
+
+    Public Delegate Sub OnWheeled
+
+    Public Property OnWheeledAction As OnWheeled
+
+    Private ReadOnly _hoverTooltip As New ToolTip
+
+    Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
+        MyBase.OnMouseDown(e)
+        If e.Button = MouseButtons.Right AndAlso SelectedCount <= 1 Then
+            If ItemCount > 0 And PointOutOfRange(e.Location) Then
+                ClearSelected()
+            Else
+                SetSelectOnly(IndexFromPoint(e.X, e.Y))
+            End If
+        End If
+    End Sub
+
+    Protected Overrides Sub OnMouseWheel(e As MouseEventArgs)
+        MyBase.OnMouseWheel(e)
+        If OnWheeledAction IsNot Nothing Then
+            OnWheeledAction.Invoke()
+        End If
+    End Sub
+
+    Protected Overrides Sub OnMouseCaptureChanged(e As EventArgs)
+        MyBase.OnMouseCaptureChanged(e)
+        If OnWheeledAction IsNot Nothing Then
+            If Cursor.Position.X > Parent.Left + Left + Width - 20 Then
+                OnWheeledAction.Invoke()
+            End If
         End If
     End Sub
 

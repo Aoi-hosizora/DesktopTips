@@ -182,7 +182,7 @@ Public Class TempFormListPresenter
     ''' <summary>
     ''' 获取当前列表所选中的所有链接
     ''' </summary>
-    Private Function getLinks(items As IEnumerable(Of TipItem)) As List(Of String)
+    Public Function GetLinks(items As IEnumerable(Of TipItem)) As List(Of String) Implements TempFormContract.IListPresenter.GetLinks
         Dim res As New List(Of String)
         For Each item As TipItem In items
             For Each link As String In item.Content.Split(New Char() {" ", ",", ".", ";"}, StringSplitOptions.RemoveEmptyEntries)

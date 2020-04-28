@@ -191,7 +191,7 @@ Public Class TempForm
     ''' 粘贴到最后
     ''' </summary>
     Private Sub PasteAppendToTip(sender As Object, e As EventArgs) Handles ListPopupMenuPasteAppend.Click
-        If ListView.SelectedIndices.Count = 1 AndAlso _listPresenter.Paste(ListView.SelectedItem) Then
+        If ListView.SelectedCount = 1 AndAlso _listPresenter.Paste(ListView.SelectedItem) Then
             ListView.Update()
         End If
     End Sub
@@ -254,10 +254,8 @@ Public Class TempForm
     ''' </summary>
     Private Sub AddShownTab(tab As Tab)
         Dim newTabItem = New DD.SuperTabItem() With {
-            .GlobalItem = False,
             .Name = "TabItemCustom_" & GlobalModel.Tabs.Count,
-            .Text = tab.Title,
-            .Tag = tab
+            .Text = tab.Title, .Tag = tab
             }
         ' AddHandler newTabItem.MouseDown, AddressOf TabStrip_MouseDown
         Me.TabStrip.Tabs.Add(newTabItem)
@@ -275,14 +273,12 @@ Public Class TempForm
         For i = 0 To _opacities.Length - 1
             _opacityButtons(i) = New DD.ButtonItem With {
                 .Name = $"ListPopupMenuOpacity_{CInt(_opacities(i) * 100)}",
-                .Text = $"{CInt(_opacities(i) * 100)}%",
-                .Tag = _opacities(i)
+                .Text = $"{CInt(_opacities(i) * 100)}%", .Tag = _opacities(i)
                 }
             AddHandler _opacityButtons(i).Click, Sub(sender As DD.ButtonItem, e As EventArgs)
                 Me.MaxOpacity = sender.Tag
                 My.Settings.MaxOpacity = Me.MaxOpacity
                 My.Settings.Save()
-
                 For Each opBtn In _opacityButtons
                     opBtn.Checked = False
                 Next
@@ -310,6 +306,8 @@ Public Class TempForm
         ButtonItemDown.Visible = False
         ButtonItemDown.Height = (itemHeight + 1) / 2
         ButtonItemDown.Width = itemHeight
+
+        ListView.OnWheeledAction = Sub() HideAssistButtons()
     End Sub
 
     ''' <summary>
@@ -340,14 +338,57 @@ Public Class TempForm
     ''' 调整大小 隐藏辅助按钮
     ''' </summary>
     Private Sub SizeChangedListView(sender As Object, e As EventArgs) Handles ListView.SizeChanged
-        If ButtonItemUp.Visible = True AndAlso ListView.SelectedIndices.Count = 1 Then
+        If ButtonItemUp.Visible = True AndAlso ListView.SelectedCount = 1 Then
             ShowAssistButtons()
         End If
     End Sub
 
 #End Region
 
-#Region "窗口焦点 弹出菜单标记 大小调整 无内容标签更新"
+#Region "可用性判断 列表取消选择 大小调整 无内容标签 菜单与透明度"
+
+    ''' <summary>
+    ''' 选择可用性
+    ''' ListView_SelectedIndexChanged 和 ButtonListSetting_Click 用
+    ''' </summary>
+    Private Sub CheckItemEnabled()
+        Dim isNotNull As Boolean = ListView.SelectedIndex <> - 1
+        Dim isSingle As Boolean = ListView.SelectedCount = 1
+        Dim isTop As Boolean = ListView.SelectedIndex = 0
+        Dim isBottom As Boolean = ListView.SelectedIndex = ListView.ItemCount - 1
+
+        ' 辅助按钮 位置按钮
+        ButtonItemUp.Enabled = isNotNull And isSingle And Not isTop
+        ButtonItemDown.Enabled = isNotNull And isSingle And Not isBottom
+        ListPopupMenuMoveUp.Enabled = isNotNull And isSingle And Not isTop
+        ListPopupMenuMoveTop.Enabled = isNotNull And isSingle And Not isTop
+        ListPopupMenuMoveBottom.Enabled = isNotNull And isSingle And Not isBottom
+        ListPopupMenuMoveDown.Enabled = isNotNull And isSingle And Not isBottom
+
+        ' 删改复制粘贴
+        ButtonRemoveItem.Enabled = isNotNull
+        ListPopupMenuRemoveItem.Enabled = isNotNull
+        ListPopupMenuEditItem.Enabled = isSingle
+        ListPopupMenuHighLight.Enabled = isNotNull
+        ListPopupMenuHighLight.Checked = isNotNull AndAlso ListView.SelectedItem.IsHighLight
+        ListPopupMenuCopy.Enabled = isNotNull
+        ListPopupMenuPasteAppend.Enabled = isSingle
+
+        ' 浏览器
+        ListPopupMenuBrowser.Enabled = _listPresenter.GetLinks(ListView.SelectedItems).Count >= 1
+
+        ' 移动
+        ListPopupMenuMove.Enabled = isNotNull
+    End Sub
+
+    ''' <summary>
+    ''' 列表选择, 辅助按钮显示 可用判断
+    ''' </summary>
+    Private Sub ListView_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView.SelectedIndexChanged, ListView.MouseDown
+        CheckItemEnabled()
+        If ListView.SelectedCount = 1 Then ShowAssistButtons() Else HideAssistButtons()
+        ListView.Refresh()
+    End Sub
 
     ''' <summary>
     ''' 窗口失去焦点，取消选择
@@ -363,32 +404,9 @@ Public Class TempForm
     ''' 没有选择列表项，取消选择
     ''' </summary>
     Private Sub ListView_MouseDown_Sel(sender As Object, e As MouseEventArgs) Handles ListView.MouseDown, TabStrip.MouseDown
-        ListView_SelectedIndexChanged(sender, New EventArgs)
-        If ListView.Items.Count > 0 Then
-            Dim rect As Rectangle = ListView.GetItemRectangle(ListView.Items.Count - 1)
-            If e.Y > rect.Top + rect.Height Then ListView.ClearSelected()
+        If ListView.ItemCount > 0 And ListView.PointOutOfRange(e.Location) Then
+            ListView.ClearSelected()
         End If
-    End Sub
-
-    ''' <summary>
-    ''' 判断透明度是否可以变化
-    ''' </summary>
-    Private _isMenuPopuping As Boolean = False
-
-    ''' <summary>
-    ''' TabStrip 菜单弹出
-    ''' </summary>
-    Private Sub TabStrip_PopupOpen(sender As Object, e As EventArgs) Handles TabStrip.PopupOpen
-        _isMenuPopuping = True
-    End Sub
-
-    ''' <summary>
-    ''' 菜单关闭
-    ''' </summary>
-    Private Sub PopMenu_PopupFinalizedAndClosed(sender As Object, e As EventArgs) _
-        Handles ListPopupMenu.PopupFinalized, TabPopupMenu.PopupFinalized, ListPopupMenuMove.PopupFinalized, TabStrip.PopupClose
-        _isMenuPopuping = False
-        FormOpacityDown()
     End Sub
 
     ''' <summary>
@@ -410,98 +428,22 @@ Public Class TempForm
         LabelNothing.Width = ListView.Width - 2
     End Sub
 
-#End Region
-
-#Region "可用性判断 列表选择 滚动条 屏幕提示"
+    Private _isMenuPopuping As Boolean = False
 
     ''' <summary>
-    ''' 选择可用性
-    ''' ListView_SelectedIndexChanged 和 ButtonListSetting_Click 用
+    ''' TabStrip 菜单弹出
     ''' </summary>
-    Private Sub CheckItemEnabled()
-        Dim isNotNull As Boolean = ListView.SelectedIndex <> - 1
-        Dim isSingle As Boolean = ListView.SelectedIndices.Count = 1
-        Dim isTop As Boolean = ListView.SelectedIndex = 0
-        Dim isBottom As Boolean = ListView.SelectedIndex = ListView.Items.Count() - 1
-
-        ' 辅助按钮
-        ButtonItemUp.Enabled = isNotNull And isSingle And Not isTop
-        ButtonItemDown.Enabled = isNotNull And isSingle And Not isBottom
-
-        ' 位置按钮
-        ListPopupMenuMoveUp.Enabled = isNotNull And isSingle And Not isTop
-        ListPopupMenuMoveTop.Enabled = isNotNull And isSingle And Not isTop
-        ListPopupMenuMoveBottom.Enabled = isNotNull And isSingle And Not isBottom
-        ListPopupMenuMoveDown.Enabled = isNotNull And isSingle And Not isBottom
-
-        ' 删改复制
-        ButtonRemoveItem.Enabled = isNotNull
-        ListPopupMenuRemoveItem.Enabled = isNotNull
-        ListPopupMenuEditItem.Enabled = isSingle
-        ListPopupMenuHighLight.Enabled = isNotNull
-        ListPopupMenuHighLight.Checked = isNotNull AndAlso ListView.SelectedItem.IsHighLight
-        ListPopupMenuCopy.Enabled = isNotNull
-
-        ' 移动
-        ListPopupMenuMove.Enabled = isNotNull
-
-        ' 附加
-        ListPopupMenuPasteAppend.Enabled = isSingle
-
-        ' 浏览器
-        ListPopupMenuBrowser.Enabled = ListView.SelectedItems.Cast(Of TipItem)().
-                                           Where(Function (item) item.Content.IndexOf("http://", StringComparison.Ordinal) <> - 1 Or
-                                                                 item.Content.IndexOf("https://", StringComparison.Ordinal) <> - 1).
-                                           Count >= 1
+    Private Sub TabStrip_PopupOpen(sender As Object, e As EventArgs) Handles TabStrip.PopupOpen
+        _isMenuPopuping = True
     End Sub
 
     ''' <summary>
-    ''' 列表选择, 辅助按钮显示 可用判断
+    ''' 菜单关闭
     ''' </summary>
-    Private Sub ListView_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView.SelectedIndexChanged
-        CheckItemEnabled()
-        If ListView.SelectedIndices.Count = 1 Then ShowAssistButtons() Else HideAssistButtons()
-        ListView.Refresh()
-    End Sub
-
-    ''' <summary>
-    ''' 右键列表同时选中项
-    ''' </summary>
-    Private Sub ListView_RightMouseUp(sender As Object, e As MouseEventArgs) Handles ListView.MouseUp
-        Dim idx As Integer = ListView.IndexFromPoint(e.X, e.Y)
-        If e.Button = MouseButtons.Right And idx >= 0 And idx < ListView.Items.Count And ListView.SelectedIndices.Count <= 1 Then
-            ListView.ClearSelected()
-            ListView.SetSelected(idx, True)
-            If ListView.Items.Count > 0 Then
-                Dim rect As Rectangle = ListView.GetItemRectangle(ListView.Items.Count - 1)
-                If e.Y > rect.Top + rect.Height Then ListView.ClearSelected()
-            End If
-        End If
-    End Sub
-
-    ' 滚动条获得焦点
-    Private Sub ListView_MouseCaptureChanged(sender As Object, e As EventArgs) Handles ListView.MouseCaptureChanged
-        If Cursor.Position.X > Me.Left + ListView.Left + ListView.Width - 20 Then
-            HideAssistButtons()
-        End If
-    End Sub
-
-    ' 滚动
-    Private Sub ListView_MouseWheel(sender As Object, e As MouseEventArgs) Handles ListView.MouseWheel
-        HideAssistButtons()
-    End Sub
-
-    ''' <summary>
-    ''' 悬浮弹出提示
-    ''' </summary>
-    Private Sub ListView_MouseMove(sender As Object, e As MouseEventArgs) Handles ListView.MouseMove
-        Static hoverIdx As Integer = - 1
-        Dim idx = ListView.IndexFromPoint(e.Location)
-        If hoverIdx <> idx AndAlso idx <> - 1 AndAlso idx < ListView.Items.Count Then
-            HoverToolTip.Hide(ListView)
-            HoverToolTip.SetToolTip(ListView, ListView.TipItems.ElementAt(idx).Content)
-            hoverIdx = idx
-        End If
+    Private Sub PopMenu_PopupFinalizedAndClosed(sender As Object, e As EventArgs) _
+        Handles ListPopupMenu.PopupFinalized, TabPopupMenu.PopupFinalized, ListPopupMenuMove.PopupFinalized, TabStrip.PopupClose
+        _isMenuPopuping = False
+        FormOpacityDown()
     End Sub
 
 #End Region

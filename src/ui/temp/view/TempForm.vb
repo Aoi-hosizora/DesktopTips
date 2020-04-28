@@ -32,8 +32,7 @@ Public Class TempForm
     Private Sub LoadFile()
         _globalPresenter.LoadFile()
         ListView.DataSource = GlobalModel.CurrentTab.Tips
-        ListView.Refresh()
-        LabelNothing.Visible = ListView.ItemCount = 0
+        ListView.Update()
     End Sub
 
     ''' <summary>
@@ -103,7 +102,7 @@ Public Class TempForm
     ''' <summary>
     ''' 插入标签
     ''' </summary>
-    Private Sub InsertTip(sender As Object, e As EventArgs) Handles ButtonAddItem.Click, ListPopupMenuAddItem.Click, LabelNothing.DoubleClick
+    Private Sub InsertTip(sender As Object, e As EventArgs) Handles ButtonAddItem.Click, ListPopupMenuAddItem.Click
         If _listPresenter.Insert() Then
             ListView.Update()
             ListView.SetSelectOnly(ListView.ItemCount - 1, True)
@@ -156,10 +155,9 @@ Public Class TempForm
     ''' 上移
     ''' </summary>
     Private Sub MoveTipUp(sender As Object, e As EventArgs) Handles ListPopupMenuMoveUp.Click, ButtonItemUp.Click
-        Dim currIdx = ListView.SelectedIndex
-        If currIdx >= 1 AndAlso _listPresenter.MoveUp(ListView.SelectedItem) Then
+        If ListView.SelectedIndex >= 1 AndAlso _listPresenter.MoveUp(ListView.SelectedItem) Then
             ListView.Update()
-            ListView.SetSelectOnly(currIdx - 1)
+            ListView.SetSelectOnly(ListView.SelectedIndex - 1)
             If sender.Tag = "True" Then
                 NativeMethod.MouseMoveUp(Cursor.Position, 17)
             End If
@@ -170,10 +168,9 @@ Public Class TempForm
     ''' 下移
     ''' </summary>
     Private Sub MoveDownTip(sender As Object, e As EventArgs) Handles ListPopupMenuMoveDown.Click, ButtonItemDown.Click
-        Dim currIdx = ListView.SelectedIndex
-        If currIdx <= ListView.ItemCount - 2 AndAlso _listPresenter.MoveDown(ListView.SelectedItem) Then
+        If ListView.SelectedIndex <= ListView.ItemCount - 2 AndAlso _listPresenter.MoveDown(ListView.SelectedItem) Then
             ListView.Update()
-            ListView.SetSelectOnly(currIdx + 1)
+            ListView.SetSelectOnly(ListView.SelectedIndex + 1)
             If sender.Tag = "True" Then
                 NativeMethod.MouseMoveDown(Cursor.Position, 17)
             End If
@@ -337,7 +334,7 @@ Public Class TempForm
     ''' <summary>
     ''' 调整大小 隐藏辅助按钮
     ''' </summary>
-    Private Sub SizeChangedListView(sender As Object, e As EventArgs) Handles ListView.SizeChanged
+    Private Sub SizeChangedListView(sender As Object, e As EventArgs) Handles ListView.SizeChanged, Me.SizeChanged
         If ButtonItemUp.Visible = True AndAlso ListView.SelectedCount = 1 Then
             ShowAssistButtons()
         End If
@@ -345,7 +342,7 @@ Public Class TempForm
 
 #End Region
 
-#Region "可用性判断 列表取消选择 大小调整 无内容标签 菜单与透明度"
+#Region "可用性判断 列表选择 窗口焦点 大小调整 菜单与透明度"
 
     ''' <summary>
     ''' 选择可用性
@@ -382,12 +379,21 @@ Public Class TempForm
     End Sub
 
     ''' <summary>
-    ''' 列表选择, 辅助按钮显示 可用判断
+    ''' 列表选择 辅助按钮显示 可用判断
     ''' </summary>
-    Private Sub ListView_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListView.SelectedIndexChanged, ListView.MouseDown
+    Private Sub SelectedIndexChangedListView(sender As Object, e As EventArgs) Handles ListView.SelectedIndexChanged, ListView.MouseDown
         CheckItemEnabled()
         If ListView.SelectedCount = 1 Then ShowAssistButtons() Else HideAssistButtons()
         ListView.Refresh()
+    End Sub
+
+    ''' <summary>
+    ''' 没有选择列表项，取消选择
+    ''' </summary>
+    Private Sub MouseDownListViewForSelect(sender As Object, e As MouseEventArgs) Handles ListView.MouseDown, TabStrip.MouseDown
+        If ListView.PointOutOfRange(e.Location) Then
+            ListView.ClearSelected()
+        End If
     End Sub
 
     ''' <summary>
@@ -401,31 +407,12 @@ Public Class TempForm
     End Sub
 
     ''' <summary>
-    ''' 没有选择列表项，取消选择
-    ''' </summary>
-    Private Sub ListView_MouseDown_Sel(sender As Object, e As MouseEventArgs) Handles ListView.MouseDown, TabStrip.MouseDown
-        If ListView.ItemCount > 0 And ListView.PointOutOfRange(e.Location) Then
-            ListView.ClearSelected()
-        End If
-    End Sub
-
-    ''' <summary>
     ''' 大小调整
     ''' </summary>
-    Private Sub ButtonResizeFlag_MouseMove(sender As Object, e As MouseEventArgs) Handles ButtonResizeFlag.MouseMove
-        If IsMouseDown Then
+    Private Sub ButtonResizeForm(sender As Object, e As MouseEventArgs) Handles ButtonResizeFlag.MouseMove
+        If e.Button = MouseButtons.Left Then
             Me.Width = PushDownWindowSize.Width + Cursor.Position.X - PushDownMouseInScreen.X
         End If
-    End Sub
-
-    ''' <summary>
-    ''' 窗口调整大小更新 Label
-    ''' </summary>
-    Private Sub MainForm_SizeChanged(sender As Object, e As EventArgs) Handles Me.SizeChanged
-        LabelNothing.Top = ListView.Top + 1
-        LabelNothing.Left = ListView.Left + 1
-        LabelNothing.Height = ListView.Height - 2
-        LabelNothing.Width = ListView.Width - 2
     End Sub
 
     Private _isMenuPopuping As Boolean = False
@@ -433,14 +420,14 @@ Public Class TempForm
     ''' <summary>
     ''' TabStrip 菜单弹出
     ''' </summary>
-    Private Sub TabStrip_PopupOpen(sender As Object, e As EventArgs) Handles TabStrip.PopupOpen
+    Private Sub PopupOpenTabStrip(sender As Object, e As EventArgs) Handles TabStrip.PopupOpen
         _isMenuPopuping = True
     End Sub
 
     ''' <summary>
     ''' 菜单关闭
     ''' </summary>
-    Private Sub PopMenu_PopupFinalizedAndClosed(sender As Object, e As EventArgs) _
+    Private Sub PopupFinalizedAndClosed(sender As Object, e As EventArgs) _
         Handles ListPopupMenu.PopupFinalized, TabPopupMenu.PopupFinalized, ListPopupMenuMove.PopupFinalized, TabStrip.PopupClose
         _isMenuPopuping = False
         FormOpacityDown()
@@ -490,7 +477,7 @@ Public Class TempForm
     ''' <summary>
     ''' 显示弹出菜单
     ''' </summary>
-    Private Sub ButtonListSetting_Click(sender As Object, e As EventArgs) Handles ButtonListSetting.Click
+    Private Sub ButtonListSettingClick(sender As Object, e As EventArgs) Handles ButtonListSetting.Click
         CheckItemEnabled()
         ListPopupMenu.Popup(Me.Left + sender.Left, Me.Top + sender.Top + sender.Height - 1)
     End Sub
@@ -498,7 +485,7 @@ Public Class TempForm
     ''' <summary>
     ''' 调整大小
     ''' </summary>
-    Private Sub NumericUpDownListCnt_ValueChanged(sender As Object, e As EventArgs) Handles NumericUpDownListCnt.ValueChanged
+    Private Sub ListCountChanged(sender As Object, e As EventArgs) Handles NumericUpDownListCnt.ValueChanged
         Dim y As Integer
         If Me.Height < NumericUpDownListCnt.Value * ListView.ItemHeight + 27 Then
             y = 17
@@ -516,7 +503,7 @@ Public Class TempForm
     ''' <summary>
     ''' 显示调整大小
     ''' </summary>
-    Private Sub ListPopupMenuListHeight_Click(sender As Object, e As EventArgs) Handles ListPopupMenuListHeight.Click
+    Private Sub ShowListCountClick(sender As Object, e As EventArgs) Handles ListPopupMenuListHeight.Click
         ListPopupMenuListHeight.Checked = Not ListPopupMenuListHeight.Checked
         NumericUpDownListCnt.Visible = ListPopupMenuListHeight.Checked
     End Sub
@@ -524,14 +511,14 @@ Public Class TempForm
     ''' <summary>
     ''' 快捷键设置
     ''' </summary>
-    Private Sub ListPopupMenuHotkeySetting_Click(sender As Object, e As EventArgs) Handles ListPopupMenuShotcutSetting.Click
+    Private Sub HotkeySettingClick(sender As Object, e As EventArgs) Handles ListPopupMenuShotcutSetting.Click
         _globalPresenter.SetupHotKey(Handle, HOTKEY_ID)
     End Sub
 
     ''' <summary>
     ''' 置顶
     ''' </summary>
-    Private Sub ListPopupMenuWinTop_Click(sender As Object, e As EventArgs) Handles ListPopupMenuWinTop.Click
+    Private Sub WinTopClick(sender As Object, e As EventArgs) Handles ListPopupMenuWinTop.Click
         ListPopupMenuWinTop.Checked = Not ListPopupMenuWinTop.Checked
         Me.TopMost = ListPopupMenuWinTop.Checked
         My.Settings.TopMost = Me.TopMost
@@ -541,7 +528,7 @@ Public Class TempForm
     ''' <summary>
     ''' 加载位置
     ''' </summary>
-    Private Sub ListPopupMenuLoadPos_Click(sender As Object, e As EventArgs) Handles ListPopupMenuLoadPos.Click
+    Private Sub LoadPosClick(sender As Object, e As EventArgs) Handles ListPopupMenuLoadPos.Click
         Me.Top = My.Settings.SaveTop
         Me.Left = My.Settings.SaveLeft
     End Sub
@@ -549,15 +536,14 @@ Public Class TempForm
     ''' <summary>
     ''' 保存位置
     ''' </summary>
-    Private Sub ListPopupMenuSavePos_Click(sender As Object, e As EventArgs) Handles ListPopupMenuSavePos.Click
-        Dim ok As DialogResult = MessageBox.Show(
-            "确定保存当前位置，注意该操作会覆盖之前保存的窗口位置。",
+    Private Sub SavePosClick(sender As Object, e As EventArgs) Handles ListPopupMenuSavePos.Click
+        Dim ok = MessageBox.Show("确定保存当前位置，注意该操作会覆盖之前保存的窗口位置。",
             "保存位置", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
         If ok = vbOK Then
+            ListPopupMenuLoadPos.Enabled = True
             My.Settings.SaveTop = Me.Top
             My.Settings.SaveLeft = Me.Left
             My.Settings.Save()
-            ListPopupMenuLoadPos.Enabled = True
         End If
     End Sub
 

@@ -4,6 +4,7 @@
     Public Sub New()
         DrawMode = DrawMode.OwnerDrawFixed
         DisplayMember = "Content"
+        Controls.Add(_labelNothing)
     End Sub
 
 #Region "属性 自定义函数"
@@ -44,13 +45,15 @@
     End Property
 
     Public Overloads Sub Update()
+        MyBase.Update()
         Dim obj = CType(MyBase.DataSource, List(Of TipItem))
         MyBase.DataSource = Nothing
         MyBase.DataSource = obj
-        MyBase.Update()
+        adjustLabelNothing()
     End Sub
 
     Public Sub SetSelectOnly(index As Integer, Optional toTop As Boolean = False)
+        If ItemCount = 0 Then Return
         If toTop Then
             SetSelected(0, True)
         End If
@@ -59,6 +62,7 @@
     End Sub
 
     Public Function PointOutOfRange(p as Point) As Boolean
+        If ItemCount = 0 Then Return True
         Dim rect As Rectangle = GetItemRectangle(ItemCount - 1)
         Return p.Y > rect.Top + rect.Height
     End Function
@@ -135,10 +139,24 @@
 
     Private ReadOnly _hoverTooltip As New ToolTip
 
+    Private WithEvents _labelNothing As New Label With {
+        .BackColor = Color.Snow, .ForeColor = Color.DimGray,  
+        .Visible = False, .AutoSize = False,
+        .Text= "无内容", .TextAlign = ContentAlignment.MiddleCenter
+        }
+
+    Private Sub adjustLabelNothing()
+        _labelNothing.Visible = ItemCount = 0
+        _labelNothing.Top = 0
+        _labelNothing.Left = 0
+        _labelNothing.Height = Height
+        _labelNothing.Width = Width
+    End Sub
+
     Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
         MyBase.OnMouseDown(e)
         If e.Button = MouseButtons.Right AndAlso SelectedCount <= 1 Then
-            If ItemCount > 0 And PointOutOfRange(e.Location) Then
+            If PointOutOfRange(e.Location) Then
                 ClearSelected()
             Else
                 SetSelectOnly(IndexFromPoint(e.X, e.Y))
@@ -160,6 +178,11 @@
                 OnWheeledAction.Invoke()
             End If
         End If
+    End Sub
+
+    Protected Overrides Sub OnSizeChanged(e As EventArgs)
+        MyBase.OnSizeChanged(e)
+        adjustLabelNothing()
     End Sub
 
 #End Region

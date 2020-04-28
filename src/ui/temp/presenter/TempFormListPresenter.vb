@@ -28,16 +28,17 @@ Public Class TempFormListPresenter
     ''' <summary>
     ''' 删除标签
     ''' </summary>
-    Public Function Delete(ByRef items As IEnumerable(Of TipItem)) As Boolean Implements TempFormContract.IListPresenter.Delete
+    Public Function Delete(items As IEnumerable(Of TipItem)) As Boolean Implements TempFormContract.IListPresenter.Delete
+        Dim tipItems As IEnumerable(Of TipItem) = If(TryCast(items, TipItem()), items.ToArray())
         Dim sb As New StringBuilder
-        For Each item As TipItem In items
+        For Each item As TipItem In tipItems
             sb.AppendLine(item.Content)
         Next
         Dim ok = MessageBoxEx.Show($"确定删除以下 {items.Count} 个提醒标签吗？{vbNewLine}{vbNewLine}{sb.ToString()}",
             "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1,
             _view.GetMe())
         If ok = vbOK Then
-            For Each item In items
+            For Each item As TipItem In tipItems
                 GlobalModel.CurrentTab.Tips.Remove(item)
             Next
             _globalPresenter.SaveFile()
@@ -49,7 +50,7 @@ Public Class TempFormListPresenter
     ''' <summary>
     ''' 修改标签
     ''' </summary>
-    Public Function Update(ByRef item As TipItem) As Boolean Implements TempFormContract.IListPresenter.Update
+    Public Function Update(item As TipItem) As Boolean Implements TempFormContract.IListPresenter.Update
         Dim newStr As String = InputBox($"修改提醒标签 ""{item.Content}"" 为：", "修改", item.Content).Trim()
         If newStr <> "" And newStr <> item.Content Then
             item.Content = newStr
@@ -73,7 +74,7 @@ Public Class TempFormListPresenter
     ''' <summary>
     ''' 粘贴到最后
     ''' </summary>
-    Public Function Paste(ByRef item As TipItem) As Boolean Implements TempFormContract.IListPresenter.Paste
+    Public Function Paste(item As TipItem) As Boolean Implements TempFormContract.IListPresenter.Paste
         Dim clip As String = Clipboard.GetText().Trim()
         If Not String.IsNullOrWhiteSpace(clip) Then
             Dim ok = MessageBoxEx.Show($"是否向当前选中项 ""{item.Content}"" 末尾添加剪贴板内容 ""{clip}""？",
@@ -174,7 +175,7 @@ Public Class TempFormListPresenter
     Public Sub ViewCurrentList(items As IEnumerable(Of TipItem)) Implements TempFormContract.IListPresenter.ViewCurrentList
         Dim sb As New StringBuilder
         For Each item As TipItem In items.Cast(Of TipItem)()
-            sb.AppendLine(item.Content & If(item.IsHighLight, " [高亮]", ""))
+            sb.AppendLine(item.Content & If(item.IsHighLight, $" [高亮 {item.Color.Name}]", ""))
         Next
         _view.ShowTextForm($"浏览文件 (共 {items.Count} 项)", sb.ToString(), Color.Black)
     End Sub

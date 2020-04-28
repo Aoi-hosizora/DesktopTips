@@ -82,7 +82,6 @@ Partial Class TempForm
         Me.TabStrip = New DevComponents.DotNetBar.SuperTabStrip()
         Me.TabItemTest = New DevComponents.DotNetBar.SuperTabItem()
         Me.TabItemTest2 = New DevComponents.DotNetBar.SuperTabItem()
-        Me.LabelNothing = New System.Windows.Forms.Label()
         Me.ButtonItemUp = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonItemDown = New DevComponents.DotNetBar.ButtonX()
         Me.ButtonResizeFlag = New DevComponents.DotNetBar.ButtonX()
@@ -143,11 +142,14 @@ Partial Class TempForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ListView.BackColor = System.Drawing.Color.Snow
         Me.ContextMenuBar1.SetContextMenuEx(Me.ListView, Me.ListPopupMenu)
+        Me.ListView.DisplayMember = "Content"
         Me.ListView.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
         Me.ListView.FormattingEnabled = True
         Me.ListView.ItemHeight = 17
         Me.ListView.Location = New System.Drawing.Point(23, 0)
         Me.ListView.Name = "ListView"
+        Me.ListView.OnWheeledAction = Nothing
+        Me.ListView.SelectedItem = Nothing
         Me.ListView.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
         Me.ListView.Size = New System.Drawing.Size(303, 240)
         Me.ListView.TabIndex = 0
@@ -615,18 +617,6 @@ Partial Class TempForm
         Me.TabItemTest2.Text = "Test"
         Me.TabItemTest2.Visible = False
         '
-        'LabelNothing
-        '
-        Me.LabelNothing.BackColor = System.Drawing.Color.Snow
-        Me.ContextMenuBar1.SetContextMenuEx(Me.LabelNothing, Me.ListPopupMenu)
-        Me.LabelNothing.ForeColor = System.Drawing.Color.DimGray
-        Me.LabelNothing.Location = New System.Drawing.Point(213, 197)
-        Me.LabelNothing.Name = "LabelNothing"
-        Me.LabelNothing.Size = New System.Drawing.Size(56, 20)
-        Me.LabelNothing.TabIndex = 10
-        Me.LabelNothing.Text = "无内容"
-        Me.LabelNothing.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
         'ButtonItemUp
         '
         Me.ButtonItemUp.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
@@ -680,7 +670,6 @@ Partial Class TempForm
         Me.Controls.Add(Me.ButtonItemDown)
         Me.Controls.Add(Me.ButtonItemUp)
         Me.Controls.Add(Me.ContextMenuBar1)
-        Me.Controls.Add(Me.LabelNothing)
         Me.Controls.Add(Me.ButtonResizeFlag)
         Me.Controls.Add(Me.ListView)
         Me.Controls.Add(Me.ButtonListSetting)
@@ -760,7 +749,6 @@ Partial Class TempForm
     Friend WithEvents ListPopupMenuWinHighColor As DevComponents.DotNetBar.ColorPickerDropDown
     Friend WithEvents HoverToolTip As System.Windows.Forms.ToolTip
     Friend WithEvents ListPopupMenuFind As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents LabelNothing As System.Windows.Forms.Label
     Friend WithEvents ListPopupMenuBrowser As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuCopy As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents ListPopupMenuSavePos As DevComponents.DotNetBar.ButtonItem

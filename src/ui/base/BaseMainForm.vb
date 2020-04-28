@@ -27,28 +27,28 @@ Public Class BaseMainForm
         Me.Opacity = 0
         ShowForm()
 
-        AddHandler Me.MouseMove, AddressOf FormMouseMove
-        AddHandler Me.MouseLeave, AddressOf FormMouseLeave
+        Dim ctrls As New List(Of Control)
+        ctrls.Add(Me)
+        ctrls.AddRange(Me.Controls.Cast(Of Control)())
+        InitHandler(ctrls)
+        HideButtonXFocus(Me, e)
+    End Sub
 
-        AddHandler Me.MouseDown, AddressOf FormMouseDown
-        AddHandler Me.MouseUp, AddressOf FormMouseUp
-        AddHandler Me.MouseMove, AddressOf FormMouseResize
-
-        For Each ctrl As Control In Me.Controls
+    Private Sub InitHandler(ctrls As IEnumerable(Of Control))
+        For Each ctrl As Control In ctrls
             AddHandler ctrl.MouseMove, AddressOf FormMouseMove
             AddHandler ctrl.MouseLeave, AddressOf FormMouseLeave
-
             AddHandler ctrl.MouseDown, AddressOf FormMouseDown
             AddHandler ctrl.MouseUp, AddressOf FormMouseUp
-            If ctrl.GetType() <> GetType(Button) And ctrl.GetType() <> GetType(DD.ButtonX) Then
+
+            If ctrl.GetType() <> GetType(Button) AndAlso ctrl.GetType() <> GetType(DD.ButtonX) Then
                 AddHandler ctrl.MouseMove, AddressOf FormMouseResize
             End If
-
-            If ctrl.GetType() = GetType(DD.ButtonX) Then
+            If ctrl.GetType() = GetType(Button) OrElse ctrl.GetType() = GetType(DD.ButtonX) Then
                 AddHandler ctrl.MouseDown, AddressOf HideButtonXFocus
             End If
+            InitHandler(ctrl.Controls.Cast(Of Control)())
         Next
-        HideButtonXFocus(Me, e)
     End Sub
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
@@ -124,7 +124,6 @@ Public Class BaseMainForm
     End Sub
 
     Private Sub ShowForm()
-        ' _timerMouseIn.Enabled = False
         _timerMouseOut.Enabled = False
         _timerCloseForm.Enabled = False
         _timerShowForm.Enabled = True
@@ -132,20 +131,17 @@ Public Class BaseMainForm
 
     Private Sub CloseForm()
         _timerMouseIn.Enabled = False
-        ' _timerMouseOut.Enabled = False
         _timerShowForm.Enabled = False
         _timerCloseForm.Enabled = True
     End Sub
 
     Protected Sub FormOpacityUp()
         _timerCloseForm.Enabled = False
-        ' _timerShowForm.Enabled = False
         _timerMouseOut.Enabled = False
         _timerMouseIn.Enabled = True
     End Sub
 
     Protected Sub FormOpacityDown()
-        ' _timerCloseForm.Enabled = False
         _timerShowForm.Enabled = False
         _timerMouseIn.Enabled = False
         _timerMouseOut.Enabled = True

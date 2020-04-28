@@ -15,10 +15,10 @@
 
     Public Interface IListPresenter
         Function Insert() As Boolean                                            ' 插入
-        Function Delete(ByRef items As IEnumerable(Of TipItem)) As Boolean      ' 删除
-        Function Update(ByRef item As TipItem) As Boolean                       ' 更新
+        Function Delete(items As IEnumerable(Of TipItem)) As Boolean            ' 删除
+        Function Update(item As TipItem) As Boolean                             ' 更新
         Sub Copy(items As IEnumerable(Of TipItem))                              ' 复制
-        Function Paste(ByRef item As TipItem) As Boolean                        ' 粘贴插入
+        Function Paste(item As TipItem) As Boolean                              ' 粘贴插入
         Function MoveUp(item As TipItem) As Boolean                             ' 上移
         Function MoveDown(item As TipItem) As Boolean                           ' 下移
         Function MoveTop(item As TipItem) As Boolean                            ' 置顶

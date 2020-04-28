@@ -19,15 +19,14 @@
 
         Dim textBox As New TextBox With {
             .Text = content, .ReadOnly = True, .Multiline = True, .ScrollBars = ScrollBars.Both, .WordWrap = False,
-            .BackColor = Color.White, .ForeColor = textColor, .Font = New Font("Microsoft YaHei UI", 9.0!),
-            .Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top
-            }
+            .BackColor = Color.White  ,  .ForeColor = textColor   , .Font = New Font("Microsoft YaHei UI", 9.0!),
+            .Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top}
         Dim form As New BaseEscCloseForm With {
-            .Text = title, .Size = formSize, .TopMost = True, .FormBorderStyle = FormBorderStyle.Sizable
-            }
+            .Text = title, .Size = formSize, .TopMost = True, .FormBorderStyle = FormBorderStyle.Sizable}
         form.Controls.Add(textBox)
-        form.Show()
+        textBox.Dock = DockStyle.Fill
 
+        form.Show()
         form.Top = Me.Top
         form.Left = Me.Left - formSize.Width - 15
         textBox.Select(0, 0)

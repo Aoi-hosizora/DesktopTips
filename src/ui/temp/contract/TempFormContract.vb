@@ -29,4 +29,10 @@
         Sub OpenAllLinks(items As IEnumerable(Of TipItem))                      ' 打开所有链接
         Sub ViewAllLinks(items As IEnumerable(Of TipItem))                      ' 浏览所有链接
     End Interface
+
+    Public Interface IGroupPresenter
+        Function Insert() As Boolean            ' 插入
+        Function Delete(tab As Tab) As Boolean  ' 删除
+        Function Update(tab As Tab) As Boolean  ' 修改
+    End Interface
 End Interface

@@ -13,7 +13,7 @@
 
         Dim textBox As New TextBox With {
             .Text = content, .ReadOnly = True, .Multiline = True, .ScrollBars = ScrollBars.Both, .WordWrap = False,
-            .BackColor = Color.White  ,  .ForeColor = textColor   , .Font = New Font("Microsoft YaHei UI", 9.0!),
+            .BackColor = Color.White, .ForeColor = textColor, .Font = New Font("Microsoft YaHei UI", 9.0!),
             .Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top}
         Dim form As New BaseEscCloseForm With {
             .Text = title, .Size = formSize, .TopMost = True, .FormBorderStyle = FormBorderStyle.Sizable}

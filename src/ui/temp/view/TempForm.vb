@@ -13,10 +13,10 @@ Public Class TempForm
         Me.MaxOpacity = My.Settings.MaxOpacity
         Me.TopMost = My.Settings.TopMost
 
-        m_popup_FoldMenu.Checked = My.Settings.IsFold                                                  ' 折叠菜单
+        m_popup_FoldMenu.Checked = My.Settings.IsFold                                                   ' 折叠菜单
         m_popup_LoadPosition.Enabled = Not (My.Settings.SaveLeft = - 1 Or My.Settings.SaveTop = - 1)    ' 恢复位置
-        m_num_ListCount.Value = (Me.Height - 27) \ 17                                              ' 列表高度
-        m_popup_TopMost.Checked = My.Settings.TopMost                                               ' 窗口置顶
+        m_num_ListCount.Value = (Me.Height - 27) \ 17                                                   ' 列表高度
+        m_popup_TopMost.Checked = My.Settings.TopMost                                                   ' 窗口置顶
         _globalPresenter.RegisterHotKey(Handle, My.Settings.HotKey, HOTKEY_ID)                          ' 注册热键
         foldMenu(My.Settings.IsFold)                                                                    ' 折叠菜单
     End Sub
@@ -25,6 +25,8 @@ Public Class TempForm
         _globalPresenter.LoadFile()
         m_TipListBox.DataSource = GlobalModel.CurrentTab.Tips
         m_TipListBox.Update()
+        m_TipsTabView.DataSource = GlobalModel.Tabs
+        m_TipsTabView.Update()
     End Sub
 
     Private Const HOTKEY_ID As Integer = 0
@@ -67,8 +69,6 @@ Public Class TempForm
     Private Sub On_Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' 窗口显示
         LoadSetting()
-        Me.m_TabStrip.Tabs.Remove(Me.m_tab_TestTab)
-        Me.m_TabStrip.Tabs.Remove(Me.m_tab_TestTab2)
         SetupOpacityButtons()
         SetupAssistButtons()
 
@@ -76,16 +76,13 @@ Public Class TempForm
         Me.CanMouseLeave = Function() As Boolean
             Return m_menu_ListPopupMenu.PopupControl Is Nothing AndAlso
                    m_menu_TabPopupMenu.PopupControl Is Nothing AndAlso
-                   m_TabStrip.ContextMenu Is Nothing AndAlso
+                   m_TipsTabView.ContextMenu Is Nothing AndAlso
                    m_menu_MoveTipsSubMenu.PopupControl Is Nothing AndAlso
                    _isMenuPopuping = False
         End Function
 
         ' 列表
         LoadFile()
-        For i = 0 To GlobalModel.Tabs.Count - 1
-            AddTabToShow(GlobalModel.Tabs.Item(i))
-        Next
     End Sub
 
 #End Region
@@ -193,14 +190,11 @@ Public Class TempForm
 
 #Region "分组显示 透明度 辅助按钮"
 
-    Private Sub AddTabToShow(tab As Tab) ' MainForm_Load On_BtnNewTab_Click 用
-        Dim newTabItem = New DD.SuperTabItem() With {
-            .Name = "TabItemCustom_" & GlobalModel.Tabs.Count,
-            .Text = tab.Title, .Tag = tab
-            }
-        ' AddHandler newTabItem.MouseDown, AddressOf TabStrip_MouseDown
-        Me.m_TabStrip.Tabs.Add(newTabItem)
-    End Sub
+    ' Private Sub AddTabToShow(tab As Tab) ' MainForm_Load On_BtnNewTab_Click 用
+    '     Dim newTabItem = New TipsTabView.TipsTabViewItem(tab)
+    '     ' AddHandler newTabItem.MouseDown, AddressOf TabStrip_MouseDown
+    '     Me.m_TipsTabView.Tabs.Add(newTabItem)
+    ' End Sub
 
     Private ReadOnly _opacities() As Double = {0.2, 0.4, 0.6, 0.8, 1}
     Private ReadOnly _opacityButtons(_opacities.Length - 1) As DD.ButtonItem
@@ -307,7 +301,7 @@ Public Class TempForm
         m_TipListBox.Refresh()
     End Sub
 
-    Private Sub On_ListViewAndTabStrip_MouseDown(sender As Object, e As MouseEventArgs) Handles m_TipListBox.MouseDown, m_TabStrip.MouseDown
+    Private Sub On_ListViewAndTabStrip_MouseDown(sender As Object, e As MouseEventArgs) Handles m_TipListBox.MouseDown, m_TipsTabView.MouseDown
         If m_TipListBox.PointOutOfRange(e.Location) Then
             m_TipListBox.ClearSelected()
         End If
@@ -321,12 +315,12 @@ Public Class TempForm
 
     Private _isMenuPopuping As Boolean = False
 
-    Private Sub On_TabStrip_PopupOpen(sender As Object, e As EventArgs) Handles m_TabStrip.PopupOpen
+    Private Sub On_TabStrip_PopupOpen(sender As Object, e As EventArgs) Handles m_TipsTabView.PopupOpen
         _isMenuPopuping = True
     End Sub
 
     Private Sub On_SomePopup_FinishedAndClose(sender As Object, e As EventArgs) _
-        Handles m_menu_ListPopupMenu.PopupFinalized, m_menu_TabPopupMenu.PopupFinalized, m_menu_MoveTipsSubMenu.PopupFinalized, m_TabStrip.PopupClose
+        Handles m_menu_ListPopupMenu.PopupFinalized, m_menu_TabPopupMenu.PopupFinalized, m_menu_MoveTipsSubMenu.PopupFinalized, m_TipsTabView.PopupClose
         _isMenuPopuping = False
         FormOpacityDown()
     End Sub
@@ -369,6 +363,8 @@ Public Class TempForm
             y = - 17
         End If
         Me.Height = m_num_ListCount.Value * m_TipListBox.ItemHeight + 27
+        My.Settings.Height = Me.Height
+        My.Settings.Save()
 
         Dim dx As Integer = Cursor.Position.X * UInt16.MaxValue / My.Computer.Screen.Bounds.Width
         Dim dy As Integer = (Cursor.Position.Y + y) * UInt16.MaxValue / My.Computer.Screen.Bounds.Height

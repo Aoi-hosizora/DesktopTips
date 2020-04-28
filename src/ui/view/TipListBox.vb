@@ -117,6 +117,10 @@
             If _mouseIndex > - 1 Then Invalidate(GetItemRectangle(_mouseIndex))
             _mouseIndex = Index
             If _mouseIndex > - 1 Then Invalidate(GetItemRectangle(_mouseIndex))
+        Else If PointOutOfRange(e.Location)
+            Dim finalIndex = _mouseIndex
+            _mouseIndex = - 1
+            If finalIndex > - 1 Then Invalidate(GetItemRectangle(finalIndex))
         End If
     End Sub
 

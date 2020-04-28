@@ -78,15 +78,15 @@ Partial Class TempForm
         Me.m_popup_DeleteTab = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_RenameTab = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_MoveToTabSubMenu = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_TabStrip = New DevComponents.DotNetBar.SuperTabStrip()
-        Me.m_tab_TestTab = New DevComponents.DotNetBar.SuperTabItem()
-        Me.m_tab_TestTab2 = New DevComponents.DotNetBar.SuperTabItem()
+        Me.m_TipsTabView = New TipsTabView()
+        Me.m_tab_TestTab = New TipsTabView.TipsTabViewItem()
+        Me.m_tab_TestTab2 = New TipsTabView.TipsTabViewItem()
         Me.m_btn_MoveTipUp = New DevComponents.DotNetBar.ButtonX()
         Me.m_btn_MoveTipDown = New DevComponents.DotNetBar.ButtonX()
         Me.m_btn_Resize = New DevComponents.DotNetBar.ButtonX()
         CType(Me.m_num_ListCount, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.m_menu_ContextMenuBar, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.m_TabStrip, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.m_TipsTabView, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'm_btn_RemoveTips
@@ -548,62 +548,62 @@ Partial Class TempForm
         Me.m_menu_MoveToTabSubMenu.Name = "m_menu_MoveToTabSubMenu"
         Me.m_menu_MoveToTabSubMenu.Text = "移动至分组(&M)"
         '
-        'm_TabStrip
+        'm_TipsTabView
         '
-        Me.m_TabStrip.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.m_TipsTabView.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.m_TabStrip.AutoSelectAttachedControl = False
-        Me.m_TabStrip.BackColor = System.Drawing.Color.DarkRed
+        Me.m_TipsTabView.AutoSelectAttachedControl = False
+        Me.m_TipsTabView.BackColor = System.Drawing.Color.DarkRed
         '
         '
         '
-        Me.m_TabStrip.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square
-        Me.m_TabStrip.ContainerControlProcessDialogKey = True
-        Me.m_menu_ContextMenuBar.SetContextMenuEx(Me.m_TabStrip, Me.m_menu_TabPopupMenu)
+        Me.m_TipsTabView.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square
+        Me.m_TipsTabView.ContainerControlProcessDialogKey = True
+        Me.m_menu_ContextMenuBar.SetContextMenuEx(Me.m_TipsTabView, Me.m_menu_TabPopupMenu)
         '
         '
         '
         '
         '
         '
-        Me.m_TabStrip.ControlBox.CloseBox.Name = ""
+        Me.m_TipsTabView.ControlBox.CloseBox.Name = ""
         '
         '
         '
-        Me.m_TabStrip.ControlBox.MenuBox.Name = ""
-        Me.m_TabStrip.ControlBox.Name = ""
-        Me.m_TabStrip.ControlBox.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_TabStrip.ControlBox.MenuBox, Me.m_TabStrip.ControlBox.CloseBox})
-        Me.m_TabStrip.HorizontalText = False
-        Me.m_TabStrip.Location = New System.Drawing.Point(0, 0)
-        Me.m_TabStrip.Name = "m_TabStrip"
-        Me.m_TabStrip.ReorderTabsEnabled = True
-        Me.m_TabStrip.RotateVerticalText = True
-        Me.m_TabStrip.SelectedTabFont = New System.Drawing.Font("Microsoft YaHei UI Light", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.m_TabStrip.SelectedTabIndex = 0
-        Me.m_TabStrip.Size = New System.Drawing.Size(25, 239)
-        Me.m_TabStrip.TabAlignment = DevComponents.DotNetBar.eTabStripAlignment.Left
-        Me.m_TabStrip.TabCloseButtonHot = Nothing
-        Me.m_TabStrip.TabFont = New System.Drawing.Font("Microsoft YaHei UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.m_TabStrip.TabHorizontalSpacing = 2
-        Me.m_TabStrip.TabIndex = 9
-        Me.m_TabStrip.Tabs.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_tab_TestTab, Me.m_tab_TestTab2})
-        Me.m_TabStrip.TabStyle = DevComponents.DotNetBar.eSuperTabStyle.VisualStudio2008Dock
-        Me.m_TabStrip.TabVerticalSpacing = 3
-        Me.m_TabStrip.Text = "m_TabStrip"
-        Me.m_TabStrip.TextAlignment = DevComponents.DotNetBar.eItemAlignment.Center
+        Me.m_TipsTabView.ControlBox.MenuBox.Name = ""
+        Me.m_TipsTabView.ControlBox.Name = ""
+        Me.m_TipsTabView.ControlBox.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_TipsTabView.ControlBox.MenuBox, Me.m_TipsTabView.ControlBox.CloseBox})
+        Me.m_TipsTabView.HorizontalText = False
+        Me.m_TipsTabView.Location = New System.Drawing.Point(0, 0)
+        Me.m_TipsTabView.Name = "m_TipsTabView"
+        Me.m_TipsTabView.ReorderTabsEnabled = True
+        Me.m_TipsTabView.RotateVerticalText = True
+        Me.m_TipsTabView.SelectedTabFont = New System.Drawing.Font("Microsoft YaHei UI Light", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.m_TipsTabView.SelectedTabIndex = 0
+        Me.m_TipsTabView.Size = New System.Drawing.Size(25, 239)
+        Me.m_TipsTabView.TabAlignment = DevComponents.DotNetBar.eTabStripAlignment.Left
+        Me.m_TipsTabView.TabCloseButtonHot = Nothing
+        Me.m_TipsTabView.TabFont = New System.Drawing.Font("Microsoft YaHei UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.m_TipsTabView.TabHorizontalSpacing = 2
+        Me.m_TipsTabView.TabIndex = 9
+        Me.m_TipsTabView.Tabs.AddRange(New TipsTabView.TipsTabViewItem() {Me.m_tab_TestTab, Me.m_tab_TestTab2})
+        Me.m_TipsTabView.TabStyle = DevComponents.DotNetBar.eSuperTabStyle.VisualStudio2008Dock
+        Me.m_TipsTabView.TabVerticalSpacing = 3
+        Me.m_TipsTabView.Text = "m_TipsTabView"
+        Me.m_TipsTabView.TextAlignment = DevComponents.DotNetBar.eItemAlignment.Center
         '
         'm_tab_TestTab
         '
         Me.m_tab_TestTab.GlobalItem = False
         Me.m_tab_TestTab.Name = "m_tab_TestTab"
-        Me.m_tab_TestTab.Text = "Test"
+        Me.m_tab_TestTab.Source = New Tab("测试1")
         Me.m_tab_TestTab.Visible = False
         '
         'm_tab_TestTab2
         '
         Me.m_tab_TestTab2.GlobalItem = False
         Me.m_tab_TestTab2.Name = "m_tab_TestTab2"
-        Me.m_tab_TestTab2.Text = "Test"
+        Me.m_tab_TestTab2.Source = New Tab("测试2")
         Me.m_tab_TestTab2.Visible = False
         '
         'm_btn_MoveTipUp
@@ -666,7 +666,7 @@ Partial Class TempForm
         Me.Controls.Add(Me.m_btn_InsertTip)
         Me.Controls.Add(Me.m_btn_RemoveTips)
         Me.Controls.Add(Me.m_num_ListCount)
-        Me.Controls.Add(Me.m_TabStrip)
+        Me.Controls.Add(Me.m_TipsTabView)
         Me.Font = New System.Drawing.Font("Microsoft YaHei UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
@@ -681,7 +681,7 @@ Partial Class TempForm
         Me.TransparencyKey = System.Drawing.Color.DarkRed
         CType(Me.m_num_ListCount, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.m_menu_ContextMenuBar, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.m_TabStrip, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.m_TipsTabView, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -717,8 +717,8 @@ Partial Class TempForm
     Friend WithEvents m_popup_SelectedTipsTextLabel As DevComponents.DotNetBar.LabelItem
     Friend WithEvents m_popup_MoveTipBottom As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_MoveTopTop As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents m_TabStrip As DevComponents.DotNetBar.SuperTabStrip
-    Friend WithEvents m_tab_TestTab As DevComponents.DotNetBar.SuperTabItem
+    Friend WithEvents m_TipsTabView As TipsTabView
+    Friend WithEvents m_tab_TestTab As TipsTabView.TipsTabViewItem
     Friend WithEvents m_menu_TabPopupMenu As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_NewTab As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_DeleteTab As DevComponents.DotNetBar.ButtonItem
@@ -728,7 +728,7 @@ Partial Class TempForm
     Friend WithEvents m_menu_MoveToTabSubMenu As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_TabLabel As DevComponents.DotNetBar.LabelItem
     Friend WithEvents m_btn_Resize As DevComponents.DotNetBar.ButtonX
-    Friend WithEvents m_tab_TestTab2 As DevComponents.DotNetBar.SuperTabItem
+    Friend WithEvents m_tab_TestTab2 As TipsTabView.TipsTabViewItem
     Friend WithEvents m_popup_ListItemContainer As DevComponents.DotNetBar.ItemContainer
     Friend WithEvents m_popup_FoldMenu As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_menu_WindowSubMenu As DevComponents.DotNetBar.ButtonItem

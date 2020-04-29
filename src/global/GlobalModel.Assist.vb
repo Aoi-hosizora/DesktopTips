@@ -4,7 +4,7 @@ Imports Newtonsoft.Json
 
 Partial Public Class GlobalModel
 
-#Region "存储"
+#Region "加载与存储"
 
     Private Shared STORAGE_FILEPATH As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\DesktopTips"
     Public Shared STORAGE_FILENAME As String = STORAGE_FILEPATH & "\model.json"
@@ -60,11 +60,12 @@ Partial Public Class GlobalModel
         CurrentTab = obj.Tabs.FirstOrDefault()
 
         For Each tab As Tab In Tabs
-            Dim dup As Tab = CheckDuplicateTab(tab.Title, Tabs)
-            If dup IsNot Nothing AndAlso Not dup.Equals(tab) Then
+            If CheckDuplicateTab(tab.Title, Tabs, tab) Then
                 Throw New FileLoadException("文件中存在重复分组，请检查文件。")
             End If
         Next
+
+        HandleWithColorOrder(Colors, Tabs)
     End Sub
 
     Public Shared Sub SaveAllData()
@@ -79,46 +80,27 @@ Partial Public Class GlobalModel
 
 #End Region
 
-#Region "Get Check"
+#Region "检查冗余分组名以及颜色"
 
-    Public Shared Function GetIndexFromContent(content As String, tips As List(Of TipItem)) As Integer
-        For Each tip As TipItem In tips
-            If tip.Content = content Then
-                Return tips.IndexOf(tip)
+    Public Shared Function CheckDuplicateTab(newTitle As String, tabList As List(Of Tab), Optional currTab As Tab = Nothing) As Boolean
+        Return tabList.Any(Function(tab)
+            Return tab.Title = newTitle.Trim() AndAlso (currTab Is Nothing OrElse tab.Title <> currTab.Title)
+        End Function)
+    End Function
+
+    Public Shared Sub HandleWithColorOrder(colorList As List(Of TipColor), tabList As List(Of Tab))
+        colorList.Sort()
+        For i = 0 To colorList.Count - 1
+            Dim tipColor As TipColor = colorList.ElementAt(i)
+            If tipColor.Id = i Then
+                Continue For
             End If
+
+            tabList.SelectMany(Function(t) t.Tips).Where(Function(t) t.ColorIndex = tipColor.Id).ToList().
+                ForEach(Sub(tip) tip.ColorIndex = i)
+            tipColor.Id = i
         Next
-        Return - 1
-    End Function
-
-    Public Shared Function GetIndexFromContent(content As String) As Integer
-        Return GetIndexFromContent(content, CurrentTab().Tips)
-    End Function
-
-    Public Shared Function GetTabFromTitle(title As String, tabList As List(Of Tab)) As Tab
-        For Each tab As Tab In tabList
-            If tab.Title = title Then
-                Return tab
-            End If
-        Next
-        Return Nothing
-    End Function
-
-    Public Shared Function GetTabFromTitle(title As String) As Tab
-        Return GetTabFromTitle(title, Tabs)
-    End Function
-
-    Public Shared Function CheckDuplicateTab(newTitle As String, tabList As List(Of Tab)) As Tab
-        For Each tab As Tab In tabList
-            If tab.Title = newTitle.Trim() Then
-                Return tab
-            End If
-        Next
-        Return Nothing
-    End Function
-
-    Public Shared Function CheckDuplicateTab(newTitle As String) As Tab
-        Return CheckDuplicateTab(newTitle, Tabs)
-    End Function
+    End Sub
 
 #End Region
 End Class

@@ -102,7 +102,7 @@
             Else
                 g.DrawRectangle(New Pen(HOVER_BACK_COLOR), b)
             End If
-        Else if e.State And DrawItemState.Selected Then ' Selected
+        ElseIf e.State And DrawItemState.Selected Then ' Selected
             g.FillRectangle(New SolidBrush(FOCUS_BACK_COLOR), b)
             g.DrawRectangle(New Pen(FOCUS_BACK_COLOR), b)
         Else
@@ -130,7 +130,7 @@
             If _hoverIndex > - 1 Then Invalidate(GetItemRectangle(_hoverIndex))
             _hoverIndex = Index
             If _hoverIndex > - 1 Then Invalidate(GetItemRectangle(_hoverIndex))
-        Else If PointOutOfRange(e.Location)
+        ElseIf PointOutOfRange(e.Location)
             Dim finalIndex = _hoverIndex
             _hoverIndex = - 1
             If finalIndex > - 1 Then Invalidate(GetItemRectangle(finalIndex))
@@ -191,7 +191,7 @@
         MyBase.OnMouseDown(e)
         If PointOutOfRange(e.Location) Then
             ClearSelected()
-        Else If e.Button = MouseButtons.Right AndAlso SelectedCount <= 1 Then
+        ElseIf e.Button = MouseButtons.Right AndAlso SelectedCount <= 1 Then
             SetSelectOnly(IndexFromPoint(e.X, e.Y))
         End If
     End Sub

@@ -113,6 +113,7 @@ Partial Class ColorDialog
         'ButtonCancel
         '
         Me.ButtonCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.ButtonCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.ButtonCancel.Location = New System.Drawing.Point(420, 375)
         Me.ButtonCancel.Name = "ButtonCancel"
@@ -123,8 +124,10 @@ Partial Class ColorDialog
         '
         'ColorDialog
         '
+        Me.AcceptButton = Me.ButtonSave
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.CancelButton = Me.ButtonCancel
         Me.ClientSize = New System.Drawing.Size(507, 412)
         Me.Controls.Add(Me.ButtonCancel)
         Me.Controls.Add(Me.ButtonSave)

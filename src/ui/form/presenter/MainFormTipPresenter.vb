@@ -69,7 +69,7 @@ Public Class MainFormTipPresenter
                 item.Content += " " & clip
                 _globalPresenter.SaveFile()
                 Return True
-            Else If ok = vbNo Then
+            ElseIf ok = vbNo Then
                 item.Content += ", " & clip
                 _globalPresenter.SaveFile()
                 Return True

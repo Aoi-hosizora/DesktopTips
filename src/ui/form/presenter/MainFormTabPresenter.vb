@@ -14,7 +14,7 @@ Public Class MainFormTabPresenter
     Public Function Insert() As Boolean Implements MainFormContract.ITabPresenter.Insert
         Dim tabName As String = InputBox("新分组的标题：", "新建", "新建分组").Trim()
         If tabName <> "" Then
-            If GlobalModel.CheckDuplicateTab(tabName, GlobalModel.Tabs) IsNot Nothing Then
+            If GlobalModel.CheckDuplicateTab(tabName, GlobalModel.Tabs) Then
                 MessageBoxEx.Show("分组标题 """ & tabName & """ 已存在。",
                     "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, _view.GetMe())
             Else
@@ -46,7 +46,7 @@ Public Class MainFormTabPresenter
     Public Function Update(tab As Tab) As Boolean Implements MainFormContract.ITabPresenter.Update
         Dim newName As String = InputBox($"重命名分组 ""{tab.Title}"" 为: ", "重命名", tab.Title).Trim()
         If newName <> "" Then
-            If GlobalModel.CheckDuplicateTab(newName, GlobalModel.Tabs) IsNot Nothing Then
+            If GlobalModel.CheckDuplicateTab(newName, GlobalModel.Tabs) Then
                 MessageBoxEx.Show($"分组标题 ""{newName}"" 已存在。",
                     "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, _view.GetMe())
             Else

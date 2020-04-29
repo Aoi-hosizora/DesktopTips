@@ -21,6 +21,8 @@ Public Class BaseMainForm
 
     Protected Property CanMouseLeave As MouseLeaveOption
 
+    Protected Property IsLoading As Boolean = True
+
     Protected Overrides Sub OnLoad(e As EventArgs)
         MyBase.OnLoad(e)
         Me.Controls.Add(_labelFocus)
@@ -32,11 +34,13 @@ Public Class BaseMainForm
         ctrls.AddRange(Me.Controls.Cast(Of Control)())
         InitHandler(ctrls)
         HideButtonXFocus(Me, e)
+        IsLoading = False
     End Sub
 
     Private Sub InitHandler(ctrls As IEnumerable(Of Control))
         For Each ctrl As Control In ctrls
             Dim isBtn As Boolean = ctrl.GetType() = GetType(Button) OrElse ctrl.GetType() = GetType(DD.ButtonX)
+            Dim isNum As Boolean = ctrl.GetType() = GetType(NumericUpDown)
             Dim isTab As Boolean = ctrl.GetType() = GetType(TabView.TabViewItem) OrElse ctrl.GetType() = GetType(DD.SuperTabItem) OrElse
                                    ctrl.GetType() = GetType(TabView) OrElse ctrl.GetType() = GetType(DD.SuperTabStrip)
 
@@ -44,14 +48,14 @@ Public Class BaseMainForm
             AddHandler ctrl.MouseMove, AddressOf FormMouseMove
             AddHandler ctrl.MouseLeave, AddressOf FormMouseLeave
 
-            ' 非 Tab 才可以监听 鼠标点击
-            If Not isTab Then
+            ' 非 Tab 和 Num 才可以监听 鼠标点击 (Button 由于存在 ResizeFlag)
+            If Not isTab AndAlso Not isNum Then
                 AddHandler ctrl.MouseDown, AddressOf FormMouseDown
                 AddHandler ctrl.MouseUp, AddressOf FormMouseUp
             End If
 
-            ' 非 Button 和 Tab 才可以监听拖动
-            If Not isBtn AndAlso Not isTab Then
+            ' 非 Button 和 Tab 和 Num 才可以监听拖动
+            If Not isBtn AndAlso Not isTab AndAlso Not isNum Then
                 AddHandler ctrl.MouseMove, AddressOf FormMouseDownMove
             End If
 

@@ -1,6 +1,6 @@
 ﻿Imports Newtonsoft.Json
 
-<JsonObject>
+<Serializable, JsonObject>
 Public Class TipItem
     <JsonProperty("content")>
     Public Property Content As String

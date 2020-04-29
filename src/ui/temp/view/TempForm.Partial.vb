@@ -2,63 +2,8 @@
 Imports System.Threading
 Imports Newtonsoft.Json
 Imports QRCoder
-Imports DD = DevComponents.DotNetBar
 
 Partial Public Class TempForm
-
-#Region "折叠菜单"
-
-    Private Sub foldMenu(doFold As Boolean)
-        If doFold Then
-            Me.m_popup_ListItemContainer.SubItems.Clear()
-            Me.m_menu_ListPopupMenu.SubItems.Clear()
-
-            Me.m_popup_ListItemContainer.SubItems.AddRange(New DD.BaseItem() { _
-                Me.m_popup_MoveTipUp, Me.m_popup_MoveTipDown, Me.m_popup_InsertTip, Me.m_popup_RemoveTips,
-                Me.m_popup_UpdateTip, Me.m_popup_CopyTips, Me.m_popup_SelectAllTips, Me.m_popup_HighlightTip
-            })
-
-            Me.m_menu_ListPopupMenu.SubItems.AddRange(New DD.BaseItem() { _
-                Me.m_popup_SelectedTipsCountLabel, Me.m_popup_SelectedTipsTextLabel, Me.m_popup_TipsCountLabel,
-                Me.m_popup_ListItemContainer,
-                Me.m_popup_MoveTopTop, Me.m_popup_MoveTipBottom, Me.m_popup_ViewHighlightTips, Me.m_popup_FileTips, Me.m_menu_MoveTipsSubMenu, Me.m_menu_OtherSubMenu,
-                Me.m_menu_FileSubMenu, Me.m_popup_OpenDir, Me.m_popup_ViewTabList, Me.m_menu_BrowserSubMenu, Me.m_menu_SyncDataSubMenu,
-                Me.m_popup_WindowLabel, Me.m_menu_WindowSubMenu, Me.m_popup_Exit
-            })
-
-            Me.m_popup_InsertTip.BeginGroup = True
-            Me.m_popup_MoveTipUp.BeginGroup = True
-            Me.m_popup_MoveTopTop.BeginGroup = True
-            Me.m_popup_CopyTips.BeginGroup = True
-
-            For Each item As DD.ButtonItem In Me.m_popup_ListItemContainer.SubItems
-                item.Tooltip = item.Text
-            Next
-        Else
-            For Each item As DD.ButtonItem In Me.m_popup_ListItemContainer.SubItems
-                item.Tooltip = ""
-            Next
-
-            Me.m_popup_InsertTip.BeginGroup = False
-            Me.m_popup_MoveTipUp.BeginGroup = True
-            Me.m_popup_MoveTopTop.BeginGroup = False
-            Me.m_popup_CopyTips.BeginGroup = True
-
-            Me.m_popup_ListItemContainer.SubItems.Clear()
-            Me.m_menu_ListPopupMenu.SubItems.Clear()
-            Me.m_menu_ListPopupMenu.SubItems.AddRange(New DD.BaseItem() { _
-                Me.m_popup_SelectedTipsCountLabel, Me.m_popup_SelectedTipsTextLabel, Me.m_popup_TipsCountLabel,
-                Me.m_popup_InsertTip, Me.m_popup_RemoveTips, Me.m_popup_UpdateTip,
-                Me.m_popup_MoveTipUp, Me.m_popup_MoveTipDown, Me.m_popup_MoveTopTop, Me.m_popup_MoveTipBottom,
-                Me.m_popup_CopyTips, Me.m_popup_SelectAllTips, Me.m_popup_HighlightTip, Me.m_popup_ViewHighlightTips,
-                Me.m_popup_FileTips, Me.m_menu_MoveTipsSubMenu, Me.m_menu_OtherSubMenu,
-                Me.m_menu_FileSubMenu, Me.m_popup_OpenDir, Me.m_popup_ViewTabList, Me.m_menu_BrowserSubMenu, Me.m_menu_SyncDataSubMenu,
-                Me.m_popup_WindowLabel, Me.m_menu_WindowSubMenu, Me.m_popup_Exit
-            })
-        End If
-    End Sub
-
-#End Region
 
 #Region "数据同步"
 
@@ -127,7 +72,7 @@ Partial Public Class TempForm
                 End Sub)
         end sub))
 
-        thread.Start()
+        Thread.Start()
     End Sub
 
     ''' <summary>
@@ -161,7 +106,7 @@ Partial Public Class TempForm
         Dim thread As Thread = Nothing
         Dim cancelFlag = False
 
-        Dim qrCodeForm As BaseEscCloseForm = GetQrCodeForm(QR_CODE_MAGIC & ip & ":" & port)
+        Dim qrCodeForm As BaseEscCloseForm = getQrCodeForm(QR_CODE_MAGIC & ip & ":" & port)
 
         qrCodeForm.Text = "连接二维码 (" & ip & ":" & port & ")"
         AddHandler qrCodeForm.FormClosed,

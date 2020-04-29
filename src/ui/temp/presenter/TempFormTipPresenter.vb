@@ -64,7 +64,7 @@ Public Class TempFormTipPresenter
         If Not String.IsNullOrWhiteSpace(clip) Then
             Dim ok = MessageBoxEx.Show($"是否向当前标签项 ""{item.Content}"" 末尾添加剪贴板内容 ""{clip}""？",
                 "附加内容", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1,
-                _view.GetMe(), {"添加空格", "添加逗号", "不添加"})
+                _view.GetMe(), New String() {"添加空格", "添加逗号", "不添加"})
             If ok = vbYes Then
                 item.Content += " " & clip
                 _globalPresenter.SaveFile()

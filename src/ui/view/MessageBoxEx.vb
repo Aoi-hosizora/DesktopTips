@@ -17,7 +17,7 @@
         Inherits Form
 
         Private _handle As IntPtr
-        Private ReadOnly _buttonTitles() As String = Nothing
+        Private ReadOnly _buttonTitles() As String
         Private ReadOnly _mainForm As Form
 
         Public Property WatchForActivate As Boolean
@@ -58,12 +58,11 @@
             Dim buttonTitleIndex = 0
 
             While h <> IntPtr.Zero
-                If NativeMethod.GetWindowClassName(h).Equals("Button") AndAlso
-                   _buttonTitles IsNot Nothing AndAlso _buttonTitles.Length <> 0 AndAlso
-                   _buttonTitles.Length > buttonTitleIndex Then
-
-                    NativeMethod.SetWindowText(h, _buttonTitles(buttonTitleIndex))
-                    buttonTitleIndex += 1
+                If NativeMethod.GetWindowClassName(h).Equals("Button") Then
+                    If _buttonTitles IsNot Nothing AndAlso _buttonTitles.Length > buttonTitleIndex Then
+                        NativeMethod.SetWindowText(h, _buttonTitles(buttonTitleIndex))
+                        buttonTitleIndex += 1
+                    End If
                 End If
                 h = NativeMethod.GetWindow(h, NativeMethod.GW_HWNDNEXT)
             End While

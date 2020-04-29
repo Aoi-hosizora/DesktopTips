@@ -247,9 +247,6 @@
       <DependentUpon>MainForm.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ui\temp\view\TempForm.resx">
-      <DependentUpon>TempForm.vb</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

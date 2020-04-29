@@ -14,12 +14,10 @@ Public Class TempForm
         Me.TopMost = My.Settings.TopMost
 
         m_num_ListCount.Value = My.Settings.ListCount                                                   ' 列表高度
-        m_popup_FoldMenu.Checked = My.Settings.IsFold                                                   ' 折叠菜单
-        m_popup_LoadPosition.Enabled = My.Settings.SaveLeft <> - 1 And My.Settings.SaveTop <> - 1       ' 恢复位置
+        m_popup_LoadPosition.Enabled = My.Settings.SaveLeft <> - 1 And My.Settings.SaveTop <> - 1         ' 恢复位置
         m_popup_TopMost.Checked = My.Settings.TopMost                                                   ' 窗口置顶
 
-        foldMenu(My.Settings.IsFold)                                                                    ' 折叠菜单
-        If My.Settings.IsUseHotKey
+        If My.Settings.IsUseHotKey Then
             _globalPresenter.RegisterHotKey(Handle, My.Settings.HotKey, HOTKEY_ID)                      ' 注册热键
         End If
     End Sub
@@ -72,14 +70,11 @@ Public Class TempForm
     End Sub
 
     Private Sub On_Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ' 窗口显示
+        IsLoading = True
         LoadSetting()
-        m_TabView.Tabs.Remove(m_tab_TestTab1)
-        m_TabView.Tabs.Remove(m_tab_TestTab2)
         SetupOpacityButtons()
         SetupAssistButtons()
 
-        ' 窗口透明度降低
         Me.CanMouseLeave = Function() As Boolean
             Return m_menu_ListPopupMenu.PopupControl Is Nothing AndAlso
                    m_menu_TabPopupMenu.PopupControl Is Nothing AndAlso
@@ -87,8 +82,8 @@ Public Class TempForm
                    m_menu_MoveTipsSubMenu.PopupControl Is Nothing AndAlso
                    _isMenuPopuping = False
         End Function
+        Me.IsLoading = False
 
-        ' 列表
         LoadFile()
     End Sub
 
@@ -220,7 +215,7 @@ Public Class TempForm
 
     Private Sub UpdateTab(sender As Object, e As EventArgs) Handles m_popup_RenameTab.Click
         If m_TabView.SelectedTabIndex <> - 1 Then
-            If _tabPresenter.Update(m_TabView.SelectedTab.TabSource)
+            If _tabPresenter.Update(m_TabView.SelectedTab.TabSource) Then
                 m_TabView.Update()
             End If
         End If
@@ -283,7 +278,7 @@ Public Class TempForm
             m_TipListBox.ClearSelected()
             For Each item As TipItem In tipItems
                 Dim idx As Integer = GlobalModel.CurrentTab.Tips.IndexOf(item)
-                If idx <> - 1
+                If idx <> - 1 Then
                     m_TipListBox.SetSelected(idx, True)
                 End If
             Next
@@ -374,7 +369,7 @@ Public Class TempForm
             Next
             If buttons.Count = 0 OrElse m_TipListBox.SelectedCount = 0 Then
                 m_menu_MoveTipsSubMenu.Enabled = False
-                m_menu_MoveTipsSubMenu.SubItems.Clear()
+                m_menu_MoveTipsSubMenu.ShowSubItems = False
             End If
         Else ' TabPopup
             m_menu_MoveToTabSubMenu.SubItems.Clear()
@@ -383,7 +378,7 @@ Public Class TempForm
             Next
             If buttons.Count = 0 OrElse m_TipListBox.ItemCount = 0 Then
                 m_menu_MoveToTabSubMenu.Enabled = False
-                m_menu_MoveToTabSubMenu.SubItems.Clear()
+                m_menu_MoveToTabSubMenu.ShowSubItems = False
             End If
         End If
     End Sub
@@ -417,6 +412,7 @@ Public Class TempForm
 
         ' 浏览器
         m_menu_BrowserSubMenu.Enabled = _tipPresenter.GetLinks(m_TipListBox.SelectedItems).Count >= 1
+        m_menu_BrowserSubMenu.ShowSubItems = m_menu_BrowserSubMenu.Enabled
 
         ' 移动
         m_menu_MoveTipsSubMenu.Enabled = isNotNull
@@ -492,22 +488,17 @@ Public Class TempForm
         Dim direction As Integer = targetHeight - Me.Height
         Me.Height = targetHeight
 
-        Dim dx As Integer = Cursor.Position.X * UInt16.MaxValue / My.Computer.Screen.Bounds.Width
-        Dim dy As Integer = (Cursor.Position.Y + direction) * UInt16.MaxValue / My.Computer.Screen.Bounds.Height
-        Const flag = NativeMethod.MouseEvent.MOUSEEVENTF_MOVE Or NativeMethod.MouseEvent.MOUSEEVENTF_ABSOLUTE
-        NativeMethod.mouse_event(flag, dx, dy, 0, 0)
+        If Not IsLoading Then
+            Dim dx As Integer = Cursor.Position.X * UInt16.MaxValue / My.Computer.Screen.Bounds.Width
+            Dim dy As Integer = (Cursor.Position.Y + direction) * UInt16.MaxValue / My.Computer.Screen.Bounds.Height
+            Const flag = NativeMethod.MouseEvent.MOUSEEVENTF_MOVE Or NativeMethod.MouseEvent.MOUSEEVENTF_ABSOLUTE
+            NativeMethod.mouse_event(flag, dx, dy, 0, 0)
+        End If
     End Sub
 
     Private Sub On_BtnShowNumericSetListCount_Click(sender As Object, e As EventArgs) Handles m_popup_ShowSetListCount.Click
         m_popup_ShowSetListCount.Checked = Not m_popup_ShowSetListCount.Checked
         m_num_ListCount.Visible = m_popup_ShowSetListCount.Checked
-    End Sub
-
-    Private Sub On_BtnFoldMenu_Click(sender As System.Object, e As EventArgs) Handles m_popup_FoldMenu.Click
-        m_popup_FoldMenu.Checked = Not m_popup_FoldMenu.Checked
-        My.Settings.IsFold = m_popup_FoldMenu.Checked
-        My.Settings.Save()
-        foldMenu(m_popup_FoldMenu.Checked)
     End Sub
 
     Private Sub On_BtnSetupHotkey_Click(sender As Object, e As EventArgs) Handles m_popup_SetupHotkey.Click
@@ -522,7 +513,7 @@ Public Class TempForm
     End Sub
 
     Private Sub On_BtnLoadPosition_Click(sender As Object, e As EventArgs) Handles m_popup_LoadPosition.Click
-        If My.Settings.SaveTop >= 0 And My.Settings.SaveLeft >= 0
+        If My.Settings.SaveTop >= 0 And My.Settings.SaveLeft >= 0 Then
             Me.Top = My.Settings.SaveTop
             Me.Left = My.Settings.SaveLeft
         End If

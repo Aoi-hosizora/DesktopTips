@@ -14,7 +14,7 @@ Public Class TempForm
         Me.TopMost = My.Settings.TopMost
 
         m_num_ListCount.Value = My.Settings.ListCount                                                   ' 列表高度
-        m_popup_LoadPosition.Enabled = My.Settings.SaveLeft <> - 1 And My.Settings.SaveTop <> - 1         ' 恢复位置
+        m_popup_LoadPosition.Enabled = My.Settings.SaveLeft <> - 1 And My.Settings.SaveTop <> - 1       ' 恢复位置
         m_popup_TopMost.Checked = My.Settings.TopMost                                                   ' 窗口置顶
 
         If My.Settings.IsUseHotKey Then
@@ -166,7 +166,7 @@ Public Class TempForm
 
 #End Region
 
-#Region "标签: 查找 打开浏览文件 浏览器"
+#Region "标签: 查找 打开 浏览 浏览器"
 
     Private Sub FindTips(sender As Object, e As EventArgs) Handles m_popup_FileTips.Click
         _tipPresenter.Search()
@@ -176,7 +176,7 @@ Public Class TempForm
         _globalPresenter.OpenFileDir()
     End Sub
 
-    Private Sub ViewCurrentTipList(sender As Object, e As EventArgs) Handles m_popup_ViewTabList.Click
+    Private Sub ViewCurrentTabTipList(sender As Object, e As EventArgs) Handles m_popup_ViewTabList.Click
         _tipPresenter.ViewCurrentList(m_TipListBox.Items)
     End Sub
 
@@ -190,7 +190,7 @@ Public Class TempForm
 
 #End Region
 
-#Region "分组: 增删改拖动"
+#Region "分组: 增删改 拖动"
 
     Private Sub InsertTab(sender As Object, e As EventArgs) Handles m_popup_NewTab.Click
         If _tabPresenter.Insert() Then
@@ -285,8 +285,16 @@ Public Class TempForm
         End If
     End Sub
 
-    Private Sub On_BtnMoveTipsAndMoveToTab_Click(sender As DD.ButtonItem, e As EventArgs) Handles m_menu_MoveTipsSubMenu.Click, m_menu_MoveToTabSubMenu.Click
-        If Not DD.BaseItem.IsOnPopup(sender) Then
+    Private Sub On_BtnMoveTips_Click(sender As DD.ButtonItem, e As EventArgs) Handles m_menu_MoveTipsSubMenu.Click
+        SetupMoveToButtons(all := False)
+        If m_menu_MoveTipsSubMenu.SubItems.Count <> 0 AndAlso Not DD.BaseItem.IsOnPopup(m_menu_ListPopupMenu) Then
+            sender.Popup(Me.Left + m_btn_OpenListPopup.Left, Me.Top + m_btn_OpenListPopup.Top + m_btn_OpenListPopup.Height - 1)
+        End If
+    End Sub
+
+    Private Sub On_BtnMoveToTab_Click(sender As DD.ButtonItem, e As EventArgs) Handles m_menu_MoveToTabSubMenu.Click
+        SetupMoveToButtons(all := True)
+        If m_menu_MoveToTabSubMenu.SubItems.Count <> 0 AndAlso Not DD.BaseItem.IsOnPopup(m_menu_TabPopupMenu) Then
             sender.Popup(Me.Left + m_btn_OpenListPopup.Left, Me.Top + m_btn_OpenListPopup.Top + m_btn_OpenListPopup.Height - 1)
         End If
     End Sub

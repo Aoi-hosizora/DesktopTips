@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class HotKeyDialog
+Partial Class HotkeyDialog
     Inherits System.Windows.Forms.Form
 
     'Form 重写 Dispose，以清理组件列表。
@@ -99,7 +99,7 @@ Partial Class HotKeyDialog
         Me.ButtonDefault.Text = "默认(&D)"
         Me.ButtonDefault.UseVisualStyleBackColor = True
         '
-        'HotKeyDialog
+        'HotkeyDialog
         '
         Me.AcceptButton = Me.ButtonOK
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)

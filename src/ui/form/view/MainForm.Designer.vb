@@ -135,7 +135,7 @@ Partial Class MainForm
         Me.m_TipListBox.ItemHeight = 17
         Me.m_TipListBox.Location = New System.Drawing.Point(23, 0)
         Me.m_TipListBox.Name = "m_TipListBox"
-        Me.m_TipListBox.OnWheeledAction = Nothing
+        Me.m_TipListBox.WheeledFunc = Nothing
         Me.m_TipListBox.SelectedItem = Nothing
         Me.m_TipListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
         Me.m_TipListBox.Size = New System.Drawing.Size(303, 240)

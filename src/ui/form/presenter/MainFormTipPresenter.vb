@@ -136,9 +136,9 @@ Public Class MainFormTipPresenter
                 _view.GetMe())
         Else
             SearchDialog.SearchText = text
-            SearchDialog.SearchCallback = Function() results
-            SearchDialog.ReSearchCallback = Sub() Search()
-            SearchDialog.TurnToCallback = Sub(tabIndex As Integer, tipIndex As Integer)
+            SearchDialog.GetFunc = Function() results
+            SearchDialog.SearchFunc = Sub() Search()
+            SearchDialog.HighlightFunc = Sub(tabIndex As Integer, tipIndex As Integer)
                 _view.GetMe().Focus()
                 _view.GetMe().FormOpacityUp()
                 _view.FocusItem(tabIndex, tipIndex)
@@ -206,8 +206,8 @@ Public Class MainFormTipPresenter
             MessageBoxEx.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
         Else
             LinkDialog.Close()
-            LinkDialog.GetLinksCallback = Function() links
-            LinkDialog.OpenBrowserCallback = Sub(l As IEnumerable(Of String))
+            LinkDialog.GetFunc = Function() links
+            LinkDialog.OpenBrowserFunc = Sub(l As IEnumerable(Of String))
                 OpenInDefaultBrowser(l, inNew)
             End Sub
             LinkDialog.Show(_view.GetMe())
@@ -215,7 +215,7 @@ Public Class MainFormTipPresenter
     End Sub
 
     Public Sub SetupHighlightColor(cb As Action) Implements MainFormContract.ITipPresenter.SetupHighlightColor
-        ColorDialog.SaveCallback = Sub() cb()
+        ColorDialog.SaveFunc = Sub() cb()
         ColorDialog.ShowDialog(_view.GetMe())
     End Sub
 End Class

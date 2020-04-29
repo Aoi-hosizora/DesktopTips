@@ -12,15 +12,8 @@ Public Class BaseMainForm
     Private WithEvents _timerMouseOut As New Timer() With {.Interval = 10, .Enabled = False}
     Private WithEvents _labelFocus As New Label() With {.Visible = False}
 
-    ''' <summary>
-    ''' 窗口在未透明时的最大透明度
-    ''' </summary>
     Protected Property MaxOpacity As Double = 0.6
-
-    Protected Delegate Function MouseLeaveOption() As Boolean
-
-    Protected Property CanMouseLeave As MouseLeaveOption
-
+    Protected Property CanMouseLeaveFunc As Func(Of Boolean)
     Protected Property IsLoading As Boolean = True
 
     Protected Overrides Sub OnLoad(e As EventArgs)
@@ -136,7 +129,7 @@ Public Class BaseMainForm
     End Sub
 
     Private Sub FormMouseLeave(sender As Object, e As EventArgs)
-        If CanMouseLeave.Invoke() Then
+        If CanMouseLeaveFunc IsNot Nothing AndAlso CanMouseLeaveFunc.Invoke() Then
             FormOpacityDown()
         End If
     End Sub

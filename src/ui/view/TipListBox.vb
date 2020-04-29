@@ -153,9 +153,7 @@
 
 #Region "其他布局: 右键选中 文本提示 滚动条"
 
-    Public Delegate Sub OnWheeled
-
-    Public Property OnWheeledAction As OnWheeled
+    Public Property WheeledFunc As Action
 
     Private ReadOnly _hoverTooltip As New ToolTip
 
@@ -197,24 +195,22 @@
     End Sub
 
     ''' <summary>
-    ''' 鼠标滚动执行 OnWheeledAction
+    ''' 鼠标滚动执行 WheeledFunc
     ''' </summary>
     Protected Overrides Sub OnMouseWheel(e As MouseEventArgs)
         MyBase.OnMouseWheel(e)
-        If OnWheeledAction IsNot Nothing Then
-            OnWheeledAction.Invoke()
+        If WheeledFunc IsNot Nothing Then
+            WheeledFunc.Invoke()
         End If
     End Sub
 
     ''' <summary>
-    ''' 滚动条拖动执行 OnWheeledAction
+    ''' 滚动条拖动执行 WheeledFunc
     ''' </summary>
     Protected Overrides Sub OnMouseCaptureChanged(e As EventArgs)
         MyBase.OnMouseCaptureChanged(e)
-        If OnWheeledAction IsNot Nothing Then
-            If Cursor.Position.X > Parent.Left + Left + Width - 20 Then
-                OnWheeledAction.Invoke()
-            End If
+        If WheeledFunc IsNot Nothing AndAlso Cursor.Position.X > Parent.Left + Left + Width - 20 Then
+            WheeledFunc.Invoke()
         End If
     End Sub
 

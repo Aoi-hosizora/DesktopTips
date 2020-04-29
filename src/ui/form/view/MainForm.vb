@@ -76,7 +76,7 @@ Public Class MainForm
         SetupOpacityButtons()
         SetupAssistButtons()
 
-        Me.CanMouseLeave = Function() As Boolean
+        Me.CanMouseLeaveFunc = Function() As Boolean
             Return m_menu_ListPopupMenu.PopupControl Is Nothing AndAlso
                    m_menu_TabPopupMenu.PopupControl Is Nothing AndAlso
                    m_TabView.ContextMenu Is Nothing AndAlso
@@ -220,7 +220,7 @@ Public Class MainForm
     End Sub
 
     Private Sub On_BtnSetupHighlightColors_Click(sender As Object, e As EventArgs) Handles m_popup_SetupColors.Click
-        _tipPresenter.SetupHighlightColor(Sub() MsgBox("TODO"))
+        _tipPresenter.SetupHighlightColor(Sub()m_TipListBox.Update())
     End Sub
 
     Private Sub On_BtnRefresh_Click(sender As Object, e As EventArgs) Handles m_popup_Refresh.Click
@@ -374,7 +374,7 @@ Public Class MainForm
         m_btn_MoveTipDown.Height = (itemHeight + 1) / 2
         m_btn_MoveTipDown.Width = itemHeight
 
-        m_TipListBox.OnWheeledAction = Sub() HideAssistButtons()
+        m_TipListBox.WheeledFunc = Sub() HideAssistButtons()
     End Sub
 
     Private Sub ShowAssistButtons() ' On_ListViewAndForm_SizeChanged On_ListView_SelectedIndexChangedAndMouseDown 用
@@ -390,7 +390,7 @@ Public Class MainForm
         m_btn_MoveTipDown.Visible = True
     End Sub
 
-    Private Sub HideAssistButtons() ' SetupAssistButtons (OnWheeledAction) On_ListView_SelectedIndexChangedAndMouseDown On_TabView_SelectedTabChanged 用
+    Private Sub HideAssistButtons() ' SetupAssistButtons (WheeledFunc) On_ListView_SelectedIndexChangedAndMouseDown On_TabView_SelectedTabChanged 用
         m_btn_MoveTipUp.Visible = False
         m_btn_MoveTipDown.Visible = False
     End Sub

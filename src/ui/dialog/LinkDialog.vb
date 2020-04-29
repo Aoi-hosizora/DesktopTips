@@ -1,18 +1,14 @@
 ﻿Public Class LinkDialog
-    Public Delegate Function GetLinksFunc() As IEnumerable(Of String)
-
-    Public Delegate Sub OpenBrowserFunc(links As IEnumerable(Of String))
-
-    Public GetLinksCallback As GetLinksFunc
-    Public OpenBrowserCallback As OpenBrowserFunc
+    Public GetFunc As Func(Of IEnumerable(Of String))
+    Public OpenBrowserFunc As Action(Of IEnumerable(Of String))
 
     Private Sub Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        If GetLinksCallback Is Nothing Then
+        If GetFunc Is Nothing Then
             Me.Close()
             Return
         End If
         ListView.Items.Clear()
-        For Each link As String In GetLinksCallback.Invoke()
+        For Each link As String In GetFunc.Invoke()
             ListView.Items.Add(link)
         Next
         ListView_SelectedValueChanged(sender, e)
@@ -28,8 +24,8 @@
         For Each item In ListView.SelectedItems
             links.Add(CStr(item))
         Next
-        If OpenBrowserCallback IsNot Nothing Then
-            OpenBrowserCallback.Invoke(links)
+        If OpenBrowserFunc IsNot Nothing Then
+            OpenBrowserFunc.Invoke(links)
         End If
         Me.Close()
     End Sub
@@ -41,7 +37,9 @@
     Private Sub ListView_DoubleClick(sender As Object, e As EventArgs) Handles ListView.DoubleClick
         Dim ok = MessageBoxEx.Show($"是否打开以下链接？{vbNewLine}{vbNewLine}{ListView.SelectedItem}", "打开链接", MessageBoxButtons.OKCancel)
         If ok = VbOk Then
-            OpenBrowserCallback.Invoke({CStr(ListView.SelectedItem)})
+            If OpenBrowserFunc IsNot Nothing Then
+                OpenBrowserFunc.Invoke({CStr(ListView.SelectedItem)})
+            End If
             Me.Close()
         End If
     End Sub

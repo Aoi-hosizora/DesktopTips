@@ -1,7 +1,5 @@
 ﻿Public Class HotkeyDialog
-    Public Delegate Sub DoFunc(key As Keys, use As Boolean)
-
-    Public DoCallback As DoFunc
+    Public RegisterFunc As Action(Of Keys, Boolean)
 
     Private Sub CheckBoxIsValid_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBoxIsValid.CheckedChanged
         HotkeyEditBox.Enabled = CheckBoxIsValid.Checked
@@ -9,8 +7,8 @@
 
     Private Sub ButtonOK_Click(sender As Object, e As EventArgs) Handles ButtonOK.Click
         Me.Close()
-        If DoCallback IsNot Nothing Then
-            DoCallback.Invoke(HotkeyEditBox.CurrentKey, CheckBoxIsValid.Checked)
+        If RegisterFunc IsNot Nothing Then
+            RegisterFunc.Invoke(HotkeyEditBox.CurrentKey, CheckBoxIsValid.Checked)
         End If
     End Sub
 

@@ -1,7 +1,5 @@
 ﻿Public Class ColorDialog
-    Public Delegate Sub SaveFunc()
-
-    Public SaveCallback As SaveFunc
+    Public SaveFunc As Action
 
     Private Sub ColorDialog_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ColorListView.Items.Clear()
@@ -149,8 +147,8 @@
 #End Region
 
     Private Sub refreshSave()
-        If SaveCallback IsNot Nothing Then
-            SaveCallback.Invoke()
+        If SaveFunc IsNot Nothing Then
+            SaveFunc.Invoke()
         End If
     End Sub
 

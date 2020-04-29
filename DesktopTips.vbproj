@@ -150,6 +150,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\ui\base\ICollectionView.vb" />
+    <Compile Include="src\ui\dialog\ColorDialog.Designer.vb">
+      <DependentUpon>ColorDialog.vb</DependentUpon>
+    </Compile>
+    <Compile Include="src\ui\dialog\ColorDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="src\ui\form\contract\MainFormContract.vb" />
     <Compile Include="src\ui\form\presenter\MainFormGlobalPresenter.vb" />
     <Compile Include="src\ui\form\presenter\MainFormTabPresenter.vb" />
@@ -209,6 +215,9 @@
     <Compile Include="src\util\NativeMethod.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="src\ui\dialog\ColorDialog.resx">
+      <DependentUpon>ColorDialog.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\ui\dialog\HotKeyDialog.resx">
       <DependentUpon>HotkeyDialog.vb</DependentUpon>
     </EmbeddedResource>
@@ -224,7 +233,7 @@
     <EmbeddedResource Include="src\ui\dialog\SearchDialog.resx">
       <DependentUpon>SearchDialog.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ui\form\view\TempForm.resx">
+    <EmbeddedResource Include="src\ui\form\view\MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

@@ -32,7 +32,8 @@ Namespace My
         
         <Global.System.Diagnostics.DebuggerStepThroughAttribute()>  _
         Protected Overrides Sub OnCreateMainForm()
-            Me.MainForm = Global.DesktopTips.MainForm
+            GlobalModel.LoadAllData()
+            Me.MainForm = Global.DesktopTips.ColorDialog
         End Sub
     End Class
 End Namespace

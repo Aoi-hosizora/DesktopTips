@@ -34,7 +34,7 @@ Partial Public Class MainForm
     ''' 同步到移动端 (本地 C -> 安卓 S) !!!
     ''' 远程监听地址 -> 确定远程地址 -> 本地发送数据 -> 等待 ACK
     ''' </summary>
-    Private Sub ListPopupMenuSyncDataTo_Click(sender As System.Object, e As EventArgs) Handles m_popup_SyncDataTo.Click
+    Private Sub ListPopupMenuSyncDataTo_Click(sender As Object, e As EventArgs) Handles m_popup_SyncDataTo.Click
         Dim input As String = InputBox("请输入移动端的地址：", "同步到移动端", My.Settings.LastMobileIP)
         input = input.Replace("：", ":").Trim()
 
@@ -77,7 +77,7 @@ Partial Public Class MainForm
     ''' 从移动端同步 (安卓 C -> 本地 S) !!! 危险
     ''' 确定端口 -> 监听本地地址 -> 电脑端发送 -> 本地接受处理
     ''' </summary>
-    Private Sub ListPopupMenuSyncDataFrom_Click(sender As System.Object, e As EventArgs) Handles m_popup_SyncDataFrom.Click
+    Private Sub ListPopupMenuSyncDataFrom_Click(sender As Object, e As EventArgs) Handles m_popup_SyncDataFrom.Click
         Dim ip As String = SyncData.GetLanIP()
         If String.IsNullOrWhiteSpace(ip) Then ' 地址错误
             MessageBox.Show("本机获取局域网内地址错误。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)

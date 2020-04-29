@@ -213,4 +213,9 @@ Public Class MainFormTipPresenter
             LinkDialog.Show(_view.GetMe())
         End If
     End Sub
+
+    Public Sub SetupHighlightColor(cb As Action) Implements MainFormContract.ITipPresenter.SetupHighlightColor
+        ColorDialog.SaveCallback = Sub() cb()
+        ColorDialog.ShowDialog(_view.GetMe())
+    End Sub
 End Class

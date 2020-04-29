@@ -214,16 +214,16 @@ Public Class MainForm
         m_menu_HighlightSubMenu.SubItems.Add(m_popup_SetupColors)
     End Sub
 
-    Private Sub HighLightTips(sender As System.Object, e As EventArgs)
+    Private Sub HighLightTips(sender As Object, e As EventArgs)
         Dim color = CType(sender.Tag, TipColor)
         MsgBox($"Color: {color.Id} {color.Name} {color.Color}")
     End Sub
 
-    Private Sub On_BtnSetupHighlightColors_Click(sender As System.Object, e As EventArgs) Handles m_popup_SetupColors.Click
-        MsgBox("TODO")
+    Private Sub On_BtnSetupHighlightColors_Click(sender As Object, e As EventArgs) Handles m_popup_SetupColors.Click
+        _tipPresenter.SetupHighlightColor(Sub() MsgBox("TODO"))
     End Sub
 
-    Private Sub On_BtnRefresh_Click(sender As System.Object, e As EventArgs) Handles m_popup_Refresh.Click
+    Private Sub On_BtnRefresh_Click(sender As Object, e As EventArgs) Handles m_popup_Refresh.Click
         LoadFile()
     End Sub
 

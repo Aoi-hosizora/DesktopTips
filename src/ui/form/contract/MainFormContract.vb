@@ -29,6 +29,7 @@
         Function GetLinks(items As IEnumerable(Of TipItem)) As List(Of String)  ' 打开所有链接
         Sub OpenAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean)    ' 打开所有链接
         Sub ViewAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean)    ' 浏览所有链接
+        Sub SetupHighlightColor(cb As Action)                                   ' 设置高亮
     End Interface
 
     Public Interface ITabPresenter

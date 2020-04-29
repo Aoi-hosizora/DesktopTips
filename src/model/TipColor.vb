@@ -9,7 +9,7 @@ Public Class TipColor
     Public Property Name As String
 
     <JsonProperty("color")>
-    Private Property HexColor As String
+    Public Property HexColor As String
         Get
             Return ColorTranslator.ToHtml(Color.FromArgb(_color.ToArgb()))
         End Get
@@ -21,8 +21,18 @@ Public Class TipColor
     <JsonIgnore>
     Public Property Color As Color = _color
 
+    Public Readonly Property RgbColor As String
+        Get
+            Return String.Format("{0}, {1}, {2}", Color.R, Color.G, Color.B)
+        End Get
+    End Property
+
     Public Sub New()
         Me.New(0, "默认", Color.Black)
+    End Sub
+
+    Public Sub New(id As Integer, name As String)
+        Me.New(id, name, Color.Black)
     End Sub
 
     Public Sub New(id As Integer, name As String, color As Color)

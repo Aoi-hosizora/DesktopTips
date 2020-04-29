@@ -1,7 +1,7 @@
 ﻿Imports DD = DevComponents.DotNetBar
 
 ''' <summary>
-''' 实现了 透明度动画 窗口拖动 状态栏不显示
+''' 实现了 透明度动画 窗口拖动 不显示图标 功能
 ''' </summary>
 Public Class BaseMainForm
     Inherits Form

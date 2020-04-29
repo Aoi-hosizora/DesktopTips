@@ -26,7 +26,7 @@ Partial Class HotKeyDialog
         Me.ButtonCancel = New System.Windows.Forms.Button()
         Me.CheckBoxIsValid = New System.Windows.Forms.CheckBox()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.HotKeyEditBox = New DesktopTips.HotKeyBox()
+        Me.HotkeyEditBox = New DesktopTips.HotkeyBox()
         Me.ButtonDefault = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
@@ -76,16 +76,16 @@ Partial Class HotKeyDialog
         Me.Label1.TabIndex = 1
         Me.Label1.Text = "请键入快捷显示热键："
         '
-        'HotKeyEditBox
+        'HotkeyEditBox
         '
-        Me.HotKeyEditBox.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.HotkeyEditBox.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.HotKeyEditBox.CurrentKey = System.Windows.Forms.Keys.F4
-        Me.HotKeyEditBox.Location = New System.Drawing.Point(12, 65)
-        Me.HotKeyEditBox.Name = "HotKeyEditBox"
-        Me.HotKeyEditBox.Size = New System.Drawing.Size(237, 23)
-        Me.HotKeyEditBox.TabIndex = 2
-        Me.HotKeyEditBox.Text = "F4"
+        Me.HotkeyEditBox.CurrentKey = System.Windows.Forms.Keys.F4
+        Me.HotkeyEditBox.Location = New System.Drawing.Point(12, 65)
+        Me.HotkeyEditBox.Name = "HotkeyEditBox"
+        Me.HotkeyEditBox.Size = New System.Drawing.Size(237, 23)
+        Me.HotkeyEditBox.TabIndex = 2
+        Me.HotkeyEditBox.Text = "F4"
         '
         'ButtonDefault
         '
@@ -106,7 +106,7 @@ Partial Class HotKeyDialog
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonCancel
         Me.ClientSize = New System.Drawing.Size(261, 137)
-        Me.Controls.Add(Me.HotKeyEditBox)
+        Me.Controls.Add(Me.HotkeyEditBox)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.CheckBoxIsValid)
         Me.Controls.Add(Me.ButtonCancel)
@@ -131,6 +131,6 @@ Partial Class HotKeyDialog
     Friend WithEvents ButtonCancel As System.Windows.Forms.Button
     Friend WithEvents CheckBoxIsValid As System.Windows.Forms.CheckBox
     Friend WithEvents Label1 As System.Windows.Forms.Label
-    Friend WithEvents HotKeyEditBox As DesktopTips.HotKeyBox
+    Friend WithEvents HotkeyEditBox As DesktopTips.HotkeyBox
     Friend WithEvents ButtonDefault As System.Windows.Forms.Button
 End Class

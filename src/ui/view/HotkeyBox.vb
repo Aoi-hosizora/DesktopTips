@@ -1,18 +1,24 @@
-﻿Public Class HotKeyBox
+﻿Public Class HotkeyBox
     Inherits TextBox
 
-    Private _CurrentKey As Keys = Keys.None
+#Region "属性"
+
+    Private _currentKey As Keys = Keys.None
 
     Public Property CurrentKey As Keys
         Get
-            Return _CurrentKey
+            Return _currentKey
         End Get
         Set
-            _CurrentKey = value
+            _currentKey = value
             Dim e As New KeyEventArgs(value)
             ShowHotKeyValue(e.Modifiers, e.KeyCode)
         End Set
     End Property
+
+#End Region
+
+#Region "方法"
 
     Private Sub ShowHotKeyValue(modifiers As Keys, keyCode As Keys)
         Dim hotKeyValue% = 0
@@ -75,7 +81,9 @@
         End If
     End Sub
 
-    '' ''''''''''
+#End Region
+
+#Region "重载事件"
 
     Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
         MyBase.OnKeyDown(e)
@@ -98,4 +106,6 @@
         MyBase.OnLostFocus(e)
         CheckHotkey()
     End Sub
+
+#End Region
 End Class

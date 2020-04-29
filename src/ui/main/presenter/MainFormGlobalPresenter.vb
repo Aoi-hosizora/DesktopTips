@@ -85,7 +85,7 @@ Public Class MainFormGlobalPresenter
     ''' </summary>
     Public Sub SetupHotKey(handle As IntPtr, id As Integer) Implements MainFormContract.IGlobalPresenter.SetupHotKey
         Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
-        HotKeyDialog.HotKeyEditBox.CurrentKey = setting.HotKey
+        HotKeyDialog.HotkeyEditBox.CurrentKey = setting.HotKey
         HotKeyDialog.CheckBoxIsValid.Checked = setting.IsUseHotKey
         HotKeyDialog.OkCallback = Sub(key As Keys, use As Boolean)
                                       UnregisterShotcut(handle, id)

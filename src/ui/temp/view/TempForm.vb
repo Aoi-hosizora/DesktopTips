@@ -25,8 +25,8 @@ Public Class TempForm
         _globalPresenter.LoadFile()
         m_TipListBox.DataSource = GlobalModel.CurrentTab.Tips
         m_TipListBox.Update()
-        m_TipsTabView.DataSource = GlobalModel.Tabs
-        m_TipsTabView.Update()
+        m_TabView.DataSource = GlobalModel.Tabs
+        m_TabView.Update()
     End Sub
 
     Private Const HOTKEY_ID As Integer = 0
@@ -76,7 +76,7 @@ Public Class TempForm
         Me.CanMouseLeave = Function() As Boolean
             Return m_menu_ListPopupMenu.PopupControl Is Nothing AndAlso
                    m_menu_TabPopupMenu.PopupControl Is Nothing AndAlso
-                   m_TipsTabView.ContextMenu Is Nothing AndAlso
+                   m_TabView.ContextMenu Is Nothing AndAlso
                    m_menu_MoveTipsSubMenu.PopupControl Is Nothing AndAlso
                    _isMenuPopuping = False
         End Function
@@ -191,9 +191,9 @@ Public Class TempForm
 #Region "分组显示 透明度 辅助按钮"
 
     ' Private Sub AddTabToShow(tab As Tab) ' MainForm_Load On_BtnNewTab_Click 用
-    '     Dim newTabItem = New TipsTabView.TipsTabViewItem(tab)
+    '     Dim newTabItem = New TabView.TabViewItem(tab)
     '     ' AddHandler newTabItem.MouseDown, AddressOf TabStrip_MouseDown
-    '     Me.m_TipsTabView.Tabs.Add(newTabItem)
+    '     Me.m_TabView.Tabs.Add(newTabItem)
     ' End Sub
 
     Private ReadOnly _opacities() As Double = {0.2, 0.4, 0.6, 0.8, 1}
@@ -301,7 +301,7 @@ Public Class TempForm
         m_TipListBox.Refresh()
     End Sub
 
-    Private Sub On_ListViewAndTabStrip_MouseDown(sender As Object, e As MouseEventArgs) Handles m_TipListBox.MouseDown, m_TipsTabView.MouseDown
+    Private Sub On_ListViewAndTabStrip_MouseDown(sender As Object, e As MouseEventArgs) Handles m_TipListBox.MouseDown, m_TabView.MouseDown
         If m_TipListBox.PointOutOfRange(e.Location) Then
             m_TipListBox.ClearSelected()
         End If
@@ -315,12 +315,12 @@ Public Class TempForm
 
     Private _isMenuPopuping As Boolean = False
 
-    Private Sub On_TabStrip_PopupOpen(sender As Object, e As EventArgs) Handles m_TipsTabView.PopupOpen
+    Private Sub On_TabStrip_PopupOpen(sender As Object, e As EventArgs) Handles m_TabView.PopupOpen
         _isMenuPopuping = True
     End Sub
 
     Private Sub On_SomePopup_FinishedAndClose(sender As Object, e As EventArgs) _
-        Handles m_menu_ListPopupMenu.PopupFinalized, m_menu_TabPopupMenu.PopupFinalized, m_menu_MoveTipsSubMenu.PopupFinalized, m_TipsTabView.PopupClose
+        Handles m_menu_ListPopupMenu.PopupFinalized, m_menu_TabPopupMenu.PopupFinalized, m_menu_MoveTipsSubMenu.PopupFinalized, m_TabView.PopupClose
         _isMenuPopuping = False
         FormOpacityDown()
     End Sub

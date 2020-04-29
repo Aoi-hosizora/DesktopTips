@@ -1,19 +1,24 @@
 ﻿Public Class TipListBox
     Inherits ListBox
+    Implements ICollectionView
 
     Public Sub New()
-        DrawMode = DrawMode.OwnerDrawFixed
-        DisplayMember = "Content"
-        Controls.Add(_labelNothing)
+        Me.DisplayMember = "Content"
+        Me.DrawMode = DrawMode.OwnerDrawFixed
+        Me.Controls.Add(_labelNothing)
     End Sub
 
-#Region "属性 自定义函数"
-
-    ' https://docs.microsoft.com/en-us/dotnet/visual-basic/programming-guide/language-features/procedures/auto-implemented-properties
-
-    Public Overloads ReadOnly Property Items As IEnumerable(Of TipItem)
+    Private ReadOnly Property baseItems As IList Implements ICollectionView.baseItems
         Get
-            Return MyBase.Items.Cast(Of TipItem)()
+            Return MyBase.Items
+        End Get
+    End Property
+
+#Region "重载属性"
+
+    Public Overloads ReadOnly Property Items As TipItemsCollection
+        Get
+            Return New TipItemsCollection(Me, MyBase.Items.Cast(Of TipItem)())
         End Get
     End Property
 
@@ -32,17 +37,21 @@
         End Get
     End Property
 
-    Public ReadOnly Property SelectedCount As Integer
+    Public Overloads ReadOnly Property SelectedCount As Integer
         Get
             Return SelectedIndices.Count
         End Get
     End Property
 
-    Public ReadOnly Property ItemCount As Integer
+    Public Overloads ReadOnly Property ItemCount As Integer
         Get
             Return Items.Count
         End Get
     End Property
+
+#End Region
+
+#Region "自定义函数"
 
     Public Overloads Sub Update()
         MyBase.Update()
@@ -135,7 +144,7 @@
 
 #End Region
 
-#Region "其他: 右键选中 文本提示 滚动条"
+#Region "其他布局: 右键选中 文本提示 滚动条"
 
     Public Delegate Sub OnWheeled
 
@@ -188,6 +197,22 @@
         MyBase.OnSizeChanged(e)
         adjustLabelNothing()
     End Sub
+
+#End Region
+
+#Region "内部类"
+
+    Public Class TipItemsCollection
+        Inherits BaseItemsCollection(Of Object)
+
+        Public Sub New(listBox As ICollectionView)
+            MyBase.New(listBox)
+        End Sub
+
+        Public Sub New(listBox As ICollectionView, items As IEnumerable)
+            MyBase.New(listBox, items)
+        End Sub
+    End Class
 
 #End Region
 End Class

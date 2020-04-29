@@ -1,7 +1,4 @@
-﻿''' <summary>
-''' MessageBox 帮助类
-''' </summary>
-Public Class MessageBoxEx
+﻿Public Class MessageBoxEx
     Public Shared Function Show(text As String,
                                 caption As String,
                                 buttons As MessageBoxButtons,

@@ -209,6 +209,18 @@ Namespace My
                 Me("OpenInNewBrowser") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("8455")>  _
+        Public Property LastLocalPort() As String
+            Get
+                Return CType(Me("LastLocalPort"),String)
+            End Get
+            Set
+                Me("LastLocalPort") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

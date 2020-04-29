@@ -1,17 +1,17 @@
 ﻿Imports System.Text
 
-Public Class TempFormTabPresenter
-    Implements TempFormContract.ITabPresenter
+Public Class MainFormTabPresenter
+    Implements MainFormContract.ITabPresenter
 
-    Private ReadOnly _view As TempFormContract.IView
-    Private ReadOnly _globalPresenter As TempFormContract.IGlobalPresenter
+    Private ReadOnly _view As MainFormContract.IView
+    Private ReadOnly _globalPresenter As MainFormContract.IGlobalPresenter
 
-    Public Sub New(view As TempFormContract.IView)
+    Public Sub New(view As MainFormContract.IView)
         _view = view
-        _globalPresenter = New TempFormGlobalPresenter(_view)
+        _globalPresenter = New MainFormGlobalPresenter(_view)
     End Sub
 
-    Public Function Insert() As Boolean Implements TempFormContract.ITabPresenter.Insert
+    Public Function Insert() As Boolean Implements MainFormContract.ITabPresenter.Insert
         Dim tabName As String = InputBox("新分组的标题：", "新建", "新建分组").Trim()
         If tabName <> "" Then
             If GlobalModel.CheckDuplicateTab(tabName, GlobalModel.Tabs) IsNot Nothing Then
@@ -27,7 +27,7 @@ Public Class TempFormTabPresenter
         Return False
     End Function
 
-    Public Function Delete(tab As Tab) As Boolean Implements TempFormContract.ITabPresenter.Delete
+    Public Function Delete(tab As Tab) As Boolean Implements MainFormContract.ITabPresenter.Delete
         If tab.Tips.Count <> 0 Then
             MessageBoxEx.Show($"分组内存在 {tab.Tips.Count} 条记录，请先将标签移动到别的分组。",
                 "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, _view.GetMe())
@@ -43,7 +43,7 @@ Public Class TempFormTabPresenter
         Return False
     End Function
 
-    Public Function Update(tab As Tab) As Boolean Implements TempFormContract.ITabPresenter.Update
+    Public Function Update(tab As Tab) As Boolean Implements MainFormContract.ITabPresenter.Update
         Dim newName As String = InputBox($"重命名分组 ""{tab.Title}"" 为: ", "重命名", tab.Title).Trim()
         If newName <> "" Then
             If GlobalModel.CheckDuplicateTab(newName, GlobalModel.Tabs) IsNot Nothing Then
@@ -58,7 +58,7 @@ Public Class TempFormTabPresenter
         Return False
     End Function
 
-    Public Function MoveItems(items As IEnumerable(Of TipItem), src As Tab, dest As Tab) As Boolean Implements TempFormContract.ITabPresenter.MoveItems
+    Public Function MoveItems(items As IEnumerable(Of TipItem), src As Tab, dest As Tab) As Boolean Implements MainFormContract.ITabPresenter.MoveItems
         Dim tipItems As IEnumerable(Of TipItem) = If(TryCast(items, TipItem()), items.ToArray())
         Dim flag As String
         If src.Tips.Count = items.Count Then

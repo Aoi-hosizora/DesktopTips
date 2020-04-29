@@ -46,21 +46,23 @@ Public Class CommonUtil
     ''' </summary>
     Public Shared Function GetDefaultBrowserPath() As String
         ' コンピューター\HKEY_CURRENT_USER\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice
-        Dim UserChoiceKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice")
-        If UserChoiceKey Is Nothing Then UserChoiceKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\Shell\Associations\UrlAssociations\https\UserChoice")
-        If UserChoiceKey Is Nothing Then Return ""
-        Dim progId$ = UserChoiceKey.GetValue("ProgId").ToString()
-        UserChoiceKey.Close()
+        Dim userChoiceKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice")
+        If userChoiceKey Is Nothing Then userChoiceKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\Shell\Associations\UrlAssociations\https\UserChoice")
+        If userChoiceKey Is Nothing Then Return ""
+        Dim progId As String = userChoiceKey.GetValue("ProgId").ToString()
+        userChoiceKey.Close()
 
-        Dim RootCommandKey As RegistryKey = Registry.ClassesRoot.OpenSubKey(progId + "\shell\open\command")
-        If RootCommandKey Is Nothing Then Return ""
-        Dim OpenWith$ = RootCommandKey.GetValue("").ToString()
-        RootCommandKey.Close()
+        Dim commandKey As RegistryKey = Registry.ClassesRoot.OpenSubKey(progId + "\shell\open\command")
+        If commandKey Is Nothing Then Return ""
+        Dim openWith As String = commandKey.GetValue("").ToString()
+        commandKey.Close()
 
         ' コンピューター\HKEY_CLASSES_ROOT\ChromeHTML\shell\open\command
         ' "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" -- "%1"
-        Dim OpenWithParam As String() = OpenWith.Split(New String() {""""}, StringSplitOptions.RemoveEmptyEntries)
-        If OpenWithParam.Count = 0 Then Return ""
-        Return OpenWithParam(0)
+        Dim openWithParam As String() = openWith.Split(New String() {""""}, StringSplitOptions.RemoveEmptyEntries)
+        If openWithParam.Count = 0 Then
+            Return ""
+        End If
+        Return openWithParam(0)
     End Function
 End Class

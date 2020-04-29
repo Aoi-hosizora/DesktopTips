@@ -1,17 +1,17 @@
 ﻿Imports System.Text
 
-Public Class TempFormTipPresenter
-    Implements TempFormContract.ITipPresenter
+Public Class MainFormTipPresenter
+    Implements MainFormContract.ITipPresenter
 
-    Private ReadOnly _view As TempFormContract.IView
-    Private ReadOnly _globalPresenter As TempFormContract.IGlobalPresenter
+    Private ReadOnly _view As MainFormContract.IView
+    Private ReadOnly _globalPresenter As MainFormContract.IGlobalPresenter
 
-    Public Sub New(view As TempFormContract.IView)
+    Public Sub New(view As MainFormContract.IView)
         _view = view
-        _globalPresenter = New TempFormGlobalPresenter(_view)
+        _globalPresenter = New MainFormGlobalPresenter(_view)
     End Sub
 
-    Public Function Insert() As Boolean Implements TempFormContract.ITipPresenter.Insert
+    Public Function Insert() As Boolean Implements MainFormContract.ITipPresenter.Insert
         Dim msg As String = InputBox("新的标签：", "添加").Trim()
         If msg <> "" Then
             Dim tip As New TipItem(msg)
@@ -22,7 +22,7 @@ Public Class TempFormTipPresenter
         Return False
     End Function
 
-    Public Function Delete(items As IEnumerable(Of TipItem)) As Boolean Implements TempFormContract.ITipPresenter.Delete
+    Public Function Delete(items As IEnumerable(Of TipItem)) As Boolean Implements MainFormContract.ITipPresenter.Delete
         Dim tipItems As IEnumerable(Of TipItem) = If(TryCast(items, TipItem()), items.ToArray())
         Dim sb As New StringBuilder
         For Each item As TipItem In tipItems
@@ -41,7 +41,7 @@ Public Class TempFormTipPresenter
         Return False
     End Function
 
-    Public Function Update(item As TipItem) As Boolean Implements TempFormContract.ITipPresenter.Update
+    Public Function Update(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.Update
         Dim newStr As String = InputBox($"修改标签 ""{item.Content}"" 为：", "修改", item.Content).Trim()
         If newStr <> "" And newStr <> item.Content Then
             item.Content = newStr
@@ -51,7 +51,7 @@ Public Class TempFormTipPresenter
         Return False
     End Function
 
-    Public Sub Copy(items As IEnumerable(Of TipItem)) Implements TempFormContract.ITipPresenter.Copy
+    Public Sub Copy(items As IEnumerable(Of TipItem)) Implements MainFormContract.ITipPresenter.Copy
         Dim sb As New StringBuilder
         For Each item As TipItem In items
             sb.AppendLine(item.Content)
@@ -59,7 +59,7 @@ Public Class TempFormTipPresenter
         Clipboard.SetText(sb.ToString())
     End Sub
 
-    Public Function Paste(item As TipItem) As Boolean Implements TempFormContract.ITipPresenter.Paste
+    Public Function Paste(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.Paste
         Dim clip As String = Clipboard.GetText().Trim()
         If Not String.IsNullOrWhiteSpace(clip) Then
             Dim ok = MessageBoxEx.Show($"是否向当前标签项 ""{item.Content}"" 末尾添加剪贴板内容 ""{clip}""？",
@@ -78,7 +78,7 @@ Public Class TempFormTipPresenter
         Return False
     End Function
 
-    Public Function MoveUp(item As TipItem) As Boolean Implements TempFormContract.ITipPresenter.MoveUp
+    Public Function MoveUp(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.MoveUp
         Dim idx = GlobalModel.CurrentTab.Tips.IndexOf(item)
         If idx >= 1 Then
             GlobalModel.CurrentTab.Tips.RemoveAt(idx)
@@ -89,7 +89,7 @@ Public Class TempFormTipPresenter
         Return False
     End Function
 
-    Public Function MoveDown(item As TipItem) As Boolean Implements TempFormContract.ITipPresenter.MoveDown
+    Public Function MoveDown(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.MoveDown
         Dim idx = GlobalModel.CurrentTab.Tips.IndexOf(item)
         If idx <= GlobalModel.CurrentTab.Tips.Count - 2 Then
             GlobalModel.CurrentTab.Tips.RemoveAt(idx)
@@ -100,7 +100,7 @@ Public Class TempFormTipPresenter
         Return False
     End Function
 
-    Public Function MoveTop(item As TipItem) As Boolean Implements TempFormContract.ITipPresenter.MoveTop
+    Public Function MoveTop(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.MoveTop
         Dim idx = GlobalModel.CurrentTab.Tips.IndexOf(item)
         GlobalModel.CurrentTab.Tips.RemoveAt(idx)
         GlobalModel.CurrentTab.Tips.Insert(0, item)
@@ -108,7 +108,7 @@ Public Class TempFormTipPresenter
         Return True
     End Function
 
-    Public Function MoveBottom(item As TipItem) As Boolean Implements TempFormContract.ITipPresenter.MoveBottom
+    Public Function MoveBottom(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.MoveBottom
         Dim idx = GlobalModel.CurrentTab.Tips.IndexOf(item)
         GlobalModel.CurrentTab.Tips.RemoveAt(idx)
         GlobalModel.CurrentTab.Tips.Add(item)
@@ -116,7 +116,7 @@ Public Class TempFormTipPresenter
         Return True
     End Function
 
-    Public Sub Search() Implements TempFormContract.ITipPresenter.Search
+    Public Sub Search() Implements MainFormContract.ITipPresenter.Search
         Dim results As New List(Of Tuple(Of Integer, Integer))
         Dim text As String = InputBox("请输入搜索内容：", "搜索").Trim()
         If text = "" Then
@@ -147,7 +147,7 @@ Public Class TempFormTipPresenter
         End If
     End Sub
 
-    Public Sub ViewCurrentList(items As IEnumerable(Of TipItem)) Implements TempFormContract.ITipPresenter.ViewCurrentList
+    Public Sub ViewCurrentList(items As IEnumerable(Of TipItem)) Implements MainFormContract.ITipPresenter.ViewCurrentList
         Dim sb As New StringBuilder
         For Each item As TipItem In items.Cast(Of TipItem)()
             sb.AppendLine(item.Content & If(item.IsHighLight, $" [高亮 {item.Color.Name}]", ""))
@@ -155,7 +155,7 @@ Public Class TempFormTipPresenter
         _view.ShowTextForm($"浏览文件 (共 {items.Count} 项)", sb.ToString(), Color.Black)
     End Sub
 
-    Public Function GetLinks(items As IEnumerable(Of TipItem)) As List(Of String) Implements TempFormContract.ITipPresenter.GetLinks
+    Public Function GetLinks(items As IEnumerable(Of TipItem)) As List(Of String) Implements MainFormContract.ITipPresenter.GetLinks
         Dim res As New List(Of String)
         For Each item As TipItem In items
             For Each link As String In item.Content.Split(New Char() {" "}, StringSplitOptions.RemoveEmptyEntries)
@@ -186,7 +186,7 @@ Public Class TempFormTipPresenter
         Next
     End Sub
 
-    Public Sub OpenAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean) Implements TempFormContract.ITipPresenter.OpenAllLinks
+    Public Sub OpenAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean) Implements MainFormContract.ITipPresenter.OpenAllLinks
         Dim links As List(Of String) = getLinks(items)
         If links.Count = 0 Then
             MessageBox.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -200,7 +200,7 @@ Public Class TempFormTipPresenter
         End If
     End Sub
 
-    Public Sub ViewAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean) Implements TempFormContract.ITipPresenter.ViewAllLinks
+    Public Sub ViewAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean) Implements MainFormContract.ITipPresenter.ViewAllLinks
         Dim links As List(Of String) = getLinks(items)
         If links.Count = 0 Then
             MessageBox.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)

@@ -150,37 +150,23 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\ui\base\ICollectionView.vb" />
-    <Compile Include="src\ui\main\view\MainForm.Designer.vb">
+    <Compile Include="src\ui\form\contract\MainFormContract.vb" />
+    <Compile Include="src\ui\form\presenter\MainFormGlobalPresenter.vb" />
+    <Compile Include="src\ui\form\presenter\MainFormTabPresenter.vb" />
+    <Compile Include="src\ui\form\presenter\MainFormTipPresenter.vb" />
+    <Compile Include="src\ui\form\view\MainForm.Designer.vb">
       <DependentUpon>MainForm.vb</DependentUpon>
     </Compile>
-    <Compile Include="src\ui\main\view\MainForm.Partial.vb">
+    <Compile Include="src\ui\form\view\MainForm.Partial.vb">
+      <SubType>Form</SubType>
       <DependentUpon>MainForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="src\ui\form\view\MainForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\main\view\MainForm.vb">
+    <Compile Include="src\ui\form\view\MainForm.View.vb">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\ui\main\view\MainForm.View.vb">
       <DependentUpon>MainForm.vb</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\ui\temp\contract\TempFormContract.vb" />
-    <Compile Include="src\ui\temp\presenter\TempFormGlobalPresenter.vb" />
-    <Compile Include="src\ui\temp\presenter\TempFormTabPresenter.vb" />
-    <Compile Include="src\ui\temp\presenter\TempFormTipPresenter.vb" />
-    <Compile Include="src\ui\temp\view\TempForm.Designer.vb">
-      <DependentUpon>TempForm.vb</DependentUpon>
-    </Compile>
-    <Compile Include="src\ui\temp\view\TempForm.Partial.vb">
-      <SubType>Form</SubType>
-      <DependentUpon>TempForm.vb</DependentUpon>
-    </Compile>
-    <Compile Include="src\ui\temp\view\TempForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\ui\temp\view\TempForm.View.vb">
-      <SubType>Form</SubType>
-      <DependentUpon>TempForm.vb</DependentUpon>
     </Compile>
     <Compile Include="src\ui\view\HotkeyBox.vb">
       <SubType>Component</SubType>
@@ -197,10 +183,6 @@
     <Compile Include="src\ui\dialog\LinkDialog.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\main\contract\MainFormContract.vb" />
-    <Compile Include="src\ui\main\presenter\MainFormListPresenter.vb" />
-    <Compile Include="src\ui\main\presenter\MainFormGlobalPresenter.vb" />
-    <Compile Include="src\ui\main\presenter\MainFormGroupPresenter.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -225,7 +207,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\util\NativeMethod.vb" />
-    <Compile Include="src\util\SettingUtil.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="src\ui\dialog\HotKeyDialog.resx">
@@ -242,10 +223,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\ui\dialog\SearchDialog.resx">
       <DependentUpon>SearchDialog.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\ui\main\view\MainForm.resx">
-      <DependentUpon>MainForm.vb</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

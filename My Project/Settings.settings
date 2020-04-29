@@ -41,5 +41,8 @@
     <Setting Name="OpenInNewBrowser" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="LastLocalPort" Type="System.String" Scope="User">
+      <Value Profile="(Default)">8455</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

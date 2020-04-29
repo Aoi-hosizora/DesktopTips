@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class TempForm
+Partial Class MainForm
     Inherits BaseMainForm
 
     'Form 重写 Dispose，以清理组件列表。
@@ -605,7 +605,7 @@ Partial Class TempForm
         Me.m_popup_OpenInNewBrowser.Name = "m_popup_OpenInNewBrowser"
         Me.m_popup_OpenInNewBrowser.Text = "在新窗口打开(&N)"
         '
-        'TempForm
+        'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -628,7 +628,7 @@ Partial Class TempForm
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.MinimumSize = New System.Drawing.Size(136, 112)
-        Me.Name = "TempForm"
+        Me.Name = "MainForm"
         Me.Opacity = 0.0R
         Me.ShowIcon = False
         Me.ShowInTaskbar = False

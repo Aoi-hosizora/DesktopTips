@@ -3,7 +3,7 @@ Imports System.Threading
 Imports Newtonsoft.Json
 Imports QRCoder
 
-Partial Public Class TempForm
+Partial Public Class MainForm
 
 #Region "数据同步"
 
@@ -35,9 +35,7 @@ Partial Public Class TempForm
     ''' 远程监听地址 -> 确定远程地址 -> 本地发送数据 -> 等待 ACK
     ''' </summary>
     Private Sub ListPopupMenuSyncDataTo_Click(sender As System.Object, e As EventArgs) Handles m_popup_SyncDataTo.Click
-        Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
-
-        Dim input As String = InputBox("请输入移动端的地址：", "同步到移动端", setting.LastMobileIP)
+        Dim input As String = InputBox("请输入移动端的地址：", "同步到移动端", My.Settings.LastMobileIP)
         input = input.Replace("：", ":").Trim()
 
         If String.IsNullOrWhiteSpace(input) Then Return ' 空内容
@@ -53,8 +51,8 @@ Partial Public Class TempForm
             sp = input.Replace("：", ":").Trim().Split(New Char() {":"})
         End While
 
-        setting.LastMobileIP = input
-        SettingUtil.SaveAppSettings(setting)
+        My.Settings.LastMobileIP = input
+        My.Settings.Save()
 
         ip = sp(0)
 
@@ -86,8 +84,7 @@ Partial Public Class TempForm
             Return
         End If
 
-        Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
-        Dim input As String = InputBox("请输入本地监听的端口：", "从移动端同步", setting.LastLocalPort)
+        Dim input As String = InputBox("请输入本地监听的端口：", "从移动端同步", My.Settings.LastLocalPort)
 
         Dim port As Integer
         If String.IsNullOrWhiteSpace(input) Then Return ' 空内容
@@ -97,8 +94,8 @@ Partial Public Class TempForm
             If String.IsNullOrWhiteSpace(input) Then Return ' 空内容
         End While
 
-        setting.LastLocalPort = input.Trim()
-        SettingUtil.SaveAppSettings(setting)
+        My.Settings.LastLocalPort = input.Trim()
+        My.Settings.Save()
 
         ' ------------------------d---------------------
         ' 获得端口 << 监听

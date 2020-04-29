@@ -1,7 +1,7 @@
 ﻿Imports System.Text
 Imports DD = DevComponents.DotNetBar
 
-Public Class TempForm
+Public Class MainForm
 
 #Region "加载设置 加载列表内容和界面 失去焦点 启动退出 系统事件"
 

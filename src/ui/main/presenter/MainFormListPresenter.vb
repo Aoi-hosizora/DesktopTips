@@ -87,7 +87,7 @@ Public Class MainFormListPresenter
                 _view.GetMe())
         Else
             SearchDialog.SearchText = text
-            SearchDialog.SearchResult = result
+            ' SearchDialog.SearchResult = result
             SearchDialog.Show(_view.GetMe())
         End If
     End Sub

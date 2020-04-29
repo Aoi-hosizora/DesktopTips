@@ -87,7 +87,7 @@ Public Class MainFormGlobalPresenter
         Dim setting As SettingUtil.AppSetting = SettingUtil.LoadAppSettings()
         HotKeyDialog.HotkeyEditBox.CurrentKey = setting.HotKey
         HotKeyDialog.CheckBoxIsValid.Checked = setting.IsUseHotKey
-        HotKeyDialog.OkCallback = Sub(key As Keys, use As Boolean)
+        HotKeyDialog.DoCallback = Sub(key As Keys, use As Boolean)
                                       UnregisterShotcut(handle, id)
                                       If Not use OrElse RegisterShotcut(handle, key, id) Then
                                           setting.IsUseHotKey = use

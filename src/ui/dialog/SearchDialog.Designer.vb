@@ -25,7 +25,7 @@ Partial Class SearchDialog
         Me.ListView = New System.Windows.Forms.ListBox()
         Me.LabelResult = New System.Windows.Forms.Label()
         Me.ButtonSearch = New System.Windows.Forms.Button()
-        Me.ButtonBack = New System.Windows.Forms.Button()
+        Me.ButtonClose = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'ListView
@@ -65,26 +65,26 @@ Partial Class SearchDialog
         Me.ButtonSearch.Text = "新查找(&F)"
         Me.ButtonSearch.UseVisualStyleBackColor = True
         '
-        'ButtonBack
+        'ButtonClose
         '
-        Me.ButtonBack.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ButtonBack.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.ButtonBack.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonBack.Location = New System.Drawing.Point(302, 277)
-        Me.ButtonBack.Name = "ButtonBack"
-        Me.ButtonBack.Size = New System.Drawing.Size(75, 25)
-        Me.ButtonBack.TabIndex = 3
-        Me.ButtonBack.Text = "返回(&B)"
-        Me.ButtonBack.UseVisualStyleBackColor = True
+        Me.ButtonClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ButtonClose.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.ButtonClose.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.ButtonClose.Location = New System.Drawing.Point(302, 277)
+        Me.ButtonClose.Name = "ButtonClose"
+        Me.ButtonClose.Size = New System.Drawing.Size(75, 25)
+        Me.ButtonClose.TabIndex = 3
+        Me.ButtonClose.Text = "返回(&B)"
+        Me.ButtonClose.UseVisualStyleBackColor = True
         '
         'SearchDialog
         '
-        Me.AcceptButton = Me.ButtonBack
+        Me.AcceptButton = Me.ButtonClose
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.CancelButton = Me.ButtonBack
+        Me.CancelButton = Me.ButtonClose
         Me.ClientSize = New System.Drawing.Size(384, 311)
-        Me.Controls.Add(Me.ButtonBack)
+        Me.Controls.Add(Me.ButtonClose)
         Me.Controls.Add(Me.ButtonSearch)
         Me.Controls.Add(Me.LabelResult)
         Me.Controls.Add(Me.ListView)
@@ -105,5 +105,5 @@ Partial Class SearchDialog
     Friend WithEvents ListView As System.Windows.Forms.ListBox
     Friend WithEvents LabelResult As System.Windows.Forms.Label
     Friend WithEvents ButtonSearch As System.Windows.Forms.Button
-    Friend WithEvents ButtonBack As System.Windows.Forms.Button
+    Friend WithEvents ButtonClose As System.Windows.Forms.Button
 End Class

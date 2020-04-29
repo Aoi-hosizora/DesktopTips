@@ -26,4 +26,13 @@
         form.Left = Me.Left - formSize.Width - 15
         textBox.Select(0, 0)
     End Sub
+
+    Public Sub FocusItem(tabIdx As Integer, tipIdx As Integer) Implements TempFormContract.IView.FocusItem
+        If tabIdx < m_TabView.Tabs.Count
+            m_TabView.SelectedTabIndex = tabIdx
+            If tipIdx < m_TipListBox.ItemCount Then
+                m_TipListBox.SetSelectOnly(tipIdx)
+            End If
+        End If
+    End Sub
 End Class

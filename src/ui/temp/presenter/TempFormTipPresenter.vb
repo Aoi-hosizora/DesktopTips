@@ -117,27 +117,32 @@ Public Class TempFormTipPresenter
     End Function
 
     Public Sub Search() Implements TempFormContract.ITipPresenter.Search
-        Dim result As New List(Of Tuple(Of Integer, Integer))
+        Dim results As New List(Of Tuple(Of Integer, Integer))
         Dim text As String = InputBox("请输入搜索内容：", "搜索").Trim()
         If text = "" Then
             Return
         End If
-
         For Each tab As Tab In GlobalModel.Tabs
             For Each tip As TipItem In tab.Tips
                 If tip.Content.ToLower().Contains(text.ToLower()) Then
-                    result.Add(New Tuple(Of Integer, Integer)(GlobalModel.Tabs.IndexOf(tab), tab.Tips.IndexOf(tip)))
+                    results.Add(New Tuple(Of Integer, Integer)(GlobalModel.Tabs.IndexOf(tab), tab.Tips.IndexOf(tip)))
                 End If
             Next
         Next
         SearchDialog.Close()
-        If result.Count = 0 Then
+        If results.Count = 0 Then
             MessageBoxEx.Show($"未找到 ""{text}"" 。",
                 "查找", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1,
                 _view.GetMe())
         Else
             SearchDialog.SearchText = text
-            SearchDialog.SearchResult = result
+            SearchDialog.SearchCallback = Function() results
+            SearchDialog.ReSearchCallback = Sub() Search()
+            SearchDialog.TurnToCallback = Sub(tabIndex As Integer, tipIndex As Integer)
+                _view.GetMe().Focus()
+                _view.GetMe().FormOpacityUp()
+                _view.FocusItem(tabIndex, tipIndex)
+            End Sub
             SearchDialog.Show(_view.GetMe())
         End If
     End Sub

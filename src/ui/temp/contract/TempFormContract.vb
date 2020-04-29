@@ -2,6 +2,7 @@
     Public Interface IView
         Function GetMe() As TempForm                                                        ' 获得 this 指针
         Sub ShowTextForm(title As String, content As String, textColor As Color)            ' 显示文本对话框
+        Sub FocusItem(tabIndex As Integer, tipIndex As Integer)                             ' 选择某一搜索结果
     End Interface
 
     Public Interface IGlobalPresenter

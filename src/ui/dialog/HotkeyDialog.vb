@@ -1,17 +1,17 @@
 ﻿Public Class HotkeyDialog
-    Public Delegate Sub Callback(key As Keys, use As Boolean)
+    Public Delegate Sub DoFunc(key As Keys, use As Boolean)
 
-    Public OkCallback As Callback
+    Public DoCallback As DoFunc
 
     Private Sub CheckBoxIsValid_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBoxIsValid.CheckedChanged
         HotkeyEditBox.Enabled = CheckBoxIsValid.Checked
     End Sub
 
     Private Sub ButtonOK_Click(sender As Object, e As EventArgs) Handles ButtonOK.Click
-        If OkCallback IsNot Nothing Then
-            OkCallback.Invoke(HotkeyEditBox.CurrentKey, CheckBoxIsValid.Checked)
-        End If
         Me.Close()
+        If DoCallback IsNot Nothing Then
+            DoCallback.Invoke(HotkeyEditBox.CurrentKey, CheckBoxIsValid.Checked)
+        End If
     End Sub
 
     Private Sub ButtonCancel_Click(sender As Object, e As EventArgs) Handles ButtonCancel.Click

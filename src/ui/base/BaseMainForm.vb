@@ -153,13 +153,13 @@ Public Class BaseMainForm
         _timerCloseForm.Enabled = True
     End Sub
 
-    Protected Sub FormOpacityUp()
+    Public Sub FormOpacityUp()
         _timerCloseForm.Enabled = False
         _timerMouseOut.Enabled = False
         _timerMouseIn.Enabled = True
     End Sub
 
-    Protected Sub FormOpacityDown()
+    Public Sub FormOpacityDown()
         _timerShowForm.Enabled = False
         _timerMouseIn.Enabled = False
         _timerMouseOut.Enabled = True

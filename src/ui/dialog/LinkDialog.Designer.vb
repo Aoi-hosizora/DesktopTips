@@ -66,7 +66,7 @@ Partial Class LinkDialog
         Me.ButtonOpen.Text = "打开(&O)"
         Me.ButtonOpen.UseVisualStyleBackColor = True
         '
-        'ButtonBack
+        'ButtonClose
         '
         Me.ButtonBack.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonBack.DialogResult = System.Windows.Forms.DialogResult.Cancel

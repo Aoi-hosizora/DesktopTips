@@ -48,7 +48,7 @@ Public Class TempFormGlobalPresenter
     Public Sub SetupHotKey(handle As IntPtr, id As Integer) Implements TempFormContract.IGlobalPresenter.SetupHotKey
         HotKeyDialog.HotkeyEditBox.CurrentKey = My.Settings.HotKey
         HotKeyDialog.CheckBoxIsValid.Checked = My.Settings.IsUseHotKey
-        HotKeyDialog.OkCallback =
+        HotKeyDialog.DoCallback =
             Sub(key As Keys, use As Boolean)
                 UnregisterHotKey(handle, id)
                 If Not use OrElse RegisterHotKey(handle, key, id) Then

@@ -22,7 +22,7 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub LoadFile() ' On_Form_Load 用
+    Private Sub LoadFile() ' On_Form_Load On_BtnRefresh_Click 用
         _globalPresenter.LoadFile()
         m_TipListBox.DataSource = GlobalModel.CurrentTab.Tips
         m_TipListBox.Update()
@@ -30,6 +30,7 @@ Public Class MainForm
         m_TabView.DataSource = GlobalModel.Tabs
         m_TabView.Update()
         m_TabView.SelectedTabIndex = 0
+        SetupHighLightButtons()
     End Sub
 
     Private Const HOTKEY_ID As Integer = 0
@@ -192,6 +193,38 @@ Public Class MainForm
         m_popup_OpenInNewBrowser.Checked = Not m_popup_OpenInNewBrowser.Checked
         My.Settings.OpenInNewBrowser = m_popup_OpenInNewBrowser.Checked
         My.Settings.Save()
+    End Sub
+
+#End Region
+
+#Region "标签: 高亮设置 刷新"
+
+    Private Sub SetupHighLightButtons() ' LoadFile 用
+        m_menu_HighlightSubMenu.SubItems.Clear()
+        For Each colorItem In GlobalModel.Colors
+            Dim btn As New DD.ButtonItem() With {.Text = $"{colorItem.Id}: {colorItem.Name}", .Tag = colorItem}
+            Dim bm As New Bitmap(16, 16)
+            Dim g As Graphics = Graphics.FromImage(bm)
+            g.FillRectangle(New SolidBrush(colorItem.Color), New Rectangle(0, 0, 14, 14))
+            btn.Image = bm
+
+            AddHandler btn.Click, AddressOf HighLightTips
+            m_menu_HighlightSubMenu.SubItems.Add(btn)
+        Next
+        m_menu_HighlightSubMenu.SubItems.Add(m_popup_SetupColors)
+    End Sub
+
+    Private Sub HighLightTips(sender As System.Object, e As EventArgs)
+        Dim color = CType(sender.Tag, TipColor)
+        MsgBox($"Color: {color.Id} {color.Name} {color.Color}")
+    End Sub
+
+    Private Sub On_BtnSetupHighlightColors_Click(sender As System.Object, e As EventArgs) Handles m_popup_SetupColors.Click
+        MsgBox("TODO")
+    End Sub
+
+    Private Sub On_BtnRefresh_Click(sender As System.Object, e As EventArgs) Handles m_popup_Refresh.Click
+        LoadFile()
     End Sub
 
 #End Region
@@ -413,8 +446,6 @@ Public Class MainForm
         m_btn_RemoveTips.Enabled = isNotNull
         m_popup_RemoveTips.Enabled = isNotNull
         m_popup_UpdateTip.Enabled = isSingle
-        m_popup_HighlightTip.Enabled = isNotNull
-        m_popup_HighlightTip.Checked = isNotNull AndAlso m_TipListBox.SelectedItem.IsHighLight
         m_popup_CopyTips.Enabled = isNotNull
         m_popup_PasteAppendToTip.Enabled = isSingle
 

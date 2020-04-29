@@ -185,16 +185,14 @@
     End Sub
 
     ''' <summary>
-    ''' 右键列表，判断是否超过范围，并选中
+    ''' 单击列表，判断是否超过范围，或选中
     ''' </summary>
     Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
         MyBase.OnMouseDown(e)
-        If e.Button = MouseButtons.Right AndAlso SelectedCount <= 1 Then
-            If PointOutOfRange(e.Location) Then
-                ClearSelected()
-            Else
-                SetSelectOnly(IndexFromPoint(e.X, e.Y))
-            End If
+        If PointOutOfRange(e.Location) Then
+            ClearSelected()
+        Else If e.Button = MouseButtons.Right AndAlso SelectedCount <= 1 Then
+            SetSelectOnly(IndexFromPoint(e.X, e.Y))
         End If
     End Sub
 
@@ -225,7 +223,7 @@
 #Region "内部类"
 
     Public Class TipItemsCollection
-        Inherits BaseItemsCollection(Of Object)
+        Inherits BaseItemsCollection(Of TipItem)
 
         Public Sub New(listBox As ICollectionView)
             MyBase.New(listBox)

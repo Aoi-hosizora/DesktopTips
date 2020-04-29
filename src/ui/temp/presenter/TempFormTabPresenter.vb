@@ -29,7 +29,7 @@ Public Class TempFormTabPresenter
 
     Public Function Delete(tab As Tab) As Boolean Implements TempFormContract.ITabPresenter.Delete
         If tab.Tips.Count <> 0 Then
-            MessageBoxEx.Show("分组内存在 " & tab.Tips.Count & " 条记录，请先将标签移动到别的分组。",
+            MessageBoxEx.Show($"分组内存在 {tab.Tips.Count} 条记录，请先将标签移动到别的分组。",
                 "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, _view.GetMe())
         Else
             Dim ok = MessageBoxEx.Show($"是否删除分组 ""{tab.Title}""？",
@@ -62,7 +62,7 @@ Public Class TempFormTabPresenter
         Dim tipItems As IEnumerable(Of TipItem) = If(TryCast(items, TipItem()), items.ToArray())
         Dim flag As String
         If src.Tips.Count = items.Count Then
-            flag = $"确定将当前分组 ""${src.Title}"" 的全部内容 (共 {src.Tips.Count} 项) 移动至分组 ""{dest.Title}"" 吗？"
+            flag = $"确定将当前分组 ""{src.Title}"" 的全部内容 (共 {src.Tips.Count} 项) 移动至分组 ""{dest.Title}"" 吗？"
         Else
             Dim sb As New StringBuilder
             For Each item As TipItem In tipItems

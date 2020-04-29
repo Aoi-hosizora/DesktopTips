@@ -6,7 +6,6 @@ Public Class TempForm
 #Region "加载设置 加载列表内容和界面 失去焦点 启动退出 系统事件"
 
     Private Sub LoadSetting() ' On_Form_Load 用
-        MsgBox(My.Settings.ListCount)
         Me.Top = My.Settings.Top
         Me.Left = My.Settings.Left
         Me.Width = My.Settings.Width
@@ -16,18 +15,23 @@ Public Class TempForm
 
         m_num_ListCount.Value = My.Settings.ListCount                                                   ' 列表高度
         m_popup_FoldMenu.Checked = My.Settings.IsFold                                                   ' 折叠菜单
-        m_popup_LoadPosition.Enabled = Not (My.Settings.SaveLeft = - 1 Or My.Settings.SaveTop = - 1)    ' 恢复位置
+        m_popup_LoadPosition.Enabled = My.Settings.SaveLeft <> - 1 And My.Settings.SaveTop <> - 1       ' 恢复位置
         m_popup_TopMost.Checked = My.Settings.TopMost                                                   ' 窗口置顶
-        _globalPresenter.RegisterHotKey(Handle, My.Settings.HotKey, HOTKEY_ID)                          ' 注册热键
+
         foldMenu(My.Settings.IsFold)                                                                    ' 折叠菜单
+        If My.Settings.IsUseHotKey
+            _globalPresenter.RegisterHotKey(Handle, My.Settings.HotKey, HOTKEY_ID)                      ' 注册热键
+        End If
     End Sub
 
     Private Sub LoadFile() ' On_Form_Load 用
         _globalPresenter.LoadFile()
         m_TipListBox.DataSource = GlobalModel.CurrentTab.Tips
         m_TipListBox.Update()
+        m_TipListBox.ClearSelected()
         m_TabView.DataSource = GlobalModel.Tabs
         m_TabView.Update()
+        m_TabView.SelectedTabIndex = 0
     End Sub
 
     Private Const HOTKEY_ID As Integer = 0
@@ -191,7 +195,56 @@ Public Class TempForm
 
 #End Region
 
-#Region "分组: 选中显示 增删改 移动至"
+#Region "分组: 增删改拖动"
+
+    Private Sub InsertTab(sender As Object, e As EventArgs) Handles m_popup_NewTab.Click
+        If _tabPresenter.Insert() Then
+            m_TabView.Update()
+            m_TabView.SelectedTabIndex = m_TabView.Tabs.Count - 1
+        End If
+    End Sub
+
+    Private Sub DeleteTab(sender As Object, e As EventArgs) Handles m_popup_DeleteTab.Click
+        If m_TabView.SelectedTabIndex <> - 1 Then
+            If m_TabView.Tabs.Count = 1 Then
+                MessageBoxEx.Show("无法删除最后的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, Me)
+            Else
+                Dim currentIndex As Integer = m_TabView.SelectedTabIndex
+                If _tabPresenter.Delete(m_TabView.SelectedTab.TabSource) Then
+                    m_TabView.Update()
+                    m_TabView.SelectedTabIndex = currentIndex - 1
+                End If
+            End If
+        End If
+    End Sub
+
+    Private Sub UpdateTab(sender As Object, e As EventArgs) Handles m_popup_RenameTab.Click
+        If m_TabView.SelectedTabIndex <> - 1 Then
+            If _tabPresenter.Update(m_TabView.SelectedTab.TabSource)
+                m_TabView.Update()
+            End If
+        End If
+    End Sub
+
+    Private Sub TabStrip_TabMoved(sender As Object, e As DD.SuperTabStripTabMovedEventArgs) Handles m_TabView.TabMoved
+        Dim newTabs As List(Of Tab) = (From item As TabView.TabViewItem In e.NewOrder Select item.TabSource).ToList()
+        GlobalModel.Tabs = newTabs
+        GlobalModel.CurrentTab = m_TabView.SelectedTab.TabSource
+        _globalPresenter.SaveFile()
+    End Sub
+
+    Private Sub On_TabView_DoubleClick(sender As Object, e As EventArgs) Handles m_TabView.DoubleClick
+        Dim pos As New Point(Cursor.Position.X - Me.Left - sender.Left, Cursor.Position.Y - Me.Top - sender.Top)
+        If m_TabView.GetItemFromPoint(pos) Is Nothing Then
+            InsertTab(sender, New EventArgs)
+        Else
+            UpdateTab(sender, New EventArgs)
+        End If
+    End Sub
+
+#End Region
+
+#Region "分组: 选择 移动至"
 
     Private Sub On_TabView_SelectedTabChanged(sender As Object, e As DD.SuperTabStripSelectedTabChangedEventArgs) Handles m_TabView.SelectedTabChanged
         HideAssistButtons()
@@ -199,12 +252,53 @@ Public Class TempForm
             GlobalModel.CurrentTab = m_TabView.SelectedTab.TabSource
             m_TipListBox.DataSource = GlobalModel.CurrentTab.Tips
             m_TipListBox.Update()
+            m_TipListBox.ClearSelected()
+        End If
+    End Sub
+
+    Private Function GetUnselectedTabMoveButtonList(all As Boolean) As IEnumerable(Of DD.ButtonItem) ' SetupMoveToButtons 用
+        Dim buttons As New List(Of DD.ButtonItem)
+        Dim idx = 0
+        For Each tab In GlobalModel.Tabs
+            If m_TabView.SelectedTab IsNot Nothing AndAlso m_TabView.SelectedTab.TabSource.Title = tab.Title Then Continue For
+            idx += 1
+            Dim button As New DD.ButtonItem() With {.GlobalItem = False, .Tag = New Object() {tab, all}, .Text = $"{tab.Title}(&{idx})"}
+            AddHandler button.Click, AddressOf MoveTipToTab
+            buttons.Add(button)
+        Next
+        Return buttons
+    End Function
+
+    Private Sub MoveTipToTab(sender As DD.ButtonItem, e As EventArgs)
+        Dim src As Tab = GlobalModel.CurrentTab
+        Dim dest As Tab = sender.Tag(0)
+        Dim all As Boolean = sender.Tag(1)
+        Dim items As IEnumerable(Of TipItem) = If(all, m_TipListBox.Items.ToList(), m_TipListBox.SelectedItems)
+
+        Dim tipItems As IEnumerable(Of TipItem) = If(TryCast(items, TipItem()), items.ToArray())
+        If _tabPresenter.MoveItems(tipItems, src, dest) Then
+            m_TabView.Update()
+            m_TabView.SetSelected(dest)
+
+            m_TipListBox.ClearSelected()
+            For Each item As TipItem In tipItems
+                Dim idx As Integer = GlobalModel.CurrentTab.Tips.IndexOf(item)
+                If idx <> - 1
+                    m_TipListBox.SetSelected(idx, True)
+                End If
+            Next
+        End If
+    End Sub
+
+    Private Sub On_BtnMoveTipsAndMoveToTab_Click(sender As DD.ButtonItem, e As EventArgs) Handles m_menu_MoveTipsSubMenu.Click, m_menu_MoveToTabSubMenu.Click
+        If Not DD.BaseItem.IsOnPopup(sender) Then
+            sender.Popup(Me.Left + m_btn_OpenListPopup.Left, Me.Top + m_btn_OpenListPopup.Top + m_btn_OpenListPopup.Height - 1)
         End If
     End Sub
 
 #End Region
 
-#Region "显示: 透明度 辅助按钮"
+#Region "显示: 透明度 辅助按钮 移动至菜单"
 
     Private ReadOnly _opacities() As Double = {0.2, 0.4, 0.6, 0.8, 1}
     Private ReadOnly _opacityButtons(_opacities.Length - 1) As DD.ButtonItem
@@ -271,6 +365,29 @@ Public Class TempForm
         End If
     End Sub
 
+    Private Sub SetupMoveToButtons(all As Boolean)
+        Dim buttons As IEnumerable(Of DD.ButtonItem) = GetUnselectedTabMoveButtonList(all)
+        If Not all Then ' TipPopup
+            m_menu_MoveTipsSubMenu.SubItems.Clear()
+            For Each btn As DD.ButtonItem In buttons
+                m_menu_MoveTipsSubMenu.SubItems.Add(btn)
+            Next
+            If buttons.Count = 0 OrElse m_TipListBox.SelectedCount = 0 Then
+                m_menu_MoveTipsSubMenu.Enabled = False
+                m_menu_MoveTipsSubMenu.SubItems.Clear()
+            End If
+        Else ' TabPopup
+            m_menu_MoveToTabSubMenu.SubItems.Clear()
+            For Each btn As DD.ButtonItem In buttons
+                m_menu_MoveToTabSubMenu.SubItems.Add(btn)
+            Next
+            If buttons.Count = 0 OrElse m_TipListBox.ItemCount = 0 Then
+                m_menu_MoveToTabSubMenu.Enabled = False
+                m_menu_MoveToTabSubMenu.SubItems.Clear()
+            End If
+        End If
+    End Sub
+
 #End Region
 
 #Region "显示: 可用性判断 列表选择 大小调整 菜单与透明度"
@@ -311,10 +428,8 @@ Public Class TempForm
         m_TipListBox.Refresh()
     End Sub
 
-    Private Sub On_ListViewAndTabView_MouseDown(sender As Object, e As MouseEventArgs) Handles m_TipListBox.MouseDown, m_TabView.MouseDown
-        If m_TipListBox.PointOutOfRange(e.Location) Then
-            m_TipListBox.ClearSelected()
-        End If
+    Private Sub On_TabView_ItemClick(sender As Object, e As EventArgs) Handles m_TabView.ItemClick
+        m_TipListBox.ClearSelected()
     End Sub
 
     Private Sub On_BtnResize_MouseMove(sender As Object, e As MouseEventArgs) Handles m_btn_Resize.MouseMove
@@ -345,7 +460,6 @@ Public Class TempForm
     End Sub
 
     Private Sub On_ListPopupMenu_PopupOpen(sender As Object, e As DD.PopupOpenEventArgs) Handles m_menu_ListPopupMenu.PopupOpen
-        e.Cancel = True
         m_popup_SelectedTipsCountLabel.Visible = m_TipListBox.SelectedCount > 0
         m_popup_SelectedTipsTextLabel.Visible = m_TipListBox.SelectedCount > 0
 
@@ -361,8 +475,15 @@ Public Class TempForm
         m_popup_SelectedTipsTextLabel.Text = sb.ToString()
         m_popup_TipsCountLabel.Text = $"列表 (共 {m_TipListBox.ItemCount} 项，高亮 {highlightCount} 项)"
         m_popup_SelectedTipsCountLabel.Text = $"当前选中 (共 {m_TipListBox.SelectedCount} 项)"
-        e.Cancel = False
+
+        SetupMoveToButtons(all := False)
         m_menu_ListPopupMenu.Refresh()
+    End Sub
+
+    Private Sub On_TabPopupMenu_PopupOpen(sender As Object, e As DD.PopupOpenEventArgs) Handles m_menu_TabPopupMenu.PopupOpen
+        m_popup_TabLabel.Text = $"分组 (共 {GlobalModel.Tabs.Count} 组)"
+        SetupMoveToButtons(all := True)
+        m_menu_TabPopupMenu.Refresh()
     End Sub
 
     Private Sub On_NumericListCount_ValueChanged(sender As Object, e As EventArgs) Handles m_num_ListCount.ValueChanged
@@ -401,8 +522,10 @@ Public Class TempForm
     End Sub
 
     Private Sub On_BtnLoadPosition_Click(sender As Object, e As EventArgs) Handles m_popup_LoadPosition.Click
-        Me.Top = My.Settings.SaveTop
-        Me.Left = My.Settings.SaveLeft
+        If My.Settings.SaveTop >= 0 And My.Settings.SaveLeft >= 0
+            Me.Top = My.Settings.SaveTop
+            Me.Left = My.Settings.SaveLeft
+        End If
     End Sub
 
     Private Sub On_BtnSavePosition_Click(sender As Object, e As EventArgs) Handles m_popup_SavePosition.Click

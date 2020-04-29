@@ -41,6 +41,16 @@ Public Class TabView
         For Each t As Tab In DataSource
             Tabs.Add(New TabViewItem(t))
         Next
+        Refresh()
+    End Sub
+
+    Public Sub SetSelected(tab As Tab)
+        For Each item As TabViewItem In Tabs
+            If item.TabSource.Title = tab.Title Then
+                SelectedTab = item
+                Return
+            End If
+        Next
     End Sub
 
     ''' <summary>
@@ -72,7 +82,7 @@ Public Class TabView
             TabSource = tab
         End Sub
 
-        Public Property TabSource As Tab 
+        Public Property TabSource As Tab
 
         Public Overrides Property Text As String
             Get

@@ -31,8 +31,9 @@
     End Interface
 
     Public Interface IGroupPresenter
-        Function Insert() As Boolean            ' 插入
-        Function Delete(tab As Tab) As Boolean  ' 删除
-        Function Update(tab As Tab) As Boolean  ' 修改
+        Function Insert() As Boolean                                                                ' 插入
+        Function Delete(tab As Tab) As Boolean                                                      ' 删除
+        Function Update(tab As Tab) As Boolean                                                      ' 修改
+        Function MoveItems(items As IEnumerable(Of TipItem), src As Tab, dest As Tab) As Boolean    ' 修改
     End Interface
 End Interface

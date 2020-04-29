@@ -69,6 +69,8 @@ Public Class TempForm
     Private Sub On_Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' 窗口显示
         LoadSetting()
+        m_TabView.Tabs.Remove(m_tab_TestTab1)
+        m_TabView.Tabs.Remove(m_tab_TestTab2)
         SetupOpacityButtons()
         SetupAssistButtons()
 
@@ -87,7 +89,7 @@ Public Class TempForm
 
 #End Region
 
-#Region "增删改 移动 复制粘贴 全选"
+#Region "标签: 增删改 移动 复制粘贴 全选"
 
     Private Sub InsertTip(sender As Object, e As EventArgs) Handles m_btn_InsertTip.Click, m_popup_InsertTip.Click
         If _listPresenter.Insert() Then
@@ -164,7 +166,7 @@ Public Class TempForm
 
 #End Region
 
-#Region "查找 打开浏览文件 浏览器"
+#Region "标签: 查找 打开浏览文件 浏览器"
 
     Private Sub FindTips(sender As Object, e As EventArgs) Handles m_popup_FileTips.Click
         _listPresenter.Search()
@@ -188,13 +190,20 @@ Public Class TempForm
 
 #End Region
 
-#Region "分组显示 透明度 辅助按钮"
+#Region "分组: 选中显示 增删改 移动至"
 
-    ' Private Sub AddTabToShow(tab As Tab) ' MainForm_Load On_BtnNewTab_Click 用
-    '     Dim newTabItem = New TabView.TabViewItem(tab)
-    '     ' AddHandler newTabItem.MouseDown, AddressOf TabStrip_MouseDown
-    '     Me.m_TabView.Tabs.Add(newTabItem)
-    ' End Sub
+    Private Sub On_TabView_SelectedTabChanged(sender As Object, e As DD.SuperTabStripSelectedTabChangedEventArgs) Handles m_TabView.SelectedTabChanged
+        HideAssistButtons()
+        If m_TabView.SelectedTabIndex <> - 1 AndAlso m_TabView.SelectedTab.TabSource IsNot Nothing Then
+            GlobalModel.CurrentTab = m_TabView.SelectedTab.TabSource
+            m_TipListBox.DataSource = GlobalModel.CurrentTab.Tips
+            m_TipListBox.Update()
+        End If
+    End Sub
+
+#End Region
+
+#Region "显示: 透明度 辅助按钮"
 
     Private ReadOnly _opacities() As Double = {0.2, 0.4, 0.6, 0.8, 1}
     Private ReadOnly _opacityButtons(_opacities.Length - 1) As DD.ButtonItem
@@ -250,7 +259,7 @@ Public Class TempForm
         m_btn_MoveTipDown.Visible = True
     End Sub
 
-    Private Sub HideAssistButtons() ' SetupAssistButtons (OnWheeledAction) On_ListView_SelectedIndexChangedAndMouseDown 用
+    Private Sub HideAssistButtons() ' SetupAssistButtons (OnWheeledAction) On_ListView_SelectedIndexChangedAndMouseDown On_TabView_SelectedTabChanged 用
         m_btn_MoveTipUp.Visible = False
         m_btn_MoveTipDown.Visible = False
     End Sub
@@ -263,7 +272,7 @@ Public Class TempForm
 
 #End Region
 
-#Region "可用性判断 列表选择 大小调整 菜单与透明度"
+#Region "显示: 可用性判断 列表选择 大小调整 菜单与透明度"
 
     Private Sub CheckListItemEnabled() ' On_ListView_SelectedIndexChangedAndMouseDown On_BtnOpenPopupMenu_Click 用
         Dim isNotNull As Boolean = m_TipListBox.SelectedIndex <> - 1
@@ -301,7 +310,7 @@ Public Class TempForm
         m_TipListBox.Refresh()
     End Sub
 
-    Private Sub On_ListViewAndTabStrip_MouseDown(sender As Object, e As MouseEventArgs) Handles m_TipListBox.MouseDown, m_TabView.MouseDown
+    Private Sub On_ListViewAndTabView_MouseDown(sender As Object, e As MouseEventArgs) Handles m_TipListBox.MouseDown, m_TabView.MouseDown
         If m_TipListBox.PointOutOfRange(e.Location) Then
             m_TipListBox.ClearSelected()
         End If
@@ -327,7 +336,7 @@ Public Class TempForm
 
 #End Region
 
-#Region "其他: 弹出菜单 列表数量 折叠菜单 热键置顶 加载保存位置"
+#Region "显示: 其他 弹出菜单 列表数量 折叠菜单 热键置顶 加载保存位置"
 
     Private Sub On_BtnOpenPopupMenu_Click(sender As Object, e As EventArgs) Handles m_btn_OpenListPopup.Click
         CheckListItemEnabled()

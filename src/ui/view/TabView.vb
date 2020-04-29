@@ -32,21 +32,28 @@ Public Class TabView
         End Set
     End Property
 
-    Public Overloads ReadOnly Property SelectedTabValue As Tab
-        Get
-            Return SelectedTab.Source
-        End Get
-    End Property
-
 #End Region
 
 #Region "自定义函数"
 
     Public Overloads Sub Update()
-        MyBase.Tabs.Clear()
+        Tabs.Clear()
         For Each t As Tab In DataSource
-            MyBase.Tabs.Add(New TabViewItem(t))
+            Tabs.Add(New TabViewItem(t))
         Next
+    End Sub
+
+    ''' <summary>
+    ''' 右键 Tab 选中
+    ''' </summary>
+    Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
+        MyBase.OnMouseDown(e)
+        If e.Button = MouseButtons.Right Then
+            Dim sel As TabViewITem = GetItemFromPoint(e.Location)
+            If sel IsNot Nothing Then
+                SelectedTab = sel
+            End If
+        End If
     End Sub
 
 #End Region
@@ -62,18 +69,19 @@ Public Class TabView
 
         Public Sub New(tab As Tab)
             MyBase.New()
-            Source = tab
+            TabSource = tab
         End Sub
 
-        Private _source As Tab
+        Public Property TabSource As Tab 
 
-        Public Property Source As Tab
+        Public Overrides Property Text As String
             Get
-                Return _source
+                If TabSource Is Nothing Then
+                    Return ""
+                End If
+                Return TabSource.Title
             End Get
             Set
-                _source = value
-                Text = value.Title
             End Set
         End Property
     End Class

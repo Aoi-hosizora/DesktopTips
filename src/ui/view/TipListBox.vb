@@ -94,7 +94,7 @@
         Dim color As Color = If(item.Color?.Color, e.ForeColor)
 
         e.DrawBackground()
-        If e.Index = _mouseIndex Then ' Hover
+        If e.Index = _hoverIndex Then ' Hover
             g.FillRectangle(New SolidBrush(HOVER_BACK_COLOR), b)
             If e.State And DrawItemState.Selected Then ' Selected + Hover
                 g.FillRectangle(New SolidBrush(FOCUS_BACK_COLOR), b)
@@ -113,32 +113,39 @@
         ' e.DrawFocusRectangle()
     End Sub
 
-    Private _mouseIndex As Integer = - 1
+    Private _hoverIndex As Integer = - 1
 
+    ''' <summary>
+    ''' 鼠标移动，判断是否超出范围
+    ''' 显示 ToolTip 和 记录 HoverIndex，更新界面显示
+    ''' </summary>
     Protected Overrides Sub OnMouseMove(e As MouseEventArgs)
         MyBase.OnMouseMove(e)
         Dim index = IndexFromPoint(e.Location)
-        If Not PointOutOfRange(e.Location) AndAlso index <> _mouseIndex Then
+        If Not PointOutOfRange(e.Location) AndAlso index <> _hoverIndex Then
             If index > - 1 Then
                 _hoverTooltip.Hide(Me)
                 _hoverTooltip.SetToolTip(Me, Items(index).Content)
             End If
-            If _mouseIndex > - 1 Then Invalidate(GetItemRectangle(_mouseIndex))
-            _mouseIndex = Index
-            If _mouseIndex > - 1 Then Invalidate(GetItemRectangle(_mouseIndex))
+            If _hoverIndex > - 1 Then Invalidate(GetItemRectangle(_hoverIndex))
+            _hoverIndex = Index
+            If _hoverIndex > - 1 Then Invalidate(GetItemRectangle(_hoverIndex))
         Else If PointOutOfRange(e.Location)
-            Dim finalIndex = _mouseIndex
-            _mouseIndex = - 1
+            Dim finalIndex = _hoverIndex
+            _hoverIndex = - 1
             If finalIndex > - 1 Then Invalidate(GetItemRectangle(finalIndex))
         End If
     End Sub
 
+    ''' <summary>
+    ''' 鼠标移出列表，更新界面并且置 HoverIndex 为 -1
+    ''' </summary>
     Protected Overrides Sub OnMouseLeave(e As EventArgs)
         MyBase.OnMouseLeave(e)
-        If _mouseIndex > - 1 Then
-            If _mouseIndex > - 1 Then Invalidate(GetItemRectangle(_mouseIndex))
-            _mouseIndex = - 1
-            If _mouseIndex > - 1 Then Invalidate(GetItemRectangle(_mouseIndex))
+        If _hoverIndex > - 1 Then
+            If _hoverIndex > - 1 Then Invalidate(GetItemRectangle(_hoverIndex))
+            _hoverIndex = - 1
+            If _hoverIndex > - 1 Then Invalidate(GetItemRectangle(_hoverIndex))
         End If
     End Sub
 
@@ -158,6 +165,9 @@
         .Text= "无内容", .TextAlign = ContentAlignment.MiddleCenter
         }
 
+    ''' <summary>
+    ''' 调整 无内容标签 的显示
+    ''' </summary>
     Private Sub adjustLabelNothing()
         _labelNothing.Visible = ItemCount = 0
         _labelNothing.Top = 0
@@ -166,6 +176,17 @@
         _labelNothing.Width = Width
     End Sub
 
+    ''' <summary>
+    ''' 调整大小时更新 无内容标签 的显示
+    ''' </summary>
+    Protected Overrides Sub OnSizeChanged(e As EventArgs)
+        MyBase.OnSizeChanged(e)
+        adjustLabelNothing()
+    End Sub
+
+    ''' <summary>
+    ''' 右键列表，判断是否超过范围，并选中
+    ''' </summary>
     Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
         MyBase.OnMouseDown(e)
         If e.Button = MouseButtons.Right AndAlso SelectedCount <= 1 Then
@@ -177,6 +198,9 @@
         End If
     End Sub
 
+    ''' <summary>
+    ''' 鼠标滚动执行 OnWheeledAction
+    ''' </summary>
     Protected Overrides Sub OnMouseWheel(e As MouseEventArgs)
         MyBase.OnMouseWheel(e)
         If OnWheeledAction IsNot Nothing Then
@@ -184,6 +208,9 @@
         End If
     End Sub
 
+    ''' <summary>
+    ''' 滚动条拖动执行 OnWheeledAction
+    ''' </summary>
     Protected Overrides Sub OnMouseCaptureChanged(e As EventArgs)
         MyBase.OnMouseCaptureChanged(e)
         If OnWheeledAction IsNot Nothing Then
@@ -191,11 +218,6 @@
                 OnWheeledAction.Invoke()
             End If
         End If
-    End Sub
-
-    Protected Overrides Sub OnSizeChanged(e As EventArgs)
-        MyBase.OnSizeChanged(e)
-        adjustLabelNothing()
     End Sub
 
 #End Region

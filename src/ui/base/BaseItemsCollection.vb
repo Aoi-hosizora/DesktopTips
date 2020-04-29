@@ -1,7 +1,7 @@
 ﻿''' <summary>
 ''' 给实现了 ICollectionView 接口的 ControlView 提供 ItemsCollection 重载
 ''' </summary>
-Public Class BaseItemsCollection(Of T)
+Public MustInherit Class BaseItemsCollection(Of T)
     Inherits ObjectModel.Collection(Of T)
 
     Private ReadOnly _owner As ICollectionView

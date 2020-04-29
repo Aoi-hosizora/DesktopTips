@@ -36,17 +36,31 @@ Public Class BaseMainForm
 
     Private Sub InitHandler(ctrls As IEnumerable(Of Control))
         For Each ctrl As Control In ctrls
+            Dim isBtn As Boolean = ctrl.GetType() = GetType(Button) OrElse ctrl.GetType() = GetType(DD.ButtonX)
+            Dim isTab As Boolean = ctrl.GetType() = GetType(TabView.TabViewItem) OrElse ctrl.GetType() = GetType(DD.SuperTabItem) OrElse
+                                   ctrl.GetType() = GetType(TabView) OrElse ctrl.GetType() = GetType(DD.SuperTabStrip)
+
+            ' 任何控件都可以监听 鼠标移动
             AddHandler ctrl.MouseMove, AddressOf FormMouseMove
             AddHandler ctrl.MouseLeave, AddressOf FormMouseLeave
-            AddHandler ctrl.MouseDown, AddressOf FormMouseDown
-            AddHandler ctrl.MouseUp, AddressOf FormMouseUp
 
-            If ctrl.GetType() <> GetType(Button) AndAlso ctrl.GetType() <> GetType(DD.ButtonX) Then
-                AddHandler ctrl.MouseMove, AddressOf FormMouseResize
+            ' 非 Tab 才可以监听 鼠标点击
+            If Not isTab Then
+                AddHandler ctrl.MouseDown, AddressOf FormMouseDown
+                AddHandler ctrl.MouseUp, AddressOf FormMouseUp
             End If
-            If ctrl.GetType() = GetType(Button) OrElse ctrl.GetType() = GetType(DD.ButtonX) Then
+
+            ' 非 Button 和 Tab 才可以监听拖动
+            If Not isBtn AndAlso Not isTab Then
+                AddHandler ctrl.MouseMove, AddressOf FormMouseDownMove
+            End If
+
+            ' Button 消除焦点框
+            If isBtn Then
                 AddHandler ctrl.MouseDown, AddressOf HideButtonXFocus
             End If
+
+            ' 递归
             InitHandler(ctrl.Controls.Cast(Of Control)())
         Next
     End Sub
@@ -168,7 +182,7 @@ Public Class BaseMainForm
         Me.Cursor = Cursors.Default
     End Sub
 
-    Private Sub FormMouseResize(sender As Object, e As MouseEventArgs)
+    Private Sub FormMouseDownMove(sender As Object, e As MouseEventArgs)
         If IsMouseDown Then
             Me.Cursor = Cursors.SizeAll
             Me.Top = _pushDownWindowPos.Y + Cursor.Position.Y - _pushDownMouseInScreen.Y

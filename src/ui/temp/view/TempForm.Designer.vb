@@ -79,7 +79,7 @@ Partial Class TempForm
         Me.m_popup_RenameTab = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_MoveToTabSubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_TabView = New TabView()
-        Me.m_tab_TestTab = New TabView.TabViewItem()
+        Me.m_tab_TestTab1 = New TabView.TabViewItem()
         Me.m_tab_TestTab2 = New TabView.TabViewItem()
         Me.m_btn_MoveTipUp = New DevComponents.DotNetBar.ButtonX()
         Me.m_btn_MoveTipDown = New DevComponents.DotNetBar.ButtonX()
@@ -586,24 +586,24 @@ Partial Class TempForm
         Me.m_TabView.TabFont = New System.Drawing.Font("Microsoft YaHei UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.m_TabView.TabHorizontalSpacing = 2
         Me.m_TabView.TabIndex = 9
-        Me.m_TabView.Tabs.AddRange(New TabView.TabViewItem() {Me.m_tab_TestTab, Me.m_tab_TestTab2})
+        Me.m_TabView.Tabs.AddRange(New TabView.TabViewItem() {Me.m_tab_TestTab1, Me.m_tab_TestTab2})
         Me.m_TabView.TabStyle = DevComponents.DotNetBar.eSuperTabStyle.VisualStudio2008Dock
         Me.m_TabView.TabVerticalSpacing = 3
         Me.m_TabView.Text = "m_TabView"
         Me.m_TabView.TextAlignment = DevComponents.DotNetBar.eItemAlignment.Center
         '
-        'm_tab_TestTab
+        'm_tab_TestTab1
         '
-        Me.m_tab_TestTab.GlobalItem = False
-        Me.m_tab_TestTab.Name = "m_tab_TestTab"
-        Me.m_tab_TestTab.Source = New Tab("测试1")
-        Me.m_tab_TestTab.Visible = False
+        Me.m_tab_TestTab1.GlobalItem = False
+        Me.m_tab_TestTab1.Name = "m_tab_TestTab1"
+        Me.m_tab_TestTab1.TabSource = New Tab("测试1")
+        Me.m_tab_TestTab1.Visible = False
         '
         'm_tab_TestTab2
         '
         Me.m_tab_TestTab2.GlobalItem = False
         Me.m_tab_TestTab2.Name = "m_tab_TestTab2"
-        Me.m_tab_TestTab2.Source = New Tab("测试2")
+        Me.m_tab_TestTab2.TabSource = New Tab("测试2")
         Me.m_tab_TestTab2.Visible = False
         '
         'm_btn_MoveTipUp
@@ -718,7 +718,6 @@ Partial Class TempForm
     Friend WithEvents m_popup_MoveTipBottom As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_MoveTopTop As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_TabView As TabView
-    Friend WithEvents m_tab_TestTab As TabView.TabViewItem
     Friend WithEvents m_menu_TabPopupMenu As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_NewTab As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_DeleteTab As DevComponents.DotNetBar.ButtonItem
@@ -728,6 +727,7 @@ Partial Class TempForm
     Friend WithEvents m_menu_MoveToTabSubMenu As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_TabLabel As DevComponents.DotNetBar.LabelItem
     Friend WithEvents m_btn_Resize As DevComponents.DotNetBar.ButtonX
+    Friend WithEvents m_tab_TestTab1 As TabView.TabViewItem
     Friend WithEvents m_tab_TestTab2 As TabView.TabViewItem
     Friend WithEvents m_popup_ListItemContainer As DevComponents.DotNetBar.ItemContainer
     Friend WithEvents m_popup_FoldMenu As DevComponents.DotNetBar.ButtonItem

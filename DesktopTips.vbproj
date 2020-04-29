@@ -180,6 +180,7 @@
     </Compile>
     <Compile Include="src\ui\temp\view\TempForm.View.vb">
       <SubType>Form</SubType>
+      <DependentUpon>TempForm.vb</DependentUpon>
     </Compile>
     <Compile Include="src\ui\view\HotkeyBox.vb">
       <SubType>Component</SubType>

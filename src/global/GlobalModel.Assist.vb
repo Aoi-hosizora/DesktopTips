@@ -88,17 +88,18 @@ Partial Public Class GlobalModel
         End Function)
     End Function
 
-    Public Shared Sub HandleWithColorOrder(colorList As List(Of TipColor), tabList As List(Of Tab))
-        colorList.Sort()
+    Public Shared Sub HandleWithColorOrder(ByRef colorList As List(Of TipColor), tabList As List(Of Tab))
+        colorList = colorList.OrderBy(Function(c) c.Id).ToList()
         For i = 0 To colorList.Count - 1
             Dim tipColor As TipColor = colorList.ElementAt(i)
-            If tipColor.Id = i Then
+            Dim targetIdx = i
+            If tipColor.Id = targetIdx Then
                 Continue For
             End If
 
-            tabList.SelectMany(Function(t) t.Tips).Where(Function(t) t.ColorIndex = tipColor.Id).ToList().
-                ForEach(Sub(tip) tip.ColorIndex = i)
-            tipColor.Id = i
+            tabList.SelectMany(Function(t) t.Tips).Where(Function(t) t.ColorId = tipColor.Id).ToList().
+                ForEach(Sub(tip) tip.ColorId = targetIdx)
+            tipColor.Id = targetIdx
         Next
     End Sub
 

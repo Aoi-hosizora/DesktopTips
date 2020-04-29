@@ -43,7 +43,7 @@ Partial Public Class MainForm
 
         Dim ip As String, port As Integer
         While sp.Length <> 2 OrElse Not IP_RE.IsMatch(sp(0)) OrElse Not PORT_RE.IsMatch(sp(1)) OrElse Not Integer.TryParse(sp(1), port)
-            MessageBox.Show("所输入的地址格式不正确。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBoxEx.Show("所输入的地址格式不正确。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
 
             input = InputBox("请输入移动端的地址：", "同步到移动端", input).Replace("：", ":").Trim()
 
@@ -63,9 +63,9 @@ Partial Public Class MainForm
             SyncData.SendTabs(Ip := ip, Port := port, cb :=
                 Sub(ok As Exception)
                     If ok Is Nothing Then
-                        Me.Invoke(New Action(Sub() MessageBox.Show("数据发送成功，请在移动端确认。", "同步到移动端", MessageBoxButtons.OK, MessageBoxIcon.Information)))
+                        Me.Invoke(New Action(Sub() MessageBoxEx.Show("数据发送成功，请在移动端确认。", "同步到移动端", MessageBoxButtons.OK, MessageBoxIcon.Information)))
                     Else
-                        Me.Invoke(New Action(Sub() MessageBox.Show($"数据发送错误：{vbNewLine}{ok.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)))
+                        Me.Invoke(New Action(Sub() MessageBoxEx.Show($"数据发送错误：{vbNewLine}{ok.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)))
                     End If
                 End Sub)
         end sub))
@@ -80,7 +80,7 @@ Partial Public Class MainForm
     Private Sub ListPopupMenuSyncDataFrom_Click(sender As Object, e As EventArgs) Handles m_popup_SyncDataFrom.Click
         Dim ip As String = SyncData.GetLanIP()
         If String.IsNullOrWhiteSpace(ip) Then ' 地址错误
-            MessageBox.Show("本机获取局域网内地址错误。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBoxEx.Show("本机获取局域网内地址错误。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return
         End If
 
@@ -89,7 +89,7 @@ Partial Public Class MainForm
         Dim port As Integer
         If String.IsNullOrWhiteSpace(input) Then Return ' 空内容
         While Not Integer.TryParse(input, port) OrElse Not (port >= 1 And port <= 65535) ' 端口错误
-            MessageBox.Show("所输入的端口格式不正确，应为在 [1, 65535] 内的纯数字。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBoxEx.Show("所输入的端口格式不正确，应为在 [1, 65535] 内的纯数字。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
             input = InputBox("请输入本地监听的端口：", "从移动端同步", input)
             If String.IsNullOrWhiteSpace(input) Then Return ' 空内容
         End While
@@ -139,7 +139,7 @@ Partial Public Class MainForm
 
                                 qrCodeForm.Close() ' 不关闭，自动关
                                 If ok IsNot Nothing Then
-                                    MessageBox.Show($"数据接收错误：{vbNewLine}{ok.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                    MessageBoxEx.Show($"数据接收错误：{vbNewLine}{ok.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
                                     Return
                                 End If
 
@@ -151,7 +151,7 @@ Partial Public Class MainForm
                                         Throw New Exception
                                     End If
                                 Catch ex As Exception
-                                    MessageBox.Show("数据格式有问题。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                    MessageBoxEx.Show("数据格式有问题。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error)
                                     Return
                                 End Try
 

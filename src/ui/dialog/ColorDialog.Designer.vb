@@ -31,7 +31,6 @@ Partial Class ColorDialog
         Me.ColumnHeaderView = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ButtonAdd = New System.Windows.Forms.Button()
         Me.ButtonRemove = New System.Windows.Forms.Button()
-        Me.ButtonSave = New System.Windows.Forms.Button()
         Me.ButtonCancel = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
@@ -99,17 +98,6 @@ Partial Class ColorDialog
         Me.ButtonRemove.Text = "删除(&D)"
         Me.ButtonRemove.UseVisualStyleBackColor = True
         '
-        'ButtonSave
-        '
-        Me.ButtonSave.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ButtonSave.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonSave.Location = New System.Drawing.Point(420, 344)
-        Me.ButtonSave.Name = "ButtonSave"
-        Me.ButtonSave.Size = New System.Drawing.Size(75, 25)
-        Me.ButtonSave.TabIndex = 2
-        Me.ButtonSave.Text = "保存(&S)"
-        Me.ButtonSave.UseVisualStyleBackColor = True
-        '
         'ButtonCancel
         '
         Me.ButtonCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -124,13 +112,12 @@ Partial Class ColorDialog
         '
         'ColorDialog
         '
-        Me.AcceptButton = Me.ButtonSave
+        Me.AcceptButton = Me.ButtonCancel
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonCancel
         Me.ClientSize = New System.Drawing.Size(507, 412)
         Me.Controls.Add(Me.ButtonCancel)
-        Me.Controls.Add(Me.ButtonSave)
         Me.Controls.Add(Me.ButtonRemove)
         Me.Controls.Add(Me.ButtonAdd)
         Me.Controls.Add(Me.ColorListView)
@@ -155,7 +142,6 @@ Partial Class ColorDialog
     Friend WithEvents ColumnHeaderHex As System.Windows.Forms.ColumnHeader
     Friend WithEvents ButtonAdd As System.Windows.Forms.Button
     Friend WithEvents ButtonRemove As System.Windows.Forms.Button
-    Friend WithEvents ButtonSave As System.Windows.Forms.Button
     Friend WithEvents ButtonCancel As System.Windows.Forms.Button
     Friend WithEvents ColumnHeaderView As System.Windows.Forms.ColumnHeader
     Friend WithEvents ColumnHeaderRgb As System.Windows.Forms.ColumnHeader

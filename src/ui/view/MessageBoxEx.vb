@@ -1,14 +1,16 @@
 ﻿Public Class MessageBoxEx
-    Public Shared Function Show(text As String,
-                                caption As String,
-                                buttons As MessageBoxButtons,
+    Public Shared Function Show(
+                                Optional text As String = "",
+                                Optional caption As String = "",
+                                Optional buttons As MessageBoxButtons = MessageBoxButtons.OK,
                                 Optional icon As MessageBoxIcon = MessageBoxIcon.None,
-                                Optional defaultButton As MessageBoxDefaultButton = MessageBoxDefaultButton.Button1,
-                                Optional mainForm As Form = Nothing,
-                                Optional buttonTitles() As String = Nothing)
-
-        Dim frm As New MessageForm(buttonTitles, mainForm) With {.Opacity = 0, .WatchForActivate = True}
-        Dim result As DialogResult = MessageBox.Show(frm, text, caption, buttons, icon, defaultButton)
+                                Optional defBtn As MessageBoxDefaultButton = MessageBoxDefaultButton.Button1,
+                                Optional mainFrm As Form = Nothing,
+                                Optional btnTitles() As String = Nothing) As DialogResult
+        Dim frm As New MessageForm(btnTitles, mainFrm)
+        frm.Show()
+        frm.WatchForActivate = true
+        Dim result = MessageBox.Show(frm, text, caption, buttons, icon, defBtn)
         frm.Close()
         Return result
     End Function
@@ -17,18 +19,19 @@
         Inherits Form
 
         Private _handle As IntPtr
-        Private ReadOnly _buttonTitles() As String
-        Private ReadOnly _mainForm As Form
+        Private ReadOnly _buttonTitles() As String = Nothing
+        Private ReadOnly _mainFrm As Form
 
         Public Property WatchForActivate As Boolean
 
-        Public Sub New(buttonTitles() As String, mainForm As Form)
+        Public Sub New(buttonTitles() As String, mainFrm As Form)
             _buttonTitles = buttonTitles
-            _mainForm = mainForm
+            _mainFrm = mainFrm
 
             Me.Text = ""
             Me.StartPosition = FormStartPosition.CenterScreen
             Me.ShowInTaskbar = False
+            Me.Opacity = 0
         End Sub
 
         Protected Overrides Sub OnShown(e As EventArgs)
@@ -37,9 +40,9 @@
         End Sub
 
         Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
-            If _mainForm IsNot Nothing Then
-                NativeMethod.SetForegroundWindow(_mainForm.Handle)
-                _mainForm.Activate()
+            If _mainFrm IsNot Nothing Then
+                NativeMethod.SetForegroundWindow(_mainFrm.Handle)
+                _mainFrm.Activate()
             End If
             MyBase.OnFormClosed(e)
         End Sub

@@ -35,7 +35,7 @@ Public Class MainFormGlobalPresenter
     Public Function RegisterHotKey(handle As IntPtr, key As Keys, id As Integer) As Boolean Implements MainFormContract.IGlobalPresenter.RegisterHotKey
         If Not NativeMethod.RegisterHotKey(
             handle, id, CommonUtil.GetNativeModifiers(CommonUtil.GetModifiersFromKey(key)), CommonUtil.GetKeyCodeFromKey(key)) Then
-            MessageBox.Show("快捷键已被占用，请重新设置", "快捷键", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBoxEx.Show("快捷键已被占用，请重新设置", "快捷键", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return False
         End If
         Return True

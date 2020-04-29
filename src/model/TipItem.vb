@@ -6,12 +6,12 @@ Public Class TipItem
     Public Property Content As String
 
     <JsonProperty("color")>
-    Public Property ColorIndex As Integer
+    Public Property ColorId As Integer ' Ordered
 
     <JsonIgnore>
     Public ReadOnly Property Color As TipColor
         Get
-            Return GlobalModel.Colors.ElementAtOrDefault(ColorIndex)
+            Return GlobalModel.Colors.ElementAtOrDefault(ColorId)
         End Get
     End Property
 
@@ -24,7 +24,7 @@ Public Class TipItem
 
     Public Sub New(content As String, Optional colorIndex As Integer = 0)
         Me.Content = content
-        Me.ColorIndex = colorIndex
+        Me.ColorId = colorIndex
     End Sub
 
     Public Overrides Function ToString() As String

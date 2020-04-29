@@ -39,7 +39,7 @@
     End Sub
 
     Private Sub ListView_DoubleClick(sender As Object, e As EventArgs) Handles ListView.DoubleClick
-        Dim ok = MessageBox.Show($"是否打开以下链接？{vbNewLine}{vbNewLine}{ListView.SelectedItem}", "打开链接", MessageBoxButtons.OKCancel)
+        Dim ok = MessageBoxEx.Show($"是否打开以下链接？{vbNewLine}{vbNewLine}{ListView.SelectedItem}", "打开链接", MessageBoxButtons.OKCancel)
         If ok = VbOk Then
             OpenBrowserCallback.Invoke({CStr(ListView.SelectedItem)})
             Me.Close()

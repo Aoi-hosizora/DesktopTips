@@ -189,10 +189,10 @@ Public Class MainFormTipPresenter
     Public Sub OpenAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean) Implements MainFormContract.ITipPresenter.OpenAllLinks
         Dim links As List(Of String) = getLinks(items)
         If links.Count = 0 Then
-            MessageBox.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBoxEx.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
         Else
             Dim linksString As String = String.Join(vbNewLine, links)
-            Dim ok = MessageBox.Show($"是否打开以下 {links.Count} 个链接：{vbNewLine}{vbNewLine}{linksString}",
+            Dim ok = MessageBoxEx.Show($"是否打开以下 {links.Count} 个链接：{vbNewLine}{vbNewLine}{linksString}",
                 "打开链接", MessageBoxButtons.OKCancel, MessageBoxIcon.Question)
             If ok = vbOK Then
                 OpenInDefaultBrowser(links, inNew)
@@ -203,7 +203,7 @@ Public Class MainFormTipPresenter
     Public Sub ViewAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean) Implements MainFormContract.ITipPresenter.ViewAllLinks
         Dim links As List(Of String) = getLinks(items)
         If links.Count = 0 Then
-            MessageBox.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBoxEx.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
         Else
             LinkDialog.Close()
             LinkDialog.GetLinksCallback = Function() links

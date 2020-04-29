@@ -2,8 +2,6 @@
 
 <JsonObject>
 Public Class TipColor
-    Implements IComparable(Of TipColor)
-
     <JsonProperty("id")>
     Public Property Id As Integer
 
@@ -46,8 +44,4 @@ Public Class TipColor
         Me.Name = name
         Me.Color = color
     End Sub
-
-    Public Function CompareTo(other As TipColor) As Integer Implements IComparable(Of TipColor).CompareTo
-        Return Me.Id < other.Id
-    End Function
 End Class

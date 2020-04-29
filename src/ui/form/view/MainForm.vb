@@ -47,7 +47,7 @@ Public Class MainForm
     End Sub
 
     Private Sub ExitApplication(sender As Object, e As EventArgs) Handles m_btn_Exit.Click, m_popup_Exit.Click
-        Dim ok = MessageBox.Show("确定退出 DesktopTips 吗？",
+        Dim ok = MessageBoxEx.Show("确定退出 DesktopTips 吗？",
             "关闭", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
         If ok = vbYes Then
             Me.Close()
@@ -559,7 +559,7 @@ Public Class MainForm
     End Sub
 
     Private Sub On_BtnSavePosition_Click(sender As Object, e As EventArgs) Handles m_popup_SavePosition.Click
-        Dim ok = MessageBox.Show("确定保存当前位置，注意该操作会覆盖之前保存的窗口位置。",
+        Dim ok = MessageBoxEx.Show("确定保存当前位置，注意该操作会覆盖之前保存的窗口位置。",
             "保存位置", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
         If ok = vbOK Then
             m_popup_LoadPosition.Enabled = True

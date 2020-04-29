@@ -6,16 +6,17 @@ Public Class TempForm
 #Region "加载设置 加载列表内容和界面 失去焦点 启动退出 系统事件"
 
     Private Sub LoadSetting() ' On_Form_Load 用
+        MsgBox(My.Settings.ListCount)
         Me.Top = My.Settings.Top
         Me.Left = My.Settings.Left
-        Me.Height = My.Settings.Height
         Me.Width = My.Settings.Width
+        Me.Height = m_num_ListCount.Value * 17 + 27
         Me.MaxOpacity = My.Settings.MaxOpacity
         Me.TopMost = My.Settings.TopMost
 
+        m_num_ListCount.Value = My.Settings.ListCount                                                   ' 列表高度
         m_popup_FoldMenu.Checked = My.Settings.IsFold                                                   ' 折叠菜单
         m_popup_LoadPosition.Enabled = Not (My.Settings.SaveLeft = - 1 Or My.Settings.SaveTop = - 1)    ' 恢复位置
-        m_num_ListCount.Value = (Me.Height - 27) \ 17                                                   ' 列表高度
         m_popup_TopMost.Checked = My.Settings.TopMost                                                   ' 窗口置顶
         _globalPresenter.RegisterHotKey(Handle, My.Settings.HotKey, HOTKEY_ID)                          ' 注册热键
         foldMenu(My.Settings.IsFold)                                                                    ' 折叠菜单
@@ -61,7 +62,7 @@ Public Class TempForm
         My.Settings.Top = Me.Top
         My.Settings.Left = Me.Left
         My.Settings.Width = Me.Width
-        My.Settings.Height = Me.Height
+        My.Settings.ListCount = m_num_ListCount.Value
         My.Settings.Save()
         _globalPresenter.UnregisterHotKey(Handle, HOTKEY_ID)
     End Sub
@@ -92,7 +93,7 @@ Public Class TempForm
 #Region "标签: 增删改 移动 复制粘贴 全选"
 
     Private Sub InsertTip(sender As Object, e As EventArgs) Handles m_btn_InsertTip.Click, m_popup_InsertTip.Click
-        If _listPresenter.Insert() Then
+        If _tipPresenter.Insert() Then
             m_TipListBox.Update()
             m_TipListBox.SetSelectOnly(m_TipListBox.ItemCount - 1, True)
         End If
@@ -100,7 +101,7 @@ Public Class TempForm
 
     Private Sub DeleteTip(sender As Object, e As EventArgs) Handles m_btn_RemoveTips.Click, m_popup_RemoveTips.Click
         Dim index = m_TipListBox.SelectedIndex
-        If m_TipListBox.SelectedItems IsNot Nothing AndAlso _listPresenter.Delete(m_TipListBox.SelectedItems) Then
+        If m_TipListBox.SelectedItems IsNot Nothing AndAlso _tipPresenter.Delete(m_TipListBox.SelectedItems) Then
             m_TipListBox.Update()
             m_TipListBox.SetSelectOnly(index)
         End If
@@ -108,28 +109,28 @@ Public Class TempForm
 
     Private Sub UpdateTip(sender As Object, e As EventArgs) Handles m_TipListBox.DoubleClick, m_popup_UpdateTip.Click
         Dim index = m_TipListBox.SelectedIndex
-        If m_TipListBox.SelectedCount = 1 AndAlso _listPresenter.Update(m_TipListBox.SelectedItem) Then
+        If m_TipListBox.SelectedCount = 1 AndAlso _tipPresenter.Update(m_TipListBox.SelectedItem) Then
             m_TipListBox.Update()
             m_TipListBox.SetSelectOnly(index)
         End If
     End Sub
 
     Private Sub MoveTipTop(sender As Object, e As EventArgs) Handles m_popup_MoveTopTop.Click
-        If _listPresenter.MoveTop(m_TipListBox.SelectedItem) Then
+        If _tipPresenter.MoveTop(m_TipListBox.SelectedItem) Then
             m_TipListBox.Update()
             m_TipListBox.SetSelectOnly(0)
         End If
     End Sub
 
     Private Sub MoveTipBottom(sender As Object, e As EventArgs) Handles m_popup_MoveTipBottom.Click
-        If _listPresenter.MoveBottom(m_TipListBox.SelectedItem) Then
+        If _tipPresenter.MoveBottom(m_TipListBox.SelectedItem) Then
             m_TipListBox.Update()
             m_TipListBox.SetSelectOnly(m_TipListBox.ItemCount - 1)
         End If
     End Sub
 
     Private Sub MoveTipUp(sender As Object, e As EventArgs) Handles m_popup_MoveTipUp.Click, m_btn_MoveTipUp.Click
-        If m_TipListBox.SelectedIndex >= 1 AndAlso _listPresenter.MoveUp(m_TipListBox.SelectedItem) Then
+        If m_TipListBox.SelectedIndex >= 1 AndAlso _tipPresenter.MoveUp(m_TipListBox.SelectedItem) Then
             m_TipListBox.Update()
             m_TipListBox.SetSelectOnly(m_TipListBox.SelectedIndex - 1)
             If sender.Tag = "True" Then
@@ -139,7 +140,7 @@ Public Class TempForm
     End Sub
 
     Private Sub MoveDownTip(sender As Object, e As EventArgs) Handles m_popup_MoveTipDown.Click, m_btn_MoveTipDown.Click
-        If m_TipListBox.SelectedIndex <= m_TipListBox.ItemCount - 2 AndAlso _listPresenter.MoveDown(m_TipListBox.SelectedItem) Then
+        If m_TipListBox.SelectedIndex <= m_TipListBox.ItemCount - 2 AndAlso _tipPresenter.MoveDown(m_TipListBox.SelectedItem) Then
             m_TipListBox.Update()
             m_TipListBox.SetSelectOnly(m_TipListBox.SelectedIndex + 1)
             If sender.Tag = "True" Then
@@ -149,11 +150,11 @@ Public Class TempForm
     End Sub
 
     Private Sub CopyTip(sender As Object, e As EventArgs) Handles m_popup_CopyTips.Click
-        _listPresenter.Copy(m_TipListBox.SelectedItems)
+        _tipPresenter.Copy(m_TipListBox.SelectedItems)
     End Sub
 
     Private Sub PasteAppendToTip(sender As Object, e As EventArgs) Handles m_popup_PasteAppendToTip.Click
-        If m_TipListBox.SelectedCount = 1 AndAlso _listPresenter.Paste(m_TipListBox.SelectedItem) Then
+        If m_TipListBox.SelectedCount = 1 AndAlso _tipPresenter.Paste(m_TipListBox.SelectedItem) Then
             m_TipListBox.Update()
         End If
     End Sub
@@ -169,7 +170,7 @@ Public Class TempForm
 #Region "标签: 查找 打开浏览文件 浏览器"
 
     Private Sub FindTips(sender As Object, e As EventArgs) Handles m_popup_FileTips.Click
-        _listPresenter.Search()
+        _tipPresenter.Search()
     End Sub
 
     Private Sub OpenFileDir(sender As Object, e As EventArgs) Handles m_popup_OpenDir.Click
@@ -177,15 +178,15 @@ Public Class TempForm
     End Sub
 
     Private Sub ViewCurrentTipList(sender As Object, e As EventArgs) Handles m_popup_ViewTabList.Click
-        _listPresenter.ViewCurrentList(m_TipListBox.Items)
+        _tipPresenter.ViewCurrentList(m_TipListBox.Items)
     End Sub
 
     Private Sub OpenTipAllLinks(sender As Object, e As EventArgs) Handles m_popup_OpenAllLinksInTips.Click
-        _listPresenter.OpenAllLinks(m_TipListBox.SelectedItems)
+        _tipPresenter.OpenAllLinks(m_TipListBox.SelectedItems)
     End Sub
 
     Private Sub ViewTipAllLinks(sender As Object, e As EventArgs) Handles m_popup_ViewAllLinksInTips.Click
-        _listPresenter.ViewAllLinks(m_TipListBox.SelectedItems)
+        _tipPresenter.ViewAllLinks(m_TipListBox.SelectedItems)
     End Sub
 
 #End Region
@@ -298,7 +299,7 @@ Public Class TempForm
         m_popup_PasteAppendToTip.Enabled = isSingle
 
         ' 浏览器
-        m_menu_BrowserSubMenu.Enabled = _listPresenter.GetLinks(m_TipListBox.SelectedItems).Count >= 1
+        m_menu_BrowserSubMenu.Enabled = _tipPresenter.GetLinks(m_TipListBox.SelectedItems).Count >= 1
 
         ' 移动
         m_menu_MoveTipsSubMenu.Enabled = isNotNull
@@ -365,18 +366,13 @@ Public Class TempForm
     End Sub
 
     Private Sub On_NumericListCount_ValueChanged(sender As Object, e As EventArgs) Handles m_num_ListCount.ValueChanged
-        Dim y As Integer
-        If Me.Height < m_num_ListCount.Value * m_TipListBox.ItemHeight + 27 Then
-            y = 17
-        ElseIf Me.Height > m_num_ListCount.Value * m_TipListBox.ItemHeight + 27 Then
-            y = - 17
-        End If
-        Me.Height = m_num_ListCount.Value * m_TipListBox.ItemHeight + 27
-        My.Settings.Height = Me.Height
-        My.Settings.Save()
+        Dim targetHeight As Integer = m_num_ListCount.Value * 17 + 27
+        If Me.Height = targetHeight Then Return
+        Dim direction As Integer = targetHeight - Me.Height
+        Me.Height = targetHeight
 
         Dim dx As Integer = Cursor.Position.X * UInt16.MaxValue / My.Computer.Screen.Bounds.Width
-        Dim dy As Integer = (Cursor.Position.Y + y) * UInt16.MaxValue / My.Computer.Screen.Bounds.Height
+        Dim dy As Integer = (Cursor.Position.Y + direction) * UInt16.MaxValue / My.Computer.Screen.Bounds.Height
         Const flag = NativeMethod.MouseEvent.MOUSEEVENTF_MOVE Or NativeMethod.MouseEvent.MOUSEEVENTF_ABSOLUTE
         NativeMethod.mouse_event(flag, dx, dy, 0, 0)
     End Sub

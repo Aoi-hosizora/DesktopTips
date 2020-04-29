@@ -80,13 +80,13 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("163")>  _
-        Public Property Height() As Integer
+         Global.System.Configuration.DefaultSettingValueAttribute("10")>  _
+        Public Property ListCount() As Integer
             Get
-                Return CType(Me("Height"),Integer)
+                Return CType(Me("ListCount"),Integer)
             End Get
             Set
-                Me("Height") = value
+                Me("ListCount") = value
             End Set
         End Property
         

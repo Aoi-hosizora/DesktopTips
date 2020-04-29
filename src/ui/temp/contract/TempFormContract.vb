@@ -13,7 +13,7 @@
         Sub UnregisterHotKey(handle As IntPtr, id As Integer)                               ' 注销快捷键
     End Interface
 
-    Public Interface IListPresenter
+    Public Interface ITipPresenter
         Function Insert() As Boolean                                            ' 插入
         Function Delete(items As IEnumerable(Of TipItem)) As Boolean            ' 删除
         Function Update(item As TipItem) As Boolean                             ' 更新
@@ -30,7 +30,7 @@
         Sub ViewAllLinks(items As IEnumerable(Of TipItem))                      ' 浏览所有链接
     End Interface
 
-    Public Interface IGroupPresenter
+    Public Interface ITabPresenter
         Function Insert() As Boolean                                                                ' 插入
         Function Delete(tab As Tab) As Boolean                                                      ' 删除
         Function Update(tab As Tab) As Boolean                                                      ' 修改

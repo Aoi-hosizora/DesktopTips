@@ -8,8 +8,8 @@
     <Setting Name="Left" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">20</Value>
     </Setting>
-    <Setting Name="Height" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">163</Value>
+    <Setting Name="ListCount" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
     </Setting>
     <Setting Name="Width" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">200</Value>

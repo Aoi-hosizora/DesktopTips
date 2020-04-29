@@ -2,8 +2,8 @@
     Implements TempFormContract.IView
 
     Private ReadOnly _globalPresenter As TempFormContract.IGlobalPresenter = New TempFormGlobalPresenter(Me)
-    Private ReadOnly _listPresenter As TempFormContract.IListPresenter = New TempFormListPresenter(Me)
-    Private ReadOnly _groupPresenter As TempFormContract.IGroupPresenter = New TempFormGroupPresenter(Me)
+    Private ReadOnly _tipPresenter As TempFormContract.ITipPresenter = New TempFormTipPresenter(Me)
+    Private ReadOnly _tabPresenter As TempFormContract.ITabPresenter = New TempFormTabPresenter(Me)
 
     Public Function GetMe() As TempForm Implements TempFormContract.IView.GetMe
         Return Me

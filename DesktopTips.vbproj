@@ -166,8 +166,8 @@
     </Compile>
     <Compile Include="src\ui\temp\contract\TempFormContract.vb" />
     <Compile Include="src\ui\temp\presenter\TempFormGlobalPresenter.vb" />
-    <Compile Include="src\ui\temp\presenter\TempFormGroupPresenter.vb" />
-    <Compile Include="src\ui\temp\presenter\TempFormListPresenter.vb" />
+    <Compile Include="src\ui\temp\presenter\TempFormTabPresenter.vb" />
+    <Compile Include="src\ui\temp\presenter\TempFormTipPresenter.vb" />
     <Compile Include="src\ui\temp\view\TempForm.Designer.vb">
       <DependentUpon>TempForm.vb</DependentUpon>
     </Compile>
@@ -266,7 +266,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\ui\view\TabView.vb" />
+    <Compile Include="src\ui\view\TabView.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <None Include="readme.md" />
     <None Include="Resources\HighLightColor.png" />
     <None Include="Resources\Find.png" />

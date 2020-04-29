@@ -181,11 +181,17 @@ Public Class TempForm
     End Sub
 
     Private Sub OpenTipAllLinks(sender As Object, e As EventArgs) Handles m_popup_OpenAllLinksInTips.Click
-        _tipPresenter.OpenAllLinks(m_TipListBox.SelectedItems)
+        _tipPresenter.OpenAllLinks(m_TipListBox.SelectedItems, My.Settings.OpenInNewBrowser)
     End Sub
 
     Private Sub ViewTipAllLinks(sender As Object, e As EventArgs) Handles m_popup_ViewAllLinksInTips.Click
-        _tipPresenter.ViewAllLinks(m_TipListBox.SelectedItems)
+        _tipPresenter.ViewAllLinks(m_TipListBox.SelectedItems, My.Settings.OpenInNewBrowser)
+    End Sub
+
+    Private Sub On_BtnOpenInNewBrowser_Click(sender As Object, e As EventArgs) Handles m_popup_OpenInNewBrowser.Click
+        m_popup_OpenInNewBrowser.Checked = Not m_popup_OpenInNewBrowser.Checked
+        My.Settings.OpenInNewBrowser = m_popup_OpenInNewBrowser.Checked
+        My.Settings.Save()
     End Sub
 
 #End Region
@@ -287,15 +293,9 @@ Public Class TempForm
 
     Private Sub On_BtnMoveTips_Click(sender As DD.ButtonItem, e As EventArgs) Handles m_menu_MoveTipsSubMenu.Click
         SetupMoveToButtons(all := False)
-        If m_menu_MoveTipsSubMenu.SubItems.Count <> 0 AndAlso Not DD.BaseItem.IsOnPopup(m_menu_ListPopupMenu) Then
-            sender.Popup(Me.Left + m_btn_OpenListPopup.Left, Me.Top + m_btn_OpenListPopup.Top + m_btn_OpenListPopup.Height - 1)
-        End If
-    End Sub
-
-    Private Sub On_BtnMoveToTab_Click(sender As DD.ButtonItem, e As EventArgs) Handles m_menu_MoveToTabSubMenu.Click
-        SetupMoveToButtons(all := True)
-        If m_menu_MoveToTabSubMenu.SubItems.Count <> 0 AndAlso Not DD.BaseItem.IsOnPopup(m_menu_TabPopupMenu) Then
-            sender.Popup(Me.Left + m_btn_OpenListPopup.Left, Me.Top + m_btn_OpenListPopup.Top + m_btn_OpenListPopup.Height - 1)
+        If m_menu_MoveTipsSubMenu.SubItems.Count <> 0 AndAlso
+           Not DD.BaseItem.IsOnPopup(m_menu_ListPopupMenu) AndAlso Not DD.BaseItem.IsOnPopup(m_menu_MoveTipsSubMenu) Then
+            m_menu_MoveTipsSubMenu.Popup(Me.Left + m_btn_OpenListPopup.Left, Me.Top + m_btn_OpenListPopup.Top + m_btn_OpenListPopup.Height - 1)
         End If
     End Sub
 

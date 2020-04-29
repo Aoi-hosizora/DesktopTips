@@ -53,11 +53,11 @@ Partial Class TempForm
         Me.m_menu_MoveTipsSubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_OtherLabel = New DevComponents.DotNetBar.LabelItem()
         Me.m_menu_FileSubMenu = New DevComponents.DotNetBar.ButtonItem()
+        Me.m_popup_ViewTabList = New DevComponents.DotNetBar.ButtonItem()
+        Me.m_popup_OpenDir = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_BrowserSubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_OpenAllLinksInTips = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_ViewAllLinksInTips = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_popup_OpenDir = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_popup_ViewTabList = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_SyncDataSubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_SyncDataTo = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_SyncDataFrom = New DevComponents.DotNetBar.ButtonItem()
@@ -79,6 +79,7 @@ Partial Class TempForm
         Me.m_btn_MoveTipUp = New DevComponents.DotNetBar.ButtonX()
         Me.m_btn_MoveTipDown = New DevComponents.DotNetBar.ButtonX()
         Me.m_btn_Resize = New DevComponents.DotNetBar.ButtonX()
+        Me.m_popup_OpenInNewBrowser = New DevComponents.DotNetBar.ButtonItem()
         CType(Me.m_num_ListCount, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.m_menu_ContextMenuBar, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.m_TabView, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -126,7 +127,6 @@ Partial Class TempForm
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.m_TipListBox.BackColor = System.Drawing.Color.Snow
         Me.m_menu_ContextMenuBar.SetContextMenuEx(Me.m_TipListBox, Me.m_menu_ListPopupMenu)
-        Me.m_TipListBox.DisplayMember = "Content"
         Me.m_TipListBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
         Me.m_TipListBox.FormattingEnabled = True
         Me.m_TipListBox.ItemHeight = 17
@@ -387,10 +387,20 @@ Partial Class TempForm
         Me.m_menu_FileSubMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_ViewTabList, Me.m_popup_OpenDir})
         Me.m_menu_FileSubMenu.Text = "文件浏览(&F)"
         '
+        'm_popup_ViewTabList
+        '
+        Me.m_popup_ViewTabList.Name = "m_popup_ViewTabList"
+        Me.m_popup_ViewTabList.Text = "浏览当前列表内容(&V)"
+        '
+        'm_popup_OpenDir
+        '
+        Me.m_popup_OpenDir.Name = "m_popup_OpenDir"
+        Me.m_popup_OpenDir.Text = "打开文件所在位置(&O)"
+        '
         'm_menu_BrowserSubMenu
         '
         Me.m_menu_BrowserSubMenu.Name = "m_menu_BrowserSubMenu"
-        Me.m_menu_BrowserSubMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_OpenAllLinksInTips, Me.m_popup_ViewAllLinksInTips})
+        Me.m_menu_BrowserSubMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_OpenAllLinksInTips, Me.m_popup_ViewAllLinksInTips, Me.m_popup_OpenInNewBrowser})
         Me.m_menu_BrowserSubMenu.Text = "浏览器(&B)"
         '
         'm_popup_OpenAllLinksInTips
@@ -402,16 +412,6 @@ Partial Class TempForm
         '
         Me.m_popup_ViewAllLinksInTips.Name = "m_popup_ViewAllLinksInTips"
         Me.m_popup_ViewAllLinksInTips.Text = "打开部分链接(&P)"
-        '
-        'm_popup_OpenDir
-        '
-        Me.m_popup_OpenDir.Name = "m_popup_OpenDir"
-        Me.m_popup_OpenDir.Text = "打开文件所在位置(&O)"
-        '
-        'm_popup_ViewTabList
-        '
-        Me.m_popup_ViewTabList.Name = "m_popup_ViewTabList"
-        Me.m_popup_ViewTabList.Text = "浏览当前列表内容(&V)"
         '
         'm_menu_SyncDataSubMenu
         '
@@ -534,15 +534,6 @@ Partial Class TempForm
         '
         '
         '
-        '
-        '
-        '
-        Me.m_TabView.ControlBox.CloseBox.Name = ""
-        '
-        '
-        '
-        Me.m_TabView.ControlBox.MenuBox.Name = ""
-        Me.m_TabView.ControlBox.Name = ""
         Me.m_TabView.ControlBox.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_TabView.ControlBox.MenuBox, Me.m_TabView.ControlBox.CloseBox})
         Me.m_TabView.DataSource = Nothing
         Me.m_TabView.HorizontalText = False
@@ -550,6 +541,7 @@ Partial Class TempForm
         Me.m_TabView.Name = "m_TabView"
         Me.m_TabView.ReorderTabsEnabled = True
         Me.m_TabView.RotateVerticalText = True
+        Me.m_TabView.SelectedTab = Nothing
         Me.m_TabView.SelectedTabFont = New System.Drawing.Font("Microsoft YaHei UI Light", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.m_TabView.SelectedTabIndex = -1
         Me.m_TabView.Size = New System.Drawing.Size(10, 239)
@@ -598,7 +590,6 @@ Partial Class TempForm
         Me.m_btn_Resize.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.m_btn_Resize.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.m_btn_Resize.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
-        Me.m_btn_Resize.Cursor = System.Windows.Forms.Cursors.SizeWE
         Me.m_btn_Resize.Location = New System.Drawing.Point(316, 239)
         Me.m_btn_Resize.Name = "m_btn_Resize"
         Me.m_btn_Resize.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
@@ -606,6 +597,13 @@ Partial Class TempForm
         Me.m_btn_Resize.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
         Me.m_btn_Resize.TabIndex = 6
         Me.m_btn_Resize.Text = "::"
+        '
+        'm_popup_OpenInNewBrowser
+        '
+        Me.m_popup_OpenInNewBrowser.BeginGroup = True
+        Me.m_popup_OpenInNewBrowser.Checked = True
+        Me.m_popup_OpenInNewBrowser.Name = "m_popup_OpenInNewBrowser"
+        Me.m_popup_OpenInNewBrowser.Text = "在新窗口打开(&N)"
         '
         'TempForm
         '
@@ -698,5 +696,6 @@ Partial Class TempForm
     Friend WithEvents m_popup_ViewAllLinksInTips As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_SetupHotkey As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_menu_FileSubMenu As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents m_popup_OpenInNewBrowser As DevComponents.DotNetBar.ButtonItem
 
 End Class

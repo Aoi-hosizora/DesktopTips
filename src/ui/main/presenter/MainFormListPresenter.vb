@@ -125,7 +125,7 @@ Public Class MainFormListPresenter
                 "是否打开以下 " & links.Count & " 个链接：" + Chr(10) + Chr(10) + String.Join(Chr(10), links),
                 "打开链接", MessageBoxButtons.OKCancel, MessageBoxIcon.Question)
             If ok = vbOK Then
-                CommonUtil.OpenWebsInDefaultBrowser(links)
+                ' CommonUtil.OpenWebsInDefaultBrowser(links)
             End If
         End If
     End Sub

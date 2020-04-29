@@ -158,7 +158,7 @@ Public Class TempFormTipPresenter
     Public Function GetLinks(items As IEnumerable(Of TipItem)) As List(Of String) Implements TempFormContract.ITipPresenter.GetLinks
         Dim res As New List(Of String)
         For Each item As TipItem In items
-            For Each link As String In item.Content.Split(New Char() {" ", ",", ".", ";"}, StringSplitOptions.RemoveEmptyEntries)
+            For Each link As String In item.Content.Split(New Char() {" "}, StringSplitOptions.RemoveEmptyEntries)
                 If link.StartsWith("http://") Or link.StartsWith("https://") Then
                     res.Add(link)
                 End If
@@ -167,7 +167,26 @@ Public Class TempFormTipPresenter
         Return res
     End Function
 
-    Public Sub OpenAllLinks(items As IEnumerable(Of TipItem)) Implements TempFormContract.ITipPresenter.OpenAllLinks
+    Public Shared Sub OpenInDefaultBrowser(links As IEnumerable(Of String), inNew As Boolean)
+        If inNew Then
+            Dim browser As String = CommonUtil.GetDefaultBrowserPath().ToLower()
+            If browser.Contains("chrome") Then
+                Dim p As New Process()
+                With p.StartInfo
+                    .FileName = browser
+                    .Arguments = "--new-window " & String.Join(" ", links)
+                    .WindowStyle = ProcessWindowStyle.Minimized
+                End With
+                p.Start()
+                Return
+            End If
+        End If
+        For Each link As String In links
+            Process.Start(link)
+        Next
+    End Sub
+
+    Public Sub OpenAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean) Implements TempFormContract.ITipPresenter.OpenAllLinks
         Dim links As List(Of String) = getLinks(items)
         If links.Count = 0 Then
             MessageBox.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -176,20 +195,21 @@ Public Class TempFormTipPresenter
             Dim ok = MessageBox.Show($"是否打开以下 {links.Count} 个链接：{vbNewLine}{vbNewLine}{linksString}",
                 "打开链接", MessageBoxButtons.OKCancel, MessageBoxIcon.Question)
             If ok = vbOK Then
-                CommonUtil.OpenWebsInDefaultBrowser(links)
+                OpenInDefaultBrowser(links, inNew)
             End If
         End If
     End Sub
 
-    Public Sub ViewAllLinks(items As IEnumerable(Of TipItem)) Implements TempFormContract.ITipPresenter.ViewAllLinks
+    Public Sub ViewAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean) Implements TempFormContract.ITipPresenter.ViewAllLinks
         Dim links As List(Of String) = getLinks(items)
         If links.Count = 0 Then
             MessageBox.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
         Else
-            LinkDialog.ListView.Items.Clear()
-            For Each link As String In links
-                LinkDialog.ListView.Items.Add(link)
-            Next
+            LinkDialog.Close()
+            LinkDialog.GetLinksCallback = Function() links
+            LinkDialog.OpenBrowserCallback = Sub(l As IEnumerable(Of String))
+                OpenInDefaultBrowser(l, inNew)
+            End Sub
             LinkDialog.Show(_view.GetMe())
         End If
     End Sub

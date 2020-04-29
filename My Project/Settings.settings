@@ -38,5 +38,8 @@
     <Setting Name="HotKey" Type="System.Windows.Forms.Keys" Scope="User">
       <Value Profile="(Default)">F4</Value>
     </Setting>
+    <Setting Name="OpenInNewBrowser" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

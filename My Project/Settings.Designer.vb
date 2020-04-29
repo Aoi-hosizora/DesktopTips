@@ -197,6 +197,18 @@ Namespace My
                 Me("HotKey") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property OpenInNewBrowser() As Boolean
+            Get
+                Return CType(Me("OpenInNewBrowser"),Boolean)
+            End Get
+            Set
+                Me("OpenInNewBrowser") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

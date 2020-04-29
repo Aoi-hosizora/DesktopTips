@@ -52,7 +52,7 @@ Partial Class SearchDialog
         Me.LabelResult.Name = "LabelResult"
         Me.LabelResult.Size = New System.Drawing.Size(370, 17)
         Me.LabelResult.TabIndex = 1
-        Me.LabelResult.Text = """xxx"" 的搜索结果：(共找到 0 项)"
+        Me.LabelResult.Text = "共找到 0 个搜索结果: ""xxx"""
         '
         'ButtonSearch
         '

@@ -3,7 +3,7 @@
 
     Public Delegate Sub TurnToFunc(tabIndex As Integer, tipIndex As Integer)
 
-    Public Delegate Function SearchFunc() As List(Of Tuple(Of Integer, Integer)) ' TabIndex, TipIndex
+    Public Delegate Function SearchFunc() As IEnumerable(Of Tuple(Of Integer, Integer)) ' TabIndex, TipIndex
 
     Public ReSearchCallback As ReSearchFunc
     Public TurnToCallback As TurnToFunc
@@ -48,6 +48,12 @@
                 Dim result As Tuple(Of Integer, Integer) = _searchResult.ElementAt(ListView.SelectedIndex)
                 TurnToCallback.Invoke(result.Item1, result.Item2)
             End If
+        End If
+    End Sub
+
+    Private Sub ListView_MouseDown(sender As Object, e As MouseEventArgs) Handles ListView.MouseDown
+        If ListView.IndexFromPoint(e.X, e.Y) = - 1 Then
+            ListView.ClearSelected()
         End If
     End Sub
 End Class

@@ -15,7 +15,7 @@
     End Interface
 
     Public Interface ITipPresenter
-        Function Insert() As Boolean                                            ' 插入
+        Function Insert() As Boolean                                                ' 插入
         Function Delete(items As IEnumerable(Of TipItem)) As Boolean            ' 删除
         Function Update(item As TipItem) As Boolean                             ' 更新
         Sub Copy(items As IEnumerable(Of TipItem))                              ' 复制
@@ -27,8 +27,8 @@
         Sub Search()                                                            ' 搜索
         Sub ViewCurrentList(items As IEnumerable(Of TipItem))                   ' 浏览当前列表
         Function GetLinks(items As IEnumerable(Of TipItem)) As List(Of String)  ' 打开所有链接
-        Sub OpenAllLinks(items As IEnumerable(Of TipItem))                      ' 打开所有链接
-        Sub ViewAllLinks(items As IEnumerable(Of TipItem))                      ' 浏览所有链接
+        Sub OpenAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean)    ' 打开所有链接
+        Sub ViewAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean)    ' 浏览所有链接
     End Interface
 
     Public Interface ITabPresenter

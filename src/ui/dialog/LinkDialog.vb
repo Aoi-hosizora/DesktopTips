@@ -1,10 +1,36 @@
 ﻿Public Class LinkDialog
+    Public Delegate Function GetLinksFunc() As IEnumerable(Of String)
+
+    Public Delegate Sub OpenBrowserFunc(links As IEnumerable(Of String))
+
+    Public GetLinksCallback As GetLinksFunc
+    Public OpenBrowserCallback As OpenBrowserFunc
+
+    Private Sub Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        If GetLinksCallback Is Nothing Then
+            Me.Close()
+            Return
+        End If
+        ListView.Items.Clear()
+        For Each link As String In GetLinksCallback.Invoke()
+            ListView.Items.Add(link)
+        Next
+        ListView_SelectedValueChanged(sender, e)
+    End Sub
+
+    Private Sub ListView_SelectedValueChanged(sender As Object, e As EventArgs) Handles MyBase.Load, ListView.SelectedValueChanged
+        Me.LabelTitle.Text = $"所选内容包含了 {ListView.Items.Count} 个链接 (选中 {ListView.SelectedItems.Count} 项)"
+        ButtonOpen.Enabled = ListView.SelectedItems.Count <> 0
+    End Sub
+
     Private Sub ButtonOpen_Click(sender As Object, e As EventArgs) Handles ButtonOpen.Click
         Dim links As New List(Of String)
         For Each item In ListView.SelectedItems
             links.Add(CStr(item))
         Next
-        CommonUtil.OpenWebsInDefaultBrowser(links)
+        If OpenBrowserCallback IsNot Nothing Then
+            OpenBrowserCallback.Invoke(links)
+        End If
         Me.Close()
     End Sub
 
@@ -13,13 +39,10 @@
     End Sub
 
     Private Sub ListView_DoubleClick(sender As Object, e As EventArgs) Handles ListView.DoubleClick
-        If ListView.SelectedItems.Count() = 1 Then
-            Me.TopMost = False
-            Dim newVal = InputBox($"修改链接 {ListView.SelectedItems(0).ToString()} 为：", "修改链接", ListView.SelectedItems(0).ToString()).Trim()
-            Me.TopMost = True
-            If Not String.IsNullOrWhiteSpace(newVal) Then
-                ListView.Items(ListView.Items.IndexOf(ListView.SelectedItems(0))) = newVal
-            End If
+        Dim ok = MessageBox.Show($"是否打开以下链接？{vbNewLine}{vbNewLine}{ListView.SelectedItem}", "打开链接", MessageBoxButtons.OKCancel)
+        If ok = VbOk Then
+            OpenBrowserCallback.Invoke({CStr(ListView.SelectedItem)})
+            Me.Close()
         End If
     End Sub
 
@@ -27,12 +50,5 @@
         If ListView.IndexFromPoint(e.X, e.Y) = - 1 Then
             ListView.ClearSelected()
         End If
-    End Sub
-
-    Private Sub LoadListAndTabsViewLabel(sender As Object, e As EventArgs) Handles MyBase.Load, ListView.SelectedValueChanged
-        Dim count% = ListView.Items.Count()
-        Dim selCount% = ListView.SelectedItems.Count()
-        Me.LabelTitle.Text = $"所选内容包含了 {count} 个链接 (选中 {selCount} 项)"
-        ButtonOpen.Enabled = selCount <> 0
     End Sub
 End Class

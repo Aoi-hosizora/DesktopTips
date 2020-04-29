@@ -44,7 +44,7 @@ Public Class CommonUtil
     ''' <summary>
     ''' 获取默认浏览器
     ''' </summary>
-    Private Shared Function GetDefaultWebBrowserFilePath() As String
+    Public Shared Function GetDefaultBrowserPath() As String
         ' コンピューター\HKEY_CURRENT_USER\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice
         Dim UserChoiceKey As RegistryKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice")
         If UserChoiceKey Is Nothing Then UserChoiceKey = Registry.CurrentUser.OpenSubKey("Software\Microsoft\Windows\Shell\Associations\UrlAssociations\https\UserChoice")
@@ -63,23 +63,4 @@ Public Class CommonUtil
         If OpenWithParam.Count = 0 Then Return ""
         Return OpenWithParam(0)
     End Function
-
-    ''' <summary>
-    ''' 在浏览器 (新窗口 if Chrome) 打开所有页面
-    ''' </summary>
-    ''' <remarks></remarks>
-    Public Shared Sub OpenWebsInDefaultBrowser(links As List(Of String))
-        Dim DefaultBrowserPath$ = GetDefaultWebBrowserFilePath()
-        If DefaultBrowserPath.ToLower().Contains("chrome") Then
-            Dim p As New Process()
-            p.StartInfo.FileName = DefaultBrowserPath
-            p.StartInfo.Arguments = "--new-window " & String.Join(" ", links)
-            p.StartInfo.WindowStyle = ProcessWindowStyle.Minimized
-            p.Start()
-        Else
-            For Each link$ In links
-                Process.Start(link)
-            Next
-        End If
-    End Sub
 End Class

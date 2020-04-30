@@ -42,7 +42,7 @@ Public Class NativeMethod
 
 #Region "全局快捷键"
 
-    Public Const GWL_WNDPROC = (-4)
+    Public Const GWL_WNDPROC = (- 4)
     Public Const WM_HOTKEY = &H312
 
     Public Enum KeyModifiers As UInteger
@@ -66,9 +66,13 @@ Public Class NativeMethod
 
     Public Const GW_CHILD As Integer = 5
     Public Const GW_HWNDNEXT As Integer = 2
+    Public Const WS_EX_APPWINDOW = 16384
+    Public Const WS_EX_TOOLWINDOW = 128
+    Public Const WM_KEYDOWN = 256
+    Public Const WM_SYSKEYDOWN = 260
 
     <DllImport("user32.dll")>
-    Public Shared Function SetForegroundWindow(ByVal hWnd As IntPtr) As <MarshalAs(UnmanagedType.Bool)> Boolean
+    Public Shared Function SetForegroundWindow(hWnd As IntPtr) As <MarshalAs(UnmanagedType.Bool)> Boolean
     End Function
 
     <DllImport("user32.dll")>
@@ -94,5 +98,4 @@ Public Class NativeMethod
     End Function
 
 #End Region
-
 End Class

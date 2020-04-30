@@ -1,21 +1,36 @@
 ﻿Imports Newtonsoft.Json
 
-<JsonObject()>
+<Serializable, JsonObject>
 Public Class TipItem
+    <JsonProperty("content")>
+    Public Property Content As String
 
-    <JsonProperty(PropertyName:="Content")>
-    Public Property TipContent As String
-    Public Property IsHighLight As Boolean = False
-    <JsonIgnore()>
-    Public Property HighLightColor As TipColor
+    <JsonProperty("color")>
+    Public Property ColorId As Integer ' Ordered
 
-    Public Sub New(content As String, Optional highLight As Boolean = False, Optional color As TipColor = Nothing)
-        Me.TipContent = content
-        Me.IsHighLight = highLight
-        Me.HighLightColor = color
+    <JsonIgnore>
+    Public Property Color As TipColor
+        Get
+            Return GlobalModel.Colors.ElementAtOrDefault(ColorId)
+        End Get
+        Set
+            ColorId = value.Id
+        End Set
+    End Property
+
+    <JsonIgnore>
+    Public ReadOnly Property IsHighLight As Boolean
+        Get
+            Return Color IsNot Nothing
+        End Get
+    End Property
+
+    Public Sub New(content As String, Optional colorId As Integer = - 1)
+        Me.Content = content
+        Me.ColorId = colorId
     End Sub
 
     Public Overrides Function ToString() As String
-        Return TipContent
+        Return Content
     End Function
 End Class

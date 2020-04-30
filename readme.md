@@ -5,8 +5,9 @@
 
 ### Environment
 
-+ `MSVB` 2010
++ `VB.NET` 14.0
 + `.NET Framework` 4.0
++ (`VS` 2010 + `Rider` 2019.2.3)
 
 ### Dependencies
 

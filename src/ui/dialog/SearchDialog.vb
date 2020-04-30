@@ -1,48 +1,50 @@
-﻿Imports SU = DesktopTips.GlobalModel
-
-Public Class SearchDialog
+﻿Public Class SearchDialog
+    Public SearchFunc As Action
+    Public HighlightFunc As Action(Of Integer, Integer) ' TabIndex, TipIndex
+    Public GetFunc As Func(Of IEnumerable(Of Tuple(Of Integer, Integer))) ' TabIndex, TipIndex
 
     Public Property SearchText As String
-    Public Property SearchResult As List(Of Tuple(Of Integer, Integer))
+    Private _searchResult As New List(Of Tuple(Of Integer, Integer))
 
-    Private Sub SearchForm_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
-        Dim ShowLabel As String = """{0}"" 的搜索结果：(共找到 " & _SearchResult.Count & " 项)"
-        Dim SearchTextLong As String = SearchText
+    Private Sub SearchForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        If GetFunc Is Nothing Then
+            Me.Close()
+            Return
+        End If
+        _searchResult = GetFunc.Invoke()
 
-        Dim graphics As Graphics = CreateGraphics()
-        Dim sizeF As SizeF = graphics.MeasureString(String.Format(ShowLabel, SearchTextLong), LabelResult.Font)
-
-        While sizeF.Width >= LabelResult.Width - 10
-            SearchTextLong = SearchTextLong.Substring(0, SearchTextLong.Length - 1)
-            sizeF = graphics.MeasureString(String.Format(ShowLabel, SearchTextLong), LabelResult.Font)
-        End While
-
-        ' Add Ellipsis
-        LabelResult.Text = String.Format(ShowLabel, SearchTextLong & If(SearchText.Length <> SearchTextLong.Length, "...", ""))
-
+        LabelResult.AutoEllipsis = True
+        LabelResult.Text = $"共找到 {_searchResult.Count} 个搜索结果: ""{SearchText}"""
         ListView.Items.Clear()
-        For Each Tpl As Tuple(Of Integer, Integer) In SearchResult
-            Dim tab As Tab = SU.Tabs.Item(Tpl.Item1)
-            ListView.Items.Add("[" & tab.Title & "] - " & tab.Tips.Item(Tpl.Item2).TipContent)
+        For Each tuple As Tuple(Of Integer, Integer) In _searchResult
+            Dim tab As Tab = GlobalModel.Tabs.Item(tuple.Item1)
+            ListView.Items.Add($"[{tab.Title}] - {tab.Tips.Item(tuple.Item2).Content}")
         Next
     End Sub
 
-    Private Sub ButtonBack_Click(sender As System.Object, e As System.EventArgs) Handles ButtonBack.Click
-        Me.Close()
-        MainForm.Focus()
-    End Sub
-
-    Private Sub ButtonSearch_Click(sender As System.Object, e As System.EventArgs) Handles ButtonSearch.Click
-        Me.Close()
-        MainForm.ListPopupMenuFind_Click(MainForm.ListPopupMenuFind, New EventArgs)
-    End Sub
-
-    Private Sub ListView_DoubleClick(sender As Object, e As System.EventArgs) Handles ListView.DoubleClick
-        If ListView.SelectedIndex <> -1 And ListView.SelectedIndex <> 65535 Then
-            MainForm.Focus()
-            Dim Tpl As Tuple(Of Integer, Integer) = SearchResult.ElementAt(ListView.SelectedIndex)
-            MainForm.TabStrip.SelectedTabIndex = Tpl.Item1
-            MainForm.ListView.SelectedIndex = Tpl.Item2
+    Private Sub ListView_DoubleClick(sender As Object, e As EventArgs) Handles ListView.DoubleClick
+        If ListView.SelectedIndex <> - 1 Then
+            If HighlightFunc IsNot Nothing Then
+                Dim result As Tuple(Of Integer, Integer) = _searchResult.ElementAt(ListView.SelectedIndex)
+                HighlightFunc.Invoke(result.Item1, result.Item2)
+            End If
         End If
+    End Sub
+
+    Private Sub ButtonSearch_Click(sender As Object, e As EventArgs) Handles ButtonSearch.Click
+        Me.Close()
+        If SearchFunc IsNot Nothing Then
+            SearchFunc.Invoke()
+        End If
+    End Sub
+
+    Private Sub ListView_MouseDown(sender As Object, e As MouseEventArgs) Handles ListView.MouseDown
+        If ListView.IndexFromPoint(e.X, e.Y) = - 1 Then
+            ListView.ClearSelected()
+        End If
+    End Sub
+
+    Private Sub ButtonClose_Click(sender As Object, e As EventArgs) Handles ButtonClose.Click
+        Me.Close()
     End Sub
 End Class

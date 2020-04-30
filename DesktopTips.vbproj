@@ -30,6 +30,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <LangVersion>14</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -37,8 +38,9 @@
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>DesktopTips.xml</DocumentationFile>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DocumentationFile>
+    </DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
@@ -47,8 +49,9 @@
     <DefineDebug>false</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>DesktopTips.xml</DocumentationFile>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DocumentationFile>
+    </DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -68,6 +71,32 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DocumentationFile>
+    </DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>true</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DocumentationFile>
+    </DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevComponents.DotNetBar2, Version=10.8.0.0, Culture=neutral, PublicKeyToken=c39c3242a43eee2b, processorArchitecture=MSIL" />
@@ -107,11 +136,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="src\model\ColorPair.vb" />
-    <Compile Include="src\model\GlobalModel.Assist.vb" />
-    <Compile Include="src\model\GlobalModel.LS.vb" />
-    <Compile Include="src\model\GlobalModel.vb" />
+    <Compile Include="src\global\FileModel.vb" />
+    <Compile Include="src\global\GlobalModel.Assist.vb" />
+    <Compile Include="src\global\GlobalModel.vb" />
     <Compile Include="src\model\Tab.vb" />
+    <Compile Include="src\model\TipColor.vb" />
     <Compile Include="src\model\TipItem.vb" />
     <Compile Include="src\service\SyncData.vb" />
     <Compile Include="src\ui\base\BaseMainForm.vb">
@@ -120,40 +149,53 @@
     <Compile Include="src\ui\base\BaseEscCloseForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\main\view\TempForm.Designer.vb">
-      <DependentUpon>TempForm.vb</DependentUpon>
+    <Compile Include="src\ui\base\ICollectionView.vb" />
+    <Compile Include="src\ui\dialog\ColorDialog.Designer.vb">
+      <DependentUpon>ColorDialog.vb</DependentUpon>
     </Compile>
-    <Compile Include="src\ui\main\view\TempForm.vb">
+    <Compile Include="src\ui\dialog\ColorDialog.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\view\HotKeyBox.vb">
+    <Compile Include="src\ui\dialog\ColorSelectDialog.Designer.vb">
+      <DependentUpon>ColorSelectDialog.vb</DependentUpon>
+    </Compile>
+    <Compile Include="src\ui\dialog\ColorSelectDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\ui\form\contract\MainFormContract.vb" />
+    <Compile Include="src\ui\form\presenter\MainFormGlobalPresenter.vb" />
+    <Compile Include="src\ui\form\presenter\MainFormTabPresenter.vb" />
+    <Compile Include="src\ui\form\presenter\MainFormTipPresenter.vb" />
+    <Compile Include="src\ui\form\view\MainForm.Designer.vb">
+      <DependentUpon>MainForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="src\ui\form\view\MainForm.Partial.vb">
+      <SubType>Form</SubType>
+      <DependentUpon>MainForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="src\ui\form\view\MainForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\ui\form\view\MainForm.View.vb">
+      <SubType>Form</SubType>
+      <DependentUpon>MainForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="src\ui\view\CommandLink.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="src\ui\view\HotkeyBox.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="src\ui\dialog\HotKeyDialog.Designer.vb">
-      <DependentUpon>HotKeyDialog.vb</DependentUpon>
+      <DependentUpon>HotkeyDialog.vb</DependentUpon>
     </Compile>
-    <Compile Include="src\ui\dialog\HotKeyDialog.vb">
+    <Compile Include="src\ui\dialog\HotkeyDialog.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\ui\dialog\LinkDialog.Designer.vb">
       <DependentUpon>LinkDialog.vb</DependentUpon>
     </Compile>
     <Compile Include="src\ui\dialog\LinkDialog.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\ui\main\contract\MainFormContract.vb" />
-    <Compile Include="src\ui\main\presenter\MainFormListPresenter.vb" />
-    <Compile Include="src\ui\main\presenter\MainFormGlobalPresenter.vb" />
-    <Compile Include="src\ui\main\presenter\MainFormGroupPresenter.vb" />
-    <Compile Include="src\ui\main\view\MainForm.Partial.vb">
-      <DependentUpon>MainForm.vb</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\ui\main\view\MainForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\ui\main\view\MainForm.Designer.vb">
-      <DependentUpon>MainForm.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -172,10 +214,6 @@
     <Compile Include="src\ui\dialog\SearchDialog.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\main\view\MainForm.View.vb">
-      <DependentUpon>MainForm.vb</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="src\ui\view\TipListBox.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -184,18 +222,19 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\util\NativeMethod.vb" />
-    <Compile Include="src\util\SettingUtil.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="src\ui\dialog\ColorDialog.resx">
+      <DependentUpon>ColorDialog.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\ui\dialog\ColorSelectDialog.resx">
+      <DependentUpon>ColorSelectDialog.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\ui\dialog\HotKeyDialog.resx">
-      <DependentUpon>HotKeyDialog.vb</DependentUpon>
+      <DependentUpon>HotkeyDialog.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\ui\dialog\LinkDialog.resx">
       <DependentUpon>LinkDialog.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\ui\main\view\MainForm.resx">
-      <DependentUpon>MainForm.vb</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
@@ -206,8 +245,8 @@
     <EmbeddedResource Include="src\ui\dialog\SearchDialog.resx">
       <DependentUpon>SearchDialog.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ui\main\view\TempForm.resx">
-      <DependentUpon>TempForm.vb</DependentUpon>
+    <EmbeddedResource Include="src\ui\form\view\MainForm.resx">
+      <DependentUpon>MainForm.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -225,12 +264,18 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\ui\view\TabView.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <None Include="readme.md" />
     <None Include="Resources\HighLightColor.png" />
     <None Include="Resources\Find.png" />
     <None Include="Resources\DownIcon.png" />
     <None Include="Resources\UpIcon.png" />
     <None Include="Resources\Copy.png" />
     <None Include="Resources\PasteHS.png" />
+    <Content Include=".gitignore" />
+    <Compile Include="src\ui\base\BaseItemsCollection.vb" />
     <Content Include="src\ui\view\MessageBoxEx.Ref.cs" />
     <None Include="Resources\SelectAll.png" />
     <None Include="Resources\Star.png" />

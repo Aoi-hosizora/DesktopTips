@@ -52,7 +52,7 @@ Partial Public Class GlobalModel
         Try
             obj = JsonConvert.DeserializeObject(Of FileModel)(json)
         Catch ex As Exception
-            Throw New FileLoadException("读取文件失败，请检查文件。", STORAGE_FILENAME)
+            Throw New FileLoadException(ex.Message)
         End Try
 
         Tabs = obj.Tabs

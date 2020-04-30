@@ -25,9 +25,9 @@ Public Class TipItem
         End Get
     End Property
 
-    Public Sub New(content As String, Optional colorIndex As Integer = - 1)
+    Public Sub New(content As String, Optional colorId As Integer = - 1)
         Me.Content = content
-        Me.ColorId = colorIndex
+        Me.ColorId = colorId
     End Sub
 
     Public Overrides Function ToString() As String

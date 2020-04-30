@@ -26,7 +26,7 @@ Partial Class MainForm
         Me.m_btn_RemoveTips = New DevComponents.DotNetBar.ButtonX()
         Me.m_btn_InsertTip = New DevComponents.DotNetBar.ButtonX()
         Me.m_StyleManager = New DevComponents.DotNetBar.StyleManager(Me.components)
-        Me.m_TipListBox = New DesktopTips.TipListBox()
+        Me.m_ListView = New DesktopTips.TipListBox()
         Me.m_btn_Exit = New DevComponents.DotNetBar.ButtonX()
         Me.m_btn_OpenListPopup = New DevComponents.DotNetBar.ButtonX()
         Me.m_num_ListCount = New System.Windows.Forms.NumericUpDown()
@@ -54,8 +54,9 @@ Partial Class MainForm
         Me.m_popup_OtherLabel = New DevComponents.DotNetBar.LabelItem()
         Me.m_popup_Refresh = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_FileSubMenu = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_popup_ViewTabList = New DevComponents.DotNetBar.ButtonItem()
+        Me.m_popup_ViewCurrentTips = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_OpenDir = New DevComponents.DotNetBar.ButtonItem()
+        Me.m_popup_ViewCurrentHighlights = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_BrowserSubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_OpenAllLinksInTips = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_ViewAllLinksInTips = New DevComponents.DotNetBar.ButtonItem()
@@ -81,7 +82,8 @@ Partial Class MainForm
         Me.m_btn_MoveTipUp = New DevComponents.DotNetBar.ButtonX()
         Me.m_btn_MoveTipDown = New DevComponents.DotNetBar.ButtonX()
         Me.m_btn_Resize = New DevComponents.DotNetBar.ButtonX()
-        Me.m_popup_ViewHighlightTips = New DevComponents.DotNetBar.ButtonItem()
+        Me.m_popup_ViewAllTips = New DevComponents.DotNetBar.ButtonItem()
+        Me.m_popup_ViewAllHighlights = New DevComponents.DotNetBar.ButtonItem()
         CType(Me.m_num_ListCount, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.m_menu_ContextMenuBar, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.m_TabView, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -124,22 +126,22 @@ Partial Class MainForm
         '
         'm_TipListBox
         '
-        Me.m_TipListBox.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.m_ListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.m_TipListBox.BackColor = System.Drawing.Color.Snow
-        Me.m_menu_ContextMenuBar.SetContextMenuEx(Me.m_TipListBox, Me.m_menu_ListPopupMenu)
-        Me.m_TipListBox.DisplayMember = "Content"
-        Me.m_TipListBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
-        Me.m_TipListBox.FormattingEnabled = True
-        Me.m_TipListBox.ItemHeight = 17
-        Me.m_TipListBox.Location = New System.Drawing.Point(23, 0)
-        Me.m_TipListBox.Name = "m_TipListBox"
-        Me.m_TipListBox.SelectedItem = Nothing
-        Me.m_TipListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.m_TipListBox.Size = New System.Drawing.Size(303, 240)
-        Me.m_TipListBox.TabIndex = 0
-        Me.m_TipListBox.WheeledFunc = Nothing
+        Me.m_ListView.BackColor = System.Drawing.Color.Snow
+        Me.m_menu_ContextMenuBar.SetContextMenuEx(Me.m_ListView, Me.m_menu_ListPopupMenu)
+        Me.m_ListView.DisplayMember = "Content"
+        Me.m_ListView.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable
+        Me.m_ListView.FormattingEnabled = True
+        Me.m_ListView.ItemHeight = 17
+        Me.m_ListView.Location = New System.Drawing.Point(23, 0)
+        Me.m_ListView.Name = "m_ListView"
+        Me.m_ListView.SelectedItem = Nothing
+        Me.m_ListView.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
+        Me.m_ListView.Size = New System.Drawing.Size(303, 240)
+        Me.m_ListView.TabIndex = 0
+        Me.m_ListView.WheeledFunc = Nothing
         '
         'm_btn_Exit
         '
@@ -394,18 +396,24 @@ Partial Class MainForm
         'm_menu_FileSubMenu
         '
         Me.m_menu_FileSubMenu.Name = "m_menu_FileSubMenu"
-        Me.m_menu_FileSubMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_ViewTabList, Me.m_popup_OpenDir, Me.m_popup_ViewHighlightTips})
+        Me.m_menu_FileSubMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_ViewCurrentTips, Me.m_popup_ViewCurrentHighlights, Me.m_popup_ViewAllTips, Me.m_popup_ViewAllHighlights, Me.m_popup_OpenDir})
         Me.m_menu_FileSubMenu.Text = "文件浏览(&F)"
         '
-        'm_popup_ViewTabList
+        'm_popup_ViewCurrentTips
         '
-        Me.m_popup_ViewTabList.Name = "m_popup_ViewTabList"
-        Me.m_popup_ViewTabList.Text = "浏览当前列表内容(&V)"
+        Me.m_popup_ViewCurrentTips.Name = "m_popup_ViewCurrentTips"
+        Me.m_popup_ViewCurrentTips.Text = "浏览当前列表内容(&V)"
         '
         'm_popup_OpenDir
         '
+        Me.m_popup_OpenDir.BeginGroup = True
         Me.m_popup_OpenDir.Name = "m_popup_OpenDir"
         Me.m_popup_OpenDir.Text = "打开文件所在位置(&O)"
+        '
+        'm_popup_ViewCurrentHighlights
+        '
+        Me.m_popup_ViewCurrentHighlights.Name = "m_popup_ViewCurrentHighlights"
+        Me.m_popup_ViewCurrentHighlights.Text = "浏览当前列表高亮(&H)"
         '
         'm_menu_BrowserSubMenu
         '
@@ -623,10 +631,16 @@ Partial Class MainForm
         Me.m_btn_Resize.TabIndex = 6
         Me.m_btn_Resize.Text = "::"
         '
-        'm_popup_ViewHighlightTips
+        'm_popup_ViewAllTips
         '
-        Me.m_popup_ViewHighlightTips.Name = "m_popup_ViewHighlightTips"
-        Me.m_popup_ViewHighlightTips.Text = "浏览列表高亮内容(&H)"
+        Me.m_popup_ViewAllTips.BeginGroup = True
+        Me.m_popup_ViewAllTips.Name = "m_popup_ViewAllTips"
+        Me.m_popup_ViewAllTips.Text = "浏览所有列表内容(&A)"
+        '
+        'm_popup_ViewAllHighlights
+        '
+        Me.m_popup_ViewAllHighlights.Name = "m_popup_ViewAllHighlights"
+        Me.m_popup_ViewAllHighlights.Text = "浏览所有列表高亮(&I)"
         '
         'MainForm
         '
@@ -637,7 +651,7 @@ Partial Class MainForm
         Me.Controls.Add(Me.m_btn_MoveTipDown)
         Me.Controls.Add(Me.m_btn_MoveTipUp)
         Me.Controls.Add(Me.m_menu_ContextMenuBar)
-        Me.Controls.Add(Me.m_TipListBox)
+        Me.Controls.Add(Me.m_ListView)
         Me.Controls.Add(Me.m_TabView)
         Me.Controls.Add(Me.m_btn_Resize)
         Me.Controls.Add(Me.m_btn_OpenListPopup)
@@ -666,7 +680,7 @@ Partial Class MainForm
     Friend WithEvents m_btn_RemoveTips As DevComponents.DotNetBar.ButtonX
     Friend WithEvents m_btn_InsertTip As DevComponents.DotNetBar.ButtonX
     Friend WithEvents m_StyleManager As DevComponents.DotNetBar.StyleManager
-    Friend WithEvents m_TipListBox As TipListBox
+    Friend WithEvents m_ListView As TipListBox
     Friend WithEvents m_btn_Exit As DevComponents.DotNetBar.ButtonX
     Friend WithEvents m_btn_OpenListPopup As DevComponents.DotNetBar.ButtonX
     Friend WithEvents m_num_ListCount As System.Windows.Forms.NumericUpDown
@@ -681,7 +695,7 @@ Partial Class MainForm
     Friend WithEvents m_popup_OpenDir As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_TipsCountLabel As DevComponents.DotNetBar.LabelItem
     Friend WithEvents m_popup_UpdateTip As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents m_popup_ViewTabList As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents m_popup_ViewCurrentTips As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_Exit As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_menu_HighlightSubMenu As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_menu_OpacitySubMenu As DevComponents.DotNetBar.ButtonItem
@@ -721,6 +735,8 @@ Partial Class MainForm
     Friend WithEvents m_popup_OpenInNewBrowser As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_Refresh As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_SetupColors As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents m_popup_ViewHighlightTips As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents m_popup_ViewCurrentHighlights As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents m_popup_ViewAllTips As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents m_popup_ViewAllHighlights As DevComponents.DotNetBar.ButtonItem
 
 End Class

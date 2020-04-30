@@ -24,9 +24,9 @@ Public Class MainForm
 
     Private Sub LoadFileAndUpdate() ' On_Form_Load On_BtnRefresh_Click 用
         _globalPresenter.LoadFile()
-        m_TipListBox.DataSource = GlobalModel.CurrentTab.Tips
-        m_TipListBox.Update()
-        m_TipListBox.ClearSelected()
+        m_ListView.DataSource = GlobalModel.CurrentTab.Tips
+        m_ListView.Update()
+        m_ListView.ClearSelected()
         m_TabView.DataSource = GlobalModel.Tabs
         m_TabView.Update()
         m_TabView.SelectedTabIndex = 0
@@ -54,7 +54,7 @@ Public Class MainForm
     End Sub
 
     Private Sub On_Form_Deactivate(sender As Object, e As EventArgs) Handles Me.Deactivate
-        m_TipListBox.ClearSelected()
+        m_ListView.ClearSelected()
         If Me.Opacity > MaxOpacity Then
             FormOpacityDown()
         End If
@@ -79,8 +79,8 @@ Public Class MainForm
         Me.CanMouseLeaveFunc = Function() As Boolean
             Return m_menu_ListPopupMenu.PopupControl Is Nothing AndAlso
                    m_menu_TabPopupMenu.PopupControl Is Nothing AndAlso
-                   m_TabView.ContextMenu Is Nothing AndAlso
                    m_menu_MoveTipsSubMenu.PopupControl Is Nothing AndAlso
+                   m_menu_HighlightSubMenu.PopupControl Is Nothing AndAlso
                    _isMenuPopuping = False
         End Function
         Me.IsLoading = False
@@ -95,45 +95,45 @@ Public Class MainForm
 
     Private Sub InsertTip(sender As Object, e As EventArgs) Handles m_btn_InsertTip.Click, m_popup_InsertTip.Click
         If _tipPresenter.Insert() Then
-            m_TipListBox.Update()
-            m_TipListBox.SetSelectOnly(m_TipListBox.ItemCount - 1, True)
+            m_ListView.Update()
+            m_ListView.SetSelectOnly(m_ListView.ItemCount - 1, True)
         End If
     End Sub
 
     Private Sub DeleteTip(sender As Object, e As EventArgs) Handles m_btn_RemoveTips.Click, m_popup_RemoveTips.Click
-        Dim index As Integer = m_TipListBox.SelectedIndex
-        If m_TipListBox.SelectedItems IsNot Nothing AndAlso _tipPresenter.Delete(m_TipListBox.SelectedItems) Then
-            m_TipListBox.Update()
-            m_TipListBox.SetSelectOnly(index)
+        Dim index As Integer = m_ListView.SelectedIndex
+        If m_ListView.SelectedItems IsNot Nothing AndAlso _tipPresenter.Delete(m_ListView.SelectedItems) Then
+            m_ListView.Update()
+            m_ListView.SetSelectOnly(index)
         End If
     End Sub
 
-    Private Sub UpdateTip(sender As Object, e As EventArgs) Handles m_TipListBox.DoubleClick, m_popup_UpdateTip.Click
-        Dim index = m_TipListBox.SelectedIndex
-        If m_TipListBox.SelectedCount = 1 AndAlso _tipPresenter.Update(m_TipListBox.SelectedItem) Then
-            m_TipListBox.Update()
-            m_TipListBox.SetSelectOnly(index)
+    Private Sub UpdateTip(sender As Object, e As EventArgs) Handles m_ListView.DoubleClick, m_popup_UpdateTip.Click
+        Dim index = m_ListView.SelectedIndex
+        If m_ListView.SelectedCount = 1 AndAlso _tipPresenter.Update(m_ListView.SelectedItem) Then
+            m_ListView.Update()
+            m_ListView.SetSelectOnly(index)
         End If
     End Sub
 
     Private Sub MoveTipTop(sender As Object, e As EventArgs) Handles m_popup_MoveTopTop.Click
-        If _tipPresenter.MoveTop(m_TipListBox.SelectedItem) Then
-            m_TipListBox.Update()
-            m_TipListBox.SetSelectOnly(0)
+        If _tipPresenter.MoveTop(m_ListView.SelectedItem) Then
+            m_ListView.Update()
+            m_ListView.SetSelectOnly(0)
         End If
     End Sub
 
     Private Sub MoveTipBottom(sender As Object, e As EventArgs) Handles m_popup_MoveTipBottom.Click
-        If _tipPresenter.MoveBottom(m_TipListBox.SelectedItem) Then
-            m_TipListBox.Update()
-            m_TipListBox.SetSelectOnly(m_TipListBox.ItemCount - 1)
+        If _tipPresenter.MoveBottom(m_ListView.SelectedItem) Then
+            m_ListView.Update()
+            m_ListView.SetSelectOnly(m_ListView.ItemCount - 1)
         End If
     End Sub
 
     Private Sub MoveTipUp(sender As Object, e As EventArgs) Handles m_popup_MoveTipUp.Click, m_btn_MoveTipUp.Click
-        If m_TipListBox.SelectedIndex >= 1 AndAlso _tipPresenter.MoveUp(m_TipListBox.SelectedItem) Then
-            m_TipListBox.Update()
-            m_TipListBox.SetSelectOnly(m_TipListBox.SelectedIndex - 1)
+        If m_ListView.SelectedIndex >= 1 AndAlso _tipPresenter.MoveUp(m_ListView.SelectedItem) Then
+            m_ListView.Update()
+            m_ListView.SetSelectOnly(m_ListView.SelectedIndex - 1)
             If sender.Tag = "True" Then
                 NativeMethod.MouseMoveUp(Cursor.Position, 17)
             End If
@@ -141,9 +141,9 @@ Public Class MainForm
     End Sub
 
     Private Sub MoveDownTip(sender As Object, e As EventArgs) Handles m_popup_MoveTipDown.Click, m_btn_MoveTipDown.Click
-        If m_TipListBox.SelectedIndex <= m_TipListBox.ItemCount - 2 AndAlso _tipPresenter.MoveDown(m_TipListBox.SelectedItem) Then
-            m_TipListBox.Update()
-            m_TipListBox.SetSelectOnly(m_TipListBox.SelectedIndex + 1)
+        If m_ListView.SelectedIndex <= m_ListView.ItemCount - 2 AndAlso _tipPresenter.MoveDown(m_ListView.SelectedItem) Then
+            m_ListView.Update()
+            m_ListView.SetSelectOnly(m_ListView.SelectedIndex + 1)
             If sender.Tag = "True" Then
                 NativeMethod.MouseMoveDown(Cursor.Position, 17)
             End If
@@ -151,18 +151,18 @@ Public Class MainForm
     End Sub
 
     Private Sub CopyTip(sender As Object, e As EventArgs) Handles m_popup_CopyTips.Click
-        _tipPresenter.Copy(m_TipListBox.SelectedItems)
+        _tipPresenter.Copy(m_ListView.SelectedItems)
     End Sub
 
     Private Sub PasteAppendToTip(sender As Object, e As EventArgs) Handles m_popup_PasteAppendToTip.Click
-        If m_TipListBox.SelectedCount = 1 AndAlso _tipPresenter.Paste(m_TipListBox.SelectedItem) Then
-            m_TipListBox.Update()
+        If m_ListView.SelectedCount = 1 AndAlso _tipPresenter.Paste(m_ListView.SelectedItem) Then
+            m_ListView.Update()
         End If
     End Sub
 
     Private Sub SelectAllTips(sender As Object, e As EventArgs) Handles m_popup_SelectAllTips.Click
-        For i = 0 To m_TipListBox.ItemCount - 1
-            m_TipListBox.SetSelected(i, True)
+        For i = 0 To m_ListView.ItemCount - 1
+            m_ListView.SetSelected(i, True)
         Next
     End Sub
 
@@ -178,16 +178,32 @@ Public Class MainForm
         _globalPresenter.OpenFileDir()
     End Sub
 
-    Private Sub ViewCurrentTabTipList(sender As Object, e As EventArgs) Handles m_popup_ViewTabList.Click
-        _tipPresenter.ViewCurrentList(m_TipListBox.Items)
+    Private Sub ViewCurrentTips(sender As Object, e As EventArgs) Handles m_popup_ViewCurrentTips.Click
+        _tipPresenter.ViewCurrentList(m_ListView.Items, False)
+    End Sub
+
+    Private Sub ViewAllTips(sender As Object, e As EventArgs) Handles m_popup_ViewAllTips.Click
+        _tipPresenter.ViewCurrentList(GlobalModel.Tabs.Select(Function(tab) 
+            Return tab.Tips.Select(Function(tip) New TipItem($"[{tab.Title}] - {tip.Content}", tip.ColorId))
+        End Function), False)
+    End Sub
+
+    Private Sub ViewCurrentHighlights(sender As Object, e As EventArgs) Handles m_popup_ViewCurrentHighlights.Click
+        _tipPresenter.ViewCurrentList(m_ListView.Items, True)
+    End Sub
+
+    Private Sub ViewAllHighlights(sender As Object, e As EventArgs) Handles m_popup_ViewAllHighlights.Click
+        _tipPresenter.ViewCurrentList(GlobalModel.Tabs.Select(Function(tab) 
+            Return tab.Tips.Select(Function(tip) New TipItem($"[{tab.Title}] - {tip.Content}", tip.ColorId))
+        End Function), True)
     End Sub
 
     Private Sub OpenTipAllLinks(sender As Object, e As EventArgs) Handles m_popup_OpenAllLinksInTips.Click
-        _tipPresenter.OpenAllLinks(m_TipListBox.SelectedItems, My.Settings.OpenInNewBrowser)
+        _tipPresenter.OpenAllLinks(m_ListView.SelectedItems, My.Settings.OpenInNewBrowser)
     End Sub
 
     Private Sub ViewTipAllLinks(sender As Object, e As EventArgs) Handles m_popup_ViewAllLinksInTips.Click
-        _tipPresenter.ViewAllLinks(m_TipListBox.SelectedItems, My.Settings.OpenInNewBrowser)
+        _tipPresenter.ViewAllLinks(m_ListView.SelectedItems, My.Settings.OpenInNewBrowser)
     End Sub
 
     Private Sub On_BtnOpenInNewBrowser_Click(sender As Object, e As EventArgs) Handles m_popup_OpenInNewBrowser.Click
@@ -198,7 +214,7 @@ Public Class MainForm
 
 #End Region
 
-#Region "标签: 高亮 刷新"
+#Region "标签: 高亮 设置颜色 刷新"
 
     Private Sub SetupHighLightButtons() ' LoadFile 用
         m_menu_HighlightSubMenu.SubItems.Clear()
@@ -216,65 +232,66 @@ Public Class MainForm
     End Sub
 
     Private Sub HighLightTips(sender As Object, e As EventArgs)
-        If m_TipListBox.SelectedCount > 0 Then
-            Dim indices As New List(Of Integer)(m_TipListBox.SelectedIndices.Cast(Of Integer)().ToList())
+        If m_ListView.SelectedCount > 0 Then
+            Dim indices As New List(Of Integer)(m_ListView.SelectedIndices.Cast(Of Integer)().ToList())
             Dim color = CType(sender.Tag, TipColor)
-            Dim isSingle = m_TipListBox.SelectedCount = 1
-            Dim items = m_TipListBox.SelectedItems.ToList()
+            Dim isSingle = m_ListView.SelectedCount = 1
+            Dim items = m_ListView.SelectedItems.ToList()
             Dim item = items.First()
             Dim ok As Boolean
 
             If isSingle Then
                 If item.IsHighLight AndAlso item.ColorId = color.Id Then ' 已经高亮并且是当前颜色
-                    ok = _tipPresenter.HighlightTips(m_TipListBox.SelectedItems, Nothing)
+                    ok = _tipPresenter.HighlightTips(m_ListView.SelectedItems, Nothing)
                 Else
-                    ok = _tipPresenter.HighlightTips(m_TipListBox.SelectedItems, color)
+                    ok = _tipPresenter.HighlightTips(m_ListView.SelectedItems, color)
                 End If
             Else
                 If items.Where(Function (i) i.ColorId = color.Id).Count = items.Count Then ' 所有都是同一个颜色
-                    ok = _tipPresenter.HighlightTips(m_TipListBox.SelectedItems, Nothing)
+                    ok = _tipPresenter.HighlightTips(m_ListView.SelectedItems, Nothing)
                 Else
-                    ok = _tipPresenter.HighlightTips(m_TipListBox.SelectedItems, color)
+                    ok = _tipPresenter.HighlightTips(m_ListView.SelectedItems, color)
                 End If
             End If
 
             If ok Then
-                m_TipListBox.Update()
-                m_TipListBox.ClearSelected()
+                m_ListView.Update()
+                m_ListView.ClearSelected()
                 For Each idx In indices
-                    m_TipListBox.SetSelected(idx, True)
+                    m_ListView.SetSelected(idx, True)
                 Next
             End If
         End If
     End Sub
 
     Private Sub CheckHighlightChecked() ' CheckListItemEnabled On_BtnHighLightTips_Popup 用
-        Dim selCnt = m_TipListBox.SelectedCount
+        Dim selCnt = m_ListView.SelectedCount
         For Each btn In m_menu_HighlightSubMenu.SubItems
             Dim color = TryCast(btn.Tag, TipColor)
             If color IsNot Nothing Then
                 btn.Enabled = selCnt > 0
-                btn.Checked = selCnt = 1 AndAlso m_TipListBox.SelectedItem.ColorId = color.Id
-                m_menu_HighlightSubMenu.Checked = selCnt > 0 AndAlso m_TipListBox.SelectedItems.Any(Function(i) i.IsHighLight)
+                btn.Checked = selCnt = 1 AndAlso m_ListView.SelectedItem.ColorId = color.Id
+                m_menu_HighlightSubMenu.Checked = selCnt > 0 AndAlso m_ListView.SelectedItems.Any(Function(i) i.IsHighLight)
             End If
         Next
     End Sub
 
     Private Sub On_BtnHighLightTips_Popup(sender As DD.ButtonItem, e As EventArgs) Handles m_menu_HighlightSubMenu.Click
         CheckHighlightChecked()
-        Popup(m_menu_HighlightSubMenu, True)
+        If m_ListView.SelectedCount > 0 Then
+            Popup(m_menu_HighlightSubMenu, True)
+        End If
     End Sub
 
     Private Sub On_BtnSetupHighlightColors_Click(sender As Object, e As EventArgs) Handles m_popup_SetupColors.Click
-        _tipPresenter.SetupHighlightColor(Sub() m_TipListBox.Update())
+        _tipPresenter.SetupHighlightColor(Sub()
+            m_ListView.Update()
+            SetupHighLightButtons()
+        End Sub)
     End Sub
 
     Private Sub On_BtnRefresh_Click(sender As Object, e As EventArgs) Handles m_popup_Refresh.Click
         LoadFileAndUpdate()
-    End Sub
-
-    Private Sub On_BtnViewHighlightTips_Click(sender As Object, e As EventArgs) Handles m_popup_ViewHighlightTips.Click
-        _tipPresenter.ViewCurrentHighlights(m_TipListBox.Items)
     End Sub
 
 #End Region
@@ -331,9 +348,9 @@ Public Class MainForm
         HideAssistButtons()
         If m_TabView.SelectedTabIndex <> - 1 AndAlso m_TabView.SelectedTab.TabSource IsNot Nothing Then
             GlobalModel.CurrentTab = m_TabView.SelectedTab.TabSource
-            m_TipListBox.DataSource = GlobalModel.CurrentTab.Tips
-            m_TipListBox.Update()
-            m_TipListBox.ClearSelected()
+            m_ListView.DataSource = GlobalModel.CurrentTab.Tips
+            m_ListView.Update()
+            m_ListView.ClearSelected()
         End If
     End Sub
 
@@ -349,18 +366,18 @@ Public Class MainForm
         Dim src As Tab = GlobalModel.CurrentTab
         Dim dest As Tab = sender.Tag(0)
         Dim all As Boolean = sender.Tag(1)
-        Dim items As IEnumerable(Of TipItem) = If(all, m_TipListBox.Items.ToList(), m_TipListBox.SelectedItems)
+        Dim items As IEnumerable(Of TipItem) = If(all, m_ListView.Items.ToList(), m_ListView.SelectedItems)
 
         Dim tipItems As IEnumerable(Of TipItem) = If(TryCast(items, TipItem()), items.ToArray())
         If _tabPresenter.MoveItems(tipItems, src, dest) Then
             m_TabView.Update()
             m_TabView.SetSelected(dest)
 
-            m_TipListBox.ClearSelected()
+            m_ListView.ClearSelected()
             For Each item As TipItem In tipItems
                 Dim idx As Integer = GlobalModel.CurrentTab.Tips.IndexOf(item)
                 If idx <> - 1 Then
-                    m_TipListBox.SetSelected(idx, True)
+                    m_ListView.SetSelected(idx, True)
                 End If
             Next
         End If
@@ -368,7 +385,9 @@ Public Class MainForm
 
     Private Sub On_BtnMoveTipsSubMenu_Popup(sender As DD.ButtonItem, e As EventArgs) Handles m_menu_MoveTipsSubMenu.Click
         SetupMoveToButtons(all := False)
-        If m_menu_MoveTipsSubMenu.SubItems.Count <> 0 Then Popup(m_menu_MoveTipsSubMenu, True)
+        If m_menu_MoveTipsSubMenu.SubItems.Count <> 0 Then
+            Popup(m_menu_MoveTipsSubMenu, True)
+        End If
     End Sub
 
 #End Region
@@ -410,12 +429,12 @@ Public Class MainForm
         m_btn_MoveTipDown.Visible = False
         m_btn_MoveTipDown.Height = (17 + 1) / 2
         m_btn_MoveTipDown.Width = 17
-        m_TipListBox.WheeledFunc = Sub() HideAssistButtons()
+        m_ListView.WheeledFunc = Sub() HideAssistButtons()
     End Sub
 
     Private Sub ShowAssistButtons() ' On_ListViewAndForm_SizeChanged On_ListView_SelectedIndexChangedAndMouseDown 用
-        Dim rect As Rectangle = m_TipListBox.GetItemRectangle(m_TipListBox.SelectedIndex)
-        rect.Offset(m_TipListBox.Location)
+        Dim rect As Rectangle = m_ListView.GetItemRectangle(m_ListView.SelectedIndex)
+        rect.Offset(m_ListView.Location)
         rect.Offset(2, 2)
 
         m_btn_MoveTipUp.Top = rect.Top
@@ -431,8 +450,8 @@ Public Class MainForm
         m_btn_MoveTipDown.Visible = False
     End Sub
 
-    Private Sub On_ListViewAndForm_SizeChanged(sender As Object, e As EventArgs) Handles m_TipListBox.SizeChanged, Me.SizeChanged
-        If m_btn_MoveTipUp.Visible = True AndAlso m_TipListBox.SelectedCount = 1 Then
+    Private Sub On_ListViewAndForm_SizeChanged(sender As Object, e As EventArgs) Handles m_ListView.SizeChanged, Me.SizeChanged
+        If m_btn_MoveTipUp.Visible = True AndAlso m_ListView.SelectedCount = 1 Then
             ShowAssistButtons()
         End If
     End Sub
@@ -444,7 +463,7 @@ Public Class MainForm
             For Each btn As DD.ButtonItem In buttons
                 m_menu_MoveTipsSubMenu.SubItems.Add(btn)
             Next
-            If buttons.Count = 0 OrElse m_TipListBox.SelectedCount = 0 Then
+            If buttons.Count = 0 OrElse m_ListView.SelectedCount = 0 Then
                 m_menu_MoveTipsSubMenu.Enabled = False
                 m_menu_MoveTipsSubMenu.ShowSubItems = False
             End If
@@ -453,7 +472,7 @@ Public Class MainForm
             For Each btn As DD.ButtonItem In buttons
                 m_menu_MoveToTabSubMenu.SubItems.Add(btn)
             Next
-            If buttons.Count = 0 OrElse m_TipListBox.ItemCount = 0 Then
+            If buttons.Count = 0 OrElse m_ListView.ItemCount = 0 Then
                 m_menu_MoveToTabSubMenu.Enabled = False
                 m_menu_MoveToTabSubMenu.ShowSubItems = False
             End If
@@ -465,10 +484,10 @@ Public Class MainForm
 #Region "显示: 可用性判断 列表选择 大小调整 菜单与透明度"
 
     Private Sub CheckListItemEnabled() ' On_ListView_SelectedIndexChangedAndMouseDown On_BtnOpenPopupMenu_Click 用
-        Dim isNotEmpty As Boolean = m_TipListBox.SelectedCount > 0
-        Dim isSingle As Boolean = m_TipListBox.SelectedCount = 1
-        Dim isTop As Boolean = m_TipListBox.SelectedIndex = 0
-        Dim isBottom As Boolean = m_TipListBox.SelectedIndex = m_TipListBox.ItemCount - 1
+        Dim isNotEmpty As Boolean = m_ListView.SelectedCount > 0
+        Dim isSingle As Boolean = m_ListView.SelectedCount = 1
+        Dim isTop As Boolean = m_ListView.SelectedIndex = 0
+        Dim isBottom As Boolean = m_ListView.SelectedIndex = m_ListView.ItemCount - 1
 
         ' 辅助按钮 位置按钮
         m_btn_MoveTipUp.Enabled = isSingle And Not isTop
@@ -489,41 +508,45 @@ Public Class MainForm
         CheckHighlightChecked()
 
         ' 浏览器
-        m_menu_BrowserSubMenu.Enabled = _tipPresenter.GetLinks(m_TipListBox.SelectedItems).Count >= 1
+        m_menu_BrowserSubMenu.Enabled = _tipPresenter.GetLinks(m_ListView.SelectedItems).Count >= 1
         m_menu_BrowserSubMenu.ShowSubItems = m_menu_BrowserSubMenu.Enabled
 
         ' 移动
         m_menu_MoveTipsSubMenu.Enabled = isNotEmpty
     End Sub
 
-    Private Sub On_ListView_SelectedIndexChangedAndMouseDown(sender As Object, e As EventArgs) Handles m_TipListBox.SelectedIndexChanged, m_TipListBox.MouseDown
+    Private Sub On_ListView_SelectedIndexChangedAndMouseDown(sender As Object, e As EventArgs) Handles m_ListView.SelectedIndexChanged, m_ListView.MouseDown
         CheckListItemEnabled()
-        If m_TipListBox.SelectedCount = 1 Then ShowAssistButtons() Else HideAssistButtons()
+        If m_ListView.SelectedCount = 1 Then ShowAssistButtons() Else HideAssistButtons()
     End Sub
 
     Private Sub On_TabView_ItemClick(sender As Object, e As EventArgs) Handles m_TabView.ItemClick
-        m_TipListBox.ClearSelected()
+        m_ListView.ClearSelected()
     End Sub
 
     Private Sub On_BtnResize_MouseMove(sender As Object, e As MouseEventArgs) Handles m_btn_Resize.MouseMove
         If e.Button = MouseButtons.Left Then
             Me.Width = PushDownWindowSize.Width + Cursor.Position.X - PushDownMousePosition.X
-            m_TipListBox.Refresh()
+            m_ListView.Refresh()
         End If
     End Sub
 
     Private Sub On_BtnResize_MouseUp(sender As Object, e As MouseEventArgs) Handles m_btn_Resize.MouseUp
-        m_TipListBox.Refresh()
+        m_ListView.Refresh()
     End Sub
 
     Private _isMenuPopuping As Boolean = False
 
-    Private Sub On_TabStrip_PopupOpen(sender As Object, e As EventArgs) Handles m_TabView.PopupOpen
+    Private Sub On_SomeMenu_PopupOpen(sender As Object, e As EventArgs) _
+        Handles m_menu_ListPopupMenu.PopupOpen, m_menu_TabPopupMenu.PopupOpen, m_TabView.PopupOpen,
+                m_menu_MoveTipsSubMenu.PopupOpen, m_menu_HighlightSubMenu.PopupOpen
         _isMenuPopuping = True
+        FormOpacityUp()
     End Sub
 
-    Private Sub On_SomePopup_FinishedAndClose(sender As Object, e As EventArgs) _
-        Handles m_menu_ListPopupMenu.PopupFinalized, m_menu_TabPopupMenu.PopupFinalized, m_menu_MoveTipsSubMenu.PopupFinalized, m_TabView.PopupClose
+    Private Sub On_SomeMenu_FinishedAndClose(sender As Object, e As EventArgs) _
+        Handles m_menu_ListPopupMenu.PopupFinalized, m_menu_TabPopupMenu.PopupFinalized, m_TabView.PopupClose,
+                m_menu_MoveTipsSubMenu.PopupFinalized, m_menu_HighlightSubMenu.PopupFinalized
         _isMenuPopuping = False
         FormOpacityDown()
     End Sub
@@ -546,11 +569,11 @@ Public Class MainForm
     End Sub
 
     Private Sub On_ListPopupMenu_PopupOpen(sender As Object, e As DD.PopupOpenEventArgs) Handles m_menu_ListPopupMenu.PopupOpen
-        m_popup_SelectedTipsCountLabel.Visible = m_TipListBox.SelectedCount > 0
-        m_popup_SelectedTipsTextLabel.Visible = m_TipListBox.SelectedCount > 0
+        m_popup_SelectedTipsCountLabel.Visible = m_ListView.SelectedCount > 0
+        m_popup_SelectedTipsTextLabel.Visible = m_ListView.SelectedCount > 0
 
         Dim sb As New StringBuilder
-        For Each item As TipItem In m_TipListBox.SelectedItems
+        For Each item As TipItem In m_ListView.SelectedItems
             sb.AppendLine(item.Content)
         Next
         Dim highlightCount = 0
@@ -559,8 +582,8 @@ Public Class MainForm
         Next
 
         m_popup_SelectedTipsTextLabel.Text = sb.ToString()
-        m_popup_TipsCountLabel.Text = $"列表 (共 {m_TipListBox.ItemCount} 项，高亮 {highlightCount} 项)"
-        m_popup_SelectedTipsCountLabel.Text = $"当前选中 (共 {m_TipListBox.SelectedCount} 项)"
+        m_popup_TipsCountLabel.Text = $"列表 (共 {m_ListView.ItemCount} 项，高亮 {highlightCount} 项)"
+        m_popup_SelectedTipsCountLabel.Text = $"当前选中 (共 {m_ListView.SelectedCount} 项)"
 
         SetupMoveToButtons(all := False)
         m_menu_ListPopupMenu.Refresh()

@@ -38,15 +38,17 @@
             ok = MessageBoxEx.Show($"颜色 ""{tipColor.Name}"" 拥有一下 {tips.Count} 个已存在的标签，是否删除？{vbNewLine}{vbNewLine}{tipString}",
                 "删除", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1,
                 Me, {"修改高亮颜色", "直接删除", "取消"})
-            If ok = vbCancel Then
+            If ok = vbCancel Then ' 取消
                 Return
-            ElseIf ok = vbNo Then
+            ElseIf ok = vbNo Then ' 直接删除
                 GlobalModel.Tabs.ForEach(Sub(t) t.Tips.RemoveAll(Function(tip) tip.ColorId = tipColor.Id))
-            Else
+            Else ' 修改高亮颜色
                 MsgBox("TODO")
                 Return
             End If
         End If
+
+        ' 从存储中删除 并处理顺序
         GlobalModel.Colors.Remove(tipColor)
         GlobalModel.HandleWithColorOrder(GlobalModel.Colors, GlobalModel.Tabs)
         refreshSave()

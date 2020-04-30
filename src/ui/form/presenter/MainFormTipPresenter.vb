@@ -1,6 +1,4 @@
-﻿Imports System.Text
-
-Public Class MainFormTipPresenter
+﻿Public Class MainFormTipPresenter
     Implements MainFormContract.ITipPresenter
 
     Private ReadOnly _view As MainFormContract.IView
@@ -23,16 +21,12 @@ Public Class MainFormTipPresenter
     End Function
 
     Public Function Delete(items As IEnumerable(Of TipItem)) As Boolean Implements MainFormContract.ITipPresenter.Delete
-        Dim tipItems As IEnumerable(Of TipItem) = If(TryCast(items, TipItem()), items.ToArray())
-        Dim sb As New StringBuilder
-        For Each item As TipItem In tipItems
-            sb.AppendLine(item.Content)
-        Next
-        Dim ok = MessageBoxEx.Show($"确定删除以下 {items.Count} 个标签吗？{vbNewLine}{vbNewLine}{sb.ToString()}",
-            "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1,
-            _view.GetMe())
+        items = items.ToList()
+        Dim tipString As String = String.Join(vbNewLine, items.Select(Function(t) t.Content))
+        Dim ok = MessageBoxEx.Show($"确定删除以下 {items.Count} 个标签吗？{vbNewLine}{vbNewLine}{tipString}", "删除",
+            MessageBoxButtons.OKCancel, MessageBoxIcon.Question, _view.GetMe())
         If ok = vbOK Then
-            For Each item As TipItem In tipItems
+            For Each item As TipItem In items
                 GlobalModel.CurrentTab.Tips.Remove(item)
             Next
             _globalPresenter.SaveFile()
@@ -52,19 +46,15 @@ Public Class MainFormTipPresenter
     End Function
 
     Public Sub Copy(items As IEnumerable(Of TipItem)) Implements MainFormContract.ITipPresenter.Copy
-        Dim sb As New StringBuilder
-        For Each item As TipItem In items
-            sb.AppendLine(item.Content)
-        Next
-        Clipboard.SetText(sb.ToString())
+        Dim tipString As String = String.Join(vbNewLine, items.Select(Function(t) t.Content))
+        Clipboard.SetText(tipString)
     End Sub
 
     Public Function Paste(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.Paste
         Dim clip As String = Clipboard.GetText().Trim()
-        If Not String.IsNullOrWhiteSpace(clip) Then
-            Dim ok = MessageBoxEx.Show($"是否向当前标签项 ""{item.Content}"" 末尾添加剪贴板内容 ""{clip}""？",
-                "附加内容", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1,
-                _view.GetMe(), New String() {"添加空格", "添加逗号", "不添加"})
+        If clip <> "" Then
+            Dim ok = MessageBoxEx.Show($"是否向当前标签项 ""{item.Content}"" 末尾添加剪贴板内容 ""{clip}""？", "粘贴",
+                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, _view.GetMe(), {"添加空格", "添加逗号", "不添加"})
             If ok = vbYes Then
                 item.Content += " " & clip
                 _globalPresenter.SaveFile()
@@ -117,23 +107,19 @@ Public Class MainFormTipPresenter
     End Function
 
     Public Sub Search() Implements MainFormContract.ITipPresenter.Search
-        Dim results As New List(Of Tuple(Of Integer, Integer))
         Dim text As String = InputBox("请输入搜索内容：", "搜索").Trim()
         If text = "" Then
             Return
         End If
-        For Each tab As Tab In GlobalModel.Tabs
-            For Each tip As TipItem In tab.Tips
-                If tip.Content.ToLower().Contains(text.ToLower()) Then
-                    results.Add(New Tuple(Of Integer, Integer)(GlobalModel.Tabs.IndexOf(tab), tab.Tips.IndexOf(tip)))
-                End If
-            Next
-        Next
+        Dim results As List(Of Tuple(Of Integer, Integer)) = GlobalModel.Tabs.SelectMany(Function(tab)
+            Return tab.Tips.Where(Function(tip) tip.Content.ToLower().Contains(text.ToLower())).ToList().Select(Function(tip)
+                Return New Tuple(Of Integer, Integer)(GlobalModel.Tabs.IndexOf(tab), tab.Tips.IndexOf(tip))
+            End Function)
+        End Function).ToList()
+
         SearchDialog.Close()
         If results.Count = 0 Then
-            MessageBoxEx.Show($"未找到 ""{text}"" 。",
-                "查找", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1,
-                _view.GetMe())
+            MessageBoxEx.Show($"未找到 ""{text}"" 。", "查找", MessageBoxButtons.OK, MessageBoxIcon.Information, _view.GetMe())
         Else
             SearchDialog.SearchText = text
             SearchDialog.GetFunc = Function() results
@@ -148,52 +134,35 @@ Public Class MainFormTipPresenter
     End Sub
 
     Public Sub ViewCurrentList(items As IEnumerable(Of TipItem)) Implements MainFormContract.ITipPresenter.ViewCurrentList
-        Dim sb As New StringBuilder
-        For Each item As TipItem In items.Cast(Of TipItem)()
-            sb.AppendLine(item.Content & If(item.IsHighLight, $" [高亮 {item.Color.Name}]", ""))
-        Next
-        _view.ShowTextForm($"浏览文件 (共 {items.Count} 项)", sb.ToString(), Color.Black)
+        Dim tipString = String.Join(vbNewLine, items.Select(Function(t) t.Content & If(t.IsHighLight, $" [高亮 {t.Color.Name}]", "")))
+        _view.ShowTextForm($"浏览文件 (共 {items.Count} 项)", tipString.ToString(), Color.Black)
     End Sub
 
-    Public Function GetLinks(items As IEnumerable(Of TipItem)) As List(Of String) Implements MainFormContract.ITipPresenter.GetLinks
-        Dim res As New List(Of String)
-        For Each item As TipItem In items
-            For Each link As String In item.Content.Split(New Char() {" "}, StringSplitOptions.RemoveEmptyEntries)
-                If link.StartsWith("http://") Or link.StartsWith("https://") Then
-                    res.Add(link)
-                End If
-            Next
-        Next
-        Return res
+    Public Function GetLinks(items As IEnumerable(Of TipItem)) As IEnumerable(Of String) Implements MainFormContract.ITipPresenter.GetLinks
+        Return items.SelectMany(Function(t) t.Content.Split(New Char() {" "}, StringSplitOptions.RemoveEmptyEntries)).
+            Where(Function(s) s.StartsWith("http://") Or s.StartsWith("https://"))
     End Function
 
-    Public Shared Sub OpenInDefaultBrowser(links As IEnumerable(Of String), inNew As Boolean)
+    Private Sub OpenInDefaultBrowser(links As IEnumerable(Of String), inNew As Boolean)
         If inNew Then
             Dim browser As String = CommonUtil.GetDefaultBrowserPath().ToLower()
             If browser.Contains("chrome") Then
-                Dim p As New Process()
-                With p.StartInfo
-                    .FileName = browser
-                    .Arguments = "--new-window " & String.Join(" ", links)
-                    .WindowStyle = ProcessWindowStyle.Minimized
-                End With
+                Dim p As New Process() With {.StartInfo = New ProcessStartInfo(browser, "--new-window " & String.Join(" ", links))}
+                p.StartInfo.WindowStyle = ProcessWindowStyle.Minimized
                 p.Start()
                 Return
             End If
         End If
-        For Each link As String In links
-            Process.Start(link)
-        Next
+        links.ToList().ForEach(Sub(link) Process.Start(link))
     End Sub
 
     Public Sub OpenAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean) Implements MainFormContract.ITipPresenter.OpenAllLinks
-        Dim links As List(Of String) = getLinks(items)
+        Dim links As List(Of String) = GetLinks(items).ToList()
         If links.Count = 0 Then
             MessageBoxEx.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
         Else
             Dim linksString As String = String.Join(vbNewLine, links)
-            Dim ok = MessageBoxEx.Show($"是否打开以下 {links.Count} 个链接：{vbNewLine}{vbNewLine}{linksString}",
-                "打开链接", MessageBoxButtons.OKCancel, MessageBoxIcon.Question)
+            Dim ok = MessageBoxEx.Show($"是否打开以下 {links.Count} 个链接：{vbNewLine}{vbNewLine}{linksString}", "打开链接", MessageBoxButtons.OKCancel, MessageBoxIcon.Question)
             If ok = vbOK Then
                 OpenInDefaultBrowser(links, inNew)
             End If
@@ -201,21 +170,22 @@ Public Class MainFormTipPresenter
     End Sub
 
     Public Sub ViewAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean) Implements MainFormContract.ITipPresenter.ViewAllLinks
-        Dim links As List(Of String) = getLinks(items)
+        Dim links As List(Of String) = getLinks(items).ToList()
         If links.Count = 0 Then
             MessageBoxEx.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error)
         Else
             LinkDialog.Close()
             LinkDialog.GetFunc = Function() links
-            LinkDialog.OpenBrowserFunc = Sub(l As IEnumerable(Of String))
-                OpenInDefaultBrowser(l, inNew)
-            End Sub
+            LinkDialog.OpenBrowserFunc = Sub(l As IEnumerable(Of String)) OpenInDefaultBrowser(l, inNew)
             LinkDialog.Show(_view.GetMe())
         End If
     End Sub
 
     Public Sub SetupHighlightColor(cb As Action) Implements MainFormContract.ITipPresenter.SetupHighlightColor
-        ColorDialog.SaveFunc = Sub() cb()
+        ColorDialog.SaveFunc = Sub()
+            _globalPresenter.SaveFile()
+            cb()
+        End Sub
         ColorDialog.ShowDialog(_view.GetMe())
     End Sub
 End Class

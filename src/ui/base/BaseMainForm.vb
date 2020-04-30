@@ -32,6 +32,7 @@ Public Class BaseMainForm
 
     Private Sub InitHandler(ctrls As IEnumerable(Of Control))
         For Each ctrl As Control In ctrls
+            Dim isFrm As Boolean = ctrl.GetType() = GetType(MainForm) OrElse ctrl.GetType() = GetType(Form)
             Dim isBtn As Boolean = ctrl.GetType() = GetType(Button) OrElse ctrl.GetType() = GetType(DD.ButtonX)
             Dim isNum As Boolean = ctrl.GetType() = GetType(NumericUpDown)
             Dim isTab As Boolean = ctrl.GetType() = GetType(TabView.TabViewItem) OrElse ctrl.GetType() = GetType(DD.SuperTabItem) OrElse
@@ -40,6 +41,11 @@ Public Class BaseMainForm
             ' 任何控件都可以监听 鼠标移动
             AddHandler ctrl.MouseMove, AddressOf FormMouseMove
             AddHandler ctrl.MouseLeave, AddressOf FormMouseLeave
+
+            ' 窗口的非活动实现
+            If isFrm Then
+                AddHandler CType(ctrl, Form).Deactivate, AddressOf FormDeactivate
+            End If
 
             ' 非 Tab 和 Num 才可以监听 鼠标点击 (Button 由于存在 ResizeFlag)
             If Not isTab AndAlso Not isNum Then
@@ -162,16 +168,16 @@ Public Class BaseMainForm
 
 #Region "Move"
 
-    Protected ReadOnly Property IsMouseDown As Boolean = _isMouseDown
-    Protected ReadOnly Property PushDownMouseInScreen As Point = _pushDownMouseInScreen
+    Private _isMouseDown As Boolean
+    Protected ReadOnly Property PushDownMousePosition As Point = _pushDownMousePosition
     Protected ReadOnly Property PushDownWindowSize As Size = _pushDownWindowSize
-    Protected ReadOnly Property PushDownWindowPos As Point = _pushDownWindowPos
+    Protected ReadOnly Property PushDownWindowPosition As Point = _pushDownWindowPosition
 
     Private Sub FormMouseDown(sender As Object, e As MouseEventArgs)
         _isMouseDown = e.Button = MouseButtons.Left
-        _pushDownMouseInScreen = Cursor.Position
-        _PushDownWindowSize = New Size(Me.Width, Me.Height)
-        _pushDownWindowPos = New Point(Me.Left, Me.Top)
+        _pushDownMousePosition = Cursor.Position
+        _pushDownWindowSize = New Size(Me.Width, Me.Height)
+        _pushDownWindowPosition = New Point(Me.Left, Me.Top)
     End Sub
 
     Private Sub FormMouseUp(sender As Object, e As MouseEventArgs)
@@ -179,11 +185,16 @@ Public Class BaseMainForm
         Me.Cursor = Cursors.Default
     End Sub
 
+    Private Sub FormDeactivate(sender As Object, e As EventArgs)
+        _isMouseDown = False
+        Me.Cursor = Cursors.Default
+    End Sub
+
     Private Sub FormMouseDownMove(sender As Object, e As MouseEventArgs)
-        If IsMouseDown Then
+        If _isMouseDown Then
             Me.Cursor = Cursors.SizeAll
-            Me.Top = _pushDownWindowPos.Y + Cursor.Position.Y - _pushDownMouseInScreen.Y
-            Me.Left = _pushDownWindowPos.X + Cursor.Position.X - _pushDownMouseInScreen.X
+            Me.Top = _pushDownWindowPosition.Y + Cursor.Position.Y - _pushDownMousePosition.Y
+            Me.Left = _pushDownWindowPosition.X + Cursor.Position.X - _pushDownMousePosition.X
         End If
     End Sub
 

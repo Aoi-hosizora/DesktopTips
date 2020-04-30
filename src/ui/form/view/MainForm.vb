@@ -22,7 +22,7 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub LoadFile() ' On_Form_Load On_BtnRefresh_Click 用
+    Private Sub LoadFileAndUpdate() ' On_Form_Load On_BtnRefresh_Click 用
         _globalPresenter.LoadFile()
         m_TipListBox.DataSource = GlobalModel.CurrentTab.Tips
         m_TipListBox.Update()
@@ -47,8 +47,7 @@ Public Class MainForm
     End Sub
 
     Private Sub ExitApplication(sender As Object, e As EventArgs) Handles m_btn_Exit.Click, m_popup_Exit.Click
-        Dim ok = MessageBoxEx.Show("确定退出 DesktopTips 吗？",
-            "关闭", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+        Dim ok = MessageBoxEx.Show("确定退出 DesktopTips 吗？", "关闭", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
         If ok = vbYes Then
             Me.Close()
         End If
@@ -71,7 +70,8 @@ Public Class MainForm
     End Sub
 
     Private Sub On_Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        IsLoading = True
+        ' 加载页面 设置
+        Me.IsLoading = True
         LoadSetting()
         SetupOpacityButtons()
         SetupAssistButtons()
@@ -85,7 +85,8 @@ Public Class MainForm
         End Function
         Me.IsLoading = False
 
-        LoadFile()
+        ' 加载文件 更新内容
+        LoadFileAndUpdate()
     End Sub
 
 #End Region
@@ -100,7 +101,7 @@ Public Class MainForm
     End Sub
 
     Private Sub DeleteTip(sender As Object, e As EventArgs) Handles m_btn_RemoveTips.Click, m_popup_RemoveTips.Click
-        Dim index = m_TipListBox.SelectedIndex
+        Dim index As Integer = m_TipListBox.SelectedIndex
         If m_TipListBox.SelectedItems IsNot Nothing AndAlso _tipPresenter.Delete(m_TipListBox.SelectedItems) Then
             m_TipListBox.Update()
             m_TipListBox.SetSelectOnly(index)
@@ -215,16 +216,17 @@ Public Class MainForm
     End Sub
 
     Private Sub HighLightTips(sender As Object, e As EventArgs)
+        ' TODO
         Dim color = CType(sender.Tag, TipColor)
         MsgBox($"Color: {color.Id} {color.Name} {color.Color}")
     End Sub
 
     Private Sub On_BtnSetupHighlightColors_Click(sender As Object, e As EventArgs) Handles m_popup_SetupColors.Click
-        _tipPresenter.SetupHighlightColor(Sub()m_TipListBox.Update())
+        _tipPresenter.SetupHighlightColor(Sub() m_TipListBox.Update())
     End Sub
 
     Private Sub On_BtnRefresh_Click(sender As Object, e As EventArgs) Handles m_popup_Refresh.Click
-        LoadFile()
+        LoadFileAndUpdate()
     End Sub
 
 #End Region
@@ -239,9 +241,9 @@ Public Class MainForm
     End Sub
 
     Private Sub DeleteTab(sender As Object, e As EventArgs) Handles m_popup_DeleteTab.Click
-        If m_TabView.SelectedTabIndex <> - 1 Then
+        If m_TabView.SelectedTab IsNot Nothing Then
             If m_TabView.Tabs.Count = 1 Then
-                MessageBoxEx.Show("无法删除最后的分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, Me)
+                MessageBoxEx.Show("无法删除最后一个分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, Me)
             Else
                 Dim currentIndex As Integer = m_TabView.SelectedTabIndex
                 If _tabPresenter.Delete(m_TabView.SelectedTab.TabSource) Then
@@ -253,23 +255,20 @@ Public Class MainForm
     End Sub
 
     Private Sub UpdateTab(sender As Object, e As EventArgs) Handles m_popup_RenameTab.Click
-        If m_TabView.SelectedTabIndex <> - 1 Then
-            If _tabPresenter.Update(m_TabView.SelectedTab.TabSource) Then
-                m_TabView.Update()
-            End If
+        If m_TabView.SelectedTab IsNot Nothing AndAlso _tabPresenter.Update(m_TabView.SelectedTab.TabSource) Then
+            m_TabView.Update()
         End If
     End Sub
 
-    Private Sub TabStrip_TabMoved(sender As Object, e As DD.SuperTabStripTabMovedEventArgs) Handles m_TabView.TabMoved
-        Dim newTabs As List(Of Tab) = (From item As TabView.TabViewItem In e.NewOrder Select item.TabSource).ToList()
+    Private Sub On_TabView_TabMoved(sender As Object, e As DD.SuperTabStripTabMovedEventArgs) Handles m_TabView.TabMoved
+        Dim newTabs As List(Of Tab) = e.NewOrder.Select(Function(item) CType(item, TabView.TabViewItem).TabSource).ToList()
         GlobalModel.Tabs = newTabs
         GlobalModel.CurrentTab = m_TabView.SelectedTab.TabSource
         _globalPresenter.SaveFile()
     End Sub
 
     Private Sub On_TabView_DoubleClick(sender As Object, e As EventArgs) Handles m_TabView.DoubleClick
-        Dim pos As New Point(Cursor.Position.X - Me.Left - sender.Left, Cursor.Position.Y - Me.Top - sender.Top)
-        If m_TabView.GetItemFromPoint(pos) Is Nothing Then
+        If m_TabView.GetItemFromPoint(m_TabView.PointToClient(Cursor.Position)) Is Nothing Then
             InsertTab(sender, New EventArgs)
         Else
             UpdateTab(sender, New EventArgs)
@@ -291,16 +290,11 @@ Public Class MainForm
     End Sub
 
     Private Function GetUnselectedTabMoveButtonList(all As Boolean) As IEnumerable(Of DD.ButtonItem) ' SetupMoveToButtons 用
-        Dim buttons As New List(Of DD.ButtonItem)
-        Dim idx = 0
-        For Each tab In GlobalModel.Tabs
-            If m_TabView.SelectedTab IsNot Nothing AndAlso m_TabView.SelectedTab.TabSource.Title = tab.Title Then Continue For
-            idx += 1
-            Dim button As New DD.ButtonItem() With {.GlobalItem = False, .Tag = New Object() {tab, all}, .Text = $"{tab.Title}(&{idx})"}
+        Return GlobalModel.Tabs.Where(Function(t) m_TabView.SelectedTab IsNot Nothing AndAlso m_TabView.SelectedTab.TabSource.Title <> t.Title).Select(Function(tab, idx)
+            Dim button As New DD.ButtonItem() With {.GlobalItem = False, .Tag = New Object() {tab, all}, .Text = $"{tab.Title}(&{idx + 1})"}
             AddHandler button.Click, AddressOf MoveTipToTab
-            buttons.Add(button)
-        Next
-        Return buttons
+            Return button
+        End Function)
     End Function
 
     Private Sub MoveTipToTab(sender As DD.ButtonItem, e As EventArgs)
@@ -365,15 +359,12 @@ Public Class MainForm
     End Sub
 
     Private Sub SetupAssistButtons() ' On_Form_Load 用
-        Dim itemHeight As Integer = m_TipListBox.ItemHeight
-
         m_btn_MoveTipUp.Visible = False
-        m_btn_MoveTipUp.Height = (itemHeight + 1) / 2
-        m_btn_MoveTipUp.Width = itemHeight
+        m_btn_MoveTipUp.Height = (17 + 1) / 2
+        m_btn_MoveTipUp.Width = 17
         m_btn_MoveTipDown.Visible = False
-        m_btn_MoveTipDown.Height = (itemHeight + 1) / 2
-        m_btn_MoveTipDown.Width = itemHeight
-
+        m_btn_MoveTipDown.Height = (17 + 1) / 2
+        m_btn_MoveTipDown.Width = 17
         m_TipListBox.WheeledFunc = Sub() HideAssistButtons()
     End Sub
 
@@ -382,17 +373,20 @@ Public Class MainForm
         rect.Offset(m_TipListBox.Location)
         rect.Offset(2, 2)
 
-        m_btn_MoveTipUp.Top = rect.Top
-        m_btn_MoveTipUp.Left = rect.Left + rect.Width - m_btn_MoveTipDown.Width
+        ' m_btn_MoveTipUp.Top = rect.Top
+        ' m_btn_MoveTipUp.Left = rect.Left + rect.Width - m_btn_MoveTipDown.Width
         m_btn_MoveTipUp.Visible = True
-        m_btn_MoveTipDown.Top = m_btn_MoveTipUp.Top + m_btn_MoveTipUp.Height - 1
-        m_btn_MoveTipDown.Left = m_btn_MoveTipUp.Left
+        ' m_btn_MoveTipDown.Top = m_btn_MoveTipUp.Top + m_btn_MoveTipUp.Height - 1
+        ' m_btn_MoveTipDown.Left = m_btn_MoveTipUp.Left
         m_btn_MoveTipDown.Visible = True
+
+        ' TODO
+        MsgBox(m_btn_MoveTipUp.Visible & " " & m_TipListBox.SelectedCount & " " & m_TipListBox.SelectedIndex & " " & m_TipListBox.ItemCount)
     End Sub
 
-    Private Sub HideAssistButtons() ' SetupAssistButtons (WheeledFunc) On_ListView_SelectedIndexChangedAndMouseDown On_TabView_SelectedTabChanged 用
-        m_btn_MoveTipUp.Visible = False
-        m_btn_MoveTipDown.Visible = False
+    Private Sub HideAssistButtons() ' SetupAssistButtons.WheeledFunc On_ListView_SelectedIndexChangedAndMouseDown On_TabView_SelectedTabChanged 用
+        ' m_btn_MoveTipUp.Visible = False
+        ' m_btn_MoveTipDown.Visible = False
     End Sub
 
     Private Sub On_ListViewAndForm_SizeChanged(sender As Object, e As EventArgs) Handles m_TipListBox.SizeChanged, Me.SizeChanged
@@ -460,7 +454,6 @@ Public Class MainForm
     Private Sub On_ListView_SelectedIndexChangedAndMouseDown(sender As Object, e As EventArgs) Handles m_TipListBox.SelectedIndexChanged, m_TipListBox.MouseDown
         CheckListItemEnabled()
         If m_TipListBox.SelectedCount = 1 Then ShowAssistButtons() Else HideAssistButtons()
-        m_TipListBox.Refresh()
     End Sub
 
     Private Sub On_TabView_ItemClick(sender As Object, e As EventArgs) Handles m_TabView.ItemClick
@@ -469,8 +462,13 @@ Public Class MainForm
 
     Private Sub On_BtnResize_MouseMove(sender As Object, e As MouseEventArgs) Handles m_btn_Resize.MouseMove
         If e.Button = MouseButtons.Left Then
-            Me.Width = PushDownWindowSize.Width + Cursor.Position.X - PushDownMouseInScreen.X
+            Me.Width = PushDownWindowSize.Width + Cursor.Position.X - PushDownMousePosition.X
+            m_TipListBox.Refresh()
         End If
+    End Sub
+
+    Private Sub On_BtnResize_MouseUp(sender As Object, e As MouseEventArgs) Handles m_btn_Resize.MouseUp
+        m_TipListBox.Refresh()
     End Sub
 
     Private _isMenuPopuping As Boolean = False

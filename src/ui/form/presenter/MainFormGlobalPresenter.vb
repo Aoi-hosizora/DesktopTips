@@ -13,9 +13,8 @@ Public Class MainFormGlobalPresenter
         Try
             GlobalModel.LoadAllData()
         Catch ex As FileLoadException
-            Dim ok = MessageBoxEx.Show($"错误：{ex.Message}{vbNewLine}是否打开文件位置检查文件？",
-                "错误", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1,
-                _view.GetMe(), {"開く", "キャンセル"})
+            Dim ok = MessageBoxEx.Show($"错误：{ex.Message}{vbNewLine}是否打开文件位置检查文件？", "错误",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, _view.GetMe(), {"打开", "取消"})
             If ok = vbYes Then
                 OpenFileDir()
             End If
@@ -33,9 +32,8 @@ Public Class MainFormGlobalPresenter
     End Sub
 
     Public Function RegisterHotKey(handle As IntPtr, key As Keys, id As Integer) As Boolean Implements MainFormContract.IGlobalPresenter.RegisterHotKey
-        If Not NativeMethod.RegisterHotKey(
-            handle, id, CommonUtil.GetNativeModifiers(CommonUtil.GetModifiersFromKey(key)), CommonUtil.GetKeyCodeFromKey(key)) Then
-            MessageBoxEx.Show("快捷键已被占用，请重新设置", "快捷键", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        If Not NativeMethod.RegisterHotKey(handle, id, CommonUtil.GetNativeModifiers(CommonUtil.GetModifiersFromKey(key)), CommonUtil.GetKeyCodeFromKey(key)) Then
+            MessageBoxEx.Show("快捷键已被占用，请重新设置", "快捷键", MessageBoxButtons.OK, MessageBoxIcon.Error, _view.GetMe())
             Return False
         End If
         Return True

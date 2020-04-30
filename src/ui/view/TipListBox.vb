@@ -204,15 +204,15 @@
         End If
     End Sub
 
-    ''' <summary>
-    ''' 滚动条拖动执行 WheeledFunc
-    ''' </summary>
-    Protected Overrides Sub OnMouseCaptureChanged(e As EventArgs)
-        MyBase.OnMouseCaptureChanged(e)
-        If WheeledFunc IsNot Nothing AndAlso Cursor.Position.X > Parent.Left + Left + Width - 20 Then
-            WheeledFunc.Invoke()
-        End If
-    End Sub
+    ' ''' <summary>
+    ' ''' 滚动条拖动执行 WheeledFunc
+    ' ''' </summary>
+    ' Protected Overrides Sub OnMouseCaptureChanged(e As EventArgs)
+    '     MyBase.OnMouseCaptureChanged(e)
+    '     If WheeledFunc IsNot Nothing AndAlso Cursor.Position.X > Parent.Left + Left + Width - 20 Then
+    '         WheeledFunc.Invoke()
+    '     End If
+    ' End Sub
 
 #End Region
 

@@ -1,9 +1,5 @@
 ﻿Public Class MessageBoxEx
-    Public Shared Function Show(
-                                Optional text As String = "",
-                                Optional caption As String = "",
-                                Optional buttons As MessageBoxButtons = MessageBoxButtons.OK,
-                                Optional icon As MessageBoxIcon = MessageBoxIcon.None,
+    Public Shared Function Show(text As String, caption As String, buttons As MessageBoxButtons, icon As MessageBoxIcon,
                                 Optional defBtn As MessageBoxDefaultButton = MessageBoxDefaultButton.Button1,
                                 Optional mainFrm As Form = Nothing,
                                 Optional btnTitles() As String = Nothing) As DialogResult
@@ -13,6 +9,16 @@
         Dim result = MessageBox.Show(frm, text, caption, buttons, icon, defBtn)
         frm.Close()
         Return result
+    End Function
+
+    Public Shared Function Show(text As String, caption As String, buttons As MessageBoxButtons, icon As MessageBoxIcon,
+                                Optional mainFrm As Form = Nothing,
+                                Optional btnTitles() As String = Nothing) As DialogResult
+        Return Show(text, caption, buttons, icon, MessageBoxDefaultButton.Button1, mainFrm, btnTitles)
+    End Function
+
+    Public Shared Function Show(text As String, caption As String, buttons As MessageBoxButtons, icon As MessageBoxIcon) As DialogResult
+        Return Show(text, caption, buttons, icon, MessageBoxDefaultButton.Button1, Nothing, Nothing)
     End Function
 
     Private Class MessageForm

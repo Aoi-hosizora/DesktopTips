@@ -135,11 +135,11 @@ Partial Class MainForm
         Me.m_TipListBox.ItemHeight = 17
         Me.m_TipListBox.Location = New System.Drawing.Point(23, 0)
         Me.m_TipListBox.Name = "m_TipListBox"
-        Me.m_TipListBox.WheeledFunc = Nothing
         Me.m_TipListBox.SelectedItem = Nothing
         Me.m_TipListBox.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
         Me.m_TipListBox.Size = New System.Drawing.Size(303, 240)
         Me.m_TipListBox.TabIndex = 0
+        Me.m_TipListBox.WheeledFunc = Nothing
         '
         'm_btn_Exit
         '
@@ -191,7 +191,7 @@ Partial Class MainForm
         Me.m_menu_ContextMenuBar.AntiAlias = True
         Me.m_menu_ContextMenuBar.Font = New System.Drawing.Font("Yu Gothic UI", 9.0!)
         Me.m_menu_ContextMenuBar.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_menu_ListPopupMenu, Me.m_menu_TabPopupMenu})
-        Me.m_menu_ContextMenuBar.Location = New System.Drawing.Point(46, 40)
+        Me.m_menu_ContextMenuBar.Location = New System.Drawing.Point(74, 12)
         Me.m_menu_ContextMenuBar.Name = "m_menu_ContextMenuBar"
         Me.m_menu_ContextMenuBar.Size = New System.Drawing.Size(240, 27)
         Me.m_menu_ContextMenuBar.Stretch = True
@@ -593,7 +593,7 @@ Partial Class MainForm
         Me.m_btn_MoveTipUp.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
         Me.m_btn_MoveTipUp.Font = New System.Drawing.Font("Yu Gothic UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.m_btn_MoveTipUp.Image = Global.DesktopTips.My.Resources.Resources.UpIcon
-        Me.m_btn_MoveTipUp.Location = New System.Drawing.Point(139, 144)
+        Me.m_btn_MoveTipUp.Location = New System.Drawing.Point(12, 70)
         Me.m_btn_MoveTipUp.Name = "m_btn_MoveTipUp"
         Me.m_btn_MoveTipUp.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
         Me.m_btn_MoveTipUp.Size = New System.Drawing.Size(17, 9)
@@ -608,7 +608,7 @@ Partial Class MainForm
         Me.m_btn_MoveTipDown.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
         Me.m_btn_MoveTipDown.Font = New System.Drawing.Font("Yu Gothic UI Semibold", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
         Me.m_btn_MoveTipDown.Image = Global.DesktopTips.My.Resources.Resources.DownIcon
-        Me.m_btn_MoveTipDown.Location = New System.Drawing.Point(139, 152)
+        Me.m_btn_MoveTipDown.Location = New System.Drawing.Point(12, 78)
         Me.m_btn_MoveTipDown.Name = "m_btn_MoveTipDown"
         Me.m_btn_MoveTipDown.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
         Me.m_btn_MoveTipDown.Size = New System.Drawing.Size(17, 9)
@@ -622,6 +622,7 @@ Partial Class MainForm
         Me.m_btn_Resize.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.m_btn_Resize.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.m_btn_Resize.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
+        Me.m_btn_Resize.Cursor = System.Windows.Forms.Cursors.SizeWE
         Me.m_btn_Resize.Location = New System.Drawing.Point(316, 239)
         Me.m_btn_Resize.Name = "m_btn_Resize"
         Me.m_btn_Resize.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()

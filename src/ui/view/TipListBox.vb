@@ -39,7 +39,7 @@
 
     Public Overloads ReadOnly Property SelectedCount As Integer
         Get
-            Return SelectedIndices.Count
+            Return SelectedItems.Count
         End Get
     End Property
 
@@ -67,6 +67,9 @@
             SetSelected(0, True)
         End If
         ClearSelected()
+        If index >= ItemCount Then
+            index = ItemCount - 1
+        End If
         SetSelected(index, True)
     End Sub
 

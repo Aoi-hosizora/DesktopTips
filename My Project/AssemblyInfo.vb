@@ -9,10 +9,10 @@ Imports System.Runtime.InteropServices
 ' 查看程序集特性的值
 
 <Assembly: AssemblyTitle("DesktopTips")> 
-<Assembly: AssemblyDescription("")> 
+<Assembly: AssemblyDescription("Persistent Desktop Memo Tool")> 
 <Assembly: AssemblyCompany("")> 
 <Assembly: AssemblyProduct("DesktopTips")> 
-<Assembly: AssemblyCopyright("Copyright ©  2019")> 
+<Assembly: AssemblyCopyright("Copyright © 2020 AoiHosizora")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' 方法是按如下所示使用“*”:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("2.1.0.0")> 
-<Assembly: AssemblyFileVersion("2.1.0.0")> 
+<Assembly: AssemblyVersion("3.0.0.0")> 
+<Assembly: AssemblyFileVersion("3.0.0.0")> 

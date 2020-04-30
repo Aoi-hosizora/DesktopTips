@@ -55,8 +55,10 @@ Partial Class MainForm
         Me.m_popup_Refresh = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_FileSubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_ViewCurrentTips = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_popup_OpenDir = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_ViewCurrentHighlights = New DevComponents.DotNetBar.ButtonItem()
+        Me.m_popup_ViewAllTips = New DevComponents.DotNetBar.ButtonItem()
+        Me.m_popup_ViewAllHighlights = New DevComponents.DotNetBar.ButtonItem()
+        Me.m_popup_OpenDir = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_BrowserSubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_OpenAllLinksInTips = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_ViewAllLinksInTips = New DevComponents.DotNetBar.ButtonItem()
@@ -82,8 +84,6 @@ Partial Class MainForm
         Me.m_btn_MoveTipUp = New DevComponents.DotNetBar.ButtonX()
         Me.m_btn_MoveTipDown = New DevComponents.DotNetBar.ButtonX()
         Me.m_btn_Resize = New DevComponents.DotNetBar.ButtonX()
-        Me.m_popup_ViewAllTips = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_popup_ViewAllHighlights = New DevComponents.DotNetBar.ButtonItem()
         CType(Me.m_num_ListCount, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.m_menu_ContextMenuBar, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.m_TabView, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -124,7 +124,7 @@ Partial Class MainForm
         Me.m_StyleManager.ManagerStyle = DevComponents.DotNetBar.eStyle.Office2007Blue
         Me.m_StyleManager.MetroColorParameters = New DevComponents.DotNetBar.Metro.ColorTables.MetroColorGeneratorParameters(System.Drawing.Color.White, System.Drawing.Color.FromArgb(CType(CType(43, Byte), Integer), CType(CType(87, Byte), Integer), CType(CType(154, Byte), Integer)))
         '
-        'm_TipListBox
+        'm_ListView
         '
         Me.m_ListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
@@ -404,16 +404,27 @@ Partial Class MainForm
         Me.m_popup_ViewCurrentTips.Name = "m_popup_ViewCurrentTips"
         Me.m_popup_ViewCurrentTips.Text = "浏览当前列表内容(&V)"
         '
+        'm_popup_ViewCurrentHighlights
+        '
+        Me.m_popup_ViewCurrentHighlights.Name = "m_popup_ViewCurrentHighlights"
+        Me.m_popup_ViewCurrentHighlights.Text = "浏览当前列表高亮(&H)"
+        '
+        'm_popup_ViewAllTips
+        '
+        Me.m_popup_ViewAllTips.BeginGroup = True
+        Me.m_popup_ViewAllTips.Name = "m_popup_ViewAllTips"
+        Me.m_popup_ViewAllTips.Text = "浏览所有列表内容(&A)"
+        '
+        'm_popup_ViewAllHighlights
+        '
+        Me.m_popup_ViewAllHighlights.Name = "m_popup_ViewAllHighlights"
+        Me.m_popup_ViewAllHighlights.Text = "浏览所有列表高亮(&I)"
+        '
         'm_popup_OpenDir
         '
         Me.m_popup_OpenDir.BeginGroup = True
         Me.m_popup_OpenDir.Name = "m_popup_OpenDir"
         Me.m_popup_OpenDir.Text = "打开文件所在位置(&O)"
-        '
-        'm_popup_ViewCurrentHighlights
-        '
-        Me.m_popup_ViewCurrentHighlights.Name = "m_popup_ViewCurrentHighlights"
-        Me.m_popup_ViewCurrentHighlights.Text = "浏览当前列表高亮(&H)"
         '
         'm_menu_BrowserSubMenu
         '
@@ -630,17 +641,6 @@ Partial Class MainForm
         Me.m_btn_Resize.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
         Me.m_btn_Resize.TabIndex = 6
         Me.m_btn_Resize.Text = "::"
-        '
-        'm_popup_ViewAllTips
-        '
-        Me.m_popup_ViewAllTips.BeginGroup = True
-        Me.m_popup_ViewAllTips.Name = "m_popup_ViewAllTips"
-        Me.m_popup_ViewAllTips.Text = "浏览所有列表内容(&A)"
-        '
-        'm_popup_ViewAllHighlights
-        '
-        Me.m_popup_ViewAllHighlights.Name = "m_popup_ViewAllHighlights"
-        Me.m_popup_ViewAllHighlights.Text = "浏览所有列表高亮(&I)"
         '
         'MainForm
         '

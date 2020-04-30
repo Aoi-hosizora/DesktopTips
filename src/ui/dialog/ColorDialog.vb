@@ -45,9 +45,13 @@
         If ok2 = vbNo Then ' 直接删除
             GlobalModel.Tabs.ForEach(Sub(t) t.Tips.RemoveAll(Function(tip) tip.ColorId = delColor.Id))
             RemoveColorItemAndSave(delColor)
-        Else ' 修改高亮颜色
+        ElseIf ok2 = vbYes ' 修改高亮颜色
             ColorSelectDialog.GetDelColorFunc = Function() delColor
-            ColorSelectDialog.GetColorsFunc = Function() GlobalModel.Colors.Where(Function (c) c.Id <> delColor.Id)
+            ColorSelectDialog.GetColorsFunc = Function() 
+                Dim t = GlobalModel.Colors.Where(Function (c) c.Id <> delColor.Id).ToList()
+                t.Insert(0, Nothing)
+                Return t
+            End Function
             ColorSelectDialog.OkFunc = Sub(id As Integer)
                 For Each tip As TipItem In tips
                     tip.ColorId = id

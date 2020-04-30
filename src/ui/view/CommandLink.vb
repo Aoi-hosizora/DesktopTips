@@ -20,6 +20,8 @@ Public Class CommandLink
             Return _commandLinkNote
         End Get
         Set
+            _commandLinkNote = ""
+            Me.UpdateCommandLink()
             _commandLinkNote = value
             Me.UpdateCommandLink()
         End Set

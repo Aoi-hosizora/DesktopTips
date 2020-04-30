@@ -14,7 +14,7 @@
 + `Dotnetbar` 10.8.0.0
 + `Newtonsoft.Json` 12.0.2
 
-### Functions (v2.1)
+### Functions (v3.0)
 
 + [x] Memo CRUD
 + [x] Highlight with multiple color
@@ -30,4 +30,6 @@
 
 ### Screenshots
 
-![Screenshots_1](./assets/Screenshot_1.jpg)
+|![Screenshots_1](./assets/Screenshots_1.jpg)|![Screenshots_2](./assets/Screenshots_2.jpg)|![Screenshots_3](./assets/Screenshots_3.jpg)|
+|:---:|:---:|:---:|
+

@@ -14,7 +14,7 @@
             Return
         End If
         _delColor = GetDelColorFunc.Invoke()
-        _colors = GetColorsFunc.Invoke()
+        _colors = GetColorsFunc.Invoke().ToList()
         TitleWarningBox.Text = $"请选择一个颜色代替被删除的颜色 ""{_delColor.Name}"""
 
         Dim currentPos As New Point(12, 7)
@@ -22,23 +22,26 @@
         Const buttonHeight = 57
         Dim buttonWidth = CommandPanel.Width - 2 * marginInPanel.Width
 
+        CommandPanel.Controls.Clear()
         For Each c As TipColor In _colors
-            Dim button As New CommandLink() With {.Text = c.Name, .Tag = c, .CommandLinkNote = $"{c.HexColor} | {c.RgbColor}"}
-            button.Location = currentPos
+            Dim btnTitle = If(c?.Name, "取消高亮")
+            Dim hint = If(c Is Nothing, "", $"{c.HexColor} | {c.RgbColor}")
+            Dim button As New CommandLink() With {.Text = btnTitle, .Tag = c, .CommandLinkNote = hint, .Location = currentPos, .Size = New Size(buttonWidth, buttonHeight)}
             currentPos.Y += buttonHeight + marginInPanel.Height
-            button.Size = New Size(buttonWidth, buttonHeight)
             AddHandler button.Click, AddressOf ColorCommandLink_Click
             CommandPanel.Controls.Add(button)
         Next
     End Sub
 
     Private Sub ColorCommandLink_Click(sender As CommandLink, e As EventArgs)
-        Dim color = CType(sender.Tag, TipColor)
-        Dim ok = MessageBoxEx.Show($"确定将和颜色 ""{_delColor.Name}"" 相关联的所有项目替换成 ""{color.Name}"" 并删除吗？", "删除",
+        Dim color = TryCast(sender.Tag, TipColor)
+        Dim flag = If (color IsNot Nothing, $"替换成""{color.Name}""", "取消高亮")
+        Dim id = If(color?.Id, - 1)
+        Dim ok = MessageBoxEx.Show($"确定将和颜色 ""{_delColor.Name}"" 相关联的所有项目{flag}，并删除原颜色吗？", "删除",
             MessageBoxButtons.YesNo, MessageBoxIcon.Question, Me)
         If ok = vbYes
             If OkFunc IsNot Nothing Then
-                OkFunc.Invoke(color.Id)
+                OkFunc.Invoke(id)
             End If
             Me.Close()
         End If

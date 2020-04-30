@@ -181,7 +181,7 @@ Public Class MainForm
     End Sub
 
     Private Sub ViewAllTips(sender As Object, e As EventArgs) Handles m_popup_ViewAllTips.Click
-        _tipPresenter.ViewCurrentList(GlobalModel.Tabs.Select(Function(tab) 
+        _tipPresenter.ViewCurrentList(GlobalModel.Tabs.SelectMany(Function(tab) 
             Return tab.Tips.Select(Function(tip) New TipItem($"[{tab.Title}] - {tip.Content}", tip.ColorId))
         End Function), False)
     End Sub
@@ -191,7 +191,7 @@ Public Class MainForm
     End Sub
 
     Private Sub ViewAllHighlights(sender As Object, e As EventArgs) Handles m_popup_ViewAllHighlights.Click
-        _tipPresenter.ViewCurrentList(GlobalModel.Tabs.Select(Function(tab) 
+        _tipPresenter.ViewCurrentList(GlobalModel.Tabs.SelectMany(Function(tab) 
             Return tab.Tips.Select(Function(tip) New TipItem($"[{tab.Title}] - {tip.Content}", tip.ColorId))
         End Function), True)
     End Sub

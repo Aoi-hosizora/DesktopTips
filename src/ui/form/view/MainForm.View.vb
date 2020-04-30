@@ -28,7 +28,7 @@
     End Sub
 
     Public Sub FocusItem(tabIdx As Integer, tipIdx As Integer) Implements MainFormContract.IView.FocusItem
-        If tabIdx < m_TabView.Tabs.Count
+        If tabIdx < m_TabView.TabCount Then
             m_TabView.SelectedTabIndex = tabIdx
             If tipIdx < m_TipListBox.ItemCount Then
                 m_TipListBox.SetSelectOnly(tipIdx)

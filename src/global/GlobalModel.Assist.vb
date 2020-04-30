@@ -11,9 +11,9 @@ Partial Public Class GlobalModel
     Private Shared STORAGE_BACKUP_FILENAME As String = STORAGE_FILEPATH & "\model.backup.%s.json"
 
     Private Shared Function getDefaultModel() As FileModel
-        Dim colorList As New List(Of TipColor) From {New TipColor(), New TipColor(1, "红色", Color.Red), New TipColor(2, "蓝色", Color.Blue)}
+        Dim colorList As New List(Of TipColor) From {New TipColor(0, "红色", Color.Red), New TipColor(1, "蓝色", Color.Blue)}
         Dim tabList As New List(Of Tab) From {New Tab()}
-        tabList.First().Tips.AddRange({New TipItem("实例普通标签"), New TipItem("实例红色高亮标签", 1), New TipItem("实例蓝色高亮标签", 2)})
+        tabList.First().Tips.AddRange({New TipItem("实例普通标签"), New TipItem("实例红色高亮标签", 0), New TipItem("实例蓝色高亮标签", 1)})
         Return New FileModel With {.Colors = colorList, .Tabs = tabList}
     End Function
 

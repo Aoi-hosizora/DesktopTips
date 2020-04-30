@@ -23,6 +23,12 @@ Public Class TabView
         End Get
     End Property
 
+    Public Overloads ReadOnly Property TabCount As Integer
+        Get
+            Return Tabs.Count
+        End Get
+    End Property
+
     Public Overloads Property SelectedTab As TabViewItem
         Get
             Return CType(MyBase.SelectedTab, TabViewItem)

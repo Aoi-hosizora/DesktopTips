@@ -91,7 +91,7 @@
 
         If e.Index < 0 OrElse e.Index >= ItemCount Then Return
         Dim item As TipItem = Items(e.Index)
-        Dim color As Color = If(item.Color?.Color, e.ForeColor)
+        Dim color As Color = If(item.Color?.Color, Color.Black)
 
         e.DrawBackground()
         If e.Index = _hoverIndex Then ' Hover
@@ -204,15 +204,15 @@
         End If
     End Sub
 
-    ' ''' <summary>
-    ' ''' 滚动条拖动执行 WheeledFunc
-    ' ''' </summary>
-    ' Protected Overrides Sub OnMouseCaptureChanged(e As EventArgs)
-    '     MyBase.OnMouseCaptureChanged(e)
-    '     If WheeledFunc IsNot Nothing AndAlso Cursor.Position.X > Parent.Left + Left + Width - 20 Then
-    '         WheeledFunc.Invoke()
-    '     End If
-    ' End Sub
+    ''' <summary>
+    ''' 滚动条拖动执行 WheeledFunc
+    ''' </summary>
+    Protected Overrides Sub OnMouseCaptureChanged(e As EventArgs)
+        MyBase.OnMouseCaptureChanged(e)
+        If WheeledFunc IsNot Nothing AndAlso Cursor.Position.X > Parent.Left + Left + Width - 20 Then
+            WheeledFunc.Invoke()
+        End If
+    End Sub
 
 #End Region
 

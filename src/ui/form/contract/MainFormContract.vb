@@ -15,21 +15,23 @@
     End Interface
 
     Public Interface ITipPresenter
-        Function Insert() As Boolean                                                    ' 插入
-        Function Delete(items As IEnumerable(Of TipItem)) As Boolean                    ' 删除
-        Function Update(item As TipItem) As Boolean                                     ' 更新
-        Sub Copy(items As IEnumerable(Of TipItem))                                      ' 复制
-        Function Paste(item As TipItem) As Boolean                                      ' 粘贴插入
-        Function MoveUp(item As TipItem) As Boolean                                     ' 上移
-        Function MoveDown(item As TipItem) As Boolean                                   ' 下移
-        Function MoveTop(item As TipItem) As Boolean                                    ' 置顶
-        Function MoveBottom(item As TipItem) As Boolean                                 ' 置底
-        Sub Search()                                                                    ' 搜索
-        Sub ViewCurrentList(items As IEnumerable(Of TipItem))                           ' 浏览当前列表
-        Function GetLinks(items As IEnumerable(Of TipItem)) As IEnumerable(Of String)   ' 打开所有链接
-        Sub OpenAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean)            ' 打开所有链接
-        Sub ViewAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean)            ' 浏览所有链接
-        Sub SetupHighlightColor(cb As Action)                                           ' 设置高亮
+        Function Insert() As Boolean                                                            ' 插入
+        Function Delete(items As IEnumerable(Of TipItem)) As Boolean                            ' 删除
+        Function Update(item As TipItem) As Boolean                                             ' 更新
+        Sub Copy(items As IEnumerable(Of TipItem))                                              ' 复制
+        Function Paste(item As TipItem) As Boolean                                              ' 粘贴插入
+        Function MoveUp(item As TipItem) As Boolean                                             ' 上移
+        Function MoveDown(item As TipItem) As Boolean                                           ' 下移
+        Function MoveTop(item As TipItem) As Boolean                                            ' 置顶
+        Function MoveBottom(item As TipItem) As Boolean                                         ' 置底
+        Sub Search()                                                                            ' 搜索
+        Function HighlightTips(items As IEnumerable(Of TipItem), color As TipColor) As boolean  ' 设置高亮
+        Sub ViewCurrentList(items As IEnumerable(Of TipItem))                                   ' 浏览当前列表
+        Sub ViewCurrentHighlights(items As IEnumerable(Of TipItem))                             ' 浏览当前高亮
+        Function GetLinks(items As IEnumerable(Of TipItem)) As IEnumerable(Of String)           ' 打开所有链接
+        Sub OpenAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean)                    ' 打开所有链接
+        Sub ViewAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean)                    ' 浏览所有链接
+        Sub SetupHighlightColor(cb As Action)                                                   ' 设置高亮颜色集合
     End Interface
 
     Public Interface ITabPresenter

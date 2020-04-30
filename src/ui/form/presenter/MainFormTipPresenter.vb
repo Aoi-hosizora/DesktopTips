@@ -133,9 +133,29 @@
         End If
     End Sub
 
+    Public Function HighlightTips(items As IEnumerable(Of TipItem), color As TipColor) As Boolean Implements MainFormContract.ITipPresenter.HighlightTips
+        If color Is Nothing Then
+            For Each item In items
+                item.ColorId = - 1 ' UnHighlight
+            Next
+        Else
+            For Each item In items
+                item.ColorId = color.Id
+            Next
+        End If
+        _globalPresenter.SaveFile()
+        Return True
+    End Function
+
     Public Sub ViewCurrentList(items As IEnumerable(Of TipItem)) Implements MainFormContract.ITipPresenter.ViewCurrentList
         Dim tipString = String.Join(vbNewLine, items.Select(Function(t) t.Content & If(t.IsHighLight, $" [高亮 {t.Color.Name}]", "")))
-        _view.ShowTextForm($"浏览文件 (共 {items.Count} 项)", tipString.ToString(), Color.Black)
+        _view.ShowTextForm($"浏览列表 (共 {items.Count} 项)", tipString.ToString(), Color.Black)
+    End Sub
+
+    Public Sub ViewCurrentHighlights(items As IEnumerable(Of TipItem)) Implements MainFormContract.ITipPresenter.ViewCurrentHighlights
+        Dim highLightItems = items.Where(Function(t) t.IsHighLight).Select(Function(t) $"{t.Content} [{t.Color.Name}]")
+        Dim tipString = String.Join(vbNewLine, highLightItems)
+        _view.ShowTextForm($"浏览高亮 (共 {highLightItems.Count} 项)", tipString.ToString(), Color.Black)
     End Sub
 
     Public Function GetLinks(items As IEnumerable(Of TipItem)) As IEnumerable(Of String) Implements MainFormContract.ITipPresenter.GetLinks

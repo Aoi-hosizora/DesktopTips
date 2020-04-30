@@ -21,6 +21,7 @@ Public Class TipColor
     <JsonIgnore>
     Public Property Color As Color = _color
 
+    <JsonIgnore>
     Public Readonly Property RgbColor As String
         Get
             Return String.Format("{0}, {1}, {2}", Color.R, Color.G, Color.B)
@@ -28,15 +29,15 @@ Public Class TipColor
     End Property
 
     Public Sub New()
-        Me.New(0, "默认", Color.Black)
+        Me.New(0, "默认高亮")
+    End Sub
+
+    Public Sub New(id As Integer, name As String)
+        Me.New(id, name, Color.Red)
     End Sub
 
     Public Sub New(tipColor As TipColor)
         Me.New(tipColor.Id, tipColor.Name, tipColor.Color)
-    End Sub
-
-    Public Sub New(id As Integer, name As String)
-        Me.New(id, name, Color.Black)
     End Sub
 
     Public Sub New(id As Integer, name As String, color As Color)

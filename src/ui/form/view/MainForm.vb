@@ -198,7 +198,7 @@ Public Class MainForm
 
 #End Region
 
-#Region "标签: 高亮设置 刷新"
+#Region "标签: 高亮 刷新"
 
     Private Sub SetupHighLightButtons() ' LoadFile 用
         m_menu_HighlightSubMenu.SubItems.Clear()
@@ -206,7 +206,7 @@ Public Class MainForm
             Dim btn As New DD.ButtonItem() With {.Text = $"{colorItem.Id}: {colorItem.Name}", .Tag = colorItem}
             Dim bm As New Bitmap(16, 16)
             Dim g As Graphics = Graphics.FromImage(bm)
-            g.FillRectangle(New SolidBrush(colorItem.Color), New Rectangle(0, 0, 14, 14))
+            g.FillRectangle(New SolidBrush(colorItem.Color), New Rectangle(2, 2, 12, 12))
             btn.Image = bm
 
             AddHandler btn.Click, AddressOf HighLightTips
@@ -216,9 +216,53 @@ Public Class MainForm
     End Sub
 
     Private Sub HighLightTips(sender As Object, e As EventArgs)
-        ' TODO
-        Dim color = CType(sender.Tag, TipColor)
-        MsgBox($"Color: {color.Id} {color.Name} {color.Color}")
+        If m_TipListBox.SelectedCount > 0 Then
+            Dim indices As New List(Of Integer)(m_TipListBox.SelectedIndices.Cast(Of Integer)().ToList())
+            Dim color = CType(sender.Tag, TipColor)
+            Dim isSingle = m_TipListBox.SelectedCount = 1
+            Dim items = m_TipListBox.SelectedItems.ToList()
+            Dim item = items.First()
+            Dim ok As Boolean
+
+            If isSingle Then
+                If item.IsHighLight AndAlso item.ColorId = color.Id Then ' 已经高亮并且是当前颜色
+                    ok = _tipPresenter.HighlightTips(m_TipListBox.SelectedItems, Nothing)
+                Else
+                    ok = _tipPresenter.HighlightTips(m_TipListBox.SelectedItems, color)
+                End If
+            Else
+                If items.Where(Function (i) i.ColorId = color.Id).Count = items.Count Then ' 所有都是同一个颜色
+                    ok = _tipPresenter.HighlightTips(m_TipListBox.SelectedItems, Nothing)
+                Else
+                    ok = _tipPresenter.HighlightTips(m_TipListBox.SelectedItems, color)
+                End If
+            End If
+
+            If ok Then
+                m_TipListBox.Update()
+                m_TipListBox.ClearSelected()
+                For Each idx In indices
+                    m_TipListBox.SetSelected(idx, True)
+                Next
+            End If
+        End If
+    End Sub
+
+    Private Sub CheckHighlightChecked() ' CheckListItemEnabled On_BtnHighLightTips_Popup 用
+        Dim selCnt = m_TipListBox.SelectedCount
+        For Each btn In m_menu_HighlightSubMenu.SubItems
+            Dim color = TryCast(btn.Tag, TipColor)
+            If color IsNot Nothing Then
+                btn.Enabled = selCnt > 0
+                btn.Checked = selCnt = 1 AndAlso m_TipListBox.SelectedItem.ColorId = color.Id
+                m_menu_HighlightSubMenu.Checked = selCnt > 0 AndAlso m_TipListBox.SelectedItems.Any(Function(i) i.IsHighLight)
+            End If
+        Next
+    End Sub
+
+    Private Sub On_BtnHighLightTips_Popup(sender As DD.ButtonItem, e As EventArgs) Handles m_menu_HighlightSubMenu.Click
+        CheckHighlightChecked()
+        Popup(m_menu_HighlightSubMenu, True)
     End Sub
 
     Private Sub On_BtnSetupHighlightColors_Click(sender As Object, e As EventArgs) Handles m_popup_SetupColors.Click
@@ -229,6 +273,10 @@ Public Class MainForm
         LoadFileAndUpdate()
     End Sub
 
+    Private Sub On_BtnViewHighlightTips_Click(sender As Object, e As EventArgs) Handles m_popup_ViewHighlightTips.Click
+        _tipPresenter.ViewCurrentHighlights(m_TipListBox.Items)
+    End Sub
+
 #End Region
 
 #Region "分组: 增删改 拖动"
@@ -236,13 +284,13 @@ Public Class MainForm
     Private Sub InsertTab(sender As Object, e As EventArgs) Handles m_popup_NewTab.Click
         If _tabPresenter.Insert() Then
             m_TabView.Update()
-            m_TabView.SelectedTabIndex = m_TabView.Tabs.Count - 1
+            m_TabView.SelectedTabIndex = m_TabView.TabCount - 1
         End If
     End Sub
 
     Private Sub DeleteTab(sender As Object, e As EventArgs) Handles m_popup_DeleteTab.Click
         If m_TabView.SelectedTab IsNot Nothing Then
-            If m_TabView.Tabs.Count = 1 Then
+            If m_TabView.TabCount = 1 Then
                 MessageBoxEx.Show("无法删除最后一个分组。", "删除", MessageBoxButtons.OK, MessageBoxIcon.Error, Me)
             Else
                 Dim currentIndex As Integer = m_TabView.SelectedTabIndex
@@ -318,12 +366,9 @@ Public Class MainForm
         End If
     End Sub
 
-    Private Sub On_BtnMoveTips_Click(sender As DD.ButtonItem, e As EventArgs) Handles m_menu_MoveTipsSubMenu.Click
+    Private Sub On_BtnMoveTipsSubMenu_Popup(sender As DD.ButtonItem, e As EventArgs) Handles m_menu_MoveTipsSubMenu.Click
         SetupMoveToButtons(all := False)
-        If m_menu_MoveTipsSubMenu.SubItems.Count <> 0 AndAlso
-           Not DD.BaseItem.IsOnPopup(m_menu_ListPopupMenu) AndAlso Not DD.BaseItem.IsOnPopup(m_menu_MoveTipsSubMenu) Then
-            m_menu_MoveTipsSubMenu.Popup(Me.Left + m_btn_OpenListPopup.Left, Me.Top + m_btn_OpenListPopup.Top + m_btn_OpenListPopup.Height - 1)
-        End If
+        If m_menu_MoveTipsSubMenu.SubItems.Count <> 0 Then Popup(m_menu_MoveTipsSubMenu, True)
     End Sub
 
 #End Region
@@ -373,20 +418,17 @@ Public Class MainForm
         rect.Offset(m_TipListBox.Location)
         rect.Offset(2, 2)
 
-        ' m_btn_MoveTipUp.Top = rect.Top
-        ' m_btn_MoveTipUp.Left = rect.Left + rect.Width - m_btn_MoveTipDown.Width
+        m_btn_MoveTipUp.Top = rect.Top
+        m_btn_MoveTipUp.Left = rect.Left + rect.Width - m_btn_MoveTipDown.Width
         m_btn_MoveTipUp.Visible = True
-        ' m_btn_MoveTipDown.Top = m_btn_MoveTipUp.Top + m_btn_MoveTipUp.Height - 1
-        ' m_btn_MoveTipDown.Left = m_btn_MoveTipUp.Left
+        m_btn_MoveTipDown.Top = m_btn_MoveTipUp.Top + m_btn_MoveTipUp.Height - 1
+        m_btn_MoveTipDown.Left = m_btn_MoveTipUp.Left
         m_btn_MoveTipDown.Visible = True
-
-        ' TODO
-        MsgBox(m_btn_MoveTipUp.Visible & " " & m_TipListBox.SelectedCount & " " & m_TipListBox.SelectedIndex & " " & m_TipListBox.ItemCount)
     End Sub
 
     Private Sub HideAssistButtons() ' SetupAssistButtons.WheeledFunc On_ListView_SelectedIndexChangedAndMouseDown On_TabView_SelectedTabChanged 用
-        ' m_btn_MoveTipUp.Visible = False
-        ' m_btn_MoveTipDown.Visible = False
+        m_btn_MoveTipUp.Visible = False
+        m_btn_MoveTipDown.Visible = False
     End Sub
 
     Private Sub On_ListViewAndForm_SizeChanged(sender As Object, e As EventArgs) Handles m_TipListBox.SizeChanged, Me.SizeChanged
@@ -423,32 +465,35 @@ Public Class MainForm
 #Region "显示: 可用性判断 列表选择 大小调整 菜单与透明度"
 
     Private Sub CheckListItemEnabled() ' On_ListView_SelectedIndexChangedAndMouseDown On_BtnOpenPopupMenu_Click 用
-        Dim isNotNull As Boolean = m_TipListBox.SelectedIndex <> - 1
+        Dim isNotEmpty As Boolean = m_TipListBox.SelectedCount > 0
         Dim isSingle As Boolean = m_TipListBox.SelectedCount = 1
         Dim isTop As Boolean = m_TipListBox.SelectedIndex = 0
         Dim isBottom As Boolean = m_TipListBox.SelectedIndex = m_TipListBox.ItemCount - 1
 
         ' 辅助按钮 位置按钮
-        m_btn_MoveTipUp.Enabled = isNotNull And isSingle And Not isTop
-        m_btn_MoveTipDown.Enabled = isNotNull And isSingle And Not isBottom
-        m_popup_MoveTipUp.Enabled = isNotNull And isSingle And Not isTop
-        m_popup_MoveTopTop.Enabled = isNotNull And isSingle And Not isTop
-        m_popup_MoveTipBottom.Enabled = isNotNull And isSingle And Not isBottom
-        m_popup_MoveTipDown.Enabled = isNotNull And isSingle And Not isBottom
+        m_btn_MoveTipUp.Enabled = isSingle And Not isTop
+        m_btn_MoveTipDown.Enabled = isSingle And Not isBottom
+        m_popup_MoveTipUp.Enabled = isSingle And Not isTop
+        m_popup_MoveTopTop.Enabled = isSingle And Not isTop
+        m_popup_MoveTipBottom.Enabled = isSingle And Not isBottom
+        m_popup_MoveTipDown.Enabled = isSingle And Not isBottom
 
         ' 删改复制粘贴
-        m_btn_RemoveTips.Enabled = isNotNull
-        m_popup_RemoveTips.Enabled = isNotNull
+        m_btn_RemoveTips.Enabled = isNotEmpty
+        m_popup_RemoveTips.Enabled = isNotEmpty
         m_popup_UpdateTip.Enabled = isSingle
-        m_popup_CopyTips.Enabled = isNotNull
+        m_popup_CopyTips.Enabled = isNotEmpty
         m_popup_PasteAppendToTip.Enabled = isSingle
+
+        ' 高亮
+        CheckHighlightChecked()
 
         ' 浏览器
         m_menu_BrowserSubMenu.Enabled = _tipPresenter.GetLinks(m_TipListBox.SelectedItems).Count >= 1
         m_menu_BrowserSubMenu.ShowSubItems = m_menu_BrowserSubMenu.Enabled
 
         ' 移动
-        m_menu_MoveTipsSubMenu.Enabled = isNotNull
+        m_menu_MoveTipsSubMenu.Enabled = isNotEmpty
     End Sub
 
     Private Sub On_ListView_SelectedIndexChangedAndMouseDown(sender As Object, e As EventArgs) Handles m_TipListBox.SelectedIndexChanged, m_TipListBox.MouseDown
@@ -485,11 +530,19 @@ Public Class MainForm
 
 #End Region
 
-#Region "显示: 其他 弹出菜单 列表数量 折叠菜单 热键置顶 加载保存位置"
+#Region "显示: 弹出菜单 列表高度 热键 置顶 加载保存位置"
+
+    Private Sub Popup(item As DD.ButtonItem, isCheck As Boolean)
+        If Not isCheck OrElse (Not DD.ButtonItem.IsOnPopup(item) And Not DD.ButtonItem.IsOnPopup(m_menu_ListPopupMenu)) Then
+            Dim x = Me.Left + m_btn_OpenListPopup.Left
+            Dim y = Me.Top + m_btn_OpenListPopup.Top + m_btn_OpenListPopup.Height - 1
+            item.Popup(x, y)
+        End If
+    End Sub
 
     Private Sub On_BtnOpenPopupMenu_Click(sender As Object, e As EventArgs) Handles m_btn_OpenListPopup.Click
         CheckListItemEnabled()
-        m_menu_ListPopupMenu.Popup(Me.Left + sender.Left, Me.Top + sender.Top + sender.Height - 1)
+        Popup(m_menu_ListPopupMenu, False)
     End Sub
 
     Private Sub On_ListPopupMenu_PopupOpen(sender As Object, e As DD.PopupOpenEventArgs) Handles m_menu_ListPopupMenu.PopupOpen

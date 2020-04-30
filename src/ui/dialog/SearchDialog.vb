@@ -12,10 +12,7 @@
             Return
         End If
         _searchResult = GetFunc.Invoke()
-        ShowSearchList()
-    End Sub
 
-    Private Sub ShowSearchList()
         LabelResult.AutoEllipsis = True
         LabelResult.Text = $"共找到 {_searchResult.Count} 个搜索结果: ""{SearchText}"""
         ListView.Items.Clear()
@@ -23,17 +20,6 @@
             Dim tab As Tab = GlobalModel.Tabs.Item(tuple.Item1)
             ListView.Items.Add($"[{tab.Title}] - {tab.Tips.Item(tuple.Item2).Content}")
         Next
-    End Sub
-
-    Private Sub ButtonClose_Click(sender As Object, e As EventArgs) Handles ButtonClose.Click
-        Me.Close()
-    End Sub
-
-    Private Sub ButtonSearch_Click(sender As Object, e As EventArgs) Handles ButtonSearch.Click
-        Me.Close()
-        If SearchFunc IsNot Nothing Then
-            SearchFunc.Invoke()
-        End If
     End Sub
 
     Private Sub ListView_DoubleClick(sender As Object, e As EventArgs) Handles ListView.DoubleClick
@@ -45,9 +31,20 @@
         End If
     End Sub
 
+    Private Sub ButtonSearch_Click(sender As Object, e As EventArgs) Handles ButtonSearch.Click
+        Me.Close()
+        If SearchFunc IsNot Nothing Then
+            SearchFunc.Invoke()
+        End If
+    End Sub
+
     Private Sub ListView_MouseDown(sender As Object, e As MouseEventArgs) Handles ListView.MouseDown
         If ListView.IndexFromPoint(e.X, e.Y) = - 1 Then
             ListView.ClearSelected()
         End If
+    End Sub
+
+    Private Sub ButtonClose_Click(sender As Object, e As EventArgs) Handles ButtonClose.Click
+        Me.Close()
     End Sub
 End Class

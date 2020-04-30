@@ -12,11 +12,11 @@
         End If
     End Sub
 
-    Private Sub ButtonCancel_Click(sender As Object, e As EventArgs) Handles ButtonCancel.Click
-        Me.Close()
-    End Sub
-
     Private Sub ButtonDefault_Click(sender As Object, e As EventArgs) Handles ButtonDefault.Click
         HotkeyEditBox.CurrentKey = Keys.F4
+    End Sub
+
+    Private Sub ButtonCancel_Click(sender As Object, e As EventArgs) Handles ButtonCancel.Click
+        Me.Close()
     End Sub
 End Class

@@ -156,6 +156,12 @@
     <Compile Include="src\ui\dialog\ColorDialog.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="src\ui\dialog\ColorSelectDialog.Designer.vb">
+      <DependentUpon>ColorSelectDialog.vb</DependentUpon>
+    </Compile>
+    <Compile Include="src\ui\dialog\ColorSelectDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="src\ui\form\contract\MainFormContract.vb" />
     <Compile Include="src\ui\form\presenter\MainFormGlobalPresenter.vb" />
     <Compile Include="src\ui\form\presenter\MainFormTabPresenter.vb" />
@@ -173,6 +179,9 @@
     <Compile Include="src\ui\form\view\MainForm.View.vb">
       <SubType>Form</SubType>
       <DependentUpon>MainForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="src\ui\view\CommandLink.vb">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="src\ui\view\HotkeyBox.vb">
       <SubType>Component</SubType>
@@ -217,6 +226,9 @@
   <ItemGroup>
     <EmbeddedResource Include="src\ui\dialog\ColorDialog.resx">
       <DependentUpon>ColorDialog.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\ui\dialog\ColorSelectDialog.resx">
+      <DependentUpon>ColorSelectDialog.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\ui\dialog\HotKeyDialog.resx">
       <DependentUpon>HotkeyDialog.vb</DependentUpon>

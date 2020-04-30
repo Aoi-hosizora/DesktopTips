@@ -27,34 +27,45 @@
     Private Sub ButtonRemove_Click(sender As Object, e As EventArgs) Handles ButtonRemove.Click
         If ColorListView.SelectedItems.Count <> 1 Then Return
         Dim item As ListViewItem = ColorListView.SelectedItems(0)
-        Dim tipColor = CType(item.Tag, TipColor)
+        Dim delColor = CType(item.Tag, TipColor)
 
-        Dim ok = MessageBoxEx.Show($"删除所选颜色 ""{tipColor.Name}""？", "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Question)
+        Dim ok = MessageBoxEx.Show($"删除所选颜色 ""{delColor.Name}""？", "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Question)
         If ok <> vbOK Then Return
 
-        Dim tips As IEnumerable(Of TipItem) = GlobalModel.Tabs.SelectMany(Function(t) t.Tips).Where(Function(t) t.ColorId = tipColor.Id)
-        If tips.Count <> 0 Then
-            Dim tipString As String = String.Join(vbNewLine, tips.Select(Function(t) t.Content))
-            ok = MessageBoxEx.Show($"颜色 ""{tipColor.Name}"" 拥有一下 {tips.Count} 个已存在的标签，是否删除？{vbNewLine}{vbNewLine}{tipString}",
-                "删除", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1,
-                Me, {"修改高亮颜色", "直接删除", "取消"})
-            If ok = vbCancel Then ' 取消
-                Return
-            ElseIf ok = vbNo Then ' 直接删除
-                GlobalModel.Tabs.ForEach(Sub(t) t.Tips.RemoveAll(Function(tip) tip.ColorId = tipColor.Id))
-            Else ' 修改高亮颜色
-                MsgBox("TODO")
-                Return
-            End If
+        Dim tips As IEnumerable(Of TipItem) = GlobalModel.Tabs.SelectMany(Function(t) t.Tips).Where(Function(t) t.ColorId = delColor.Id)
+        If tips.Count = 0 Then
+            RemoveColorItemAndSave(delColor)
+            Return
         End If
 
+        ' 存在相关联标签
+        Dim tipString As String = String.Join(vbNewLine, tips.Select(Function(t) t.Content))
+        Dim ok2 = MessageBoxEx.Show($"颜色 ""{delColor.Name}"" 拥有一下 {tips.Count} 个已存在的标签，是否删除？{vbNewLine}{vbNewLine}{tipString}",
+            "删除", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, Me, {"修改高亮颜色", "直接删除", "取消"})
+        If ok2 = vbNo Then ' 直接删除
+            GlobalModel.Tabs.ForEach(Sub(t) t.Tips.RemoveAll(Function(tip) tip.ColorId = delColor.Id))
+            RemoveColorItemAndSave(delColor)
+        Else ' 修改高亮颜色
+            ColorSelectDialog.GetDelColorFunc = Function() delColor
+            ColorSelectDialog.GetColorsFunc = Function() GlobalModel.Colors.Where(Function (c) c.Id <> delColor.Id)
+            ColorSelectDialog.OkFunc = Sub(id As Integer)
+                For Each tip As TipItem In tips
+                    tip.ColorId = id
+                Next
+                RemoveColorItemAndSave(delColor)
+            End Sub
+            ColorSelectDialog.ShowDialog(Me)
+        End If
+    End Sub
+
+    Private Sub RemoveColorItemAndSave(delColor As TipColor)
         ' 从存储中删除 并处理顺序
-        GlobalModel.Colors.Remove(tipColor)
+        GlobalModel.Colors.Remove(delColor)
         GlobalModel.HandleWithColorOrder(GlobalModel.Colors, GlobalModel.Tabs)
         refreshSave()
 
-        ColorDialog_Load(sender, e)
-        SelectListView(tipColor.Id)
+        ColorDialog_Load(Me, New EventArgs())
+        SelectListView(delColor.Id)
     End Sub
 
     Private Sub EditColorName(item As ListViewItem)

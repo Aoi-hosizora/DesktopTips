@@ -45,13 +45,16 @@ Partial Class ColorDialog
         '
         'ColorListView
         '
+        Me.ColorListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ColorListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeaderId, Me.ColumnHeaderName, Me.ColumnHeaderHex, Me.ColumnHeaderRgb, Me.ColumnHeaderView})
         Me.ColorListView.FullRowSelect = True
         Me.ColorListView.GridLines = True
         Me.ColorListView.HideSelection = False
         Me.ColorListView.Location = New System.Drawing.Point(12, 29)
         Me.ColorListView.Name = "ColorListView"
-        Me.ColorListView.Size = New System.Drawing.Size(394, 371)
+        Me.ColorListView.Size = New System.Drawing.Size(343, 367)
         Me.ColorListView.TabIndex = 1
         Me.ColorListView.UseCompatibleStateImageBehavior = False
         Me.ColorListView.View = System.Windows.Forms.View.Details
@@ -80,7 +83,7 @@ Partial Class ColorDialog
         '
         Me.ButtonAdd.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonAdd.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonAdd.Location = New System.Drawing.Point(420, 29)
+        Me.ButtonAdd.Location = New System.Drawing.Point(369, 29)
         Me.ButtonAdd.Name = "ButtonAdd"
         Me.ButtonAdd.Size = New System.Drawing.Size(75, 25)
         Me.ButtonAdd.TabIndex = 2
@@ -91,7 +94,7 @@ Partial Class ColorDialog
         '
         Me.ButtonRemove.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonRemove.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonRemove.Location = New System.Drawing.Point(420, 60)
+        Me.ButtonRemove.Location = New System.Drawing.Point(369, 60)
         Me.ButtonRemove.Name = "ButtonRemove"
         Me.ButtonRemove.Size = New System.Drawing.Size(75, 25)
         Me.ButtonRemove.TabIndex = 2
@@ -103,7 +106,7 @@ Partial Class ColorDialog
         Me.ButtonCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.ButtonCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonCancel.Location = New System.Drawing.Point(420, 375)
+        Me.ButtonCancel.Location = New System.Drawing.Point(369, 371)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(75, 25)
         Me.ButtonCancel.TabIndex = 2
@@ -116,14 +119,13 @@ Partial Class ColorDialog
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonCancel
-        Me.ClientSize = New System.Drawing.Size(507, 412)
+        Me.ClientSize = New System.Drawing.Size(456, 408)
         Me.Controls.Add(Me.ButtonCancel)
         Me.Controls.Add(Me.ButtonRemove)
         Me.Controls.Add(Me.ButtonAdd)
         Me.Controls.Add(Me.ColorListView)
         Me.Controls.Add(Me.LabelColor)
         Me.Font = New System.Drawing.Font("Microsoft YaHei UI", 9.0!)
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False

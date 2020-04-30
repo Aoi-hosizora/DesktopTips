@@ -1,4 +1,7 @@
-﻿Public Class TipListBox
+﻿Imports System.Threading
+Imports DD = DevComponents.DotNetBar
+
+Public Class TipListBox
     Inherits ListBox
     Implements ICollectionView
 
@@ -118,47 +121,88 @@
 
     Private _hoverIndex As Integer = - 1
 
+    Private _hoverThread As Thread
+
     ''' <summary>
     ''' 鼠标移动，判断是否超出范围
-    ''' 显示 ToolTip 和 记录 HoverIndex，更新界面显示
+    ''' 显示 ToolTip 和 记录 _hoverIndex，更新界面显示
     ''' </summary>
     Protected Overrides Sub OnMouseMove(e As MouseEventArgs)
         MyBase.OnMouseMove(e)
         Dim index = IndexFromPoint(e.Location)
-        If Not PointOutOfRange(e.Location) AndAlso index <> _hoverIndex Then
-            If index > - 1 Then
-                _hoverTooltip.Hide(Me)
-                _hoverTooltip.SetToolTip(Me, Items(index).Content)
+        If PointOutOfRange(e.Location) Then
+            index = - 1
+            HideAndCloseTooltip()
+        End If
+        If index = _hoverIndex Then Return
+
+        If _hoverIndex > - 1 Then
+            Invalidate(GetItemRectangle(_hoverIndex))
+        End If
+        _hoverIndex = index
+        If _hoverIndex > - 1 Then
+            Invalidate(GetItemRectangle(_hoverIndex))
+            HideAndCloseTooltip()
+            If e.Button = MouseButtons.None Then
+                _hoverThread = New Thread(New ParameterizedThreadStart(Sub(idx As Integer) 
+                    If _hoverIndex <> idx Then Return
+                    Thread.Sleep(_hoverWaitingDuration)
+                    Me.Invoke(Sub() ShowTooltip(Items(idx)))
+                End Sub))
+                _hoverThread.Start(_hoverIndex)
             End If
-            If _hoverIndex > - 1 Then Invalidate(GetItemRectangle(_hoverIndex))
-            _hoverIndex = Index
-            If _hoverIndex > - 1 Then Invalidate(GetItemRectangle(_hoverIndex))
-        ElseIf PointOutOfRange(e.Location)
-            Dim finalIndex = _hoverIndex
-            _hoverIndex = - 1
-            If finalIndex > - 1 Then Invalidate(GetItemRectangle(finalIndex))
         End If
     End Sub
 
     ''' <summary>
-    ''' 鼠标移出列表，更新界面并且置 HoverIndex 为 -1
+    ''' 鼠标移出列表，更新界面并且置 _hoverIndex 为 -1
     ''' </summary>
     Protected Overrides Sub OnMouseLeave(e As EventArgs)
         MyBase.OnMouseLeave(e)
         If _hoverIndex > - 1 Then
-            If _hoverIndex > - 1 Then Invalidate(GetItemRectangle(_hoverIndex))
+            Invalidate(GetItemRectangle(_hoverIndex))
             _hoverIndex = - 1
-            If _hoverIndex > - 1 Then Invalidate(GetItemRectangle(_hoverIndex))
+            HideAndCloseTooltip()
         End If
     End Sub
 
 #End Region
 
-#Region "其他布局: 右键选中 文本提示 滚动条"
+#Region "其他布局: 文本提示 右键选中 滚动条"
 
-    Public Property WheeledFunc As Action
+    Private ReadOnly _hoverTooltip As New DD.SuperTooltip() With {.TooltipDuration = 0, .DefaultFont = New Font("Microsoft YaHei UI", 9.0!), 
+        .CheckTooltipPosition = False ,  .CheckOnScreenPosition = False , .PositionBelowControl = False}
 
-    Private ReadOnly _hoverTooltip As New ToolTip
+    Private Readonly _hoverTooltipSetting As New DD.SuperTooltipInfo() With {.FooterVisible = False, .CustomSize = New Size(200, 0)}
+
+    Private Const _hoverDistance As Integer = 5
+    Private Const _hoverWaitingDuration As Integer = 350
+
+    Private Sub HideAndCloseTooltip()
+        _hoverTooltip.HideTooltip()
+        If _hoverThread IsNot Nothing Then _hoverThread.Abort()
+    End Sub
+
+    Private Sub ShowTooltip(item As TipItem)
+        Dim title = GlobalModel.CurrentTab.Title
+        Dim highlight = "未高亮"
+        Dim body = item.Content & vbNewLine & " "
+        If item.IsHighLight Then
+            highlight = $"<font color=""{item.Color.HexColor}"">{item.Color.Name}</font>高亮"
+        End If
+        _hoverTooltipSetting.HeaderText = $"<b>{title} - {highlight}</b>"
+        _hoverTooltipSetting.BodyText = body
+        _hoverTooltip.SetSuperTooltip(Me, _hoverTooltipSetting)
+
+        Me.Focus()
+        Dim curPos = Cursor.Position
+        Dim cliPos = Parent.PointToClient(curPos)
+        Dim x = curPos.X - (cliPos.X + _hoverTooltipSetting.CustomSize.Width + _hoverDistance)
+        If x < 0 Then
+            x = curPos.X + Parent.Width - cliPos.X + _hoverDistance
+        End If
+        _hoverTooltip.ShowTooltip(Me, New Point(x, curPos.Y))
+    End Sub
 
     Private WithEvents _labelNothing As New Label With {
         .BackColor = Color.Snow, .ForeColor = Color.DimGray,  
@@ -190,12 +234,15 @@
     ''' </summary>
     Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
         MyBase.OnMouseDown(e)
+        HideAndCloseTooltip()
         If PointOutOfRange(e.Location) Then
             ClearSelected()
         ElseIf e.Button = MouseButtons.Right AndAlso SelectedCount <= 1 Then
             SetSelectOnly(IndexFromPoint(e.X, e.Y))
         End If
     End Sub
+
+    Public Property WheeledFunc As Action
 
     ''' <summary>
     ''' 鼠标滚动执行 WheeledFunc
@@ -224,9 +271,9 @@
     Public Class TipItemsCollection
         Inherits BaseItemsCollection(Of TipItem)
 
-        Public Sub New(listBox As ICollectionView)
-            MyBase.New(listBox)
-        End Sub
+        ' Public Sub New(listBox As ICollectionView)
+        '     MyBase.New(listBox)
+        ' End Sub
 
         Public Sub New(listBox As ICollectionView, items As IEnumerable)
             MyBase.New(listBox, items)

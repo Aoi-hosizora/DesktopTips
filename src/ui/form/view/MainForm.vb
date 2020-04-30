@@ -15,7 +15,6 @@ Public Class MainForm
         m_num_ListCount.Value = My.Settings.ListCount                                                   ' 列表高度
         m_popup_LoadPosition.Enabled = My.Settings.SaveLeft <> - 1 And My.Settings.SaveTop <> - 1       ' 恢复位置
         m_popup_TopMost.Checked = My.Settings.TopMost                                                   ' 窗口置顶
-
         If My.Settings.IsUseHotKey Then
             _globalPresenter.RegisterHotKey(Handle, My.Settings.HotKey, HOTKEY_ID)                      ' 注册热键
         End If
@@ -597,8 +596,10 @@ Public Class MainForm
     Private Sub On_SomeMenu_FinishedAndClose(sender As Object, e As EventArgs) _
         Handles m_menu_ListPopupMenu.PopupFinalized, m_menu_TabPopupMenu.PopupFinalized, m_TabView.PopupClose,
                 m_menu_MoveTipsSubMenu.PopupFinalized, m_menu_HighlightSubMenu.PopupFinalized
-        _isMenuPopuping = False
-        FormOpacityDown()
+        If m_menu_ListPopupMenu.PopupControl Is Nothing Then
+            _isMenuPopuping = False
+            FormOpacityDown()
+        End If
     End Sub
 
 #End Region
@@ -643,8 +644,8 @@ Public Class MainForm
     End Sub
 
     Private Sub On_BtnSavePosition_Click(sender As Object, e As EventArgs) Handles m_popup_SavePosition.Click
-        Dim ok = MessageBoxEx.Show("确定保存当前位置，注意该操作会覆盖之前保存的窗口位置。",
-            "保存位置", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
+        Dim flag = If(My.Settings.SaveTop >= 0 And My.Settings.SaveLeft >= 0, "是否保存当前窗口的位置，并覆盖原先保存的位置？", "是否保存当前窗口的位置？")
+        Dim ok = MessageBoxEx.Show(flag, "保存位置", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, Me, {"保存并覆盖", "取消"})
         If ok = vbOK Then
             m_popup_LoadPosition.Enabled = True
             My.Settings.SaveTop = Me.Top

@@ -188,10 +188,11 @@ Public Class TipListBox
         End If
         Dim y = curPos.Y
 
+        Dim hwnd = NativeMethod.GetForegroundWindow()
         HoverCardView.WidthFunc = Function() _hoverCardWidth
         HoverCardView.HoverTipFunc = Function() item
         HoverCardView.HoverTabFunc = Function() GlobalModel.CurrentTab
-        HoverCardView.FocusFormFunc = Sub() MainForm.Focus()
+        HoverCardView.LoadedFunc = Sub() NativeMethod.SetForegroundWindow(hwnd)
         HoverCardView.Opacity = 0
         HoverCardView.Show()
         HoverCardView.Location = New Point(x, y - 1 / HoverCardView.OpacitySpeed)

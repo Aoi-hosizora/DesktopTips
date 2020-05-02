@@ -72,6 +72,10 @@ Public Class NativeMethod
     Public Const WM_SYSKEYDOWN = 260
 
     <DllImport("user32.dll")>
+    Public Shared Function GetForegroundWindow() As IntPtr
+    End Function
+
+    <DllImport("user32.dll")>
     Public Shared Function SetForegroundWindow(hWnd As IntPtr) As <MarshalAs(UnmanagedType.Bool)> Boolean
     End Function
 

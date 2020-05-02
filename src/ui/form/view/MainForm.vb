@@ -558,7 +558,7 @@ Public Class MainForm
     Private Sub On_ListPopupMenu_PopupOpen(sender As Object, e As DD.PopupOpenEventArgs) Handles m_menu_ListPopupMenu.PopupOpen
         CheckListItemEnabled()
         Dim tipString = String.Join(vbNewLine, m_ListView.SelectedItems.Select(Function(t) t.Content))
-        Dim highlightCount = m_ListView.SelectedItems.Where(Function(t) t.IsHighLight).Count
+        Dim highlightCount = m_ListView.Items.Where(Function(t) t.IsHighLight).Count
 
         m_popup_SelectedTipsTextLabel.Text = tipString
         m_popup_TipsCountLabel.Text = $"列表 (共 {m_ListView.ItemCount} 项，高亮 {highlightCount} 项)"

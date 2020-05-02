@@ -12,7 +12,7 @@ Public Class HoverCardView
     Public Property WidthFunc As Func(Of Integer)
     Public Property HoverTipFunc As Func(Of TipItem)
     Public Property HoverTabFunc As Func(Of Tab)
-    Public Property FocusFormFunc As Action
+    Public Property LoadedFunc As Action
 
     Protected Overrides Sub OnLoad(e As EventArgs)
         MyBase.OnLoad(e)
@@ -25,7 +25,7 @@ Public Class HoverCardView
         Me.Opacity = 0
         Me.Width = If(WidthFunc IsNot Nothing, WidthFunc.Invoke(), 200)
 
-        If HoverTipFunc Is Nothing OrElse HoverTabFunc Is Nothing OrElse FocusFormFunc Is Nothing Then
+        If HoverTipFunc Is Nothing OrElse HoverTabFunc Is Nothing OrElse LoadedFunc Is Nothing Then
             Me.Close()
             Return
         End If
@@ -61,7 +61,7 @@ Public Class HoverCardView
         Me.Top += 1
         If Me.Opacity >= 1 Then
             Me.Opacity = 1
-            FocusFormFunc.Invoke()
+            LoadedFunc.Invoke()
             _timerShowForm.Enabled = False
         End If
     End Sub
@@ -75,8 +75,8 @@ Public Class HoverCardView
         End If
     End Sub
 
-    Private _titleLabel As New DD.LabelX()
-    Private _contentLabel As New DD.LabelX()
+    Private ReadOnly _titleLabel As New DD.LabelX()
+    Private ReadOnly _contentLabel As New DD.LabelX()
 
     Private _tip As TipItem
     Private _tab As Tab

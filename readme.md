@@ -30,6 +30,6 @@
 
 ### Screenshots
 
-|![Screenshots_1](./assets/Screenshots_1.jpg)|![Screenshots_2](./assets/Screenshots_2.jpg)|![Screenshots_3](./assets/Screenshots_3.jpg)|
-|:---:|:---:|:---:|
+|![Screenshots_1](./assets/Screenshots_1.jpg)|![Screenshots_2](./assets/Screenshots_2.jpg)|![Screenshots_3](./assets/Screenshots_3.jpg)|![Screenshots_4](./assets/Screenshots_4.jpg)|
+|:---:|:---:|:---:|:---:|
 

@@ -1,5 +1,4 @@
 ﻿Imports System.Threading
-Imports DD = DevComponents.DotNetBar
 
 Public Class TipListBox
     Inherits ListBox
@@ -170,38 +169,32 @@ Public Class TipListBox
 
 #Region "其他布局: 文本提示 右键选中 滚动条"
 
-    Private ReadOnly _hoverTooltip As New DD.SuperTooltip() With {.TooltipDuration = 0, .DefaultFont = New Font("Microsoft YaHei UI", 9.0!), 
-        .CheckTooltipPosition = False ,  .CheckOnScreenPosition = False , .PositionBelowControl = False}
-
-    Private Readonly _hoverTooltipSetting As New DD.SuperTooltipInfo() With {.FooterVisible = False, .CustomSize = New Size(200, 0)}
-
-    Private Const _hoverDistance As Integer = 5
+    Private Const _hoverCardWidth As Integer = 200
+    Private Const _hoverDistance As Integer = 7
     Private Const _hoverWaitingDuration As Integer = 350
 
     Private Sub HideAndCloseTooltip()
-        _hoverTooltip.HideTooltip()
+        HoverCardView.Close()
         If _hoverThread IsNot Nothing Then _hoverThread.Abort()
     End Sub
 
     Private Sub ShowTooltip(item As TipItem)
-        Dim title = GlobalModel.CurrentTab.Title
-        Dim highlight = "未高亮"
-        Dim body = item.Content & vbNewLine & " "
-        If item.IsHighLight Then
-            highlight = $"<font color=""{item.Color.HexColor}"">{item.Color.Name}</font>高亮"
-        End If
-        _hoverTooltipSetting.HeaderText = $"<b>{title} - {highlight}</b>"
-        _hoverTooltipSetting.BodyText = body
-        _hoverTooltip.SetSuperTooltip(Me, _hoverTooltipSetting)
-
         Me.Focus()
         Dim curPos = Cursor.Position
         Dim cliPos = Parent.PointToClient(curPos)
-        Dim x = curPos.X - (cliPos.X + _hoverTooltipSetting.CustomSize.Width + _hoverDistance)
+        Dim x = curPos.X - (cliPos.X + _hoverCardWidth + _hoverDistance)
         If x < 0 Then
             x = curPos.X + Parent.Width - cliPos.X + _hoverDistance
         End If
-        _hoverTooltip.ShowTooltip(Me, New Point(x, curPos.Y))
+        Dim y = curPos.Y
+
+        HoverCardView.WidthFunc = Function() _hoverCardWidth
+        HoverCardView.HoverTipFunc = Function() item
+        HoverCardView.HoverTabFunc = Function() GlobalModel.CurrentTab
+        HoverCardView.FocusFormFunc = Sub() MainForm.Focus()
+        HoverCardView.Opacity = 0
+        HoverCardView.Show()
+        HoverCardView.Location = New Point(x, y - 1 / HoverCardView.OpacitySpeed)
     End Sub
 
     Private WithEvents _labelNothing As New Label With {

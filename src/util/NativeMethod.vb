@@ -98,4 +98,36 @@ Public Class NativeMethod
     End Function
 
 #End Region
+
+#Region "DWM"
+
+    Public Structure MARGINS
+        Public leftWidth As Integer
+        Public rightWidth As Integer
+        Public topHeight As Integer
+        Public bottomHeight As Integer
+    End Structure
+
+    Public Const CS_DROPSHADOW As Integer = &H20000
+    Public Const WM_NCPAINT As Integer = &H85
+
+    <DllImport("dwmapi.dll")>
+    Public Shared Function DwmExtendFrameIntoClientArea(hWnd As IntPtr, ByRef pMarInset As MARGINS) As Integer
+    End Function
+
+    <DllImport("dwmapi.dll")>
+    Public Shared Function DwmSetWindowAttribute(hwnd As IntPtr, ByVal attr As Integer, ByRef attrValue As Integer, attrSize As Integer) As Integer
+    End Function
+
+    <DllImport("dwmapi.dll")>
+    Public Shared Function DwmIsCompositionEnabled(ByRef pfEnabled As Integer) As Integer
+    End Function
+
+    Public Shared Function CheckAeroEnabled() As Boolean
+        Dim ok = 0
+        DwmIsCompositionEnabled(ok)
+        Return ok = 1
+    End Function
+
+#End Region
 End Class

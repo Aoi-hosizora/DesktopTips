@@ -13,8 +13,7 @@
         Dim tabName As String = InputBox("新分组的标题：", "新建", "新建分组").Trim()
         If tabName <> "" Then
             If GlobalModel.CheckDuplicateTab(tabName, GlobalModel.Tabs) Then
-                MessageBoxEx.Show("分组标题 """ & tabName & """ 已存在。", "错误",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error, _view.GetMe())
+                MessageBoxEx.Show("分组标题 """ & tabName & """ 已存在。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, _view.GetMe())
             Else
                 Dim tab As New Tab(tabName)
                 GlobalModel.Tabs.Add(tab)
@@ -66,7 +65,8 @@
             flag = $"确定将当前分组 ""{src.Title}"" 所选内容 (共 {items.Count} 项) 移动至分组 ""{dest.Title}"" 吗？{vbNewLine}{vbNewLine}{tipsString}"
         End If
 
-        Dim ok = MessageBoxEx.Show(flag, "移动至分组", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, _view.GetMe())
+        Dim ok = MessageBoxEx.Show(flag, "移动至分组",
+            MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, _view.GetMe())
         If ok = vbOK Then
             For Each item As TipItem In items
                 dest.Tips.Add(item)

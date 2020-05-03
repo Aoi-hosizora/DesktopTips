@@ -29,7 +29,7 @@
         Dim item As ListViewItem = ColorListView.SelectedItems(0)
         Dim delColor = CType(item.Tag, TipColor)
 
-        Dim ok = MessageBoxEx.Show($"删除所选颜色 ""{delColor.Name}""？", "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Question)
+        Dim ok = MessageBoxEx.Show($"删除所选颜色 ""{delColor.Name}""？", "删除", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, Me)
         If ok <> vbOK Then Return
 
         Dim tips As IEnumerable(Of TipItem) = GlobalModel.Tabs.SelectMany(Function(t) t.Tips).Where(Function(t) t.ColorId = delColor.Id)

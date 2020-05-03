@@ -114,6 +114,9 @@ Public Class NativeMethod
 
     Public Const CS_DROPSHADOW As Integer = &H20000
     Public Const WM_NCPAINT As Integer = &H85
+    Public Const WM_NCHITTEST = &H84
+    Public Const HTCLIENT = &H1
+    Public Const HTCAPTION = &H2
 
     <DllImport("dwmapi.dll")>
     Public Shared Function DwmExtendFrameIntoClientArea(hWnd As IntPtr, ByRef pMarInset As MARGINS) As Integer
@@ -128,6 +131,9 @@ Public Class NativeMethod
     End Function
 
     Public Shared Function CheckAeroEnabled() As Boolean
+        If Environment.OSVersion.Version.Major < 6 Then
+            Return False
+        End If
         Dim ok = 0
         DwmIsCompositionEnabled(ok)
         Return ok = 1

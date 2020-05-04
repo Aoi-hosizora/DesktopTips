@@ -12,20 +12,17 @@ Public Class HoverCardView
     Public Property WidthFunc As Func(Of Integer)
     Public Property HoverTipFunc As Func(Of TipItem)
     Public Property HoverTabFunc As Func(Of Tab)
-    Public Property LoadedFunc As Action
 
     Protected Overrides Sub OnLoad(e As EventArgs)
         MyBase.OnLoad(e)
         Me.AutoScaleMode = AutoScaleMode.Font
         Me.Font = New Font("Microsoft YaHei UI", 9.0!)
         Me.FormBorderStyle = FormBorderStyle.None
-        ' Me.BackColor = Color.Snow
         Me.ShowInTaskbar = false
-        Me.TopMost = true
         Me.Opacity = 0
         Me.Width = If(WidthFunc IsNot Nothing, WidthFunc.Invoke(), 200)
 
-        If HoverTipFunc Is Nothing OrElse HoverTabFunc Is Nothing OrElse LoadedFunc Is Nothing Then
+        If HoverTipFunc Is Nothing OrElse HoverTabFunc Is Nothing Then
             Me.Close()
             Return
         End If
@@ -37,11 +34,14 @@ Public Class HoverCardView
         _timerShowForm.Enabled = true
     End Sub
 
+    Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean = True
+
     Protected Overrides ReadOnly Property CreateParams As CreateParams
         Get
             Dim cp As CreateParams = MyBase.CreateParams
             cp.ExStyle = cp.ExStyle And Not NativeMethod.WS_EX_APPWINDOW ' 不显示在TaskBar
             cp.ExStyle = cp.ExStyle Or NativeMethod.WS_EX_TOOLWINDOW ' 不显示在Alt-Tab
+            cp.ExStyle = cp.ExStyle Or NativeMethod.WS_EX_TOPMOST ' TopMost
             If Not NativeMethod.CheckAeroEnabled() Then
                 cp.ClassStyle = cp.ClassStyle Or NativeMethod.CS_DROPSHADOW
             End If
@@ -61,7 +61,6 @@ Public Class HoverCardView
         Me.Top += 1
         If Me.Opacity >= 1 Then
             Me.Opacity = 1
-            LoadedFunc.Invoke()
             _timerShowForm.Enabled = False
         End If
     End Sub

@@ -3,6 +3,25 @@ Imports System.Text
 
 Public Class NativeMethod
 
+#Region "常量"
+
+    Public Const GW_CHILD As Integer = 5
+    Public Const GW_HWNDNEXT As Integer = 2
+    Public Const GWL_WNDPROC = - 4
+
+    Public Const WS_EX_APPWINDOW = &H40000
+    Public Const WS_EX_TOOLWINDOW = &H80
+    Public Const WS_EX_TOPMOST = &H8
+
+    Public Const WM_HOTKEY = &H312
+    Public Const WM_KEYDOWN = &H100
+    Public Const WM_SYSKEYDOWN = &H104
+    Public Const WM_NCPAINT As Integer = &H85
+
+    Public Const CS_DROPSHADOW As Integer = &H20000
+
+#End Region
+
 #Region "光标信息与移动"
 
     <DllImport("user32.dll")>
@@ -42,9 +61,6 @@ Public Class NativeMethod
 
 #Region "全局快捷键"
 
-    Public Const GWL_WNDPROC = (- 4)
-    Public Const WM_HOTKEY = &H312
-
     Public Enum KeyModifiers As UInteger
         MOD_ALT = &H1
         MOD_CONTROL = &H2
@@ -63,13 +79,6 @@ Public Class NativeMethod
 #End Region
 
 #Region "窗口相关"
-
-    Public Const GW_CHILD As Integer = 5
-    Public Const GW_HWNDNEXT As Integer = 2
-    Public Const WS_EX_APPWINDOW = 16384
-    Public Const WS_EX_TOOLWINDOW = 128
-    Public Const WM_KEYDOWN = 256
-    Public Const WM_SYSKEYDOWN = 260
 
     <DllImport("user32.dll")>
     Public Shared Function GetForegroundWindow() As IntPtr
@@ -112,18 +121,12 @@ Public Class NativeMethod
         Public bottomHeight As Integer
     End Structure
 
-    Public Const CS_DROPSHADOW As Integer = &H20000
-    Public Const WM_NCPAINT As Integer = &H85
-    Public Const WM_NCHITTEST = &H84
-    Public Const HTCLIENT = &H1
-    Public Const HTCAPTION = &H2
-
     <DllImport("dwmapi.dll")>
     Public Shared Function DwmExtendFrameIntoClientArea(hWnd As IntPtr, ByRef pMarInset As MARGINS) As Integer
     End Function
 
     <DllImport("dwmapi.dll")>
-    Public Shared Function DwmSetWindowAttribute(hwnd As IntPtr, ByVal attr As Integer, ByRef attrValue As Integer, attrSize As Integer) As Integer
+    Public Shared Function DwmSetWindowAttribute(hwnd As IntPtr, attr As Integer, ByRef attrValue As Integer, attrSize As Integer) As Integer
     End Function
 
     <DllImport("dwmapi.dll")>

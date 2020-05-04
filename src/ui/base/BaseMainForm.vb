@@ -84,58 +84,9 @@ Public Class BaseMainForm
             Dim cp As CreateParams = MyBase.CreateParams
             cp.ExStyle = cp.ExStyle And Not NativeMethod.WS_EX_APPWINDOW ' 不显示在TaskBar
             cp.ExStyle = cp.ExStyle Or NativeMethod.WS_EX_TOOLWINDOW ' 不显示在Alt-Tab
-            ' If Not NativeMethod.CheckAeroEnabled() Then
-            '     cp.ClassStyle = cp.ClassStyle Or NativeMethod.CS_DROPSHADOW
-            ' End If
             Return cp
         End Get
     End Property
-
-    Protected Overrides Sub WndProc(ByRef m As Message)
-        MyBase.WndProc(m)
-        ' Select Case m.Msg
-        '     Case NativeMethod.WM_NCPAINT
-        '         If NativeMethod.CheckAeroEnabled() Then
-        '             Dim val = 2
-        '             NativeMethod.DwmSetWindowAttribute(Handle, 2, val, 4)
-        '             NativeMethod.DwmExtendFrameIntoClientArea(Handle, New NativeMethod.MARGINS() With {.bottomHeight = 1, .leftWidth = 1, .rightWidth = 1, .topHeight = 1})
-        '         End If
-        ' End Select
-        ' If m.Msg = NativeMethod.WM_NCHITTEST And CInt(m.Result) = NativeMethod.HTCLIENT
-        '     m.Result = CType(NativeMethod.HTCAPTION, IntPtr)
-        ' End If
-    End Sub
-
-    ' Protected Overrides Sub OnPaint(e As PaintEventArgs)
-    '     MyBase.OnPaint(e)
-    '     Dim g = e.Graphics
-    '
-    '     Dim path As New GraphicsPath()
-    '     path.AddLine(0, 0, Me.Width, 0)
-    '     path.AddLine(Me.Width, 0, Me.Width, Me.Height)
-    '     path.AddLine(Me.Width, Me.Height, 0, Me.Height)
-    '     path.AddLine(0, Me.Height, 0, 0)
-    '     
-    '     Dim depth = 17
-    '     Dim colors = getColorVector(Color.Black, Me.BackColor, depth)
-    '     For Each c In colors
-    '         g.TranslateTransform(1, 0.75)
-    '         Dim pen As New Pen(c, 1.75)
-    '         g.DrawPath(pen, path)
-    '     Next
-    '     g.ResetTransform()
-    ' End Sub
-    '
-    ' Private Function getColorVector(fc As Color, bc As Color, depth As Integer) As List(Of Color)
-    '     Dim cv As New List(Of Color)
-    '     Dim dRed As Double = 1 * (bc.R - fc.R) / depth
-    '     Dim dGreen As Double = 1 * (bc.R - fc.R) / depth
-    '     Dim dBlue As Double = 1 * (bc.R - fc.R) / depth
-    '     For d = 1 To depth
-    '         cv.Add(Color.FromArgb(255, CInt(fc.R + dRed * d), CInt(fc.G + dGreen * d), CInt(fc.B + dBlue)))
-    '     Next
-    '     Return cv
-    ' End Function
 
 #Region "Timer"
 

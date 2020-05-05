@@ -119,7 +119,6 @@ Public Class TipListBox
     End Sub
 
     Private _hoverIndex As Integer = - 1
-
     Private _hoverThread As Thread
 
     ''' <summary>
@@ -130,8 +129,9 @@ Public Class TipListBox
         MyBase.OnMouseMove(e)
         Dim index = IndexFromPoint(e.Location)
         If PointOutOfRange(e.Location) Then
-            index = - 1
+            _hoverIndex = - 1
             HideAndCloseTooltip()
+            Return
         End If
         If index = _hoverIndex Then Return
 
@@ -192,8 +192,8 @@ Public Class TipListBox
         HoverCardView.HoverTipFunc = Function() item
         HoverCardView.HoverTabFunc = Function() GlobalModel.CurrentTab
         HoverCardView.Opacity = 0
+        HoverCardView.PreLocation = New Point(x, y)
         HoverCardView.Show()
-        HoverCardView.Location = New Point(x, y - 1 / HoverCardView.OpacitySpeed)
     End Sub
 
     Private WithEvents _labelNothing As New Label With {

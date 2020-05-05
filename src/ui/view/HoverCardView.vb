@@ -8,6 +8,7 @@ Public Class HoverCardView
     Private WithEvents _timerCloseForm As New Timer() With {.Interval = 1, .Enabled = False}
 
     Public ReadOnly Property OpacitySpeed = 0.1
+    Public Property PreLocation As New Point()
 
     Public Property WidthFunc As Func(Of Integer)
     Public Property HoverTipFunc As Func(Of TipItem)
@@ -20,15 +21,23 @@ Public Class HoverCardView
         Me.FormBorderStyle = FormBorderStyle.None
         Me.ShowInTaskbar = false
         Me.Opacity = 0
-        Me.Width = If(WidthFunc IsNot Nothing, WidthFunc.Invoke(), 200)
-
-        If HoverTipFunc Is Nothing OrElse HoverTabFunc Is Nothing Then
+        If WidthFunc Is Nothing OrElse HoverTabFunc Is Nothing Then
             Me.Close()
             Return
         End If
-        _tip = HoverTipFunc.Invoke()
+        Me.Width = WidthFunc.Invoke()
         _tab = HoverTabFunc.Invoke()
+        If Not HoverTipFunc Is Nothing Then
+            _tip = HoverTipFunc.Invoke()
+        End If
         initLabel()
+
+        Me.Left = PreLocation.X
+        Me.Top = PreLocation.Y
+        If Me.Height + Me.Top > My.Computer.Screen.Bounds.Height Then
+            Me.Top = My.Computer.Screen.Bounds.Height - Me.Height
+        End If
+        Me.Top -= 1 / OpacitySpeed
 
         _timerCloseForm.Enabled = false
         _timerShowForm.Enabled = true
@@ -96,19 +105,36 @@ Public Class HoverCardView
         Me.Controls.Add(_contentLabel)
         Me.Controls.Add(_titleLabel)
 
-        Dim title = _tab.Title
-        Dim highlight = "未高亮"
-        Dim body = _tip.Content
-        If _tip.IsHighLight Then
-            highlight = $"<font color=""{_tip.Color.HexColor}"">{_tip.Color.Name}</font>高亮"
-        End If
+        If _tip IsNot Nothing Then
+            ' For Tip
+            Dim title = _tab.Title
+            Dim highlight = "未高亮"
+            Dim body = _tip.Content
+            If _tip.IsHighLight Then
+                highlight = $"<font color=""{_tip.Color.HexColor}"">{_tip.Color.Name}</font>高亮"
+            End If
 
-        _titleLabel.Text = $"<b>{title} - {highlight}</b>"
-        _contentLabel.Text = body
+            _titleLabel.Text = $"<b>{title} - {highlight}</b>"
+            _contentLabel.Text = body
+        Else
+            ' For Tab
+            Dim title = _tab.Title & " 分组"
+            Dim counts = _tab.Tips.GroupBy(Function(t) t.Color).Select(Function(g) New Tuple(Of TipColor, Integer)(g.Key, g.Count())).OrderBy(Function(g) g.Item1?.Id)
+            Dim body = $"总共有 {_tab.Tips.Count} 项，其中："
+            For Each g In counts
+                If g.Item1 Is Nothing Then
+                    body &= $"<br />无高亮：{g.Item2} 项"
+                Else
+                    body &= $"<br /><font color=""{g.Item1.HexColor}"">{g.Item1.Name}</font>：{g.Item2} 项"
+                End If
+            Next
+
+            _titleLabel.Text = $"<b>{title}</b>"
+            _contentLabel.Text = body
+        End If
 
         _titleLabel.Location = New Point(8, 4)
         _contentLabel.Location = New Point(8, _titleLabel.Top + _titleLabel.Height + 4)
-
         Me.Height = _contentLabel.Top + _contentLabel.Height + 8
     End Sub
 

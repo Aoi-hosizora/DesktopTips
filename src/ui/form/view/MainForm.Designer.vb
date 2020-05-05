@@ -82,8 +82,8 @@ Partial Class MainForm
         Me.m_menu_MoveToTabSubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_TabView = New DesktopTips.TabView()
         Me.m_btn_MoveTipUp = New DevComponents.DotNetBar.ButtonX()
-        Me.m_btn_MoveTipDown = New DevComponents.DotNetBar.ButtonX()
         Me.m_btn_Resize = New DevComponents.DotNetBar.ButtonX()
+        Me.m_btn_MoveTipDown = New DevComponents.DotNetBar.ButtonX()
         CType(Me.m_num_ListCount, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.m_menu_ContextMenuBar, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.m_TabView, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -614,20 +614,6 @@ Partial Class MainForm
         Me.m_btn_MoveTipUp.Tag = "True"
         Me.m_btn_MoveTipUp.Tooltip = "上移(U)"
         '
-        'm_btn_MoveTipDown
-        '
-        Me.m_btn_MoveTipDown.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
-        Me.m_btn_MoveTipDown.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
-        Me.m_btn_MoveTipDown.Font = New System.Drawing.Font("Yu Gothic UI Semibold", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
-        Me.m_btn_MoveTipDown.Image = Global.DesktopTips.My.Resources.Resources.DownIcon
-        Me.m_btn_MoveTipDown.Location = New System.Drawing.Point(229, 147)
-        Me.m_btn_MoveTipDown.Name = "m_btn_MoveTipDown"
-        Me.m_btn_MoveTipDown.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
-        Me.m_btn_MoveTipDown.Size = New System.Drawing.Size(17, 9)
-        Me.m_btn_MoveTipDown.TabIndex = 8
-        Me.m_btn_MoveTipDown.Tag = "True"
-        Me.m_btn_MoveTipDown.Tooltip = "下移(D)"
-        '
         'm_btn_Resize
         '
         Me.m_btn_Resize.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
@@ -641,6 +627,20 @@ Partial Class MainForm
         Me.m_btn_Resize.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
         Me.m_btn_Resize.TabIndex = 6
         Me.m_btn_Resize.Text = "::"
+        '
+        'm_btn_MoveTipDown
+        '
+        Me.m_btn_MoveTipDown.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
+        Me.m_btn_MoveTipDown.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
+        Me.m_btn_MoveTipDown.Font = New System.Drawing.Font("Yu Gothic UI Semibold", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
+        Me.m_btn_MoveTipDown.Image = Global.DesktopTips.My.Resources.Resources.DownIcon
+        Me.m_btn_MoveTipDown.Location = New System.Drawing.Point(229, 147)
+        Me.m_btn_MoveTipDown.Name = "m_btn_MoveTipDown"
+        Me.m_btn_MoveTipDown.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
+        Me.m_btn_MoveTipDown.Size = New System.Drawing.Size(17, 9)
+        Me.m_btn_MoveTipDown.TabIndex = 8
+        Me.m_btn_MoveTipDown.Tag = "True"
+        Me.m_btn_MoveTipDown.Tooltip = "下移(D)"
         '
         'MainForm
         '
@@ -702,7 +702,6 @@ Partial Class MainForm
     Friend WithEvents m_popup_OtherLabel As DevComponents.DotNetBar.LabelItem
     Friend WithEvents m_popup_ShowSetListCount As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_btn_MoveTipUp As DevComponents.DotNetBar.ButtonX
-    Friend WithEvents m_btn_MoveTipDown As DevComponents.DotNetBar.ButtonX
     Friend WithEvents m_popup_SelectedTipsCountLabel As DevComponents.DotNetBar.LabelItem
     Friend WithEvents m_popup_SelectedTipsTextLabel As DevComponents.DotNetBar.LabelItem
     Friend WithEvents m_popup_MoveTipBottom As DevComponents.DotNetBar.ButtonItem
@@ -738,5 +737,6 @@ Partial Class MainForm
     Friend WithEvents m_popup_ViewCurrentHighlights As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_ViewAllTips As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_ViewAllHighlights As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents m_btn_MoveTipDown As DevComponents.DotNetBar.ButtonX
 
 End Class

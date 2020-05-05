@@ -85,29 +85,37 @@ Public Class TabView
         Dim sel As TabViewItem = GetItemFromPoint(e.Location)
         If sel Is Nothing Then
             _hoverIndex = - 1
-            HideAndCloseTooltip()
+            If Not My.Computer.Keyboard.CtrlKeyDown Then
+                HideAndCloseTooltip()
+            End If
             Return
         End If
         If Tabs.IndexOf(sel) = _hoverIndex Then Return
-
         _hoverIndex = Tabs.IndexOf(sel)
+
         If _hoverIndex > - 1 Then
-            HideAndCloseTooltip()
-            If e.Button = MouseButtons.None Then
-                _hoverThread = New Thread(New ParameterizedThreadStart(Sub (idx As Integer)
-                    If _hoverIndex <> idx Then Return
-                    Thread.Sleep(_hoverWaitingDuration)
-                    Me.Invoke(Sub() ShowTooltip(Tabs(idx).TabSource))
-                End Sub))
-                _hoverThread.Start(_hoverIndex)
+            If Not My.Computer.Keyboard.CtrlKeyDown Then
+                HideAndCloseTooltip()
+                If e.Button = MouseButtons.None Then
+                    _hoverThread = New Thread(New ParameterizedThreadStart(Sub (idx As Integer)
+                        If _hoverIndex <> idx Then Return
+                        Thread.Sleep(_hoverWaitingDuration)
+                        Me.Invoke(Sub() ShowTooltip(Tabs(idx).TabSource))
+                    End Sub))
+                    _hoverThread.Start(_hoverIndex)
+                End If
             End If
         End If
     End Sub
 
     Protected Overrides Sub OnMouseLeave(e As EventArgs)
         MyBase.OnMouseLeave(e)
-        _hoverIndex = - 1
-        HideAndCloseTooltip()
+        If _hoverIndex > - 1 Then
+            _hoverIndex = - 1
+            If Not My.Computer.Keyboard.CtrlKeyDown Then
+                HideAndCloseTooltip()
+            End If
+        End If
     End Sub
 
     Private Const _hoverCardWidth As Integer = 200

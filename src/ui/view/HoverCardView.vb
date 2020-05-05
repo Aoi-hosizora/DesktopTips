@@ -85,23 +85,50 @@ Public Class HoverCardView
 
     Private ReadOnly _titleLabel As New DD.LabelX()
     Private ReadOnly _contentLabel As New DD.LabelX()
+    Private WithEvents _button As New DD.ButtonX()
 
     Private _tip As TipItem
     Private _tab As Tab
 
+    Private ReadOnly _titleLeft = 10
+    Private ReadOnly _contentLeft = 8
+    Private ReadOnly _titleTop = 5
+    Private ReadOnly _contentTop = 2
+    Private ReadOnly _bottom = 6
+    Private ReadOnly _buttonSize = 14
+    Private ReadOnly _buttonMargin = 5
+
+    Private Sub ButtonClose_MouseDown(sender As Object, e As MouseEventArgs) Handles _button.MouseDown
+        _titleLabel.Focus()
+    End Sub
+
+    Private Sub ButtonClose_Clicked(sender As Object, e As EventArgs) Handles _button.Click
+        Me.Close()
+    End Sub
+
     Private Sub initLabel()
+        _titleLabel.BackColor = Color.Transparent
         _titleLabel.BackgroundStyle.CornerType = DD.eCornerType.Square
         _titleLabel.AutoSize = True
-        _titleLabel.MaximumSize = New Size(Me.Width - 8 * 2, 0)
+        _titleLabel.MaximumSize = New Size(Me.Width - _titleLeft * 2 - 2 * _buttonMargin, 0)
         _titleLabel.WordWrap = False
-        _titleLabel.BackColor = Color.Transparent
 
+        _contentLabel.BackColor = Color.Transparent
         _contentLabel.BackgroundStyle.CornerType = DD.eCornerType.Square
         _contentLabel.AutoSize = True
-        _contentLabel.MaximumSize = New Size(Me.Width - 8 * 2, 0)
+        _contentLabel.MaximumSize = New Size(Me.Width - _contentLeft * 2, 0)
         _contentLabel.WordWrap = True
-        _contentLabel.BackColor = Color.Transparent
 
+        _button.BackColor = Color.Transparent
+        _button.Text = "×"
+        _button.ColorTable = DD.eButtonColor.Orange
+        _button.Size = New Size(_buttonSize, _buttonSize)
+        _button.Style = DD.eDotNetBarStyle.StyleManagerControlled
+        _button.AccessibleRole = AccessibleRole.PushButton
+        _button.Shape = New DD.RoundRectangleShapeDescriptor()
+        _button.Tooltip = "关闭"
+
+        Me.Controls.Add(_button)
         Me.Controls.Add(_contentLabel)
         Me.Controls.Add(_titleLabel)
 
@@ -133,9 +160,10 @@ Public Class HoverCardView
             _contentLabel.Text = body
         End If
 
-        _titleLabel.Location = New Point(8, 4)
-        _contentLabel.Location = New Point(8, _titleLabel.Top + _titleLabel.Height + 4)
-        Me.Height = _contentLabel.Top + _contentLabel.Height + 8
+        _titleLabel.Location = New Point(_titleLeft, _titleTop)
+        _contentLabel.Location = New Point(_contentLeft, _titleLabel.Top + _titleLabel.Height + _contentTop)
+        _button.Location = New Point(Me.Width - _buttonMargin - _buttonSize, _buttonMargin)
+        Me.Height = _contentLabel.Top + _contentLabel.Height + _bottom
     End Sub
 
     Protected Overrides Sub OnPaint(e As PaintEventArgs)

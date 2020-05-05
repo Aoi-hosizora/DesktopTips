@@ -130,7 +130,9 @@ Public Class TipListBox
         Dim index = IndexFromPoint(e.Location)
         If PointOutOfRange(e.Location) Then
             _hoverIndex = - 1
-            HideAndCloseTooltip()
+            If Not My.Computer.Keyboard.CtrlKeyDown Then
+                HideAndCloseTooltip()
+            End If
             Return
         End If
         If index = _hoverIndex Then Return
@@ -139,16 +141,19 @@ Public Class TipListBox
             Invalidate(GetItemRectangle(_hoverIndex))
         End If
         _hoverIndex = index
+
         If _hoverIndex > - 1 Then
             Invalidate(GetItemRectangle(_hoverIndex))
-            HideAndCloseTooltip()
-            If e.Button = MouseButtons.None Then
-                _hoverThread = New Thread(New ParameterizedThreadStart(Sub(idx As Integer) 
-                    If _hoverIndex <> idx Then Return
-                    Thread.Sleep(_hoverWaitingDuration)
-                    Me.Invoke(Sub() ShowTooltip(Items(idx)))
-                End Sub))
-                _hoverThread.Start(_hoverIndex)
+            If Not My.Computer.Keyboard.CtrlKeyDown Then ' Ctrl 按下不变
+                HideAndCloseTooltip()
+                If e.Button = MouseButtons.None Then
+                    _hoverThread = New Thread(New ParameterizedThreadStart(Sub(idx As Integer) 
+                        If _hoverIndex <> idx Then Return
+                        Thread.Sleep(_hoverWaitingDuration)
+                        Me.Invoke(Sub() ShowTooltip(Items(idx)))
+                    End Sub))
+                    _hoverThread.Start(_hoverIndex)
+                End If
             End If
         End If
     End Sub
@@ -161,7 +166,9 @@ Public Class TipListBox
         If _hoverIndex > - 1 Then
             Invalidate(GetItemRectangle(_hoverIndex))
             _hoverIndex = - 1
-            HideAndCloseTooltip()
+            If Not My.Computer.Keyboard.CtrlKeyDown Then
+                HideAndCloseTooltip()
+            End If
         End If
     End Sub
 

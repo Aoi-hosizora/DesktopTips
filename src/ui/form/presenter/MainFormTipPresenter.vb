@@ -147,11 +147,10 @@
         Return True
     End Function
 
-    Public Sub ViewCurrentList(items As IEnumerable(Of TipItem), highlight As Boolean) Implements MainFormContract.ITipPresenter.ViewCurrentList
+    Public Sub ViewList(items As IEnumerable(Of TipItem), highlight As Boolean) Implements MainFormContract.ITipPresenter.ViewList
         If Not highlight Then
             Dim tipString = String.Join(vbNewLine, items.Select(Function(t) t.Content & If(t.IsHighLight, $" [高亮 {t.Color.Name}]", "")))
             _view.ShowTextForm($"浏览列表 (共 {items.Count} 项)", tipString.ToString(), Color.Black)
-
         Else
             Dim highLightItems = items.Where(Function(t) t.IsHighLight).Select(Function(t) $"{t.Content} [{t.Color.Name}]")
             Dim tipString = String.Join(vbNewLine, highLightItems)
@@ -183,7 +182,7 @@
             MessageBoxEx.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error, _view.GetMe())
         Else
             Dim linksString As String = String.Join(vbNewLine, links)
-            Dim ok = MessageBoxEx.Show($"是否打开以下 {links.Count} 个链接：{vbNewLine}{vbNewLine}{linksString}", "打开链接", 
+            Dim ok = MessageBoxEx.Show($"是否打开以下 {links.Count} 个链接：{vbNewLine}{vbNewLine}{linksString}", "打开链接",
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Question, _view.GetMe())
             If ok = vbOK Then
                 OpenInDefaultBrowser(links, inNew)

@@ -52,13 +52,13 @@ Partial Class MainForm
         Me.m_popup_FileTips = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_MoveTipsSubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_OtherLabel = New DevComponents.DotNetBar.LabelItem()
-        Me.m_popup_Refresh = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_FileSubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_ViewCurrentTips = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_ViewCurrentHighlights = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_ViewAllTips = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_ViewAllHighlights = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_OpenDir = New DevComponents.DotNetBar.ButtonItem()
+        Me.m_popup_Refresh = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_BrowserSubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_OpenAllLinksInTips = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_ViewAllLinksInTips = New DevComponents.DotNetBar.ButtonItem()
@@ -75,7 +75,9 @@ Partial Class MainForm
         Me.m_popup_SavePosition = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_Exit = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_TabPopupMenu = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_popup_TabLabel = New DevComponents.DotNetBar.LabelItem()
+        Me.m_popup_CurrentTabLabel = New DevComponents.DotNetBar.LabelItem()
+        Me.m_popup_CurrentTabTextLabel = New DevComponents.DotNetBar.LabelItem()
+        Me.m_popup_TabCountLabel = New DevComponents.DotNetBar.LabelItem()
         Me.m_popup_NewTab = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_DeleteTab = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_RenameTab = New DevComponents.DotNetBar.ButtonItem()
@@ -205,7 +207,7 @@ Partial Class MainForm
         '
         Me.m_menu_ListPopupMenu.AutoExpandOnClick = True
         Me.m_menu_ListPopupMenu.Name = "m_menu_ListPopupMenu"
-        Me.m_menu_ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SelectedTipsCountLabel, Me.m_popup_SelectedTipsTextLabel, Me.m_popup_TipsCountLabel, Me.m_popup_ListItemContainer, Me.m_popup_MoveTopTop, Me.m_popup_MoveTipBottom, Me.m_menu_HighlightSubMenu, Me.m_popup_FileTips, Me.m_menu_MoveTipsSubMenu, Me.m_popup_OtherLabel, Me.m_popup_Refresh, Me.m_menu_FileSubMenu, Me.m_menu_BrowserSubMenu, Me.m_menu_SyncDataSubMenu, Me.m_menu_WindowSubMenu, Me.m_popup_Exit})
+        Me.m_menu_ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SelectedTipsCountLabel, Me.m_popup_SelectedTipsTextLabel, Me.m_popup_TipsCountLabel, Me.m_popup_ListItemContainer, Me.m_popup_MoveTopTop, Me.m_popup_MoveTipBottom, Me.m_menu_HighlightSubMenu, Me.m_popup_FileTips, Me.m_menu_MoveTipsSubMenu, Me.m_popup_OtherLabel, Me.m_menu_FileSubMenu, Me.m_popup_Refresh, Me.m_menu_BrowserSubMenu, Me.m_menu_SyncDataSubMenu, Me.m_menu_WindowSubMenu, Me.m_popup_Exit})
         Me.m_menu_ListPopupMenu.Text = "ListPopup"
         '
         'm_popup_SelectedTipsCountLabel
@@ -388,11 +390,6 @@ Partial Class MainForm
         Me.m_popup_OtherLabel.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
         Me.m_popup_OtherLabel.Text = "其他"
         '
-        'm_popup_Refresh
-        '
-        Me.m_popup_Refresh.Name = "m_popup_Refresh"
-        Me.m_popup_Refresh.Text = "刷新数据(&R)"
-        '
         'm_menu_FileSubMenu
         '
         Me.m_menu_FileSubMenu.Name = "m_menu_FileSubMenu"
@@ -425,6 +422,11 @@ Partial Class MainForm
         Me.m_popup_OpenDir.BeginGroup = True
         Me.m_popup_OpenDir.Name = "m_popup_OpenDir"
         Me.m_popup_OpenDir.Text = "打开文件所在位置(&O)"
+        '
+        'm_popup_Refresh
+        '
+        Me.m_popup_Refresh.Name = "m_popup_Refresh"
+        Me.m_popup_Refresh.Text = "刷新数据(&R)"
         '
         'm_menu_BrowserSubMenu
         '
@@ -514,21 +516,49 @@ Partial Class MainForm
         '
         Me.m_menu_TabPopupMenu.AutoExpandOnClick = True
         Me.m_menu_TabPopupMenu.Name = "m_menu_TabPopupMenu"
-        Me.m_menu_TabPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_TabLabel, Me.m_popup_NewTab, Me.m_popup_DeleteTab, Me.m_popup_RenameTab, Me.m_menu_MoveToTabSubMenu})
+        Me.m_menu_TabPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_CurrentTabLabel, Me.m_popup_CurrentTabTextLabel, Me.m_popup_TabCountLabel, Me.m_popup_NewTab, Me.m_popup_DeleteTab, Me.m_popup_RenameTab, Me.m_menu_MoveToTabSubMenu})
         Me.m_menu_TabPopupMenu.Text = "TabPopup"
         '
-        'm_popup_TabLabel
+        'm_popup_CurrentTabLabel
         '
-        Me.m_popup_TabLabel.BackColor = System.Drawing.Color.FromArgb(CType(CType(221, Byte), Integer), CType(CType(231, Byte), Integer), CType(CType(238, Byte), Integer))
-        Me.m_popup_TabLabel.BorderSide = DevComponents.DotNetBar.eBorderSide.Bottom
-        Me.m_popup_TabLabel.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
-        Me.m_popup_TabLabel.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
-        Me.m_popup_TabLabel.Name = "m_popup_TabLabel"
-        Me.m_popup_TabLabel.PaddingBottom = 1
-        Me.m_popup_TabLabel.PaddingLeft = 10
-        Me.m_popup_TabLabel.PaddingTop = 1
-        Me.m_popup_TabLabel.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
-        Me.m_popup_TabLabel.Text = "分组 (共 0 组)"
+        Me.m_popup_CurrentTabLabel.BackColor = System.Drawing.Color.FromArgb(CType(CType(221, Byte), Integer), CType(CType(231, Byte), Integer), CType(CType(238, Byte), Integer))
+        Me.m_popup_CurrentTabLabel.BorderSide = DevComponents.DotNetBar.eBorderSide.Bottom
+        Me.m_popup_CurrentTabLabel.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
+        Me.m_popup_CurrentTabLabel.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
+        Me.m_popup_CurrentTabLabel.Name = "m_popup_CurrentTabLabel"
+        Me.m_popup_CurrentTabLabel.PaddingBottom = 1
+        Me.m_popup_CurrentTabLabel.PaddingLeft = 10
+        Me.m_popup_CurrentTabLabel.PaddingTop = 1
+        Me.m_popup_CurrentTabLabel.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
+        Me.m_popup_CurrentTabLabel.Text = "当前分组"
+        '
+        'm_popup_CurrentTabTextLabel
+        '
+        Me.m_popup_CurrentTabTextLabel.BackColor = System.Drawing.Color.White
+        Me.m_popup_CurrentTabTextLabel.BorderSide = DevComponents.DotNetBar.eBorderSide.None
+        Me.m_popup_CurrentTabTextLabel.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
+        Me.m_popup_CurrentTabTextLabel.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
+        Me.m_popup_CurrentTabTextLabel.Name = "m_popup_CurrentTabTextLabel"
+        Me.m_popup_CurrentTabTextLabel.PaddingLeft = 5
+        Me.m_popup_CurrentTabTextLabel.PaddingRight = 5
+        Me.m_popup_CurrentTabTextLabel.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
+        Me.m_popup_CurrentTabTextLabel.Text = "LabelItem2LabelItem2LabelItem2LabelItem"
+        Me.m_popup_CurrentTabTextLabel.Width = 150
+        Me.m_popup_CurrentTabTextLabel.WordWrap = True
+        '
+        'm_popup_TabCountLabel
+        '
+        Me.m_popup_TabCountLabel.BackColor = System.Drawing.Color.FromArgb(CType(CType(221, Byte), Integer), CType(CType(231, Byte), Integer), CType(CType(238, Byte), Integer))
+        Me.m_popup_TabCountLabel.BeginGroup = True
+        Me.m_popup_TabCountLabel.BorderSide = DevComponents.DotNetBar.eBorderSide.Bottom
+        Me.m_popup_TabCountLabel.BorderType = DevComponents.DotNetBar.eBorderType.SingleLine
+        Me.m_popup_TabCountLabel.ForeColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(21, Byte), Integer), CType(CType(110, Byte), Integer))
+        Me.m_popup_TabCountLabel.Name = "m_popup_TabCountLabel"
+        Me.m_popup_TabCountLabel.PaddingBottom = 1
+        Me.m_popup_TabCountLabel.PaddingLeft = 10
+        Me.m_popup_TabCountLabel.PaddingTop = 1
+        Me.m_popup_TabCountLabel.SingleLineColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
+        Me.m_popup_TabCountLabel.Text = "分组 (共 0 组)"
         '
         'm_popup_NewTab
         '
@@ -714,7 +744,7 @@ Partial Class MainForm
     Friend WithEvents m_popup_RenameTab As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_menu_MoveTipsSubMenu As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_menu_MoveToTabSubMenu As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents m_popup_TabLabel As DevComponents.DotNetBar.LabelItem
+    Friend WithEvents m_popup_TabCountLabel As DevComponents.DotNetBar.LabelItem
     Friend WithEvents m_btn_Resize As DevComponents.DotNetBar.ButtonX
     Friend WithEvents m_popup_ListItemContainer As DevComponents.DotNetBar.ItemContainer
     Friend WithEvents m_menu_WindowSubMenu As DevComponents.DotNetBar.ButtonItem
@@ -738,5 +768,7 @@ Partial Class MainForm
     Friend WithEvents m_popup_ViewAllTips As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_ViewAllHighlights As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_btn_MoveTipDown As DevComponents.DotNetBar.ButtonX
+    Friend WithEvents m_popup_CurrentTabLabel As DevComponents.DotNetBar.LabelItem
+    Friend WithEvents m_popup_CurrentTabTextLabel As DevComponents.DotNetBar.LabelItem
 
 End Class

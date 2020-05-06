@@ -26,7 +26,7 @@
         Function MoveBottom(item As TipItem) As Boolean                                         ' 置底
         Sub Search()                                                                            ' 搜索
         Function HighlightTips(items As IEnumerable(Of TipItem), color As TipColor) As boolean  ' 设置高亮
-        Sub ViewCurrentList(items As IEnumerable(Of TipItem), highlight As Boolean)             ' 浏览当前列表
+        Sub ViewList(items As IEnumerable(Of TipItem), highlight As Boolean)             ' 浏览当前列表
         Function GetLinks(items As IEnumerable(Of TipItem)) As IEnumerable(Of String)           ' 打开所有链接
         Sub OpenAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean)                    ' 打开所有链接
         Sub ViewAllLinks(items As IEnumerable(Of TipItem), inNew As Boolean)                    ' 浏览所有链接

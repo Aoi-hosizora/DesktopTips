@@ -65,13 +65,15 @@ Public Class TipListBox
         TopIndex = topIdx
     End Sub
 
-    Public Sub SetSelectOnly(index As Integer)
+    Public Sub SetSelectOnly(ParamArray indices As Integer())
         If ItemCount = 0 Then Return
         ClearSelected()
-        If index >= ItemCount Then
-            index = ItemCount - 1
-        End If
-        SetSelected(index, True)
+        For Each index In indices
+            If index >= ItemCount Then
+                index = ItemCount - 1
+            End If
+            SetSelected(index, True)
+        Next
     End Sub
 
     Public Function PointOutOfRange(p as Point) As Boolean

@@ -2,13 +2,25 @@
 
 Public Class MainForm
 
-#Region "加载设置 加载列表内容和界面 失去焦点 启动退出 系统事件"
+#Region "加载设置 加载列表内容和界面 失去焦点 启动退出 系统事件" ' TODO
+
+    Private ReadOnly Property HEIGHT_17 As Integer
+        Get
+            Return m_ListView.ItemHeight
+        End Get
+    End Property
+
+    Private ReadOnly Property HEIGHT_27 As Integer
+        Get
+            Return m_num_ListCount.Height + 5
+        End Get
+    End Property
 
     Private Sub LoadSetting()
         Me.Top = My.Settings.Top
         Me.Left = My.Settings.Left
         Me.Width = My.Settings.Width
-        Me.Height = m_num_ListCount.Value * 17 + 27
+        Me.Height = m_num_ListCount.Value * HEIGHT_17 + HEIGHT_27
         Me.MaxOpacity = My.Settings.MaxOpacity
         Me.TopMost = My.Settings.TopMost
 
@@ -88,7 +100,7 @@ Public Class MainForm
 
 #End Region
 
-#Region "标签: 增删改 移动 复制粘贴 全选"
+#Region "标签: 增删改 移动 复制粘贴 全选" ' TODO
 
     Private Sub InsertTip(sender As Object, e As EventArgs) Handles m_btn_InsertTip.Click, m_popup_InsertTip.Click
         If _tipPresenter.Insert() Then
@@ -133,7 +145,7 @@ Public Class MainForm
             m_ListView.Update()
             m_ListView.SetSelectOnly(m_ListView.SelectedIndex - 1)
             If sender.Tag = "True" Then
-                NativeMethod.MouseMoveUp(Cursor.Position, 17)
+                NativeMethod.MouseMoveUp(Cursor.Position, HEIGHT_17)
             End If
         End If
     End Sub
@@ -143,7 +155,7 @@ Public Class MainForm
             m_ListView.Update()
             m_ListView.SetSelectOnly(m_ListView.SelectedIndex + 1)
             If sender.Tag = "True" Then
-                NativeMethod.MouseMoveDown(Cursor.Position, 17)
+                NativeMethod.MouseMoveDown(Cursor.Position, HEIGHT_17)
             End If
         End If
     End Sub
@@ -166,7 +178,7 @@ Public Class MainForm
 
 #End Region
 
-#Region "标签: 查找 打开 浏览 浏览器"
+#Region "标签: 查找 打开 浏览 浏览器" ' TODO
 
     Private Sub FindTips(sender As Object, e As EventArgs) Handles m_popup_FileTips.Click
         _tipPresenter.Search()
@@ -177,21 +189,21 @@ Public Class MainForm
     End Sub
 
     Private Sub ViewCurrentTips(sender As Object, e As EventArgs) Handles m_popup_ViewCurrentTips.Click
-        _tipPresenter.ViewCurrentList(m_ListView.Items, False)
+        _tipPresenter.ViewList(m_ListView.Items, False)
     End Sub
 
     Private Sub ViewAllTips(sender As Object, e As EventArgs) Handles m_popup_ViewAllTips.Click
-        _tipPresenter.ViewCurrentList(GlobalModel.Tabs.SelectMany(Function(tab) 
+        _tipPresenter.ViewList(GlobalModel.Tabs.SelectMany(Function(tab) 
             Return tab.Tips.Select(Function(tip) New TipItem($"[{tab.Title}] - {tip.Content}", tip.ColorId))
         End Function), False)
     End Sub
 
     Private Sub ViewCurrentHighlights(sender As Object, e As EventArgs) Handles m_popup_ViewCurrentHighlights.Click
-        _tipPresenter.ViewCurrentList(m_ListView.Items, True)
+        _tipPresenter.ViewList(m_ListView.Items, True)
     End Sub
 
     Private Sub ViewAllHighlights(sender As Object, e As EventArgs) Handles m_popup_ViewAllHighlights.Click
-        _tipPresenter.ViewCurrentList(GlobalModel.Tabs.SelectMany(Function(tab) 
+        _tipPresenter.ViewList(GlobalModel.Tabs.SelectMany(Function(tab) 
             Return tab.Tips.Select(Function(tip) New TipItem($"[{tab.Title}] - {tip.Content}", tip.ColorId))
         End Function), True)
     End Sub
@@ -212,7 +224,7 @@ Public Class MainForm
 
 #End Region
 
-#Region "标签: 高亮 设置颜色 刷新"
+#Region "标签: 高亮 设置颜色 刷新" ' TODO
 
     Private Sub HighLightTips(sender As Object, e As EventArgs)
         If m_ListView.SelectedCount > 0 Then
@@ -239,22 +251,20 @@ Public Class MainForm
 
             If ok Then
                 m_ListView.Update()
-                m_ListView.ClearSelected()
-                For Each idx In indices
-                    m_ListView.SetSelected(idx, True)
-                Next
+                m_ListView.SetSelectOnly(indices.ToArray())
+                m_menu_HighlightSubMenu.ClosePopup()
             End If
         End If
     End Sub
 
     Private Sub CheckHighlightChecked() ' 设置弹出高亮菜单 用
-        Dim selCnt = m_ListView.SelectedCount
-        For Each btn In m_menu_HighlightSubMenu.SubItems
+        Dim isSel = m_ListView.SelectedCount > 0
+        For Each btn As DD.ButtonItem In m_menu_HighlightSubMenu.SubItems
             Dim color = TryCast(btn.Tag, TipColor)
             If color IsNot Nothing Then
-                btn.Enabled = selCnt > 0
-                btn.Checked = selCnt = 1 AndAlso m_ListView.SelectedItem.ColorId = color.Id
-                m_menu_HighlightSubMenu.Checked = selCnt > 0 AndAlso m_ListView.SelectedItems.Any(Function(i) i.IsHighLight)
+                btn.Enabled = isSel
+                m_menu_HighlightSubMenu.Checked = isSel AndAlso m_ListView.SelectedItems.Any(Function(i) i.IsHighLight)
+                btn.Checked = isSel AndAlso m_ListView.SelectedItems.All(Function(t) t.ColorId = color.Id)
             End If
         Next
     End Sub
@@ -271,7 +281,7 @@ Public Class MainForm
 
 #End Region
 
-#Region "分组: 增删改 拖动分组"
+#Region "分组: 增删改 拖动分组" ' TODO
 
     Private Sub InsertTab(sender As Object, e As EventArgs) Handles m_popup_NewTab.Click
         If _tabPresenter.Insert() Then
@@ -317,7 +327,7 @@ Public Class MainForm
 
 #End Region
 
-#Region "分组: 选择 移动至"
+#Region "分组: 选择 移动至" ' TODO
 
     Private Sub On_TabView_SelectedTabChanged(sender As Object, e As DD.SuperTabStripSelectedTabChangedEventArgs) Handles m_TabView.SelectedTabChanged
         HideAssistButtons()
@@ -366,7 +376,7 @@ Public Class MainForm
 
 #End Region
 
-#Region "显示: 透明度 辅助按钮 移动至菜单 高亮菜单"
+#Region "显示: 透明度 辅助按钮 移动至菜单 高亮菜单" ' TODO
 
     Private ReadOnly _opacities() As Double = {0.2, 0.4, 0.6, 0.8, 1}
     Private ReadOnly _opacityButtons(_opacities.Length - 1) As DD.ButtonItem
@@ -398,11 +408,11 @@ Public Class MainForm
 
     Private Sub SetupAssistButtons() ' 窗口加载 用
         m_btn_MoveTipUp.Visible = False
-        m_btn_MoveTipUp.Height = (17 + 1) / 2
-        m_btn_MoveTipUp.Width = 17
+        m_btn_MoveTipUp.Height = (HEIGHT_17 + 1) / 2
+        m_btn_MoveTipUp.Width = HEIGHT_17
         m_btn_MoveTipDown.Visible = False
-        m_btn_MoveTipDown.Height = (17 + 1) / 2
-        m_btn_MoveTipDown.Width = 17
+        m_btn_MoveTipDown.Height = (HEIGHT_17 + 1) / 2
+        m_btn_MoveTipDown.Width = HEIGHT_17
         m_ListView.WheeledFunc = Sub() HideAssistButtons()
     End Sub
 
@@ -463,7 +473,7 @@ Public Class MainForm
 
 #End Region
 
-#Region "显示: 可用性判断 列表选择 大小调整"
+#Region "显示: 可用性判断 列表选择 大小调整" ' TODO
 
     Private Sub CheckListItemEnabled() ' 列表选中更改 列表菜单弹出 用
         Dim isNotEmpty As Boolean = m_ListView.SelectedCount > 0
@@ -530,7 +540,7 @@ Public Class MainForm
 
 #End Region
 
-#Region "显示: 弹出菜单 透明度"
+#Region "显示: 弹出菜单 透明度" ' TODO
 
     Private Sub Popup(item As DD.ButtonItem, isCheck As Boolean)
         If Not isCheck OrElse (Not DD.ButtonItem.IsOnPopup(item) And Not DD.ButtonItem.IsOnPopup(m_menu_ListPopupMenu)) Then
@@ -557,6 +567,11 @@ Public Class MainForm
     End Sub
 
     Private Sub On_ListPopupMenu_PopupOpen(sender As Object, e As DD.PopupOpenEventArgs) Handles m_menu_ListPopupMenu.PopupOpen
+        On Error Resume Next
+        m_menu_TabPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_BrowserSubMenu, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
+        m_menu_ListPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_BrowserSubMenu, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
+        m_menu_ListPopupMenu.SubItems.AddRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_BrowserSubMenu, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
+
         CheckListItemEnabled()
         Dim tipString = String.Join(vbNewLine, m_ListView.SelectedItems.Select(Function(t) t.Content))
         Dim highlightCount = m_ListView.Items.Where(Function(t) t.IsHighLight).Count
@@ -570,13 +585,29 @@ Public Class MainForm
     End Sub
 
     Private Sub On_TabPopupMenu_PopupOpen(sender As Object, e As DD.PopupOpenEventArgs) Handles m_menu_TabPopupMenu.PopupOpen
-        m_popup_TabLabel.Text = $"分组 (共 {GlobalModel.Tabs.Count} 组)"
-        m_menu_TabPopupMenu.Refresh()
+        On Error Resume Next
+        m_menu_ListPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_BrowserSubMenu, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
+        m_menu_TabPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_BrowserSubMenu, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
+        m_menu_TabPopupMenu.SubItems.AddRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_BrowserSubMenu, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
+
+        Dim counts = GlobalModel.CurrentTab.Tips.GroupBy(Function(t) t.Color).Select(Function(g) New Tuple(Of TipColor, Integer)(g.Key, g.Count())).OrderBy(Function(g) g.Item1?.Id)
+        Dim body = $"总共 {GlobalModel.CurrentTab.Tips.Count} 项"
+        body = counts.Aggregate(body, Function(current, g)
+            If g.Item1 Is Nothing Then
+                Return current & $"<br />无高亮 {g.Item2} 项"
+            Else
+                Return current & $"<br /><font color=""{g.Item1.HexColor}"">{g.Item1.Name}</font> {g.Item2} 项"
+            End If
+        End Function)
+
+        m_popup_TabCountLabel.Text = $"分组 (共 {GlobalModel.Tabs.Count} 组)"
+        m_popup_CurrentTabLabel.Text = $"当前分组：{GlobalModel.CurrentTab.Title}"
+        m_popup_CurrentTabTextLabel.Text = body
+
         On_BtnMoveTipsAndMoveToTabSubMenu_PopupOpen(sender, e)
     End Sub
 
-    Private Sub On_BtnMoveTipsAndMoveToTabSubMenu_PopupOpen(sender As Object, e As DD.PopupOpenEventArgs) _
-        Handles m_menu_MoveTipsSubMenu.PopupOpen, m_menu_MoveToTabSubMenu.PopupOpen
+    Private Sub On_BtnMoveTipsAndMoveToTabSubMenu_PopupOpen(sender As Object, e As DD.PopupOpenEventArgs) Handles m_menu_MoveTipsSubMenu.PopupOpen, m_menu_MoveToTabSubMenu.PopupOpen
         SetupMoveToButtons()
     End Sub
 
@@ -605,10 +636,10 @@ Public Class MainForm
 
 #End Region
 
-#Region "显示: 列表高度 热键 置顶 加载保存位置"
+#Region "显示: 列表高度 热键 置顶 加载保存位置" ' TODO
 
     Private Sub On_NumericListCount_ValueChanged(sender As Object, e As EventArgs) Handles m_num_ListCount.ValueChanged
-        Dim targetHeight As Integer = m_num_ListCount.Value * 17 + 27
+        Dim targetHeight As Integer = m_num_ListCount.Value * HEIGHT_17 + HEIGHT_27
         If Me.Height = targetHeight Then Return
         Dim direction As Integer = targetHeight - Me.Height
         Me.Height = targetHeight

@@ -56,18 +56,17 @@ Public Class TipListBox
 #Region "自定义函数"
 
     Public Overloads Sub Update()
+        Dim topIdx = TopIndex
         MyBase.Update()
         Dim obj = CType(MyBase.DataSource, List(Of TipItem))
         MyBase.DataSource = Nothing
         MyBase.DataSource = obj
         adjustLabelNothing()
+        TopIndex = topIdx
     End Sub
 
-    Public Sub SetSelectOnly(index As Integer, Optional toTop As Boolean = False)
+    Public Sub SetSelectOnly(index As Integer)
         If ItemCount = 0 Then Return
-        If toTop Then
-            SetSelected(0, True)
-        End If
         ClearSelected()
         If index >= ItemCount Then
             index = ItemCount - 1
@@ -127,25 +126,27 @@ Public Class TipListBox
     ''' </summary>
     Protected Overrides Sub OnMouseMove(e As MouseEventArgs)
         MyBase.OnMouseMove(e)
-        Dim index = IndexFromPoint(e.Location)
-        If PointOutOfRange(e.Location) Then
-            _hoverIndex = - 1
+        Dim index = IndexFromPoint(e.Location) ' 当前位置或最后一行
+        If PointOutOfRange(e.Location) Then ' 鼠标超过最后一行
+            If _hoverIndex > - 1 Then ' 还没记录
+                _hoverIndex = - 1
+                Invalidate(GetItemRectangle(ItemCount - 1)) ' 通知最后一行取消高亮
+            End If
             If Not My.Computer.Keyboard.CtrlKeyDown Then
-                HideAndCloseTooltip()
+                HideAndCloseTooltip() ' Ctrl 按下不变
             End If
             Return
         End If
-        If index = _hoverIndex Then Return
+        If index = _hoverIndex Then Return ' 没必要更新
 
         If _hoverIndex > - 1 Then
-            Invalidate(GetItemRectangle(_hoverIndex))
+            Invalidate(GetItemRectangle(_hoverIndex)) ' 更新前一瞬间的高亮
         End If
         _hoverIndex = index
-
-        If _hoverIndex > - 1 Then
-            Invalidate(GetItemRectangle(_hoverIndex))
-            If Not My.Computer.Keyboard.CtrlKeyDown Then ' Ctrl 按下不变
-                HideAndCloseTooltip()
+        If _hoverIndex > - 1 Then ' 通知当前高亮行
+            Invalidate(GetItemRectangle(_hoverIndex)) ' 更新当前的高亮
+            If Not My.Computer.Keyboard.CtrlKeyDown Then
+                HideAndCloseTooltip() ' Ctrl 按下不变
                 If e.Button = MouseButtons.None Then
                     _hoverThread = New Thread(New ParameterizedThreadStart(Sub(idx As Integer) 
                         If _hoverIndex <> idx Then Return

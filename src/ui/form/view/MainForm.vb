@@ -93,7 +93,8 @@ Public Class MainForm
     Private Sub InsertTip(sender As Object, e As EventArgs) Handles m_btn_InsertTip.Click, m_popup_InsertTip.Click
         If _tipPresenter.Insert() Then
             m_ListView.Update()
-            m_ListView.SetSelectOnly(m_ListView.ItemCount - 1, True)
+            m_ListView.SetSelectOnly(0)
+            m_ListView.SetSelectOnly(m_ListView.ItemCount - 1)
         End If
     End Sub
 

@@ -183,7 +183,9 @@ Public Class HoverCardView
                     Dim val = NativeMethod.DWMNC_ENABLED
                     Const intSize = 4
                     NativeMethod.DwmSetWindowAttribute(Handle, NativeMethod.DWMWA_NCRENDERING_POLICY, val, intSize)
-                    NativeMethod.DwmExtendFrameIntoClientArea(Handle, New NativeMethod.MARGINS() With {.bottomHeight = 1, .leftWidth = 1, .rightWidth = 1, .topHeight = 1})
+                    NativeMethod.DwmExtendFrameIntoClientArea(Handle, New NativeMethod.MARGINS() With {
+                        .BottomHeight = 1, .LeftWidth = 1, .RightWidth = 1, .TopHeight = 1
+                        })
                 End If
                 Exit Select
         End Select

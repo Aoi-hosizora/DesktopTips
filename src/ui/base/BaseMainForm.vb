@@ -1,4 +1,5 @@
-﻿Imports DD = DevComponents.DotNetBar
+﻿Imports System.Drawing.Drawing2D
+Imports DD = DevComponents.DotNetBar
 
 ''' <summary>
 ''' 实现了 透明度动画 窗口拖动 不显示图标 功能
@@ -15,6 +16,10 @@ Public Class BaseMainForm
     Protected Property MaxOpacity As Double = 0.6
     Protected Property CanMouseLeaveFunc As Func(Of Boolean)
     Protected Property IsLoading As Boolean = True
+
+    Public Sub New()
+        UpdateShape()
+    End Sub
 
     Protected Overrides Sub OnLoad(e As EventArgs)
         MyBase.OnLoad(e)
@@ -84,9 +89,40 @@ Public Class BaseMainForm
             Dim cp As CreateParams = MyBase.CreateParams
             cp.ExStyle = cp.ExStyle And Not NativeMethod.WS_EX_APPWINDOW ' 不显示在TaskBar
             cp.ExStyle = cp.ExStyle Or NativeMethod.WS_EX_TOOLWINDOW ' 不显示在Alt-Tab
+            cp.ExStyle = cp.ExStyle Or NativeMethod.WS_EX_LAYERED
+            ' cp.ClassStyle = cp.ClassStyle Or NativeMethod.CS_DROPSHADOW
             Return cp
         End Get
     End Property
+
+    Protected Overrides Sub OnSizeChanged(e As EventArgs)
+        MyBase.OnSizeChanged(e)
+        UpdateShape()
+    End Sub
+
+    Protected Sub UpdateShape()
+        Me.BackColor = Color.DarkRed
+        Me.TransparencyKey = Color.DarkRed
+
+        ' Dim x = Me.Width
+        ' Dim y = Me.Height
+        ' Dim yy = 23
+        ' Dim lxx = 24 * 2 - 1
+        ' Dim rxx = 24 * 2 + 10 - 2
+        '
+        ' Dim points As New List(Of Point)
+        ' points.Add(New Point(0, 0))
+        ' points.Add(New Point(x, 0))
+        ' points.Add(New Point(x, y))
+        ' points.Add(New Point(x - rxx, y))
+        ' points.Add(New Point(x - rxx, y - yy))
+        ' points.Add(New Point(lxx, y - yy))
+        ' points.Add(New Point(lxx, y))
+        ' points.Add(New Point(0, y))
+        ' Dim gp As New GraphicsPath
+        ' gp.AddLines(points.ToArray())
+        ' Me.Region = New Region(gp)
+    End Sub
 
     Protected Overrides Sub WndProc(ByRef m As Message)
         Select Case m.Msg
@@ -95,6 +131,10 @@ Public Class BaseMainForm
                     Dim val = NativeMethod.DWMNC_ENABLED
                     Const intSize = 4
                     NativeMethod.DwmSetWindowAttribute(Handle, NativeMethod.DWMWA_EXCLUDED_FROM_PEEK, val, intSize)
+                    ' NativeMethod.DwmSetWindowAttribute(Handle, NativeMethod.DWMWA_NCRENDERING_POLICY, val, intSize)
+                    ' NativeMethod.DwmExtendFrameIntoClientArea(Handle, New NativeMethod.MARGINS() With {
+                    '     .BottomHeight = 1, .LeftWidth = 1, .RightWidth = 1, .TopHeight = 1
+                    '     })
                 End If
                 Exit Select
         End Select

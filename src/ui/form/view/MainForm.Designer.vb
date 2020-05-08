@@ -676,7 +676,6 @@ Partial Class MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.BackColor = System.Drawing.Color.DarkRed
         Me.ClientSize = New System.Drawing.Size(326, 262)
         Me.Controls.Add(Me.m_btn_MoveTipDown)
         Me.Controls.Add(Me.m_btn_MoveTipUp)
@@ -700,7 +699,6 @@ Partial Class MainForm
         Me.ShowIcon = False
         Me.ShowInTaskbar = False
         Me.Text = "DesktopTips"
-        Me.TransparencyKey = System.Drawing.Color.DarkRed
         CType(Me.m_num_ListCount, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.m_menu_ContextMenuBar, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.m_TabView, System.ComponentModel.ISupportInitialize).EndInit()

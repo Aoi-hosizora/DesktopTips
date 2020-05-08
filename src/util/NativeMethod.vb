@@ -5,25 +5,28 @@ Public Class NativeMethod
 
 #Region "常量"
 
-    Public Const GW_CHILD As Integer = 5
-    Public Const GW_HWNDNEXT As Integer = 2
-    Public Const GWL_WNDPROC = - 4
+    Public Const GW_CHILD = 5
+    Public Const GW_HWNDNEXT = 2
 
     Public Const WS_EX_APPWINDOW = &H40000
     Public Const WS_EX_TOOLWINDOW = &H80
     Public Const WS_EX_TOPMOST = &H8
+    Public Const WS_EX_LAYERED = &H80000
 
     Public Const WM_HOTKEY = &H312
     Public Const WM_KEYDOWN = &H100
     Public Const WM_SYSKEYDOWN = &H104
-    Public Const WM_NCPAINT As Integer = &H85
+    Public Const WM_NCPAINT = &H85
 
-    Public Const CS_DROPSHADOW As Integer = &H20000
+    Public Const CS_DROPSHADOW = &H20000
 
     ' https://www.neowin.net/forum/topic/794078-cc-keep-window-visible-while-using-aero-peek/
     Public Const DWMWA_NCRENDERING_POLICY = 2
     Public Const DWMWA_EXCLUDED_FROM_PEEK = 12
     Public Const DWMNC_ENABLED = 2
+    
+    Public Const LWA_ALPHA = &H2
+    Public Const LWA_COLORKEY = &H1
 
 #End Region
 
@@ -86,10 +89,6 @@ Public Class NativeMethod
 #Region "窗口相关"
 
     <DllImport("user32.dll")>
-    Public Shared Function GetForegroundWindow() As IntPtr
-    End Function
-
-    <DllImport("user32.dll")>
     Public Shared Function SetForegroundWindow(hWnd As IntPtr) As <MarshalAs(UnmanagedType.Bool)> Boolean
     End Function
 
@@ -114,16 +113,32 @@ Public Class NativeMethod
         GetClassName(handle, sb, sb.Capacity)
         Return sb.ToString()
     End Function
+    
+    <DllImport("user32.dll")>
+    Public Shared Function SetLayeredWindowAttributes(hwnd As IntPtr, crKey As COLORREF, bAlpha As Byte, dwFlags As UInteger) As Boolean
+    End Function
+    
+    <StructLayout(LayoutKind.Sequential)>
+    Public Structure COLORREF
+        Public R As Byte
+        Public G As Byte
+        Public B As Byte
+        Public Sub New (color As Color)
+            R = color.R
+            G = color.G
+            B = color.B
+        End Sub
+    End Structure
 
 #End Region
 
 #Region "DWM"
 
     Public Structure MARGINS
-        Public leftWidth As Integer
-        Public rightWidth As Integer
-        Public topHeight As Integer
-        Public bottomHeight As Integer
+        Public LeftWidth As Integer
+        Public RightWidth As Integer
+        Public TopHeight As Integer
+        Public BottomHeight As Integer
     End Structure
 
     <DllImport("dwmapi.dll")>

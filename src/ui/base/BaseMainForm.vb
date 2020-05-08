@@ -88,6 +88,19 @@ Public Class BaseMainForm
         End Get
     End Property
 
+    Protected Overrides Sub WndProc(ByRef m As Message)
+        Select Case m.Msg
+            Case NativeMethod.WM_NCPAINT
+                If NativeMethod.CheckAeroEnabled() Then
+                    Dim val = NativeMethod.DWMNC_ENABLED
+                    Const intSize = 4
+                    NativeMethod.DwmSetWindowAttribute(Handle, NativeMethod.DWMWA_EXCLUDED_FROM_PEEK, val, intSize)
+                End If
+                Exit Select
+        End Select
+        MyBase.WndProc(m)
+    End Sub
+
 #Region "Timer"
 
     Private Sub TimerShowForm_Tick(sender As Object, e As EventArgs) Handles _timerShowForm.Tick

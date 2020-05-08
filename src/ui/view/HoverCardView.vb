@@ -179,9 +179,10 @@ Public Class HoverCardView
     Protected Overrides Sub WndProc(ByRef m As Message)
         Select Case m.Msg
             Case NativeMethod.WM_NCPAINT
-                Dim val = 2
                 If NativeMethod.CheckAeroEnabled() Then
-                    NativeMethod.DwmSetWindowAttribute(Handle, 2, val, 4)
+                    Dim val = NativeMethod.DWMNC_ENABLED
+                    Const intSize = 4
+                    NativeMethod.DwmSetWindowAttribute(Handle, NativeMethod.DWMWA_NCRENDERING_POLICY, val, intSize)
                     NativeMethod.DwmExtendFrameIntoClientArea(Handle, New NativeMethod.MARGINS() With {.bottomHeight = 1, .leftWidth = 1, .rightWidth = 1, .topHeight = 1})
                 End If
                 Exit Select

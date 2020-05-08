@@ -20,6 +20,11 @@ Public Class NativeMethod
 
     Public Const CS_DROPSHADOW As Integer = &H20000
 
+    ' https://www.neowin.net/forum/topic/794078-cc-keep-window-visible-while-using-aero-peek/
+    Public Const DWMWA_NCRENDERING_POLICY = 2
+    Public Const DWMWA_EXCLUDED_FROM_PEEK = 12
+    Public Const DWMNC_ENABLED = 2
+
 #End Region
 
 #Region "光标信息与移动"

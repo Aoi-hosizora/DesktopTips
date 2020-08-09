@@ -176,15 +176,15 @@
       <DependentUpon>MainForm.vb</DependentUpon>
     </Compile>
     <Compile Include="src\ui\form\view\MainForm.Partial.vb">
-      <SubType>Form</SubType>
       <DependentUpon>MainForm.vb</DependentUpon>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\ui\form\view\MainForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\ui\form\view\MainForm.View.vb">
-      <SubType>Form</SubType>
       <DependentUpon>MainForm.vb</DependentUpon>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\ui\view\CommandLink.vb">
       <SubType>Component</SubType>
@@ -274,6 +274,7 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
+    <None Include="src\ui\form\view\MainForm.Designer.vb.temp" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\ui\view\TabView.vb">
@@ -288,6 +289,9 @@
     <None Include="Resources\PasteHS.png" />
     <Content Include=".gitignore" />
     <Compile Include="src\ui\base\BaseItemsCollection.vb" />
+    <None Include="Resources\Bottom.png" />
+    <None Include="Resources\Top.png" />
+    <Content Include="src\ui\form\view\MainForm.vb.temp" />
     <Content Include="src\ui\view\MessageBoxEx.Ref.cs" />
     <None Include="Resources\SelectAll.png" />
     <None Include="Resources\Star.png" />

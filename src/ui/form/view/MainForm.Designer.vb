@@ -336,12 +336,14 @@ Partial Class MainForm
         '
         Me.m_popup_MoveTopTop.BeginGroup = True
         Me.m_popup_MoveTopTop.ItemAlignment = DevComponents.DotNetBar.eItemAlignment.Far
+        Me.m_popup_MoveTopTop.Image = Global.DesktopTips.My.Resources.Resources.Top
         Me.m_popup_MoveTopTop.Name = "m_popup_MoveTopTop"
         Me.m_popup_MoveTopTop.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlT)
         Me.m_popup_MoveTopTop.Text = "移至顶部(&T)"
         '
         'm_popup_MoveTipBottom
         '
+        Me.m_popup_MoveTipBottom.Image = Global.DesktopTips.My.Resources.Resources.Bottom
         Me.m_popup_MoveTipBottom.Name = "m_popup_MoveTipBottom"
         Me.m_popup_MoveTipBottom.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlB)
         Me.m_popup_MoveTipBottom.Text = "移至底部(&B)"

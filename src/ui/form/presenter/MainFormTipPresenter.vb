@@ -10,7 +10,7 @@
     End Sub
 
     Public Function Insert() As Boolean Implements MainFormContract.ITipPresenter.Insert
-        
+
         Dim msg As String = TipsEditDialog.ShowDialog("新的标签：", "添加").Trim()
         If msg <> "" Then
             Dim tip As New TipItem(msg)
@@ -37,7 +37,7 @@
     End Function
 
     Public Function Update(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.Update
-        Dim newStr As String = TipsEditDialog.ShowDialog($"修改标签 ""{item.Content}"" 为：", "修改", item.Content).Trim()
+        Dim newStr As String = TipsEditDialog.ShowDialog($"修改标签 ""{item.ContentForShow}"" 为：", "修改", item.Content).Trim()
         If newStr <> "" And newStr <> item.Content Then
             item.Content = newStr
             _globalPresenter.SaveFile()
@@ -54,7 +54,7 @@
     Public Function Paste(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.Paste
         Dim clip As String = Clipboard.GetText().Trim()
         If clip <> "" Then
-            Dim ok = MessageBoxEx.Show($"是否向当前标签项 ""{item.Content}"" 末尾添加剪贴板内容 ""{clip}""？", "粘贴",
+            Dim ok = MessageBoxEx.Show($"是否向当前标签项 ""{item.ContentForShow}"" 末尾添加剪贴板内容 ""{clip}""？", "粘贴",
                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, _view.GetMe(), {"添加空格", "添加逗号", "不添加"})
             If ok = vbYes Then
                 item.Content += " " & clip

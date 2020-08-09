@@ -115,7 +115,9 @@ Public Class TipListBox
             g.FillRectangle(New SolidBrush(e.BackColor), b)
             g.DrawRectangle(New Pen(e.BackColor), b)
         End If
-        g.DrawString(item.ToString(), e.Font, New SolidBrush(color), b, StringFormat.GenericDefault)
+
+        Dim t = item.ToString().Replace(vbNewLine, "↴") ' ¬ ↴ ⇁ ¶
+        g.DrawString(t, e.Font, New SolidBrush(color), b, StringFormat.GenericDefault)
         ' e.DrawFocusRectangle()
     End Sub
 

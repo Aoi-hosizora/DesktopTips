@@ -51,4 +51,10 @@
         ButtonOK.Enabled = TextBoxContent.Text.Trim() <> ""
     End Sub
 
+    Private Sub TipsEditDialog_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
+        If e.KeyCode = Keys.Enter And e.Control Then
+            e.Handled = True
+            ButtonOK_Click(sender, New EventArgs)
+        End If
+    End Sub
 End Class

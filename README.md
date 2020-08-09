@@ -21,7 +21,7 @@
 + [x] Color CRUD (With Memo)
 + [x] Grouping CRUD
 + [ ] Sync with Android (updating)
-+ [ ]
++ [ ] ...
 
 ### Tips
 

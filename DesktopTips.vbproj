@@ -280,7 +280,7 @@
     <Compile Include="src\ui\view\TabView.vb">
       <SubType>Component</SubType>
     </Compile>
-    <None Include="readme.md" />
+    <None Include="README.md" />
     <None Include="Resources\HighLightColor.png" />
     <None Include="Resources\Find.png" />
     <None Include="Resources\DownIcon.png" />

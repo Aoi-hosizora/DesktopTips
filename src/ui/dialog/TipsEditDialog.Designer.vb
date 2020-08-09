@@ -34,7 +34,7 @@ Partial Class TipsEditDialog
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LabelMessage.Location = New System.Drawing.Point(12, 9)
         Me.LabelMessage.Name = "LabelMessage"
-        Me.LabelMessage.Size = New System.Drawing.Size(281, 85)
+        Me.LabelMessage.Size = New System.Drawing.Size(281, 56)
         Me.LabelMessage.TabIndex = 0
         Me.LabelMessage.Text = "内容"
         '
@@ -68,11 +68,11 @@ Partial Class TipsEditDialog
         '
         Me.TextBoxContent.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBoxContent.Location = New System.Drawing.Point(12, 103)
+        Me.TextBoxContent.Location = New System.Drawing.Point(12, 76)
         Me.TextBoxContent.Multiline = True
         Me.TextBoxContent.Name = "TextBoxContent"
         Me.TextBoxContent.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.TextBoxContent.Size = New System.Drawing.Size(370, 99)
+        Me.TextBoxContent.Size = New System.Drawing.Size(370, 126)
         Me.TextBoxContent.TabIndex = 1
         Me.TextBoxContent.Text = "文本框"
         '
@@ -88,6 +88,7 @@ Partial Class TipsEditDialog
         Me.Controls.Add(Me.LabelMessage)
         Me.Font = New System.Drawing.Font("微软雅黑", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False

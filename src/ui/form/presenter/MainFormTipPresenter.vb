@@ -10,7 +10,8 @@
     End Sub
 
     Public Function Insert() As Boolean Implements MainFormContract.ITipPresenter.Insert
-        Dim msg As String = InputBox("新的标签：", "添加").Trim()
+        
+        Dim msg As String = TipsEditDialog.ShowDialog("新的标签：", "添加").Trim()
         If msg <> "" Then
             Dim tip As New TipItem(msg)
             GlobalModel.CurrentTab.Tips.Add(tip)
@@ -36,7 +37,7 @@
     End Function
 
     Public Function Update(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.Update
-        Dim newStr As String = InputBox($"修改标签 ""{item.Content}"" 为：", "修改", item.Content).Trim()
+        Dim newStr As String = TipsEditDialog.ShowDialog($"修改标签 ""{item.Content}"" 为：", "修改", item.Content).Trim()
         If newStr <> "" And newStr <> item.Content Then
             item.Content = newStr
             _globalPresenter.SaveFile()

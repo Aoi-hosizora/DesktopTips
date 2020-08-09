@@ -162,6 +162,12 @@
     <Compile Include="src\ui\dialog\ColorSelectDialog.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="src\ui\dialog\TipsEditDialog.Designer.vb">
+      <DependentUpon>TipsEditDialog.vb</DependentUpon>
+    </Compile>
+    <Compile Include="src\ui\dialog\TipsEditDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="src\ui\form\contract\MainFormContract.vb" />
     <Compile Include="src\ui\form\presenter\MainFormGlobalPresenter.vb" />
     <Compile Include="src\ui\form\presenter\MainFormTabPresenter.vb" />
@@ -247,6 +253,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\ui\dialog\SearchDialog.resx">
       <DependentUpon>SearchDialog.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\ui\dialog\TipsEditDialog.resx">
+      <DependentUpon>TipsEditDialog.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\ui\form\view\MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>

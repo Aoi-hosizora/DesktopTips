@@ -50,6 +50,8 @@ Public Class TipListBox
             Return Items.Count
         End Get
     End Property
+    
+    Public ReadOnly Property ControlKey As Boolean = False
 
 #End Region
 
@@ -81,6 +83,16 @@ Public Class TipListBox
         Dim rect As Rectangle = GetItemRectangle(ItemCount - 1)
         Return p.Y > rect.Top + rect.Height
     End Function
+    
+    Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
+        MyBase.OnKeyDown(e)
+        Me._controlKey = e.Control
+    End Sub
+    
+    Protected Overrides Sub OnKeyUp(e As KeyEventArgs)
+        MyBase.OnKeyUp(e)
+        Me._controlKey = false
+    End Sub
 
 #End Region
 

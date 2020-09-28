@@ -49,7 +49,7 @@ Partial Class MainForm
         Me.m_popup_MoveTipBottom = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_HighlightSubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_SetupColors = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_popup_FileTips = New DevComponents.DotNetBar.ButtonItem()
+        Me.m_popup_FindTips = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_MoveTipsSubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_OtherLabel = New DevComponents.DotNetBar.LabelItem()
         Me.m_menu_FileSubMenu = New DevComponents.DotNetBar.ButtonItem()
@@ -59,10 +59,7 @@ Partial Class MainForm
         Me.m_popup_ViewAllHighlights = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_OpenDir = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_Refresh = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_menu_BrowserSubMenu = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_popup_OpenAllLinksInTips = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_popup_ViewAllLinksInTips = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_popup_OpenInNewBrowser = New DevComponents.DotNetBar.ButtonItem()
+        Me.m_popup_ViewLinksInTips = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_SyncDataSubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_SyncDataTo = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_SyncDataFrom = New DevComponents.DotNetBar.ButtonItem()
@@ -207,7 +204,7 @@ Partial Class MainForm
         '
         Me.m_menu_ListPopupMenu.AutoExpandOnClick = True
         Me.m_menu_ListPopupMenu.Name = "m_menu_ListPopupMenu"
-        Me.m_menu_ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SelectedTipsCountLabel, Me.m_popup_SelectedTipsTextLabel, Me.m_popup_TipsCountLabel, Me.m_popup_ListItemContainer, Me.m_popup_MoveTopTop, Me.m_popup_MoveTipBottom, Me.m_menu_HighlightSubMenu, Me.m_popup_FileTips, Me.m_menu_MoveTipsSubMenu, Me.m_popup_OtherLabel, Me.m_menu_FileSubMenu, Me.m_popup_Refresh, Me.m_menu_BrowserSubMenu, Me.m_menu_SyncDataSubMenu, Me.m_menu_WindowSubMenu, Me.m_popup_Exit})
+        Me.m_menu_ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SelectedTipsCountLabel, Me.m_popup_SelectedTipsTextLabel, Me.m_popup_TipsCountLabel, Me.m_popup_ListItemContainer, Me.m_popup_MoveTopTop, Me.m_popup_MoveTipBottom, Me.m_menu_HighlightSubMenu, Me.m_popup_ViewLinksInTips, Me.m_popup_FindTips, Me.m_menu_MoveTipsSubMenu, Me.m_popup_OtherLabel, Me.m_menu_FileSubMenu, Me.m_popup_Refresh, Me.m_menu_SyncDataSubMenu, Me.m_menu_WindowSubMenu, Me.m_popup_Exit})
         Me.m_menu_ListPopupMenu.Text = "ListPopup"
         '
         'm_popup_SelectedTipsCountLabel
@@ -364,13 +361,20 @@ Partial Class MainForm
         Me.m_popup_SetupColors.Name = "m_popup_SetupColors"
         Me.m_popup_SetupColors.Text = "设置高亮颜色(&S)"
         '
-        'm_popup_FileTips
+        'm_popup_ViewAllLinksInTips
         '
-        Me.m_popup_FileTips.BeginGroup = True
-        Me.m_popup_FileTips.Image = Global.DesktopTips.My.Resources.Resources.Find
-        Me.m_popup_FileTips.Name = "m_popup_FileTips"
-        Me.m_popup_FileTips.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlF)
-        Me.m_popup_FileTips.Text = "查找(&F)"
+        Me.m_popup_ViewLinksInTips.BeginGroup = True
+        Me.m_popup_ViewLinksInTips.Name = "m_popup_ViewLinksInTips"
+        Me.m_popup_ViewLinksInTips.Image = Global.DesktopTips.My.Resources.Resources.Browser
+        Me.m_popup_ViewLinksInTips.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlL)
+        Me.m_popup_ViewLinksInTips.Text = "浏览链接(&L)"
+        '
+        'm_popup_FindTips
+        '
+        Me.m_popup_FindTips.Image = Global.DesktopTips.My.Resources.Resources.Find
+        Me.m_popup_FindTips.Name = "m_popup_FileTips"
+        Me.m_popup_FindTips.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlF)
+        Me.m_popup_FindTips.Text = "查找(&F)"
         '
         'm_menu_MoveTipsSubMenu
         '
@@ -429,29 +433,6 @@ Partial Class MainForm
         '
         Me.m_popup_Refresh.Name = "m_popup_Refresh"
         Me.m_popup_Refresh.Text = "刷新数据(&R)"
-        '
-        'm_menu_BrowserSubMenu
-        '
-        Me.m_menu_BrowserSubMenu.Name = "m_menu_BrowserSubMenu"
-        Me.m_menu_BrowserSubMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_OpenAllLinksInTips, Me.m_popup_ViewAllLinksInTips, Me.m_popup_OpenInNewBrowser})
-        Me.m_menu_BrowserSubMenu.Text = "浏览器(&B)"
-        '
-        'm_popup_OpenAllLinksInTips
-        '
-        Me.m_popup_OpenAllLinksInTips.Name = "m_popup_OpenAllLinksInTips"
-        Me.m_popup_OpenAllLinksInTips.Text = "打开所有链接(&A)"
-        '
-        'm_popup_ViewAllLinksInTips
-        '
-        Me.m_popup_ViewAllLinksInTips.Name = "m_popup_ViewAllLinksInTips"
-        Me.m_popup_ViewAllLinksInTips.Text = "打开部分链接(&P)"
-        '
-        'm_popup_OpenInNewBrowser
-        '
-        Me.m_popup_OpenInNewBrowser.BeginGroup = True
-        Me.m_popup_OpenInNewBrowser.Checked = True
-        Me.m_popup_OpenInNewBrowser.Name = "m_popup_OpenInNewBrowser"
-        Me.m_popup_OpenInNewBrowser.Text = "在新窗口打开(&N)"
         '
         'm_menu_SyncDataSubMenu
         '
@@ -748,8 +729,7 @@ Partial Class MainForm
     Friend WithEvents m_btn_Resize As DevComponents.DotNetBar.ButtonX
     Friend WithEvents m_popup_ListItemContainer As DevComponents.DotNetBar.ItemContainer
     Friend WithEvents m_menu_WindowSubMenu As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents m_popup_FileTips As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents m_menu_BrowserSubMenu As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents m_popup_FindTips As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_CopyTips As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_SavePosition As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_LoadPosition As DevComponents.DotNetBar.ButtonItem
@@ -757,11 +737,9 @@ Partial Class MainForm
     Friend WithEvents m_popup_SyncDataTo As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_SyncDataFrom As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_PasteAppendToTip As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents m_popup_OpenAllLinksInTips As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents m_popup_ViewAllLinksInTips As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents m_popup_ViewLinksInTips As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_SetupHotkey As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_menu_FileSubMenu As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents m_popup_OpenInNewBrowser As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_Refresh As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_SetupColors As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_ViewCurrentHighlights As DevComponents.DotNetBar.ButtonItem

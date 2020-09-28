@@ -120,7 +120,11 @@ Public Class MainForm
 
     Private Sub UpdateTip(sender As Object, e As EventArgs) Handles m_ListView.DoubleClick, m_popup_UpdateTip.Click
         Dim index = m_ListView.SelectedIndex
-        If m_ListView.SelectedCount = 1 AndAlso _tipPresenter.Update(m_ListView.SelectedItem) Then
+        If m_ListView.ControlKey Then
+            If m_ListView.SelectedItems.Count > 0 Then
+                _tipPresenter.ViewAllLinks(m_ListView.SelectedItems)
+            End If
+        ElseIf m_ListView.SelectedCount = 1 AndAlso _tipPresenter.Update(m_ListView.SelectedItem) Then
             m_ListView.Update()
             m_ListView.SetSelectOnly(index)
         End If
@@ -180,7 +184,7 @@ Public Class MainForm
 
 #Region "标签: 查找 打开 浏览 浏览器" ' TODO
 
-    Private Sub FindTips(sender As Object, e As EventArgs) Handles m_popup_FileTips.Click
+    Private Sub FindTips(sender As Object, e As EventArgs) Handles m_popup_FindTips.Click
         _tipPresenter.Search()
     End Sub
 
@@ -208,18 +212,8 @@ Public Class MainForm
         End Function), True)
     End Sub
 
-    Private Sub OpenTipAllLinks(sender As Object, e As EventArgs) Handles m_popup_OpenAllLinksInTips.Click
-        _tipPresenter.OpenAllLinks(m_ListView.SelectedItems, My.Settings.OpenInNewBrowser)
-    End Sub
-
-    Private Sub ViewTipAllLinks(sender As Object, e As EventArgs) Handles m_popup_ViewAllLinksInTips.Click
-        _tipPresenter.ViewAllLinks(m_ListView.SelectedItems, My.Settings.OpenInNewBrowser)
-    End Sub
-
-    Private Sub On_BtnOpenInNewBrowser_Click(sender As Object, e As EventArgs) Handles m_popup_OpenInNewBrowser.Click
-        m_popup_OpenInNewBrowser.Checked = Not m_popup_OpenInNewBrowser.Checked
-        My.Settings.OpenInNewBrowser = m_popup_OpenInNewBrowser.Checked
-        My.Settings.Save()
+    Private Sub ViewTipAllLinks(sender As Object, e As EventArgs) Handles m_popup_ViewLinksInTips.Click
+        _tipPresenter.ViewAllLinks(m_ListView.SelectedItems)
     End Sub
 
 #End Region
@@ -500,8 +494,7 @@ Public Class MainForm
         ' CheckHighlightChecked()
 
         ' 浏览器
-        m_menu_BrowserSubMenu.Enabled = _tipPresenter.GetLinks(m_ListView.SelectedItems).Count >= 1
-        m_menu_BrowserSubMenu.ShowSubItems = m_menu_BrowserSubMenu.Enabled
+        m_popup_ViewLinksInTips.Enabled = _tipPresenter.GetLinks(m_ListView.SelectedItems).Count >= 1
 
         ' 菜单标签
         m_popup_SelectedTipsCountLabel.Visible = isNotEmpty
@@ -568,9 +561,9 @@ Public Class MainForm
 
     Private Sub On_ListPopupMenu_PopupOpen(sender As Object, e As DD.PopupOpenEventArgs) Handles m_menu_ListPopupMenu.PopupOpen
         On Error Resume Next
-        m_menu_TabPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_BrowserSubMenu, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
-        m_menu_ListPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_BrowserSubMenu, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
-        m_menu_ListPopupMenu.SubItems.AddRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_BrowserSubMenu, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
+        m_menu_TabPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
+        m_menu_ListPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
+        m_menu_ListPopupMenu.SubItems.AddRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
 
         CheckListItemEnabled()
         Dim tipString = String.Join(vbNewLine, m_ListView.SelectedItems.Select(Function(t) t.Content))
@@ -586,9 +579,9 @@ Public Class MainForm
 
     Private Sub On_TabPopupMenu_PopupOpen(sender As Object, e As DD.PopupOpenEventArgs) Handles m_menu_TabPopupMenu.PopupOpen
         On Error Resume Next
-        m_menu_ListPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_BrowserSubMenu, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
-        m_menu_TabPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_BrowserSubMenu, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
-        m_menu_TabPopupMenu.SubItems.AddRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_BrowserSubMenu, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
+        m_menu_ListPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
+        m_menu_TabPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
+        m_menu_TabPopupMenu.SubItems.AddRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
 
         Dim counts = GlobalModel.CurrentTab.Tips.GroupBy(Function(t) t.Color).Select(Function(g) New Tuple(Of TipColor, Integer)(g.Key, g.Count())).OrderBy(Function(g) g.Item1?.Id)
         Dim body = $"总共 {GlobalModel.CurrentTab.Tips.Count} 项"

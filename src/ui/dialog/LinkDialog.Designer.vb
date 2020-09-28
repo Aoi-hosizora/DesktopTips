@@ -26,6 +26,8 @@ Partial Class LinkDialog
         Me.LabelTitle = New System.Windows.Forms.Label()
         Me.ButtonOpen = New System.Windows.Forms.Button()
         Me.ButtonBack = New System.Windows.Forms.Button()
+        Me.ButtonOpenAll = New System.Windows.Forms.Button()
+        Me.CheckBoxOpenInNew = New System.Windows.Forms.CheckBox()
         Me.SuspendLayout()
         '
         'ListView
@@ -42,7 +44,7 @@ Partial Class LinkDialog
         Me.ListView.Name = "ListView"
         Me.ListView.ScrollAlwaysVisible = True
         Me.ListView.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.ListView.Size = New System.Drawing.Size(370, 239)
+        Me.ListView.Size = New System.Drawing.Size(370, 209)
         Me.ListView.TabIndex = 0
         '
         'LabelTitle
@@ -59,24 +61,45 @@ Partial Class LinkDialog
         '
         Me.ButtonOpen.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonOpen.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonOpen.Location = New System.Drawing.Point(221, 277)
+        Me.ButtonOpen.Location = New System.Drawing.Point(140, 274)
         Me.ButtonOpen.Name = "ButtonOpen"
         Me.ButtonOpen.Size = New System.Drawing.Size(75, 25)
-        Me.ButtonOpen.TabIndex = 2
+        Me.ButtonOpen.TabIndex = 1
         Me.ButtonOpen.Text = "打开(&O)"
         Me.ButtonOpen.UseVisualStyleBackColor = True
         '
-        'ButtonClose
+        'ButtonBack
         '
         Me.ButtonBack.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonBack.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.ButtonBack.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonBack.Location = New System.Drawing.Point(302, 277)
+        Me.ButtonBack.Location = New System.Drawing.Point(302, 274)
         Me.ButtonBack.Name = "ButtonBack"
         Me.ButtonBack.Size = New System.Drawing.Size(75, 25)
         Me.ButtonBack.TabIndex = 3
         Me.ButtonBack.Text = "返回(&B)"
         Me.ButtonBack.UseVisualStyleBackColor = True
+        '
+        'ButtonOpenAll
+        '
+        Me.ButtonOpenAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ButtonOpenAll.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.ButtonOpenAll.Location = New System.Drawing.Point(221, 274)
+        Me.ButtonOpenAll.Name = "ButtonOpenAll"
+        Me.ButtonOpenAll.Size = New System.Drawing.Size(75, 25)
+        Me.ButtonOpenAll.TabIndex = 2
+        Me.ButtonOpenAll.Text = "打开所有(&A)"
+        Me.ButtonOpenAll.UseVisualStyleBackColor = True
+        '
+        'CheckBoxOpenInNew
+        '
+        Me.CheckBoxOpenInNew.AutoSize = True
+        Me.CheckBoxOpenInNew.Location = New System.Drawing.Point(12, 247)
+        Me.CheckBoxOpenInNew.Name = "CheckBoxOpenInNew"
+        Me.CheckBoxOpenInNew.Size = New System.Drawing.Size(135, 21)
+        Me.CheckBoxOpenInNew.TabIndex = 4
+        Me.CheckBoxOpenInNew.Text = "在新窗口打开浏览器"
+        Me.CheckBoxOpenInNew.UseVisualStyleBackColor = True
         '
         'LinkDialog
         '
@@ -85,7 +108,9 @@ Partial Class LinkDialog
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonBack
         Me.ClientSize = New System.Drawing.Size(384, 311)
+        Me.Controls.Add(Me.CheckBoxOpenInNew)
         Me.Controls.Add(Me.ButtonBack)
+        Me.Controls.Add(Me.ButtonOpenAll)
         Me.Controls.Add(Me.ButtonOpen)
         Me.Controls.Add(Me.LabelTitle)
         Me.Controls.Add(Me.ListView)
@@ -101,10 +126,13 @@ Partial Class LinkDialog
         Me.Text = "搜索"
         Me.TopMost = True
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
     Friend WithEvents ListView As System.Windows.Forms.ListBox
     Friend WithEvents ButtonOpen As System.Windows.Forms.Button
     Friend WithEvents ButtonBack As System.Windows.Forms.Button
     Private WithEvents LabelTitle As System.Windows.Forms.Label
+    Friend WithEvents ButtonOpenAll As System.Windows.Forms.Button
+    Friend WithEvents CheckBoxOpenInNew As System.Windows.Forms.CheckBox
 End Class

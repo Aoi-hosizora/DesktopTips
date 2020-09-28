@@ -1,6 +1,6 @@
 ﻿Public Class LinkDialog
     Public GetFunc As Func(Of IEnumerable(Of String))
-    Public OpenBrowserFunc As Action(Of IEnumerable(Of String))
+    Public OpenBrowserFunc As Action(Of IEnumerable(Of String), Boolean)
 
     Private Sub Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If GetFunc Is Nothing Then
@@ -13,6 +13,8 @@
             ListView.Items.Add(link)
         Next
         ListView_SelectedValueChanged(sender, e)
+
+        CheckBoxOpenInNew.Checked = My.Settings.OpenInNewBrowser
     End Sub
 
     Private Sub ButtonOpen_Click(sender As Object, e As EventArgs) Handles ButtonOpen.Click
@@ -21,7 +23,14 @@
             links.Add(CStr(item))
         Next
         If OpenBrowserFunc IsNot Nothing Then
-            OpenBrowserFunc.Invoke(links)
+            OpenBrowserFunc.Invoke(links, CheckBoxOpenInNew.Checked)
+        End If
+        Me.Close()
+    End Sub
+
+    Private Sub ButtonOpenAll_Click(sender As System.Object, e As EventArgs) Handles ButtonOpenAll.Click
+        If OpenBrowserFunc IsNot Nothing Then
+            OpenBrowserFunc.Invoke(ListView.Items.Cast(Of String)(), CheckBoxOpenInNew.Checked)
         End If
         Me.Close()
     End Sub
@@ -30,7 +39,7 @@
         Dim ok = MessageBoxEx.Show($"是否打开以下链接？{vbNewLine}{vbNewLine}{ListView.SelectedItem}", "打开链接", MessageBoxButtons.OKCancel, MessageBoxIcon.Question)
         If ok = VbOk Then
             If OpenBrowserFunc IsNot Nothing Then
-                OpenBrowserFunc.Invoke({CStr(ListView.SelectedItem)})
+                OpenBrowserFunc.Invoke({CStr(ListView.SelectedItem)}, CheckBoxOpenInNew.Checked)
             End If
             Me.Close()
         End If
@@ -50,4 +59,28 @@
     Private Sub ButtonBack_Click(sender As Object, e As EventArgs) Handles ButtonBack.Click
         Me.Close()
     End Sub
+
+    Private Sub LinkDialog_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        If e.KeyCode = Keys.Enter And e.Control Then
+            e.Handled = True
+            For i = 0 To ListView.Items.Count - 1
+                ListView.SetSelected(i, True)
+            Next i
+        End If
+    End Sub
+
+    Private Sub ListView_KeyDown(sender As Object, e As KeyEventArgs) Handles ListView.KeyDown
+        If e.KeyCode = Keys.A And e.Control Then
+            e.Handled = True
+            For i = 0 To ListView.Items.Count - 1
+                ListView.SetSelected(i, True)
+            Next i
+        End If
+    End Sub
+
+    Private Sub CheckBoxOpenInNew_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBoxOpenInNew.CheckedChanged
+        My.Settings.OpenInNewBrowser = CheckBoxOpenInNew.Checked
+        My.Settings.Save()
+    End Sub
+
 End Class

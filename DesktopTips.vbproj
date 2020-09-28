@@ -291,6 +291,7 @@
     <Compile Include="src\ui\base\BaseItemsCollection.vb" />
     <None Include="Resources\Bottom.png" />
     <None Include="Resources\Top.png" />
+    <None Include="Resources\FileLinksToFiles.png" />
     <Content Include="src\ui\form\view\MainForm.vb.temp" />
     <Content Include="src\ui\view\MessageBoxEx.Ref.cs" />
     <None Include="Resources\SelectAll.png" />

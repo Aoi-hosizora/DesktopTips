@@ -21,7 +21,7 @@ Partial Public Class GlobalModel
         Dim fs As New FileStream(name, FileMode.OpenOrCreate)
         Dim reader As New StreamReader(fs, Encoding.UTF8)
         Dim json As String = reader.ReadToEnd()
-        json = json.Replace(vbLf, vbCrLf)
+        json = json.Replace("\n", "\r\n") ' Lf -> CrLf
         reader.Close()
         fs.Close()
 
@@ -34,7 +34,7 @@ Partial Public Class GlobalModel
     End Function
 
     Private Shared Sub Save(json As String, name As String)
-        json = json.Replace("\r\n", "\n")
+        json = json.Replace("\r\n", "\n") ' CrLf -> Lf 
         Dim fs As New FileStream(name, FileMode.Create)
         Dim writer As New StreamWriter(fs, Encoding.UTF8)
         writer.Write(json)

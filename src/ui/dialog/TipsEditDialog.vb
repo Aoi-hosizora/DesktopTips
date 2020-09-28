@@ -47,14 +47,21 @@
         DialogResult = DialogResult.Cancel
     End Sub
 
-    Private Sub TextBoxContent_TextChanged(sender As System.Object, e As System.EventArgs) Handles TextBoxContent.TextChanged
+    Private Sub TextBoxContent_TextChanged(sender As Object, e As EventArgs) Handles TextBoxContent.TextChanged
         ButtonOK.Enabled = TextBoxContent.Text.Trim() <> ""
     End Sub
 
-    Private Sub TipsEditDialog_KeyDown(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles Me.KeyDown
+    Private Sub TipsEditDialog_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
         If e.KeyCode = Keys.Enter And e.Control Then
             e.Handled = True
             ButtonOK_Click(sender, New EventArgs)
+        End If
+    End Sub
+
+    Private Sub TextBoxContent_KeyDown(sender As Object, e As KeyEventArgs) Handles TextBoxContent.KeyDown
+        If e.KeyCode = Keys.A And e.Control Then
+            e.Handled = True
+            TextBoxContent.SelectAll()
         End If
     End Sub
 End Class

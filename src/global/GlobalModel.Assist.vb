@@ -6,9 +6,9 @@ Partial Public Class GlobalModel
 
 #Region "加载与存储"
 
-    Private Shared STORAGE_FILEPATH As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\DesktopTips"
-    Public Shared STORAGE_FILENAME As String = STORAGE_FILEPATH & "\model.json"
-    Private Shared STORAGE_BACKUP_FILENAME As String = STORAGE_FILEPATH & "\model.backup.%s.json"
+    Private Shared ReadOnly STORAGE_FILEPATH As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\DesktopTips"
+    Public Shared ReadOnly STORAGE_FILENAME As String = STORAGE_FILEPATH & "\model.json"
+    Private Shared ReadOnly STORAGE_BACKUP_FILENAME As String = STORAGE_FILEPATH & "\model.backup.%s.json"
 
     Private Shared Function getDefaultModel() As FileModel
         Dim colorList As New List(Of TipColor) From {New TipColor(0, "红色", Color.Red), New TipColor(1, "蓝色", Color.Blue)}
@@ -21,18 +21,20 @@ Partial Public Class GlobalModel
         Dim fs As New FileStream(name, FileMode.OpenOrCreate)
         Dim reader As New StreamReader(fs, Encoding.UTF8)
         Dim json As String = reader.ReadToEnd()
+        json = json.Replace(vbLf, vbCrLf)
         reader.Close()
         fs.Close()
 
         If String.IsNullOrWhiteSpace(json) Then
             Dim obj = getDefaultModel()
             json = JsonConvert.SerializeObject(obj, Formatting.Indented)
-            save(json, STORAGE_FILENAME)
+            Save(json, STORAGE_FILENAME)
         End If
         Return json
     End Function
 
-    Private Shared Sub save(json As String, name As String)
+    Private Shared Sub Save(json As String, name As String)
+        json = json.Replace("\r\n", "\n")
         Dim fs As New FileStream(name, FileMode.Create)
         Dim writer As New StreamWriter(fs, Encoding.UTF8)
         writer.Write(json)
@@ -40,10 +42,10 @@ Partial Public Class GlobalModel
         fs.Close()
     End Sub
 
-    Private Shared Sub save(tabList As List(Of Tab), colorList As List(Of TipColor), name As String)
+    Private Shared Sub Save(tabList As List(Of Tab), colorList As List(Of TipColor), name As String)
         Dim obj As New FileModel With {.Tabs = tabList, .Colors = colorList}
         Dim json As String = JsonConvert.SerializeObject(obj, Formatting.Indented)
-        save(json, name)
+        Save(json, name)
     End Sub
 
     Public Shared Sub LoadAllData()
@@ -69,12 +71,12 @@ Partial Public Class GlobalModel
     End Sub
 
     Public Shared Sub SaveAllData()
-        save(Tabs, Colors, STORAGE_FILENAME)
+        Save(Tabs, Colors, STORAGE_FILENAME)
     End Sub
 
     Public Shared Function SaveBackupData(backup As List(Of Tab)) As String
         Dim filename = String.Format(STORAGE_BACKUP_FILENAME, DateTime.Now().ToString("yyyyMMddHHmmssfff"))
-        save(backup, Colors, filename)
+        Save(backup, Colors, filename)
         Return filename
     End Function
 

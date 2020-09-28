@@ -10,7 +10,6 @@
     End Sub
 
     Public Function Insert() As Boolean Implements MainFormContract.ITipPresenter.Insert
-
         Dim msg As String = TipsEditDialog.ShowDialog("新的标签：", "添加").Trim()
         If msg <> "" Then
             Dim tip As New TipItem(msg)

@@ -1,6 +1,6 @@
 ﻿Imports Newtonsoft.Json
 
-<JsonObject>
+<Serializable, JsonObject>
 Public Class FileModel
     <JsonProperty("colors")>
     Public Property Colors As List(Of TipColor)

@@ -1,6 +1,6 @@
 ﻿Imports Newtonsoft.Json
 
-<JsonObject>
+<Serializable, JsonObject>
 Public Class TipColor
     <JsonProperty("id")>
     Public Property Id As Integer

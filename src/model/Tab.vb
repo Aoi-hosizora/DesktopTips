@@ -1,6 +1,6 @@
 ﻿Imports Newtonsoft.Json
 
-<JsonObject>
+<Serializable, JsonObject>
 Public Class Tab
     <JsonProperty("title")>
     Public Property Title As String

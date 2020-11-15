@@ -36,7 +36,11 @@
     End Function
 
     Public Function Update(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.Update
-        Dim newStr As String = TipsEditDialog.ShowDialog($"修改标签 ""{item.ContentForShow}"" 为：", "修改", item.Content).Trim()
+        Dim content = item.ContentForShow
+        If content.Length > 600 Then
+            content = content.Substring(0, 600) + "..."
+        End If
+        Dim newStr As String = TipsEditDialog.ShowDialog($"修改标签 ""{content}"" 为：", "修改", item.Content).Trim()
         If newStr <> "" And newStr <> item.Content Then
             item.Content = newStr
             _globalPresenter.SaveFile()

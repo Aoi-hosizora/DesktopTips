@@ -569,6 +569,9 @@ Public Class MainForm
         Dim tipString = String.Join(vbNewLine, m_ListView.SelectedItems.Select(Function(t) t.Content))
         Dim highlightCount = m_ListView.Items.Where(Function(t) t.IsHighLight).Count
 
+        If tipString.Length > 500 Then
+            tipString = tipString.Substring(0, 500) & "..."
+        End If
         m_popup_SelectedTipsTextLabel.Text = tipString
         m_popup_TipsCountLabel.Text = $"列表 (共 {m_ListView.ItemCount} 项，高亮 {highlightCount} 项)"
         m_popup_SelectedTipsCountLabel.Text = $"当前选中 (共 {m_ListView.SelectedCount} 项)"

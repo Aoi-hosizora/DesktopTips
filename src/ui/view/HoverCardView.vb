@@ -137,6 +137,9 @@ Public Class HoverCardView
             Dim title = _tab.Title
             Dim highlight = "未高亮"
             Dim body = _tip.ContentForShow
+            If body.Length > 1000 Then
+                body = body.Substring(0, 1000) & "..."
+            End If
             If _tip.IsHighLight Then
                 highlight = $"<font color=""{_tip.Color.HexColor}"">{_tip.Color.Name}</font>高亮"
             End If

@@ -50,7 +50,7 @@ Public Class TipListBox
             Return Items.Count
         End Get
     End Property
-    
+
     Public ReadOnly Property ControlKey As Boolean = False
 
 #End Region
@@ -83,12 +83,12 @@ Public Class TipListBox
         Dim rect As Rectangle = GetItemRectangle(ItemCount - 1)
         Return p.Y > rect.Top + rect.Height
     End Function
-    
+
     Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
         MyBase.OnKeyDown(e)
         Me._controlKey = e.Control
     End Sub
-    
+
     Protected Overrides Sub OnKeyUp(e As KeyEventArgs)
         MyBase.OnKeyUp(e)
         Me._controlKey = false
@@ -193,7 +193,7 @@ Public Class TipListBox
 
 #Region "其他布局: 文本提示 右键选中 滚动条"
 
-    Private Const _hoverCardWidth As Integer = 200
+    Private _hoverCardWidth As Integer = 200
     Private Const _hoverDistance As Integer = 7
     Private Const _hoverWaitingDuration As Integer = 350
 
@@ -204,6 +204,16 @@ Public Class TipListBox
 
     Private Sub ShowTooltip(item As TipItem)
         Me.Focus()
+        Dim contentLength = item.ContentForShow.Length
+        If contentLength <= 100 Then
+            _hoverCardWidth = 200
+        Else  If contentLength <= 300 Then
+            _hoverCardWidth = 250
+        Else If contentLength <= 800 Then
+            _hoverCardWidth = 400
+        Else
+            _hoverCardWidth = 500
+        End If
         Dim curPos = Cursor.Position
         Dim cliPos = Parent.PointToClient(curPos)
         Dim x = curPos.X - (cliPos.X + _hoverCardWidth + _hoverDistance)

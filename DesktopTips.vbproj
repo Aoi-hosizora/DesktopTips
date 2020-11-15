@@ -136,9 +136,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="src\global\FileModel.vb" />
     <Compile Include="src\global\GlobalModel.Assist.vb" />
     <Compile Include="src\global\GlobalModel.vb" />
+    <Compile Include="src\model\FileModel.vb" />
     <Compile Include="src\model\Tab.vb" />
     <Compile Include="src\model\TipColor.vb" />
     <Compile Include="src\model\TipItem.vb" />

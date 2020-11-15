@@ -6,7 +6,7 @@
     Public Overloads Shared Function ShowDialog(message As String, title As String, Optional content As String = "") As String
         Dim dlg As New TipsEditDialog
         dlg.Width = 400
-        dlg.TextBoxContent.Height = 175
+        dlg.TextBoxContent.Height = 200
 
         With dlg.LabelMessage
             .Text = message
@@ -15,7 +15,7 @@
             Dim ih = dlg.ButtonCancel.Top + dlg.ButtonCancel.Height - .Top
             Dim aw = dlg.Width - 2 * .Left - dlg.ButtonOK.Width - (dlg.Width - dlg.ButtonOK.Width - dlg.ButtonOK.Left)
             .MinimumSize = New Size(0, ih)
-            .MaximumSize = New Size(aw, 0)
+            .MaximumSize = New Size(aw, 0) ' Screen.PrimaryScreen.WorkingArea.Height * 1 / 2
         End With
 
         Dim titleBarHeight = dlg.RectangleToScreen(dlg.ClientRectangle).Top - dlg.Top

@@ -124,7 +124,6 @@ Partial Class LinkDialog
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "搜索"
-        Me.TopMost = True
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

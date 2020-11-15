@@ -1,5 +1,4 @@
 ﻿Public Class TipsEditDialog
-
     ''' <summary>
     ''' 显示自定义对话框
     ''' </summary>
@@ -25,6 +24,7 @@
         End With
 
         dlg.Text = title
+        dlg._previousContent = content
         dlg.TextBoxContent.Text = content
         dlg.TextBoxContent.Focus()
         dlg.ButtonOK.Enabled = dlg.TextBoxContent.Text.Trim() <> ""
@@ -37,18 +37,33 @@
         End If
     End Function
 
+    Dim _previousContent As String = ""
+    Dim _changed As Boolean = False
+
+    Private Sub TipsEditDialog_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        If _changed Then
+            Dim result = MessageBox.Show("内容已经变更，确定不保存退出吗？", "退出", MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
+            If result = vbCancel Then
+                e.Cancel = True
+            End If
+        End If
+    End Sub
+
     Private Sub ButtonOK_Click(sender As Object, e As EventArgs) Handles ButtonOK.Click
-        Me.Close()
+        _changed = False
         DialogResult = DialogResult.OK
+        Me.Close()
     End Sub
 
     Private Sub ButtonCancel_Click(sender As Object, e As EventArgs) Handles ButtonCancel.Click
-        Me.Close()
+        _changed = TextBoxContent.Text.Trim() <> _previousContent.Trim()
         DialogResult = DialogResult.Cancel
+        Me.Close()
     End Sub
 
     Private Sub TextBoxContent_TextChanged(sender As Object, e As EventArgs) Handles TextBoxContent.TextChanged
         ButtonOK.Enabled = TextBoxContent.Text.Trim() <> ""
+        _changed = TextBoxContent.Text.Trim() <> _previousContent.Trim()
     End Sub
 
     Private Sub TipsEditDialog_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown

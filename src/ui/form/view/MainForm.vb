@@ -101,7 +101,7 @@ Public Class MainForm
 #End Region
 
 #Region "标签: 增删改 移动 复制粘贴 全选" ' TODO
-
+    
     Private Sub InsertTip(sender As Object, e As EventArgs) Handles m_btn_InsertTip.Click, m_popup_InsertTip.Click
         If _tipPresenter.Insert() Then
             m_ListView.Update()
@@ -534,6 +534,12 @@ Public Class MainForm
 #End Region
 
 #Region "显示: 弹出菜单 透明度" ' TODO
+    
+    Private Sub On_ListView_KeyDown(sender As Object, e As KeyEventArgs) Handles m_ListView.KeyDown
+        If e.KeyCode = Keys.OemPeriod And e.Control = True Then
+            On_BtnOpenPopupMenu_Click(m_btn_OpenListPopup, New EventArgs)
+        End If
+    End Sub
 
     Private Sub Popup(item As DD.ButtonItem, isCheck As Boolean)
         If Not isCheck OrElse (Not DD.ButtonItem.IsOnPopup(item) And Not DD.ButtonItem.IsOnPopup(m_menu_ListPopupMenu)) Then

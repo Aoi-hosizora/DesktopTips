@@ -24,7 +24,7 @@ Public Class NativeMethod
     Public Const DWMWA_NCRENDERING_POLICY = 2
     Public Const DWMWA_EXCLUDED_FROM_PEEK = 12
     Public Const DWMNC_ENABLED = 2
-    
+
     Public Const LWA_ALPHA = &H2
     Public Const LWA_COLORKEY = &H1
 
@@ -100,6 +100,12 @@ Public Class NativeMethod
     Public Shared Function GetClassName(hWnd As IntPtr, pClassName As StringBuilder, nMaxCount As Integer) As Integer
     End Function
 
+    Public Shared Function GetWindowClassName(handle As IntPtr) As String
+        Dim sb As New StringBuilder(256)
+        GetClassName(handle, sb, sb.Capacity)
+        Return sb.ToString()
+    End Function
+
     <DllImport("user32.dll")>
     Public Shared Function SetWindowPos(hWnd As IntPtr, hWndInsertAfter As IntPtr, X As Integer, Y As Integer, cx As Integer, cy As Integer, uFlags As Integer) As Boolean
     End Function
@@ -108,22 +114,17 @@ Public Class NativeMethod
     Public Shared Function SetWindowText(hwnd As IntPtr, lpString As String) As Boolean
     End Function
 
-    Public Shared Function GetWindowClassName(handle As IntPtr) As String
-        Dim sb As New StringBuilder(256)
-        GetClassName(handle, sb, sb.Capacity)
-        Return sb.ToString()
-    End Function
-    
     <DllImport("user32.dll")>
     Public Shared Function SetLayeredWindowAttributes(hwnd As IntPtr, crKey As COLORREF, bAlpha As Byte, dwFlags As UInteger) As Boolean
     End Function
-    
+
     <StructLayout(LayoutKind.Sequential)>
     Public Structure COLORREF
         Public R As Byte
         Public G As Byte
         Public B As Byte
-        Public Sub New (color As Color)
+
+        Public Sub New(color As Color)
             R = color.R
             G = color.G
             B = color.B

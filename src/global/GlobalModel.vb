@@ -12,7 +12,7 @@
     ''' <summary>
     ''' 当前分组编号
     ''' </summary>
-    Private Shared _currentTabIndex As Integer = - 1
+    Private Shared _currentTabIndex As Integer = -1
 
     ''' <summary>
     ''' 当前分组

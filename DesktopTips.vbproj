@@ -142,7 +142,6 @@
     <Compile Include="src\model\Tab.vb" />
     <Compile Include="src\model\TipColor.vb" />
     <Compile Include="src\model\TipItem.vb" />
-    <Compile Include="src\service\SyncData.vb" />
     <Compile Include="src\ui\base\BaseMainForm.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -174,10 +173,6 @@
     <Compile Include="src\ui\form\presenter\MainFormTipPresenter.vb" />
     <Compile Include="src\ui\form\view\MainForm.Designer.vb">
       <DependentUpon>MainForm.vb</DependentUpon>
-    </Compile>
-    <Compile Include="src\ui\form\view\MainForm.Partial.vb">
-      <DependentUpon>MainForm.vb</DependentUpon>
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\ui\form\view\MainForm.vb">
       <SubType>Form</SubType>
@@ -274,7 +269,6 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
-    <None Include="src\ui\form\view\MainForm.Designer.vb.temp" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\ui\view\TabView.vb">
@@ -292,7 +286,6 @@
     <None Include="Resources\Bottom.png" />
     <None Include="Resources\Top.png" />
     <None Include="Resources\FileLinksToFiles.png" />
-    <Content Include="src\ui\form\view\MainForm.vb.temp" />
     <Content Include="src\ui\view\MessageBoxEx.Ref.cs" />
     <None Include="Resources\SelectAll.png" />
     <None Include="Resources\Star.png" />

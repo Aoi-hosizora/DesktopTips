@@ -567,9 +567,9 @@ Public Class MainForm
 
     Private Sub On_ListPopupMenu_PopupOpen(sender As Object, e As DD.PopupOpenEventArgs) Handles m_menu_ListPopupMenu.PopupOpen
         On Error Resume Next
-        m_menu_TabPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
-        m_menu_ListPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
-        m_menu_ListPopupMenu.SubItems.AddRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
+        m_menu_TabPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_WindowSubMenu, m_popup_Exit})
+        m_menu_ListPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_WindowSubMenu, m_popup_Exit})
+        m_menu_ListPopupMenu.SubItems.AddRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_WindowSubMenu, m_popup_Exit})
 
         CheckListItemEnabled()
         Dim tipString = String.Join(vbNewLine, m_ListView.SelectedItems.Select(Function(t) t.Content))
@@ -588,9 +588,9 @@ Public Class MainForm
 
     Private Sub On_TabPopupMenu_PopupOpen(sender As Object, e As DD.PopupOpenEventArgs) Handles m_menu_TabPopupMenu.PopupOpen
         On Error Resume Next
-        m_menu_ListPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
-        m_menu_TabPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
-        m_menu_TabPopupMenu.SubItems.AddRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_SyncDataSubMenu, m_menu_WindowSubMenu, m_popup_Exit})
+        m_menu_ListPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_WindowSubMenu, m_popup_Exit})
+        m_menu_TabPopupMenu.SubItems.RemoveRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_WindowSubMenu, m_popup_Exit})
+        m_menu_TabPopupMenu.SubItems.AddRange({m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_WindowSubMenu, m_popup_Exit})
 
         Dim counts = GlobalModel.CurrentTab.Tips.GroupBy(Function(t) t.Color).Select(Function(g) New Tuple(Of TipColor, Integer)(g.Key, g.Count())).OrderBy(Function(g) g.Item1?.Id)
         Dim body = $"总共 {GlobalModel.CurrentTab.Tips.Count} 项"

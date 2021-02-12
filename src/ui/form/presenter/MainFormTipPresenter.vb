@@ -36,7 +36,7 @@
     End Function
 
     Public Function Update(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.Update
-        Dim content = item.ContentForShow
+        Dim content = item.Content
         If content.Length > 600 Then
             content = content.Substring(0, 600) + "..."
         End If
@@ -57,7 +57,7 @@
     Public Function Paste(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.Paste
         Dim clip As String = Clipboard.GetText().Trim()
         If clip <> "" Then
-            Dim ok = MessageBoxEx.Show($"是否向当前标签项 ""{item.ContentForShow}"" 末尾添加剪贴板内容 ""{clip}""？", "粘贴",
+            Dim ok = MessageBoxEx.Show($"是否向当前标签项 ""{item.Content}"" 末尾添加剪贴板内容 ""{clip}""？", "粘贴",
                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, _view.GetMe(), {"添加空格", "添加逗号", "不添加"})
             If ok = vbYes Then
                 item.Content += " " & clip

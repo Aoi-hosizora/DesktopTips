@@ -136,7 +136,7 @@ Public Class HoverCardView
             ' For Tip
             Dim title = _tab.Title
             Dim highlight = "未高亮"
-            Dim body = _tip.ContentForShow
+            Dim body = _tip.Content.Replace("&", "&&")
             If body.Length > 1000 Then
                 body = body.Substring(0, 1000) & "..."
             End If

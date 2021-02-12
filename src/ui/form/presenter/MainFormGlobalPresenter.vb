@@ -28,7 +28,7 @@ Public Class MainFormGlobalPresenter
 
     Public Sub OpenFileDir() Implements MainFormContract.IGlobalPresenter.OpenFileDir
         'C:\Users\Windows 10\AppData\Roaming\DesktopTips
-        Process.Start("explorer.exe", $"/select,""{GlobalModel.STORAGE_FILENAME}""")
+        Process.Start("explorer.exe", $"/select,""{GlobalModel.StorageFilename}""")
     End Sub
 
     Public Function RegisterHotKey(handle As IntPtr, key As Keys, id As Integer) As Boolean Implements MainFormContract.IGlobalPresenter.RegisterHotKey

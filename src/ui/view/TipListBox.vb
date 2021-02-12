@@ -204,7 +204,7 @@ Public Class TipListBox
 
     Private Sub ShowTooltip(item As TipItem)
         Me.Focus()
-        Dim contentLength = item.ContentForShow.Length
+        Dim contentLength = item.Content.Length
         If contentLength <= 100 Then
             _hoverCardWidth = 200
         Else  If contentLength <= 300 Then

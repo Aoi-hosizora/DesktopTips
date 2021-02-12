@@ -14,7 +14,7 @@
         Dim title As String = InputBox("新颜色的标签：", "新建", "颜色").Trim()
         If title <> "" Then
             Dim id As Integer = ColorListView.Items.Count
-            Dim tipColor As New TipColor(id, title)
+            Dim tipColor As New TipColor(id, title) ' 默认红色
             AddToListView(tipColor)
             UpdateListViewColumn()
             SelectListView(id)
@@ -65,7 +65,7 @@
     Private Sub RemoveColorItemAndSave(delColor As TipColor)
         ' 从存储中删除 并处理顺序
         GlobalModel.Colors.Remove(delColor)
-        GlobalModel.HandleWithColorOrder(GlobalModel.Colors, GlobalModel.Tabs)
+        GlobalModel.ReorderColor(GlobalModel.Colors, GlobalModel.Tabs)
         refreshSave()
 
         ColorDialog_Load(Me, New EventArgs())

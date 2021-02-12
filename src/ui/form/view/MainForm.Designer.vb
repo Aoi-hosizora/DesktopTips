@@ -60,9 +60,6 @@ Partial Class MainForm
         Me.m_popup_OpenDir = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_Refresh = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_ViewLinksInTips = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_menu_SyncDataSubMenu = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_popup_SyncDataTo = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_popup_SyncDataFrom = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_WindowSubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_SetupHotkey = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_ShowSetListCount = New DevComponents.DotNetBar.ButtonItem()
@@ -204,7 +201,7 @@ Partial Class MainForm
         '
         Me.m_menu_ListPopupMenu.AutoExpandOnClick = True
         Me.m_menu_ListPopupMenu.Name = "m_menu_ListPopupMenu"
-        Me.m_menu_ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SelectedTipsCountLabel, Me.m_popup_SelectedTipsTextLabel, Me.m_popup_TipsCountLabel, Me.m_popup_ListItemContainer, Me.m_popup_MoveTopTop, Me.m_popup_MoveTipBottom, Me.m_menu_HighlightSubMenu, Me.m_popup_ViewLinksInTips, Me.m_popup_FindTips, Me.m_menu_MoveTipsSubMenu, Me.m_popup_OtherLabel, Me.m_menu_FileSubMenu, Me.m_popup_Refresh, Me.m_menu_SyncDataSubMenu, Me.m_menu_WindowSubMenu, Me.m_popup_Exit})
+        Me.m_menu_ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SelectedTipsCountLabel, Me.m_popup_SelectedTipsTextLabel, Me.m_popup_TipsCountLabel, Me.m_popup_ListItemContainer, Me.m_popup_MoveTopTop, Me.m_popup_MoveTipBottom, Me.m_menu_HighlightSubMenu, Me.m_popup_ViewLinksInTips, Me.m_popup_FindTips, Me.m_menu_MoveTipsSubMenu, Me.m_popup_OtherLabel, Me.m_menu_FileSubMenu, Me.m_popup_Refresh, Me.m_menu_WindowSubMenu, Me.m_popup_Exit})
         Me.m_menu_ListPopupMenu.Text = "ListPopup"
         '
         'm_popup_SelectedTipsCountLabel
@@ -433,22 +430,6 @@ Partial Class MainForm
         '
         Me.m_popup_Refresh.Name = "m_popup_Refresh"
         Me.m_popup_Refresh.Text = "刷新数据(&R)"
-        '
-        'm_menu_SyncDataSubMenu
-        '
-        Me.m_menu_SyncDataSubMenu.Name = "m_menu_SyncDataSubMenu"
-        Me.m_menu_SyncDataSubMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SyncDataTo, Me.m_popup_SyncDataFrom})
-        Me.m_menu_SyncDataSubMenu.Text = "数据同步(&Y)"
-        '
-        'm_popup_SyncDataTo
-        '
-        Me.m_popup_SyncDataTo.Name = "m_popup_SyncDataTo"
-        Me.m_popup_SyncDataTo.Text = "同步到移动端(&T)"
-        '
-        'm_popup_SyncDataFrom
-        '
-        Me.m_popup_SyncDataFrom.Name = "m_popup_SyncDataFrom"
-        Me.m_popup_SyncDataFrom.Text = "从移动端同步(&F)"
         '
         'm_menu_WindowSubMenu
         '
@@ -733,9 +714,6 @@ Partial Class MainForm
     Friend WithEvents m_popup_CopyTips As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_SavePosition As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_LoadPosition As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents m_menu_SyncDataSubMenu As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents m_popup_SyncDataTo As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents m_popup_SyncDataFrom As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_PasteAppendToTip As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_ViewLinksInTips As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_SetupHotkey As DevComponents.DotNetBar.ButtonItem

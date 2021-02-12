@@ -5,15 +5,8 @@ Public Class TipItem
     <JsonProperty("content")>
     Public Property Content As String
 
-    <JsonIgnore>
-    Public ReadOnly Property ContentForShow As String
-        Get
-            Return Content.Replace("&", "&&")
-        End Get
-    End Property
-
     <JsonProperty("color")>
-    Public Property ColorId As Integer ' Ordered
+    Public Property ColorId As Integer
 
     <JsonIgnore>
     Public Property Color As TipColor
@@ -32,7 +25,7 @@ Public Class TipItem
         End Get
     End Property
 
-    Public Sub New(content As String, Optional colorId As Integer = - 1)
+    Public Sub New(content As String, Optional colorId As Integer = -1)
         Me.Content = content
         Me.ColorId = colorId
     End Sub

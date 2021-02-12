@@ -8,20 +8,12 @@ Public Class Tab
     <JsonProperty("tips")>
     Public Property Tips As List(Of TipItem)
 
-    Public Sub New()
-        Me.New("默认", New List(Of TipItem))
-    End Sub
-
-    Public Sub New(title As String)
-        Me.New(title, New List(Of TipItem))
-    End Sub
-
-    Public Sub New(title As String, tabs As List(Of TipItem))
+    Public Sub New(title As String, Optional tips As List(Of TipItem) = Nothing)
         Me.Title = title
-        Me.Tips = tabs
+        Me.Tips = If(tips Is Nothing, New List(Of TipItem), tips)
     End Sub
 
     Public Overrides Function ToString() As String
-        Return Me.Title
+        Return Title
     End Function
 End Class

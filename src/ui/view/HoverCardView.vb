@@ -7,7 +7,7 @@ Public Class HoverCardView
     Private WithEvents _timerShowForm As New Timer() With {.Interval = 1, .Enabled = False}
     Private WithEvents _timerCloseForm As New Timer() With {.Interval = 1, .Enabled = False}
 
-    Public ReadOnly Property OpacitySpeed = 0.1
+    Private ReadOnly Property OpacitySpeed = 0.1
     Public Property PreLocation As New Point()
 
     Public Property WidthFunc As Func(Of Integer)
@@ -16,28 +16,28 @@ Public Class HoverCardView
 
     Protected Overrides Sub OnLoad(e As EventArgs)
         MyBase.OnLoad(e)
-        Me.AutoScaleMode = AutoScaleMode.Font
-        Me.Font = New Font("Microsoft YaHei UI", 9.0!)
-        Me.FormBorderStyle = FormBorderStyle.None
-        Me.ShowInTaskbar = false
-        Me.Opacity = 0
+        AutoScaleMode = AutoScaleMode.Font
+        Font = New Font("Microsoft YaHei UI", 9.0!)
+        FormBorderStyle = FormBorderStyle.None
+        ShowInTaskbar = false
+        Opacity = 0
         If WidthFunc Is Nothing OrElse HoverTabFunc Is Nothing Then
-            Me.Close()
+            Close()
             Return
         End If
-        Me.Width = WidthFunc.Invoke()
+        Width = WidthFunc.Invoke()
         _tab = HoverTabFunc.Invoke()
         If Not HoverTipFunc Is Nothing Then
             _tip = HoverTipFunc.Invoke()
         End If
-        initLabel()
+        InitLabel()
 
-        Me.Left = PreLocation.X
-        Me.Top = PreLocation.Y
-        If Me.Height + Me.Top > My.Computer.Screen.Bounds.Height Then
-            Me.Top = My.Computer.Screen.Bounds.Height - Me.Height
+        Left = PreLocation.X
+        Top = PreLocation.Y
+        If Height + Top > My.Computer.Screen.Bounds.Height Then
+            Top = My.Computer.Screen.Bounds.Height - Height
         End If
-        Me.Top -= 1 / OpacitySpeed
+        Top -= 1 / OpacitySpeed
 
         _timerCloseForm.Enabled = false
         _timerShowForm.Enabled = true
@@ -66,19 +66,19 @@ Public Class HoverCardView
     End Sub
 
     Private Sub TimerShowForm_Tick(sender As Object, e As EventArgs) Handles _timerShowForm.Tick
-        Me.Opacity += OpacitySpeed
-        Me.Top += 1
-        If Me.Opacity >= 1 Then
-            Me.Opacity = 1
+        Opacity += OpacitySpeed
+        Top += 1
+        If Opacity >= 1 Then
+            Opacity = 1
             _timerShowForm.Enabled = False
         End If
     End Sub
 
     Private Sub TimerCloseForm_Tick(sender As Object, e As EventArgs) Handles _timerCloseForm.Tick
-        Me.Opacity -= OpacitySpeed
-        Me.Top -= 1
-        If Me.Opacity <= 0 Then
-            MyBase.Close()
+        Opacity -= OpacitySpeed
+        Top -= 1
+        If Opacity <= 0 Then
+            Close()
             _timerCloseForm.Enabled = False
         End If
     End Sub
@@ -103,20 +103,20 @@ Public Class HoverCardView
     End Sub
 
     Private Sub ButtonClose_Clicked(sender As Object, e As EventArgs) Handles _button.Click
-        Me.Close()
+        Close()
     End Sub
 
-    Private Sub initLabel()
+    Private Sub InitLabel()
         _titleLabel.BackColor = Color.Transparent
         _titleLabel.BackgroundStyle.CornerType = DD.eCornerType.Square
         _titleLabel.AutoSize = True
-        _titleLabel.MaximumSize = New Size(Me.Width - _titleLeft * 2 - 2 * _buttonMargin, 0)
+        _titleLabel.MaximumSize = New Size(Width - _titleLeft * 2 - 2 * _buttonMargin, 0)
         _titleLabel.WordWrap = False
 
         _contentLabel.BackColor = Color.Transparent
         _contentLabel.BackgroundStyle.CornerType = DD.eCornerType.Square
         _contentLabel.AutoSize = True
-        _contentLabel.MaximumSize = New Size(Me.Width - _contentLeft * 2, 0)
+        _contentLabel.MaximumSize = New Size(Width - _contentLeft * 2, 0)
         _contentLabel.WordWrap = True
 
         _button.BackColor = Color.Transparent
@@ -128,9 +128,9 @@ Public Class HoverCardView
         _button.Shape = New DD.RoundRectangleShapeDescriptor()
         _button.Tooltip = "关闭"
 
-        Me.Controls.Add(_button)
-        Me.Controls.Add(_contentLabel)
-        Me.Controls.Add(_titleLabel)
+        Controls.Add(_button)
+        Controls.Add(_contentLabel)
+        Controls.Add(_titleLabel)
 
         If _tip IsNot Nothing Then
             ' For Tip
@@ -165,8 +165,8 @@ Public Class HoverCardView
 
         _titleLabel.Location = New Point(_titleLeft, _titleTop)
         _contentLabel.Location = New Point(_contentLeft, _titleLabel.Top + _titleLabel.Height + _contentTop)
-        _button.Location = New Point(Me.Width - _buttonMargin - _buttonSize, _buttonMargin)
-        Me.Height = _contentLabel.Top + _contentLabel.Height + _bottom
+        _button.Location = New Point(Width - _buttonMargin - _buttonSize, _buttonMargin)
+        Height = _contentLabel.Top + _contentLabel.Height + _bottom
     End Sub
 
     Protected Overrides Sub OnPaint(e As PaintEventArgs)

@@ -10,7 +10,7 @@ Public Class TabView
 
     Public Property DataSource As Object
 
-    Private ReadOnly Property baseItems As IList Implements ICollectionView.baseItems
+    Private ReadOnly Property BaseItems As IList Implements ICollectionView.BaseItems
         Get
             Return MyBase.Tabs
         End Get
@@ -77,14 +77,14 @@ Public Class TabView
 
 #Region "悬浮卡片"
 
-    Private _hoverIndex As Integer = - 1
+    Private _hoverIndex As Integer = -1
     Private _hoverThread As Thread
 
     Protected Overrides Sub OnMouseMove(e As MouseEventArgs)
         MyBase.OnMouseMove(e)
         Dim sel As TabViewItem = GetItemFromPoint(e.Location)
         If sel Is Nothing Then
-            _hoverIndex = - 1
+            _hoverIndex = -1
             If Not My.Computer.Keyboard.CtrlKeyDown Then
                 HideAndCloseTooltip()
             End If
@@ -93,14 +93,14 @@ Public Class TabView
         If Tabs.IndexOf(sel) = _hoverIndex Then Return
         _hoverIndex = Tabs.IndexOf(sel)
 
-        If _hoverIndex > - 1 Then
+        If _hoverIndex > -1 Then
             If Not My.Computer.Keyboard.CtrlKeyDown Then
                 HideAndCloseTooltip()
                 If e.Button = MouseButtons.None Then
                     _hoverThread = New Thread(New ParameterizedThreadStart(Sub (idx As Integer)
                         If _hoverIndex <> idx Then Return
                         Thread.Sleep(_hoverWaitingDuration)
-                        Me.Invoke(Sub() ShowTooltip(Tabs(idx).TabSource))
+                        Invoke(Sub() ShowTooltip(Tabs(idx).TabSource))
                     End Sub))
                     _hoverThread.Start(_hoverIndex)
                 End If
@@ -110,17 +110,17 @@ Public Class TabView
 
     Protected Overrides Sub OnMouseLeave(e As EventArgs)
         MyBase.OnMouseLeave(e)
-        If _hoverIndex > - 1 Then
-            _hoverIndex = - 1
+        If _hoverIndex > -1 Then
+            _hoverIndex = -1
             If Not My.Computer.Keyboard.CtrlKeyDown Then
                 HideAndCloseTooltip()
             End If
         End If
     End Sub
 
-    Private Const _hoverCardWidth As Integer = 200
-    Private Const _hoverDistance As Integer = 7
-    Private Const _hoverWaitingDuration As Integer = 350
+    Private _hoverCardWidth As Integer = 200
+    Private _hoverDistance As Integer = 7
+    Private _hoverWaitingDuration As Integer = 350
 
     Private Sub HideAndCloseTooltip()
         HoverCardView.Close()
@@ -128,7 +128,7 @@ Public Class TabView
     End Sub
 
     Private Sub ShowTooltip(item As Tab)
-        Me.Focus()
+        Focus()
         Dim curPos = Cursor.Position
         Dim cliPos = Parent.PointToClient(curPos)
         Dim x = curPos.X - (cliPos.X + _hoverCardWidth + _hoverDistance)
@@ -176,10 +176,6 @@ Public Class TabView
 
     Public Class TabItemsCollection
         Inherits BaseItemsCollection(Of TabViewItem)
-
-        ' Public Sub New(tabView As ICollectionView)
-        '     MyBase.New(tabView)
-        ' End Sub
 
         Public Sub New(tabView As ICollectionView, items As IEnumerable(Of TabViewItem))
             MyBase.New(tabView, items)

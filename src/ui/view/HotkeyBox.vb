@@ -48,19 +48,19 @@
         Else
             If KeyCode = Keys.Delete Or KeyCode = Keys.Back Then
                 hotKeyString = ""
-                hotKeyValue = - 1
+                hotKeyValue = -1
             ElseIf KeyCode <> Keys.None Then
                 hotKeyString += KeyCodeToString(KeyCode)
                 hotKeyValue += CInt(KeyCode)
             End If
         End If
-        hotKeyValue = If(hotKeyValue = 0, - 1, hotKeyValue)
+        hotKeyValue = If(hotKeyValue = 0, -1, hotKeyValue)
 
-        If Me.CurrentKey <> hotKeyValue Then
-            Me.CurrentKey = hotKeyValue
+        If CurrentKey <> hotKeyValue Then
+            CurrentKey = hotKeyValue
         End If
-        Me.Text = hotKeyString
-        Me.SelectionStart = Me.Text.Length
+        Text = hotKeyString
+        SelectionStart = Text.Length
     End Sub
 
     Private Shared Function KeyCodeToString(keyCode As Keys) As String
@@ -74,10 +74,10 @@
     End Function
 
     Private Sub CheckHotkey()
-        If Me.Text.Trim().EndsWith("+") Or String.IsNullOrWhiteSpace(Me.Text) Then
-            Me.CurrentKey = - 1
-            Me.Text = ""
-            Me.SelectionStart = 0
+        If Text.Trim().EndsWith("+") Or String.IsNullOrWhiteSpace(Text) Then
+            CurrentKey = -1
+            Text = ""
+            SelectionStart = 0
         End If
     End Sub
 

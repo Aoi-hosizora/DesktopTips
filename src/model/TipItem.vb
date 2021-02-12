@@ -2,6 +2,9 @@
 
 <Serializable, JsonObject>
 Public Class TipItem
+    ' <JsonProperty("id")>
+    ' Public Property Id As Integer
+
     <JsonProperty("content")>
     Public Property Content As String
 
@@ -24,6 +27,12 @@ Public Class TipItem
             Return Color IsNot Nothing
         End Get
     End Property
+
+    ' <JsonProperty("created_at")>
+    ' Public Property CreatedAt As DateTime
+
+    ' <JsonProperty("updated_at")>
+    ' Public Property UpdatedAt As DateTime
 
     Public Sub New(content As String, Optional colorId As Integer = -1)
         Me.Content = content

@@ -2,11 +2,20 @@
 
 <Serializable, JsonObject>
 Public Class Tab
+    ' <JsonProperty("id")>
+    ' Public Property Id As Integer
+    
     <JsonProperty("title")>
     Public Property Title As String
 
     <JsonProperty("tips")>
     Public Property Tips As List(Of TipItem)
+
+    ' <JsonProperty("created_at")>
+    ' Public Property CreatedAt As DateTime
+    
+    ' <JsonProperty("updated_at")>
+    ' Public Property UpdatedAt As DateTime
 
     Public Sub New(title As String, Optional tips As List(Of TipItem) = Nothing)
         Me.Title = title

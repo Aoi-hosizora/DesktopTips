@@ -77,6 +77,8 @@ Public Class MainForm
         My.Settings.Save()
         _globalPresenter.UnregisterHotKey(Handle, HOTKEY_ID)
     End Sub
+    
+    Private Property IsLoading As Boolean = True
 
     Private Sub On_Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' 加载页面 设置
@@ -85,7 +87,7 @@ Public Class MainForm
         SetupOpacityButtons()
         SetupAssistButtons()
 
-        Me.CanMouseLeaveFunc = Function() As Boolean
+        Me.MouseLeaveCallback = Function() As Boolean
             Return m_menu_ListPopupMenu.PopupControl Is Nothing AndAlso
                    m_menu_TabPopupMenu.PopupControl Is Nothing AndAlso
                    m_menu_MoveTipsSubMenu.PopupControl Is Nothing AndAlso

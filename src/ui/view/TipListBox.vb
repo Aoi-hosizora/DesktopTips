@@ -5,12 +5,12 @@ Public Class TipListBox
     Implements ICollectionView
 
     Public Sub New()
-        Me.DisplayMember = "Content"
-        Me.DrawMode = DrawMode.OwnerDrawFixed
-        Me.Controls.Add(_labelNothing)
+        DisplayMember = "Content"
+        DrawMode = DrawMode.OwnerDrawFixed
+        Controls.Add(_labelNothing)
     End Sub
 
-    Private ReadOnly Property baseItems As IList Implements ICollectionView.baseItems
+    Private ReadOnly Property BaseItems As IList Implements ICollectionView.BaseItems
         Get
             Return MyBase.Items
         End Get
@@ -60,10 +60,10 @@ Public Class TipListBox
     Public Overloads Sub Update()
         Dim topIdx = TopIndex
         MyBase.Update()
-        Dim obj = CType(MyBase.DataSource, List(Of TipItem))
-        MyBase.DataSource = Nothing
-        MyBase.DataSource = obj
-        adjustLabelNothing()
+        Dim obj = CType(DataSource, List(Of TipItem))
+        DataSource = Nothing
+        DataSource = obj
+        AdjustLabelNothing()
         TopIndex = topIdx
     End Sub
 
@@ -86,21 +86,21 @@ Public Class TipListBox
 
     Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
         MyBase.OnKeyDown(e)
-        Me._controlKey = e.Control
+        _controlKey = e.Control
     End Sub
 
     Protected Overrides Sub OnKeyUp(e As KeyEventArgs)
         MyBase.OnKeyUp(e)
-        Me._controlKey = false
+        _controlKey = false
     End Sub
 
 #End Region
 
 #Region "重绘 悬浮"
 
-    Private ReadOnly HOVER_BACK_COLOR As Color = Color.FromArgb(229, 243, 255)
-    Private ReadOnly FOCUS_BACK_COLOR As Color = Color.FromArgb(205, 232, 255)
-    Private ReadOnly FOCUS_BORDER_COLOR As Color = Color.FromArgb(153, 209, 255)
+    Private ReadOnly _hoverBackColor As Color = Color.FromArgb(229, 243, 255)
+    Private ReadOnly _focusBackColor As Color = Color.FromArgb(205, 232, 255)
+    Private ReadOnly _focusBorderColor As Color = Color.FromArgb(153, 209, 255)
 
     Protected Overrides Sub OnDrawItem(e As DrawItemEventArgs)
         Dim g = e.Graphics
@@ -113,16 +113,16 @@ Public Class TipListBox
 
         e.DrawBackground()
         If e.Index = _hoverIndex Then ' Hover
-            g.FillRectangle(New SolidBrush(HOVER_BACK_COLOR), b)
+            g.FillRectangle(New SolidBrush(_hoverBackColor), b)
             If e.State And DrawItemState.Selected Then ' Selected + Hover
-                g.FillRectangle(New SolidBrush(FOCUS_BACK_COLOR), b)
-                g.DrawRectangle(New Pen(FOCUS_BORDER_COLOR), b)
+                g.FillRectangle(New SolidBrush(_focusBackColor), b)
+                g.DrawRectangle(New Pen(_focusBorderColor), b)
             Else
-                g.DrawRectangle(New Pen(HOVER_BACK_COLOR), b)
+                g.DrawRectangle(New Pen(_hoverBackColor), b)
             End If
         ElseIf e.State And DrawItemState.Selected Then ' Selected
-            g.FillRectangle(New SolidBrush(FOCUS_BACK_COLOR), b)
-            g.DrawRectangle(New Pen(FOCUS_BACK_COLOR), b)
+            g.FillRectangle(New SolidBrush(_focusBackColor), b)
+            g.DrawRectangle(New Pen(_focusBackColor), b)
         Else
             g.FillRectangle(New SolidBrush(e.BackColor), b)
             g.DrawRectangle(New Pen(e.BackColor), b)
@@ -133,7 +133,7 @@ Public Class TipListBox
         ' e.DrawFocusRectangle()
     End Sub
 
-    Private _hoverIndex As Integer = - 1
+    Private _hoverIndex As Integer = -1
     Private _hoverThread As Thread
 
     ''' <summary>
@@ -144,8 +144,8 @@ Public Class TipListBox
         MyBase.OnMouseMove(e)
         Dim index = IndexFromPoint(e.Location) ' 当前位置或最后一行
         If PointOutOfRange(e.Location) Then ' 鼠标超过最后一行
-            If _hoverIndex > - 1 Then ' 还没记录
-                _hoverIndex = - 1
+            If _hoverIndex > -1 Then ' 还没记录
+                _hoverIndex = -1
                 Invalidate(GetItemRectangle(ItemCount - 1)) ' 通知最后一行取消高亮
             End If
             If Not My.Computer.Keyboard.CtrlKeyDown Then
@@ -155,11 +155,11 @@ Public Class TipListBox
         End If
         If index = _hoverIndex Then Return ' 没必要更新
 
-        If _hoverIndex > - 1 Then
+        If _hoverIndex > -1 Then
             Invalidate(GetItemRectangle(_hoverIndex)) ' 更新前一瞬间的高亮
         End If
         _hoverIndex = index
-        If _hoverIndex > - 1 Then ' 通知当前高亮行
+        If _hoverIndex > -1 Then ' 通知当前高亮行
             Invalidate(GetItemRectangle(_hoverIndex)) ' 更新当前的高亮
             If Not My.Computer.Keyboard.CtrlKeyDown Then
                 HideAndCloseTooltip() ' Ctrl 按下不变
@@ -167,7 +167,7 @@ Public Class TipListBox
                     _hoverThread = New Thread(New ParameterizedThreadStart(Sub(idx As Integer) 
                         If _hoverIndex <> idx Then Return
                         Thread.Sleep(_hoverWaitingDuration)
-                        Me.Invoke(Sub() ShowTooltip(Items(idx)))
+                        Invoke(Sub() ShowTooltip(Items(idx)))
                     End Sub))
                     _hoverThread.Start(_hoverIndex)
                 End If
@@ -180,9 +180,9 @@ Public Class TipListBox
     ''' </summary>
     Protected Overrides Sub OnMouseLeave(e As EventArgs)
         MyBase.OnMouseLeave(e)
-        If _hoverIndex > - 1 Then
+        If _hoverIndex > -1 Then
             Invalidate(GetItemRectangle(_hoverIndex))
-            _hoverIndex = - 1
+            _hoverIndex = -1
             If Not My.Computer.Keyboard.CtrlKeyDown Then
                 HideAndCloseTooltip()
             End If
@@ -194,8 +194,8 @@ Public Class TipListBox
 #Region "其他布局: 文本提示 右键选中 滚动条"
 
     Private _hoverCardWidth As Integer = 200
-    Private Const _hoverDistance As Integer = 7
-    Private Const _hoverWaitingDuration As Integer = 350
+    Private _hoverDistance As Integer = 7
+    Private _hoverWaitingDuration As Integer = 350
 
     Private Sub HideAndCloseTooltip()
         HoverCardView.Close()
@@ -203,7 +203,7 @@ Public Class TipListBox
     End Sub
 
     Private Sub ShowTooltip(item As TipItem)
-        Me.Focus()
+        Focus()
         Dim contentLength = item.Content.Length
         If contentLength <= 100 Then
             _hoverCardWidth = 200
@@ -239,7 +239,7 @@ Public Class TipListBox
     ''' <summary>
     ''' 调整 无内容标签 的显示
     ''' </summary>
-    Private Sub adjustLabelNothing()
+    Private Sub AdjustLabelNothing()
         _labelNothing.Visible = ItemCount = 0
         _labelNothing.Top = 0
         _labelNothing.Left = 0
@@ -252,7 +252,7 @@ Public Class TipListBox
     ''' </summary>
     Protected Overrides Sub OnSizeChanged(e As EventArgs)
         MyBase.OnSizeChanged(e)
-        adjustLabelNothing()
+        AdjustLabelNothing()
     End Sub
 
     ''' <summary>
@@ -296,10 +296,6 @@ Public Class TipListBox
 
     Public Class TipItemsCollection
         Inherits BaseItemsCollection(Of TipItem)
-
-        ' Public Sub New(listBox As ICollectionView)
-        '     MyBase.New(listBox)
-        ' End Sub
 
         Public Sub New(listBox As ICollectionView, items As IEnumerable)
             MyBase.New(listBox, items)

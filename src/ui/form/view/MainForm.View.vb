@@ -16,7 +16,7 @@
                 .Text = content, .ReadOnly = True, .Multiline = True, .ScrollBars = ScrollBars.Both, .WordWrap = False,
                 .BackColor = Color.White, .ForeColor = textColor, .Font = New Font("Microsoft YaHei UI", 9.0!),
                 .Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top}
-        Dim form As New BaseEscCloseForm With {
+        Dim form As New BaseEscCbForm With {
                 .Text = title, .Size = formSize, .TopMost = True, .FormBorderStyle = FormBorderStyle.Sizable}
         form.Controls.Add(textBox)
         textBox.Dock = DockStyle.Fill

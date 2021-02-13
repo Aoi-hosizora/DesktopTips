@@ -187,8 +187,7 @@ Public Class HoverCardView
                     Const intSize = 4
                     NativeMethod.DwmSetWindowAttribute(Handle, NativeMethod.DWMWA_NCRENDERING_POLICY, val, intSize)
                     NativeMethod.DwmExtendFrameIntoClientArea(Handle, New NativeMethod.MARGINS() With {
-                        .BottomHeight = 1, .LeftWidth = 1, .RightWidth = 1, .TopHeight = 1
-                        })
+                        .BottomHeight = 1, .LeftWidth = 1, .RightWidth = 1, .TopHeight = 1 })
                 End If
                 Exit Select
         End Select

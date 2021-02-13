@@ -16,7 +16,7 @@ Public Class TipListBox
         End Get
     End Property
 
-#Region "重载属性"
+#Region "属性"
 
     Public Overloads ReadOnly Property Items As TipItemsCollection
         Get
@@ -51,174 +51,214 @@ Public Class TipListBox
         End Get
     End Property
 
-    Public ReadOnly Property ControlKey As Boolean = False
+    ''' <summary>
+    ''' 利用 WM_NCMOUSEMOVE 信息触发的 Non-Client Area MouseMove 事件
+    ''' </summary>
+    Public Event NcMouseMove As MouseEventHandler
+
+    ''' <summary>
+    ''' 利用 WM_NCMOUSELEAVE 信息触发的 Non-Client Area MouseMove 事件
+    ''' </summary>
+    Public Event NcMouseLeave As MouseEventHandler
+
+    ''' <summary>
+    ''' 滚动条滚动时回调
+    ''' </summary>
+    Public Property WheeledFunc As Action
 
 #End Region
 
-#Region "自定义函数"
+#Region "方法"
 
+    ''' <summary>
+    ''' 更新 DataSource 的显示
+    ''' </summary>
     Public Overloads Sub Update()
         Dim topIdx = TopIndex
         MyBase.Update()
-        Dim obj = CType(DataSource, List(Of TipItem))
+        Dim temp = CType(DataSource, List(Of TipItem))
         DataSource = Nothing
-        DataSource = obj
+        DataSource = temp
         AdjustLabelNothing()
         TopIndex = topIdx
     End Sub
 
-    Public Sub SetSelectOnly(ParamArray indices As Integer())
+    Protected Overrides Sub OnSizeChanged(e As EventArgs)
+        MyBase.OnSizeChanged(e)
+        AdjustLabelNothing()
+    End Sub
+
+    ''' <summary>
+    ''' 清空选中，并设置正在选中的行
+    ''' </summary>
+    Public Sub SetSelectedItems(ParamArray indices As Integer())
         If ItemCount = 0 Then Return
         ClearSelected()
         For Each index In indices
-            If index >= ItemCount Then
-                index = ItemCount - 1
-            End If
+            index = If(index < 0, 0, If(index >= ItemCount, ItemCount - 1, index))
             SetSelected(index, True)
         Next
     End Sub
 
+    ''' <summary>
+    ''' 判断给定 Point 是否超过列表内容范围
+    ''' </summary>
     Public Function PointOutOfRange(p as Point) As Boolean
         If ItemCount = 0 Then Return True
         Dim rect As Rectangle = GetItemRectangle(ItemCount - 1)
         Return p.Y > rect.Top + rect.Height
     End Function
 
-    Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
-        MyBase.OnKeyDown(e)
-        _controlKey = e.Control
+    ''' <summary>
+    ''' 单击列表重载，超过范围清除选中，右键列表选中
+    ''' </summary>
+    Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
+        MyBase.OnMouseDown(e)
+        HideTooltip()
+        If PointOutOfRange(e.Location) Then
+            ClearSelected()
+        ElseIf e.Button = MouseButtons.Right AndAlso SelectedCount <= 1 Then
+            SetSelectedItems(IndexFromPoint(e.X, e.Y))
+        End If
     End Sub
 
-    Protected Overrides Sub OnKeyUp(e As KeyEventArgs)
-        MyBase.OnKeyUp(e)
-        _controlKey = false
+    Protected Overrides Sub WndProc(ByRef m As Message)
+        MyBase.WndProc(m)
+        Select Case m.Msg
+            Case NativeMethod.WM_NCMOUSEMOVE
+                RaiseEvent NcMouseMove(Me, Nothing)
+            Case NativeMethod.WM_NCMOUSELEAVE
+                RaiseEvent NcMouseLeave(Me, Nothing)
+        End Select
     End Sub
 
 #End Region
 
-#Region "重绘 悬浮"
+#Region "重绘和显示悬浮卡片"
+
+    ''' <summary>
+    ''' 当前悬浮的下标
+    ''' </summary>
+    Private _hoverIndex As Integer = -1
 
     Private ReadOnly _hoverBackColor As Color = Color.FromArgb(229, 243, 255)
     Private ReadOnly _focusBackColor As Color = Color.FromArgb(205, 232, 255)
     Private ReadOnly _focusBorderColor As Color = Color.FromArgb(153, 209, 255)
 
+    ''' <summary>
+    ''' 重绘列表颜色和高亮
+    ''' </summary>
     Protected Overrides Sub OnDrawItem(e As DrawItemEventArgs)
-        Dim g = e.Graphics
-        g.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
-        Dim b = New Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Width - 1, e.Bounds.Height)
-
         If e.Index < 0 OrElse e.Index >= ItemCount Then Return
-        Dim item As TipItem = Items(e.Index)
-        Dim color As Color = If(item.Color?.Color, Color.Black)
+        Dim item = Items.ElementAt(e.Index)
+        Dim itemColor = If(item.Color?.Color, Color.Black)
+
+        Dim g = e.Graphics
+        Dim b = New Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Width - 1, e.Bounds.Height)
+        g.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
 
         e.DrawBackground()
         If e.Index = _hoverIndex Then ' Hover
-            g.FillRectangle(New SolidBrush(_hoverBackColor), b)
             If e.State And DrawItemState.Selected Then ' Selected + Hover
                 g.FillRectangle(New SolidBrush(_focusBackColor), b)
                 g.DrawRectangle(New Pen(_focusBorderColor), b)
-            Else
+            Else ' Only Hover
+                g.FillRectangle(New SolidBrush(_hoverBackColor), b)
                 g.DrawRectangle(New Pen(_hoverBackColor), b)
             End If
         ElseIf e.State And DrawItemState.Selected Then ' Selected
             g.FillRectangle(New SolidBrush(_focusBackColor), b)
             g.DrawRectangle(New Pen(_focusBackColor), b)
-        Else
+        Else ' Normal
             g.FillRectangle(New SolidBrush(e.BackColor), b)
             g.DrawRectangle(New Pen(e.BackColor), b)
         End If
 
         Dim t = item.ToString().Replace(vbNewLine, "↴") ' ¬ ↴ ⇁ ¶
-        g.DrawString(t, e.Font, New SolidBrush(color), b, StringFormat.GenericDefault)
-        ' e.DrawFocusRectangle()
+        g.DrawString(t, e.Font, New SolidBrush(itemColor), b, StringFormat.GenericDefault)
     End Sub
 
-    Private _hoverIndex As Integer = -1
+    ''' <summary>
+    ''' 用于显示悬浮卡片的线程
+    ''' </summary>
     Private _hoverThread As Thread
 
     ''' <summary>
-    ''' 鼠标移动，判断是否超出范围
-    ''' 显示 ToolTip 和 记录 _hoverIndex，更新界面显示
+    ''' 鼠标移动，超过列表范围的渲染，记录 _hoverIndex，显示 ToolTip，更新界面显示
     ''' </summary>
     Protected Overrides Sub OnMouseMove(e As MouseEventArgs)
         MyBase.OnMouseMove(e)
-        Dim index = IndexFromPoint(e.Location) ' 当前位置或最后一行
         If PointOutOfRange(e.Location) Then ' 鼠标超过最后一行
-            If _hoverIndex > -1 Then ' 还没记录
+            If _hoverIndex > -1 Then
                 _hoverIndex = -1
                 Invalidate(GetItemRectangle(ItemCount - 1)) ' 通知最后一行取消高亮
             End If
             If Not My.Computer.Keyboard.CtrlKeyDown Then
-                HideAndCloseTooltip() ' Ctrl 按下不变
+                HideTooltip() ' Ctrl 没按下时隐藏悬浮卡片
             End If
             Return
         End If
-        If index = _hoverIndex Then Return ' 没必要更新
 
+        Dim index = IndexFromPoint(e.Location)
+        If index = _hoverIndex Then Return ' 不用更新
         If _hoverIndex > -1 Then
             Invalidate(GetItemRectangle(_hoverIndex)) ' 更新前一瞬间的高亮
         End If
         _hoverIndex = index
-        If _hoverIndex > -1 Then ' 通知当前高亮行
+        If _hoverIndex > -1 Then
             Invalidate(GetItemRectangle(_hoverIndex)) ' 更新当前的高亮
             If Not My.Computer.Keyboard.CtrlKeyDown Then
-                HideAndCloseTooltip() ' Ctrl 按下不变
+                HideTooltip() ' Ctrl 没按下时隐藏悬浮卡片
                 If e.Button = MouseButtons.None Then
                     _hoverThread = New Thread(New ParameterizedThreadStart(Sub(idx As Integer) 
                         If _hoverIndex <> idx Then Return
                         Thread.Sleep(_hoverWaitingDuration)
-                        Invoke(Sub() ShowTooltip(Items(idx)))
+                        Invoke(Sub() ShowTooltip(Items(idx))) ' 显示悬浮卡片
                     End Sub))
-                    _hoverThread.Start(_hoverIndex)
+                    _hoverThread.Start(_hoverIndex) ' 启动计时线程，准备显示悬浮卡片
                 End If
             End If
         End If
     End Sub
 
     ''' <summary>
-    ''' 鼠标移出列表，更新界面并且置 _hoverIndex 为 -1
+    ''' 鼠标移出，更新界面，记录 _hoverIndex 为 -1
     ''' </summary>
     Protected Overrides Sub OnMouseLeave(e As EventArgs)
         MyBase.OnMouseLeave(e)
         If _hoverIndex > -1 Then
-            Invalidate(GetItemRectangle(_hoverIndex))
+            Invalidate(GetItemRectangle(_hoverIndex)) ' 更新前一瞬间的高亮
             _hoverIndex = -1
             If Not My.Computer.Keyboard.CtrlKeyDown Then
-                HideAndCloseTooltip()
+                HideTooltip() ' Ctrl 没按下时隐藏悬浮卡片
             End If
         End If
     End Sub
 
 #End Region
 
-#Region "其他布局: 文本提示 右键选中 滚动条"
+#Region "其他布局: 悬浮卡片 无内容标签 滚动条"
 
     Private _hoverCardWidth As Integer = 200
-    Private _hoverDistance As Integer = 7
-    Private _hoverWaitingDuration As Integer = 350
+    Private _hoverGapDistance As Integer = 7
+    Private _hoverWaitingDuration As Integer = 350 ' ms
 
-    Private Sub HideAndCloseTooltip()
-        HoverCardView.Close()
-        If _hoverThread IsNot Nothing Then _hoverThread.Abort()
-    End Sub
-
+    ''' <summary>
+    ''' 显示悬浮卡片
+    ''' </summary>
     Private Sub ShowTooltip(item As TipItem)
-        Focus()
-        Dim contentLength = item.Content.Length
-        If contentLength <= 100 Then
-            _hoverCardWidth = 200
-        Else  If contentLength <= 300 Then
-            _hoverCardWidth = 250
-        Else If contentLength <= 800 Then
-            _hoverCardWidth = 400
-        Else
-            _hoverCardWidth = 500
-        End If
+        Select Case item.Content.Length
+            Case <= 100 : _hoverCardWidth = 200
+            Case <= 300 : _hoverCardWidth = 250
+            Case <= 800 : _hoverCardWidth = 400
+            Case Else : _hoverCardWidth = 500
+        End Select
+
         Dim curPos = Cursor.Position
         Dim cliPos = Parent.PointToClient(curPos)
-        Dim x = curPos.X - (cliPos.X + _hoverCardWidth + _hoverDistance)
-        If x < 0 Then
-            x = curPos.X + Parent.Width - cliPos.X + _hoverDistance
+        Dim x = curPos.X - cliPos.X + Parent.Width + _hoverGapDistance
+        If x >= Screen.PrimaryScreen.Bounds.Width - _hoverCardWidth Then
+            x = curPos.X - (cliPos.X + _hoverCardWidth + _hoverGapDistance)
         End If
         Dim y = curPos.Y
 
@@ -230,14 +270,20 @@ Public Class TipListBox
         HoverCardView.Show()
     End Sub
 
+    ''' <summary>
+    ''' 隐藏悬浮卡片
+    ''' </summary>
+    Private Sub HideTooltip()
+        HoverCardView.Close()
+        If _hoverThread IsNot Nothing Then _hoverThread.Abort()
+    End Sub
+
     Private WithEvents _labelNothing As New Label With {
-        .BackColor = Color.Snow, .ForeColor = Color.DimGray,  
-        .Visible = False, .AutoSize = False,
-        .Text= "无内容", .TextAlign = ContentAlignment.MiddleCenter
-        }
+        .BackColor = Color.Snow, .ForeColor = Color.DimGray, .Visible = False,
+        .Text= "无内容", .AutoSize = False, .TextAlign = ContentAlignment.MiddleCenter }
 
     ''' <summary>
-    ''' 调整 无内容标签 的显示
+    ''' 调整无内容标签的显示
     ''' </summary>
     Private Sub AdjustLabelNothing()
         _labelNothing.Visible = ItemCount = 0
@@ -248,30 +294,7 @@ Public Class TipListBox
     End Sub
 
     ''' <summary>
-    ''' 调整大小时更新 无内容标签 的显示
-    ''' </summary>
-    Protected Overrides Sub OnSizeChanged(e As EventArgs)
-        MyBase.OnSizeChanged(e)
-        AdjustLabelNothing()
-    End Sub
-
-    ''' <summary>
-    ''' 单击列表，判断是否超过范围，或选中
-    ''' </summary>
-    Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
-        MyBase.OnMouseDown(e)
-        HideAndCloseTooltip()
-        If PointOutOfRange(e.Location) Then
-            ClearSelected()
-        ElseIf e.Button = MouseButtons.Right AndAlso SelectedCount <= 1 Then
-            SetSelectOnly(IndexFromPoint(e.X, e.Y))
-        End If
-    End Sub
-
-    Public Property WheeledFunc As Action
-
-    ''' <summary>
-    ''' 鼠标滚动执行 WheeledFunc
+    ''' 鼠标滚动执行回调
     ''' </summary>
     Protected Overrides Sub OnMouseWheel(e As MouseEventArgs)
         MyBase.OnMouseWheel(e)
@@ -281,7 +304,7 @@ Public Class TipListBox
     End Sub
 
     ''' <summary>
-    ''' 滚动条拖动执行 WheeledFunc
+    ''' 滚动条拖动执行回调
     ''' </summary>
     Protected Overrides Sub OnMouseCaptureChanged(e As EventArgs)
         MyBase.OnMouseCaptureChanged(e)

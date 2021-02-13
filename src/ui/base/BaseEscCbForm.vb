@@ -14,9 +14,9 @@ Public Class BaseEscCbForm
 
     Protected Overrides Function ProcessCmdKey(ByRef msg As Message, keyData As Keys) As Boolean
         If msg.Msg = NativeMethod.WM_KEYDOWN OrElse msg.Msg = NativeMethod.WM_SYSKEYDOWN Then
-            Select Case keyData
-                Case Keys.Escape : If EscCallback() Then Close()
-            End Select
+            If keyData = Keys.Escape AndAlso EscCallback() Then
+                Close()
+            End If
         End If
         Return False
     End Function

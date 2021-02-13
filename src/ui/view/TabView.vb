@@ -16,7 +16,7 @@ Public Class TabView
         End Get
     End Property
 
-#Region "重载属性"
+#Region "属性"
 
     Public Overloads ReadOnly Property Tabs As TabItemsCollection
         Get
@@ -41,18 +41,24 @@ Public Class TabView
 
 #End Region
 
-#Region "自定义函数"
+#Region "方法"
 
+    ''' <summary>
+    ''' 更新 DataSource 的显示
+    ''' </summary>
     Public Overloads Sub Update()
         Tabs.Clear()
-        For Each t As Tab In DataSource
+        For Each t In DataSource
             Tabs.Add(New TabViewItem(t))
         Next
         Refresh()
     End Sub
 
+    ''' <summary>
+    ''' 设置正在选中的 Tab
+    ''' </summary>
     Public Sub SetSelected(tab As Tab)
-        For Each item As TabViewItem In Tabs
+        For Each item In Tabs
             If item.TabSource.Title = tab.Title Then
                 SelectedTab = item
                 Return
@@ -77,7 +83,14 @@ Public Class TabView
 
 #Region "悬浮卡片"
 
+    ''' <summary>
+    ''' 当前悬浮的下标
+    ''' </summary>
     Private _hoverIndex As Integer = -1
+
+    ''' <summary>
+    ''' 用于显示悬浮卡片的线程
+    ''' </summary>
     Private _hoverThread As Thread
 
     Protected Overrides Sub OnMouseMove(e As MouseEventArgs)
@@ -86,54 +99,49 @@ Public Class TabView
         If sel Is Nothing Then
             _hoverIndex = -1
             If Not My.Computer.Keyboard.CtrlKeyDown Then
-                HideAndCloseTooltip()
+                HideTooltip() ' Ctrl 没按下时隐藏悬浮卡片
             End If
             Return
         End If
         If Tabs.IndexOf(sel) = _hoverIndex Then Return
         _hoverIndex = Tabs.IndexOf(sel)
 
-        If _hoverIndex > -1 Then
-            If Not My.Computer.Keyboard.CtrlKeyDown Then
-                HideAndCloseTooltip()
-                If e.Button = MouseButtons.None Then
-                    _hoverThread = New Thread(New ParameterizedThreadStart(Sub (idx As Integer)
-                        If _hoverIndex <> idx Then Return
-                        Thread.Sleep(_hoverWaitingDuration)
-                        Invoke(Sub() ShowTooltip(Tabs(idx).TabSource))
-                    End Sub))
-                    _hoverThread.Start(_hoverIndex)
-                End If
+        If _hoverIndex > -1 And Not My.Computer.Keyboard.CtrlKeyDown Then
+            HideTooltip() ' Ctrl 没按下时隐藏悬浮卡片
+            If e.Button = MouseButtons.None Then
+                _hoverThread = New Thread(New ParameterizedThreadStart(Sub (idx As Integer)
+                    If _hoverIndex <> idx Then Return
+                    Thread.Sleep(_hoverWaitingDuration)
+                    Invoke(Sub() ShowTooltip(Tabs(idx).TabSource)) ' 显示悬浮卡片
+                End Sub))
+                _hoverThread.Start(_hoverIndex) ' 启动计时线程，准备显示悬浮卡片
             End If
         End If
     End Sub
 
+    ''' <summary>
+    ''' 鼠标移出，更新界面，记录 _hoverIndex 为 -1
+    ''' </summary>
     Protected Overrides Sub OnMouseLeave(e As EventArgs)
         MyBase.OnMouseLeave(e)
         If _hoverIndex > -1 Then
             _hoverIndex = -1
             If Not My.Computer.Keyboard.CtrlKeyDown Then
-                HideAndCloseTooltip()
+                HideTooltip() ' Ctrl 没按下时隐藏悬浮卡片
             End If
         End If
     End Sub
 
     Private _hoverCardWidth As Integer = 200
-    Private _hoverDistance As Integer = 7
+    Private _hoverGapDistance As Integer = 7
     Private _hoverWaitingDuration As Integer = 350
 
-    Private Sub HideAndCloseTooltip()
-        HoverCardView.Close()
-        If _hoverThread IsNot Nothing Then _hoverThread.Abort()
-    End Sub
-
     Private Sub ShowTooltip(item As Tab)
-        Focus()
         Dim curPos = Cursor.Position
         Dim cliPos = Parent.PointToClient(curPos)
-        Dim x = curPos.X - (cliPos.X + _hoverCardWidth + _hoverDistance)
-        If x < 0 Then
-            x = curPos.X + Parent.Width - cliPos.X + _hoverDistance
+        Dim x = curPos.X - cliPos.X + Parent.Width + _hoverGapDistance
+        If x >= Screen.PrimaryScreen.Bounds.Width - _hoverCardWidth Then
+            x = curPos.X - (cliPos.X + _hoverCardWidth + _hoverGapDistance)
         End If
         Dim y = curPos.Y
 
@@ -142,6 +150,11 @@ Public Class TabView
         HoverCardView.Opacity = 0
         HoverCardView.PreLocation = New Point(x, y)
         HoverCardView.Show()
+    End Sub
+
+    Private Sub HideTooltip()
+        HoverCardView.Close()
+        If _hoverThread IsNot Nothing Then _hoverThread.Abort()
     End Sub
 
 #End Region

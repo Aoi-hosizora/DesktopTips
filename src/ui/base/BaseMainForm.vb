@@ -1,16 +1,16 @@
 ﻿Imports DD = DevComponents.DotNetBar
 
 ''' <summary>
-''' 实现 透明度动画 窗口拖动 不显示图标
+''' 实现 透明度动画 窗口拖动 隐藏图标 隐藏Peek
 ''' </summary>
 Public Class BaseMainForm
     Inherits Form
 
-    Private WithEvents _timerShowForm As New Timer() With {.Interval = 1, .Enabled = False}
-    Private WithEvents _timerCloseForm As New Timer() With {.Interval = 1, .Enabled = False}
-    Private WithEvents _timerMouseIn As New Timer() With {.Interval = 10, .Enabled = False}
-    Private WithEvents _timerMouseOut As New Timer() With {.Interval = 10, .Enabled = False}
-    Private WithEvents _labelFocus As New Label() With {.Visible = False}
+    Private WithEvents _timerShowForm As New Timer With {.Interval = 1, .Enabled = False}
+    Private WithEvents _timerCloseForm As New Timer With {.Interval = 1, .Enabled = False}
+    Private WithEvents _timerMouseIn As New Timer With {.Interval = 10, .Enabled = False}
+    Private WithEvents _timerMouseOut As New Timer With {.Interval = 10, .Enabled = False}
+    Private WithEvents _labelFocus As New Label With {.Visible = False}
 
     ''' <summary>
     ''' 窗口动画，最大透明度
@@ -43,7 +43,15 @@ Public Class BaseMainForm
     End Sub
 
     ''' <summary>
-    ''' 取消焦点框
+    ''' 刷新窗口外观，包括背景色和全透明颜色
+    ''' </summary>
+    Private Sub RefreshAppearance()
+        BackColor = Color.DarkRed
+        TransparencyKey = Color.DarkRed
+    End Sub
+
+    ''' <summary>
+    ''' 隐藏焦点框
     ''' </summary>
     Private Sub HideFocus()
         _labelFocus.Focus()
@@ -74,14 +82,19 @@ Public Class BaseMainForm
             ' 所有控件: 鼠标移动
             AddHandler ctrl.MouseMove, AddressOf FormMouseMove
             AddHandler ctrl.MouseLeave, AddressOf FormMouseLeave
+            If ctrl.GetType() = GetType(TipListBox) Then
+                Dim tl = CType(ctrl, TipListBox)
+                AddHandler tl.NcMouseMove, AddressOf FormMouseMove
+                AddHandler tl.NcMouseLeave, AddressOf FormMouseLeave
+            End If
 
-            ' 非 Tab/Num: 鼠标点击
+            ' 非Tab/Num: 鼠标点击
             If Not isTab AndAlso Not isNum Then
                 AddHandler ctrl.MouseDown, AddressOf FormMouseDown
                 AddHandler ctrl.MouseUp, AddressOf FormMouseUp
             End If
 
-            ' 非 Btn/Tab/Num: 鼠标拖动
+            ' 非Btn/Tab/Num: 鼠标拖动
             If Not isBtn AndAlso Not isTab AndAlso Not isNum Then
                 AddHandler ctrl.MouseMove, AddressOf FormMouseDrag
             End If
@@ -118,14 +131,6 @@ Public Class BaseMainForm
                 Exit Select
         End Select
         MyBase.WndProc(m)
-    End Sub
-
-    ''' <summary>
-    ''' 刷新窗口外观，包括背景色和全透明颜色
-    ''' </summary>
-    Private Sub RefreshAppearance()
-        BackColor = Color.DarkRed
-        TransparencyKey = Color.DarkRed
     End Sub
 
 #Region "Timer"
@@ -168,12 +173,18 @@ Public Class BaseMainForm
 
 #Region "Opecity"
 
+    ''' <summary>
+    ''' 鼠标移动，不透明化窗口
+    ''' </summary>
     Private Sub FormMouseMove(sender As Object, e As EventArgs)
         If Cursor.Position.X >= Left And Cursor.Position.X <= Right And Cursor.Position.Y >= Top And Cursor.Position.Y <= Bottom Then
             FormOpacityUp()
         End If
     End Sub
 
+    ''' <summary>
+    ''' 鼠标移出，透明化窗口，需要判断 MouseLeaveCallback
+    ''' </summary>
     Private Sub FormMouseLeave(sender As Object, e As EventArgs)
         If MouseLeaveCallback IsNot Nothing AndAlso MouseLeaveCallback.Invoke() Then
             FormOpacityDown()

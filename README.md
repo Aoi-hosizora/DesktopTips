@@ -7,7 +7,7 @@
 
 + `VB.NET` 14.0
 + `.NET Framework` 4.0
-+ (`VS` 2010 + `Rider` 2019.2.3)
++ (`Visual Studio` 2010 + `Rider` 2020.3.2)
 
 ### Dependencies
 

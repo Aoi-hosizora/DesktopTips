@@ -107,8 +107,8 @@ Public Class MainForm
     Private Sub InsertTip(sender As Object, e As EventArgs) Handles m_btn_InsertTip.Click, m_popup_InsertTip.Click
         If _tipPresenter.Insert() Then
             m_ListView.Update()
-            m_ListView.SetSelectOnly(0)
-            m_ListView.SetSelectOnly(m_ListView.ItemCount - 1)
+            m_ListView.SetSelectedItems(0)
+            m_ListView.SetSelectedItems(m_ListView.ItemCount - 1)
         End If
     End Sub
 
@@ -116,40 +116,40 @@ Public Class MainForm
         Dim index As Integer = m_ListView.SelectedIndex
         If m_ListView.SelectedItems IsNot Nothing AndAlso _tipPresenter.Delete(m_ListView.SelectedItems) Then
             m_ListView.Update()
-            m_ListView.SetSelectOnly(index)
+            m_ListView.SetSelectedItems(index)
         End If
     End Sub
 
     Private Sub UpdateTip(sender As Object, e As EventArgs) Handles m_ListView.DoubleClick, m_popup_UpdateTip.Click
         Dim index = m_ListView.SelectedIndex
-        If m_ListView.ControlKey Then
+        If My.Computer.Keyboard.CtrlKeyDown Then
             If m_ListView.SelectedItems.Count > 0 Then
                 _tipPresenter.ViewAllLinks(m_ListView.SelectedItems)
             End If
         ElseIf m_ListView.SelectedCount = 1 AndAlso _tipPresenter.Update(m_ListView.SelectedItem) Then
             m_ListView.Update()
-            m_ListView.SetSelectOnly(index)
+            m_ListView.SetSelectedItems(index)
         End If
     End Sub
 
     Private Sub MoveTipTop(sender As Object, e As EventArgs) Handles m_popup_MoveTopTop.Click
         If _tipPresenter.MoveTop(m_ListView.SelectedItem) Then
             m_ListView.Update()
-            m_ListView.SetSelectOnly(0)
+            m_ListView.SetSelectedItems(0)
         End If
     End Sub
 
     Private Sub MoveTipBottom(sender As Object, e As EventArgs) Handles m_popup_MoveTipBottom.Click
         If _tipPresenter.MoveBottom(m_ListView.SelectedItem) Then
             m_ListView.Update()
-            m_ListView.SetSelectOnly(m_ListView.ItemCount - 1)
+            m_ListView.SetSelectedItems(m_ListView.ItemCount - 1)
         End If
     End Sub
 
     Private Sub MoveTipUp(sender As Object, e As EventArgs) Handles m_popup_MoveTipUp.Click, m_btn_MoveTipUp.Click
         If m_ListView.SelectedIndex >= 1 AndAlso _tipPresenter.MoveUp(m_ListView.SelectedItem) Then
             m_ListView.Update()
-            m_ListView.SetSelectOnly(m_ListView.SelectedIndex - 1)
+            m_ListView.SetSelectedItems(m_ListView.SelectedIndex - 1)
             If sender.Tag = "True" Then
                 NativeMethod.MouseMoveUp(Cursor.Position, HEIGHT_17)
             End If
@@ -159,7 +159,7 @@ Public Class MainForm
     Private Sub MoveDownTip(sender As Object, e As EventArgs) Handles m_popup_MoveTipDown.Click, m_btn_MoveTipDown.Click
         If m_ListView.SelectedIndex <= m_ListView.ItemCount - 2 AndAlso _tipPresenter.MoveDown(m_ListView.SelectedItem) Then
             m_ListView.Update()
-            m_ListView.SetSelectOnly(m_ListView.SelectedIndex + 1)
+            m_ListView.SetSelectedItems(m_ListView.SelectedIndex + 1)
             If sender.Tag = "True" Then
                 NativeMethod.MouseMoveDown(Cursor.Position, HEIGHT_17)
             End If
@@ -200,7 +200,7 @@ Public Class MainForm
 
     Private Sub ViewAllTips(sender As Object, e As EventArgs) Handles m_popup_ViewAllTips.Click
         _tipPresenter.ViewList(GlobalModel.Tabs.SelectMany(Function(tab) 
-            Return tab.Tips.Select(Function(tip) New TipItem($"[{tab.Title}] - {tip.Content}", tip.ColorId))
+            Return tab.Tips.Select(Function(tip) New TipItem(tip.Id, $"[{tab.Title}] - {tip.Content}", tip.ColorId))
         End Function), False)
     End Sub
 
@@ -210,7 +210,7 @@ Public Class MainForm
 
     Private Sub ViewAllHighlights(sender As Object, e As EventArgs) Handles m_popup_ViewAllHighlights.Click
         _tipPresenter.ViewList(GlobalModel.Tabs.SelectMany(Function(tab) 
-            Return tab.Tips.Select(Function(tip) New TipItem($"[{tab.Title}] - {tip.Content}", tip.ColorId))
+            Return tab.Tips.Select(Function(tip) New TipItem(tip.Id, $"[{tab.Title}] - {tip.Content}", tip.ColorId))
         End Function), True)
     End Sub
 
@@ -247,7 +247,7 @@ Public Class MainForm
 
             If ok Then
                 m_ListView.Update()
-                m_ListView.SetSelectOnly(indices.ToArray())
+                m_ListView.SetSelectedItems(indices.ToArray())
                 m_menu_HighlightSubMenu.ClosePopup()
             End If
         End If

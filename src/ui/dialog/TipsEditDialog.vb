@@ -52,13 +52,13 @@
     Private Sub ButtonOK_Click(sender As Object, e As EventArgs) Handles ButtonOK.Click
         _changed = False
         DialogResult = DialogResult.OK
-        Me.Close()
+        Close()
     End Sub
 
     Private Sub ButtonCancel_Click(sender As Object, e As EventArgs) Handles ButtonCancel.Click
         _changed = TextBoxContent.Text.Trim() <> _previousContent.Trim()
         DialogResult = DialogResult.Cancel
-        Me.Close()
+        Close()
     End Sub
 
     Private Sub TextBoxContent_TextChanged(sender As Object, e As EventArgs) Handles TextBoxContent.TextChanged

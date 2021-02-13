@@ -30,7 +30,10 @@ Partial Public Class GlobalModel
                 Throw New FileLoadException("文件中存在重复分组，请检查文件。")
             End If
         Next
-        ReorderColor(Colors, Tabs)
+
+        Tabs.ForEach(Sub(t) ReorderTips(t.Tips, reorder := true))
+        ReorderColors(Colors, Tabs, reorder := true)
+        SaveAllData()
     End Sub
 
     ''' <summary>
@@ -72,7 +75,7 @@ Partial Public Class GlobalModel
 
 #End Region
 
-#Region "检查分组和颜色"
+#Region "处理分组/标签/颜色"
 
     ''' <summary>
     ''' 检查是否存在重复分组名
@@ -85,13 +88,27 @@ Partial Public Class GlobalModel
     End Function
 
     ''' <summary>
+    ''' 处理标签编号
+    ''' </summary>
+    Public Shared Sub ReorderTips(ByRef tipList As List(Of TipItem), Optional reorder As Boolean = False)
+        If reorder Then
+            tipList = tipList.OrderBy(function(t) t.Id).ToList()
+        End If
+        For i = 0 To tipList.Count - 1
+            tipList.ElementAt(i).Id = i ' 更新 Id 为 i
+        Next
+    End Sub
+
+    ''' <summary>
     ''' 处理颜色顺序和编号
     ''' </summary>
-    Public Shared Sub ReorderColor(ByRef colorList As List(Of TipColor), tabList As List(Of Tab))
-        colorList = colorList.OrderBy(Function(c) c.Id).ToList()
+    Public Shared Sub ReorderColors(ByRef colorList As List(Of TipColor), tabList As List(Of Tab), Optional reorder As Boolean = False)
+        If reorder Then
+            colorList = colorList.OrderBy(Function(c) c.Id).ToList()
+        End If
         For i = 0 To colorList.Count - 1
             Dim tipColor = colorList.ElementAt(i)
-            Dim targetIdx = i ' 更新颜色 id 为 targetIdx
+            Dim targetIdx = i ' 更新 Id 为 targetIdx
             If tipColor.Id <> targetIdx Then
                 tabList.SelectMany(Function(t) t.Tips).Where(Function(t) t.ColorId = tipColor.Id).ToList().
                     ForEach(Sub(tip) tip.ColorId = targetIdx)

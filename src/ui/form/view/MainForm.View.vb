@@ -32,7 +32,7 @@
         If tabIdx < m_TabView.TabCount Then
             m_TabView.SelectedTabIndex = tabIdx
             If tipIdx < m_ListView.ItemCount Then
-                m_ListView.SetSelectOnly(tipIdx)
+                m_ListView.SetSelectedItems(tipIdx)
             End If
         End If
     End Sub

@@ -65,7 +65,7 @@
     Private Sub RemoveColorItemAndSave(delColor As TipColor)
         ' 从存储中删除 并处理顺序
         GlobalModel.Colors.Remove(delColor)
-        GlobalModel.ReorderColor(GlobalModel.Colors, GlobalModel.Tabs)
+        GlobalModel.ReorderColors(GlobalModel.Colors, GlobalModel.Tabs)
         refreshSave()
 
         ColorDialog_Load(Me, New EventArgs())

@@ -2,9 +2,6 @@
 
 <Serializable, JsonObject>
 Public Class Tab
-    ' <JsonProperty("id")>
-    ' Public Property Id As Integer
-    
     <JsonProperty("title")>
     Public Property Title As String
 

@@ -12,7 +12,7 @@
     Public Function Insert() As Boolean Implements MainFormContract.ITipPresenter.Insert
         Dim msg As String = TipsEditDialog.ShowDialog("新的标签：", "添加").Trim()
         If msg <> "" Then
-            Dim tip As New TipItem(msg)
+            Dim tip As New TipItem(GlobalModel.CurrentTab.Tips.Count, msg)
             GlobalModel.CurrentTab.Tips.Add(tip)
             _globalPresenter.SaveFile()
             Return True
@@ -28,7 +28,9 @@
         If ok = vbOK Then
             For Each item As TipItem In items
                 GlobalModel.CurrentTab.Tips.Remove(item)
+                ' GlobalModel.CurrentTab.Tips.RemoveAll(Function(t) t.Id = item.Id)
             Next
+            GlobalModel.ReorderTips(GlobalModel.CurrentTab.Tips)
             _globalPresenter.SaveFile()
             Return True
         End If
@@ -140,7 +142,7 @@
     Public Function HighlightTips(items As IEnumerable(Of TipItem), color As TipColor) As Boolean Implements MainFormContract.ITipPresenter.HighlightTips
         If color Is Nothing Then
             For Each item In items
-                item.ColorId = - 1 ' UnHighlight
+                item.ColorId = -1 ' UnHighlight
             Next
         Else
             For Each item In items

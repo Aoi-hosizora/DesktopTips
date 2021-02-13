@@ -17,6 +17,14 @@ Public Class NativeMethod
     Public Const WM_KEYDOWN = &H100
     Public Const WM_SYSKEYDOWN = &H104
     Public Const WM_NCPAINT = &H85
+    Public Const WM_NCMOUSEMOVE = &HA0
+    Public Const WM_NCMOUSELEAVE = &H2A2
+    Public Const WM_NCLBUTTONDOWN = &HA1
+    Public Const WM_NCRBUTTONDOWN = &HA4
+    Public Const WM_NCMBUTTONDOWN = &HA7
+    Public Const WM_NCLBUTTONUP = &HA2
+    Public Const WM_NCRBUTTONUP = &HA5
+    Public Const WM_NCMBUTTONUP = &HA8
 
     Public Const CS_DROPSHADOW = &H20000
 

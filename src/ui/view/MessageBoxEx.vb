@@ -1,76 +1,89 @@
 ﻿Public Class MessageBoxEx
+    ''' <summary>
+    ''' 显示 MessageBoxEx，给定 defBtn, mainFrm 和 btnTitles
+    ''' </summary>
     Public Shared Function Show(text As String, caption As String, buttons As MessageBoxButtons, icon As MessageBoxIcon,
                                 Optional defBtn As MessageBoxDefaultButton = MessageBoxDefaultButton.Button1,
-                                Optional mainFrm As Form = Nothing,
-                                Optional btnTitles() As String = Nothing) As DialogResult
-        Dim frm As New MessageForm(btnTitles, mainFrm)
+                                Optional mainForm As Form = Nothing, Optional buttonTitles() As String = Nothing) As DialogResult
+        Dim frm As New MessageForm(buttonTitles, mainForm)
         frm.Show()
-        frm.WatchForActivate = true
         Dim result = MessageBox.Show(frm, text, caption, buttons, icon, defBtn)
         frm.Close()
         Return result
     End Function
 
+    ''' <summary>
+    ''' 显示 MessageBoxEx，给定 mainFrm 和 btnTitles
+    ''' </summary>
     Public Shared Function Show(text As String, caption As String, buttons As MessageBoxButtons, icon As MessageBoxIcon,
-                                Optional mainFrm As Form = Nothing,
-                                Optional btnTitles() As String = Nothing) As DialogResult
-        Return Show(text, caption, buttons, icon, MessageBoxDefaultButton.Button1, mainFrm, btnTitles)
+                                Optional mainForm As Form = Nothing, Optional buttonTitles() As String = Nothing) As DialogResult
+        Return Show(text, caption, buttons, icon, MessageBoxDefaultButton.Button1, mainForm, buttonTitles)
     End Function
 
+    ''' <summary>
+    ''' 显示 MessageBoxEx，给定标准参数
+    ''' </summary>
     Public Shared Function Show(text As String, caption As String, buttons As MessageBoxButtons, icon As MessageBoxIcon) As DialogResult
         Return Show(text, caption, buttons, icon, MessageBoxDefaultButton.Button1, Nothing, Nothing)
     End Function
 
+    ''' <summary>
+    ''' MessageForm 内部类
+    ''' </summary>
     Private Class MessageForm
         Inherits Form
 
-        Private _handle As IntPtr
         Private ReadOnly _buttonTitles() As String = Nothing
-        Private ReadOnly _mainFrm As Form
+        Private ReadOnly _mainForm As Form
+        Private _forHook = false
 
-        Public Property WatchForActivate As Boolean
-
-        Public Sub New(buttonTitles() As String, mainFrm As Form)
+        Public Sub New(buttonTitles() As String, mainForm As Form)
             _buttonTitles = buttonTitles
-            _mainFrm = mainFrm
+            _mainForm = mainForm
 
-            Me.Text = ""
-            Me.StartPosition = FormStartPosition.CenterScreen
-            Me.ShowInTaskbar = False
-            Me.Opacity = 0
+            Text = ""
+            StartPosition = FormStartPosition.CenterScreen
+            ShowInTaskbar = False
+            Opacity = 0
+        End Sub
+
+        Public Overloads Sub Show()
+            MyBase.Show()
+            _forHook = True ' Show 后需要 hook
         End Sub
 
         Protected Overrides Sub OnShown(e As EventArgs)
             MyBase.OnShown(e)
-            NativeMethod.SetWindowPos(Me.Handle, IntPtr.Zero, 0, 0, 0, 0, 659)
+            NativeMethod.SetWindowPos(Handle, IntPtr.Zero, 0, 0, 0, 0, 659)
         End Sub
 
         Protected Overrides Sub OnFormClosed(e As FormClosedEventArgs)
-            If _mainFrm IsNot Nothing Then
-                NativeMethod.SetForegroundWindow(_mainFrm.Handle)
-                _mainFrm.Activate()
+            If _mainForm IsNot Nothing Then
+                NativeMethod.SetForegroundWindow(_mainForm.Handle)
+                _mainForm.Activate()
             End If
             MyBase.OnFormClosed(e)
         End Sub
 
         Protected Overrides Sub WndProc(ByRef m As Message)
-            If WatchForActivate And m.Msg = &H6 Then
-                _WatchForActivate = False
-                _handle = m.LParam
-                HookMsgBox()
-            End If
             MyBase.WndProc(m)
+            If _forHook And m.Msg = &H6 Then
+                _forHook = False
+                HookMsgBox(m.LParam)
+            End If
         End Sub
 
-        Private Sub HookMsgBox()
-            Dim h As IntPtr = NativeMethod.GetWindow(_handle, NativeMethod.GW_CHILD)
-            Dim buttonTitleIndex = 0
-
+        ''' <summary>
+        ''' Hook MessageBox Form
+        ''' </summary>
+        Private Sub HookMsgBox(hdl As IntPtr)
+            Dim index = 0
+            Dim h As IntPtr = NativeMethod.GetWindow(hdl, NativeMethod.GW_CHILD)
             While h <> IntPtr.Zero
                 If NativeMethod.GetWindowClassName(h).Equals("Button") Then
-                    If _buttonTitles IsNot Nothing AndAlso _buttonTitles.Length > buttonTitleIndex Then
-                        NativeMethod.SetWindowText(h, _buttonTitles(buttonTitleIndex))
-                        buttonTitleIndex += 1
+                    If _buttonTitles IsNot Nothing AndAlso _buttonTitles.Length > index Then
+                        NativeMethod.SetWindowText(h, _buttonTitles(index)) ' <<<<<<<
+                        index += 1
                     End If
                 End If
                 h = NativeMethod.GetWindow(h, NativeMethod.GW_HWNDNEXT)

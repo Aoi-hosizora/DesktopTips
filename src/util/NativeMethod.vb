@@ -36,6 +36,9 @@ Public Class NativeMethod
     Public Const LWA_ALPHA = &H2
     Public Const LWA_COLORKEY = &H1
 
+    Public Const BS_COMMANDLINK As Integer = &HE
+    Public Const BCM_SETNOTE As Integer = &H1609
+
 #End Region
 
 #Region "光标信息与移动"
@@ -138,6 +141,10 @@ Public Class NativeMethod
             B = color.B
         End Sub
     End Structure
+
+    <DllImport("user32.dll")>
+    Public Shared Function SendMessage(hWnd As IntPtr, msg As Integer, wParam As IntPtr, <MarshalAs(UnmanagedType.LPWStr)> lParam As String) As IntPtr
+    End Function
 
 #End Region
 

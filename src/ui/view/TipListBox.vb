@@ -1,5 +1,8 @@
 ﻿Imports System.Threading
 
+''' <summary>
+''' TipItem 列表
+''' </summary>
 Public Class TipListBox
     Inherits ListBox
     Implements ICollectionView
@@ -10,6 +13,9 @@ Public Class TipListBox
         Controls.Add(_labelNothing)
     End Sub
 
+    ''' <summary>
+    ''' 实现 ICollectionView 接口
+    ''' </summary>
     Private ReadOnly Property BaseItems As IList Implements ICollectionView.BaseItems
         Get
             Return MyBase.Items
@@ -18,9 +24,18 @@ Public Class TipListBox
 
 #Region "属性"
 
+    ''' <summary>
+    ''' 所有 Items，类型为 TipItemsCollection
+    ''' </summary>
     Public Overloads ReadOnly Property Items As TipItemsCollection
         Get
             Return New TipItemsCollection(Me, MyBase.Items.Cast(Of TipItem)())
+        End Get
+    End Property
+
+    Public Overloads ReadOnly Property ItemCount As Integer
+        Get
+            Return Items.Count
         End Get
     End Property
 
@@ -44,22 +59,6 @@ Public Class TipListBox
             Return SelectedItems.Count
         End Get
     End Property
-
-    Public Overloads ReadOnly Property ItemCount As Integer
-        Get
-            Return Items.Count
-        End Get
-    End Property
-
-    ''' <summary>
-    ''' 利用 WM_NCMOUSEMOVE 信息触发的 Non-Client Area MouseMove 事件
-    ''' </summary>
-    Public Event NcMouseMove As MouseEventHandler
-
-    ''' <summary>
-    ''' 利用 WM_NCMOUSELEAVE 信息触发的 Non-Client Area MouseMove 事件
-    ''' </summary>
-    Public Event NcMouseLeave As MouseEventHandler
 
     ''' <summary>
     ''' 滚动条滚动时回调
@@ -122,6 +121,16 @@ Public Class TipListBox
         End If
     End Sub
 
+    ''' <summary>
+    ''' 利用 WM_NCMOUSEMOVE 信息触发的 Non-Client Area MouseMove 事件
+    ''' </summary>
+    Public Event NcMouseMove As MouseEventHandler
+
+    ''' <summary>
+    ''' 利用 WM_NCMOUSELEAVE 信息触发的 Non-Client Area MouseMove 事件
+    ''' </summary>
+    Public Event NcMouseLeave As MouseEventHandler
+
     Protected Overrides Sub WndProc(ByRef m As Message)
         MyBase.WndProc(m)
         Select Case m.Msg
@@ -176,6 +185,15 @@ Public Class TipListBox
 
         Dim t = item.ToString().Replace(vbNewLine, "↴") ' ¬ ↴ ⇁ ¶
         g.DrawString(t, e.Font, New SolidBrush(itemColor), b, StringFormat.GenericDefault)
+
+        If item.Done Then
+            Dim lineY = e.Bounds.Y + e.Bounds.Height \ 2
+            Dim lineX = TextRenderer.MeasureText(t, e.Font).Width - 2
+            If lineX > e.Bounds.Width - 2 Then
+                lineX = e.Bounds.Width - 2
+            End If
+            g.DrawLine(New Pen(itemColor), 2, lineY, lineX, lineY)
+        End If
     End Sub
 
     ''' <summary>
@@ -208,6 +226,7 @@ Public Class TipListBox
         If _hoverIndex > -1 Then
             Invalidate(GetItemRectangle(_hoverIndex)) ' 更新当前的高亮
             If Not My.Computer.Keyboard.CtrlKeyDown Then
+                ' <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                 HideTooltip() ' Ctrl 没按下时隐藏悬浮卡片
                 If e.Button = MouseButtons.None Then
                     _hoverThread = New Thread(New ParameterizedThreadStart(Sub(idx As Integer) 
@@ -228,6 +247,7 @@ Public Class TipListBox
         MyBase.OnMouseLeave(e)
         If _hoverIndex > -1 Then
             Invalidate(GetItemRectangle(_hoverIndex)) ' 更新前一瞬间的高亮
+            ' <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             _hoverIndex = -1
             If Not My.Computer.Keyboard.CtrlKeyDown Then
                 HideTooltip() ' Ctrl 没按下时隐藏悬浮卡片
@@ -239,34 +259,19 @@ Public Class TipListBox
 
 #Region "其他布局: 悬浮卡片 无内容标签 滚动条"
 
-    Private _hoverCardWidth As Integer = 200
-    Private _hoverGapDistance As Integer = 7
-    Private _hoverWaitingDuration As Integer = 350 ' ms
+    Private ReadOnly _hoverWaitingDuration = 350 ' ms
 
     ''' <summary>
     ''' 显示悬浮卡片
     ''' </summary>
     Private Sub ShowTooltip(item As TipItem)
-        Select Case item.Content.Length
-            Case <= 100 : _hoverCardWidth = 200
-            Case <= 300 : _hoverCardWidth = 250
-            Case <= 800 : _hoverCardWidth = 400
-            Case Else : _hoverCardWidth = 500
-        End Select
-
         Dim curPos = Cursor.Position
-        Dim cliPos = Parent.PointToClient(curPos)
-        Dim x = curPos.X - cliPos.X + Parent.Width + _hoverGapDistance
-        If x >= Screen.PrimaryScreen.Bounds.Width - _hoverCardWidth Then
-            x = curPos.X - (cliPos.X + _hoverCardWidth + _hoverGapDistance)
-        End If
-        Dim y = curPos.Y
-
-        HoverCardView.WidthFunc = Function() _hoverCardWidth
+        HoverCardView.HoverCursorPosition = curPos
+        HoverCardView.HoverParentPosition = Parent.PointToClient(curPos)
+        HoverCardView.HoverParentSize = Parent.Size
         HoverCardView.HoverTipFunc = Function() item
         HoverCardView.HoverTabFunc = Function() GlobalModel.CurrentTab
         HoverCardView.Opacity = 0
-        HoverCardView.PreLocation = New Point(x, y)
         HoverCardView.Show()
     End Sub
 
@@ -317,6 +322,9 @@ Public Class TipListBox
 
 #Region "内部类"
 
+    ''' <summary>
+    ''' TipItem 列表集合
+    ''' </summary>
     Public Class TipItemsCollection
         Inherits BaseItemsCollection(Of TipItem)
 

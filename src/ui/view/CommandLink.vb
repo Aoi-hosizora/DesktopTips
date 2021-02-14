@@ -1,53 +1,47 @@
 ﻿Imports System.Windows.Forms
-Imports System.ComponentModel
-Imports System.Runtime.InteropServices
 
+''' <summary>
+''' CommandLink 按钮，通过 BS_COMMANDLINK 创建
+''' </summary>
 Public Class CommandLink
     Inherits Button
 
     Public Sub New()
         MyBase.New()
-        MyBase.FlatStyle = FlatStyle.System
-        Me.UpdateCommandLink()
+        FlatStyle = FlatStyle.System
+        RefreshCommandLinkUi()
     End Sub
 
     Private _commandLinkNote As String
 
-    <Category("Appearance")>
-    <DefaultValue("")>
+    ''' <summary>
+    ''' CommandLink 的 Note 内容
+    ''' </summary>
     Public Property CommandLinkNote As String
         Get
             Return _commandLinkNote
         End Get
         Set
             _commandLinkNote = ""
-            Me.UpdateCommandLink()
+            RefreshCommandLinkUi()
             _commandLinkNote = value
-            Me.UpdateCommandLink()
+            RefreshCommandLinkUi()
         End Set
     End Property
-
-#Region "P/Invoke Stuff"
-
-    Private Const BS_COMMANDLINK As Integer = &HE
-    Private Const BCM_SETNOTE As Integer = &H1609
-
-    <DllImport("user32.dll")>
-    Private Shared Function SendMessage(hWnd As IntPtr, msg As Integer, wParam As IntPtr, <MarshalAs(UnmanagedType.LPWStr)> lParam As String) As IntPtr
-    End Function
-
-    Private Sub UpdateCommandLink()
-        Me.RecreateHandle()
-        SendMessage(Me.Handle, BCM_SETNOTE, IntPtr.Zero, _commandLinkNote)
-    End Sub
 
     Protected Overrides ReadOnly Property CreateParams As CreateParams
         Get
             Dim cp As CreateParams = MyBase.CreateParams
-            cp.Style = cp.Style Or BS_COMMANDLINK
+            cp.Style = cp.Style Or NativeMethod.BS_COMMANDLINK
             Return cp
         End Get
     End Property
 
-#End Region
+    ''' <summary>
+    ''' 刷新 CommandLink UI
+    ''' </summary>
+    Private Sub RefreshCommandLinkUi()
+        RecreateHandle()
+        NativeMethod.SendMessage(Handle, NativeMethod.BCM_SETNOTE, IntPtr.Zero, _commandLinkNote)
+    End Sub
 End Class

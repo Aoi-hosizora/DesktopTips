@@ -4,7 +4,7 @@
 
     Private Sub Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If GetFunc Is Nothing Then
-            Me.Close()
+            Close()
             Return
         End If
 
@@ -25,14 +25,14 @@
         If OpenBrowserFunc IsNot Nothing Then
             OpenBrowserFunc.Invoke(links, CheckBoxOpenInNew.Checked)
         End If
-        Me.Close()
+        Close()
     End Sub
 
     Private Sub ButtonOpenAll_Click(sender As System.Object, e As EventArgs) Handles ButtonOpenAll.Click
         If OpenBrowserFunc IsNot Nothing Then
             OpenBrowserFunc.Invoke(ListView.Items.Cast(Of String)(), CheckBoxOpenInNew.Checked)
         End If
-        Me.Close()
+        Close()
     End Sub
 
     Private Sub ListView_DoubleClick(sender As Object, e As EventArgs) Handles ListView.DoubleClick
@@ -41,23 +41,23 @@
             If OpenBrowserFunc IsNot Nothing Then
                 OpenBrowserFunc.Invoke({CStr(ListView.SelectedItem)}, CheckBoxOpenInNew.Checked)
             End If
-            Me.Close()
+            Close()
         End If
     End Sub
 
     Private Sub ListView_SelectedValueChanged(sender As Object, e As EventArgs) Handles MyBase.Load, ListView.SelectedValueChanged
-        Me.LabelTitle.Text = $"所选内容包含了 {ListView.Items.Count} 个链接 (选中 {ListView.SelectedItems.Count} 项)"
+        LabelTitle.Text = $"所选内容包含了 {ListView.Items.Count} 个链接 (选中 {ListView.SelectedItems.Count} 项)"
         ButtonOpen.Enabled = ListView.SelectedItems.Count <> 0
     End Sub
 
     Private Sub ListView_MouseDown(sender As Object, e As MouseEventArgs) Handles ListView.MouseDown
-        If ListView.IndexFromPoint(e.X, e.Y) = - 1 Then
+        If ListView.IndexFromPoint(e.X, e.Y) = -1 Then
             ListView.ClearSelected()
         End If
     End Sub
 
     Private Sub ButtonBack_Click(sender As Object, e As EventArgs) Handles ButtonBack.Click
-        Me.Close()
+        Close()
     End Sub
 
     Private Sub LinkDialog_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
@@ -82,5 +82,4 @@
         My.Settings.OpenInNewBrowser = CheckBoxOpenInNew.Checked
         My.Settings.Save()
     End Sub
-
 End Class

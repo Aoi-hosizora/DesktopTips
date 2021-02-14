@@ -195,7 +195,7 @@
     End Sub
 
     Public Sub SetupHighlightColor(cb As Action) Implements MainFormContract.ITipPresenter.SetupHighlightColor
-        ColorDialog.SaveFunc = Sub()
+        ColorDialog.SaveCallback = Sub()
             _globalPresenter.SaveFile()
             cb()
         End Sub

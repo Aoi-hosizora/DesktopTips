@@ -21,13 +21,6 @@ Public Class TipColor
         End Set
     End Property
 
-    <JsonIgnore>
-    Public Readonly Property RgbColor As String
-        Get
-            Return String.Format("{0}, {1}, {2}", Color.R, Color.G, Color.B)
-        End Get
-    End Property
-
     Public Sub New()
         Me.New(0, "默认高亮", Color.Red) ' Json 序列化需要默认构造函数
     End Sub

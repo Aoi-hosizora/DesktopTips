@@ -8,7 +8,7 @@
 
     Private Sub SearchForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If GetFunc Is Nothing Then
-            Me.Close()
+            Close()
             Return
         End If
         _searchResult = GetFunc.Invoke()
@@ -32,7 +32,7 @@
     End Sub
 
     Private Sub ButtonSearch_Click(sender As Object, e As EventArgs) Handles ButtonSearch.Click
-        Me.Close()
+        Close()
         If SearchFunc IsNot Nothing Then
             SearchFunc.Invoke()
         End If
@@ -45,6 +45,6 @@
     End Sub
 
     Private Sub ButtonClose_Click(sender As Object, e As EventArgs) Handles ButtonClose.Click
-        Me.Close()
+        Close()
     End Sub
 End Class

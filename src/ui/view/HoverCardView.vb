@@ -1,18 +1,96 @@
 ﻿Imports System.Drawing.Drawing2D
 Imports DD = DevComponents.DotNetBar
 
+''' <summary>
+''' 悬浮卡片
+''' </summary>
 Public Class HoverCardView
     Inherits Form
 
-    Private WithEvents _timerShowForm As New Timer() With {.Interval = 1, .Enabled = False}
-    Private WithEvents _timerCloseForm As New Timer() With {.Interval = 1, .Enabled = False}
+#Region "属性"
 
-    Private ReadOnly Property OpacitySpeed = 0.1
-    Public Property PreLocation As New Point()
-
-    Public Property WidthFunc As Func(Of Integer)
+    ''' <summary>
+    ''' 悬浮卡片的 TipItem 内容，可为 Nothing
+    ''' </summary>
     Public Property HoverTipFunc As Func(Of TipItem)
+
+    ''' <summary>
+    ''' 悬浮卡片的 Tab 内容，不能为 Nothing
+    ''' </summary>
     Public Property HoverTabFunc As Func(Of Tab)
+
+    ''' <summary>
+    ''' 悬浮卡片显示时的光标位置
+    ''' </summary>
+    Public Property HoverCursorPosition As Point
+
+    ''' <summary>
+    ''' 悬浮卡片显示时 Parent 的光标位置
+    ''' </summary>
+    Public Property HoverParentPosition As Point
+
+    ''' <summary>
+    ''' 悬浮卡片显示时 Parent 的大小
+    ''' </summary>
+    Public Property HoverParentSize As Size
+
+    ''' <summary>
+    ''' 悬浮卡片显示的间隙
+    ''' </summary>
+    Private ReadOnly Property HoverGapDistance As Integer = 7
+
+    ''' <summary>
+    ''' 卡片窗口大小
+    ''' </summary>
+    Private ReadOnly Property CardWidth As Integer
+        Get
+            If HoverTipFunc IsNot Nothing Then
+                Dim value = HoverTipFunc.Invoke()
+                Select Case value.Content.Length
+                    Case <= 100 : Return 200
+                    Case <= 300 : Return 250
+                    Case <= 800 : Return 400
+                    Case Else : Return 500
+                End Select
+            Else If HoverTabFunc IsNot Nothing Then
+                Return 200
+            End If
+            Return -1
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' 卡片窗口位置
+    ''' </summary>
+    Private ReadOnly Property CardPosition As Point
+        Get
+            If CardWidth < 0 Then
+                Return New Point(0, 0)
+            End If
+            Dim curPos = HoverCursorPosition
+            Dim cliPos = HoverParentPosition
+            Dim x = curPos.X - cliPos.X + HoverParentSize.Width + HoverGapDistance
+            If x >= Screen.PrimaryScreen.Bounds.Width - CardWidth Then
+                x = curPos.X - (cliPos.X + CardWidth + HoverGapDistance)
+            End If
+            Dim y = curPos.Y
+            Return New Point(x, y)
+        End Get
+    End Property
+
+    Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean = True
+
+    ''' <summary>
+    ''' 显示的 TipItem
+    ''' </summary>
+    Private _tip As TipItem
+
+    ''' <summary>
+    ''' 显示的 Tab
+    ''' </summary>
+    Private _tab As Tab
+
+#End Region
 
     Protected Overrides Sub OnLoad(e As EventArgs)
         MyBase.OnLoad(e)
@@ -21,29 +99,26 @@ Public Class HoverCardView
         FormBorderStyle = FormBorderStyle.None
         ShowInTaskbar = false
         Opacity = 0
-        If WidthFunc Is Nothing OrElse HoverTabFunc Is Nothing Then
+
+        If CardWidth <= 0 Then
             Close()
             Return
         End If
-        Width = WidthFunc.Invoke()
-        _tab = HoverTabFunc.Invoke()
-        If Not HoverTipFunc Is Nothing Then
-            _tip = HoverTipFunc.Invoke()
-        End If
-        InitLabel()
-
-        Left = PreLocation.X
-        Top = PreLocation.Y
+        If HoverTabFunc IsNot Nothing Then _tab = HoverTabFunc.Invoke()
+        If HoverTipFunc IsNot Nothing Then _tip = HoverTipFunc.Invoke()
+        Width = CardWidth ' <<<
+        Dim pos = CardPosition
+        Left = pos.X ' <<<
+        Top = pos.Y ' <<<
         If Height + Top > My.Computer.Screen.Bounds.Height Then
             Top = My.Computer.Screen.Bounds.Height - Height
         End If
         Top -= 1 / OpacitySpeed
 
+        InitLabel()
         _timerCloseForm.Enabled = false
         _timerShowForm.Enabled = true
     End Sub
-
-    Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean = True
 
     Protected Overrides ReadOnly Property CreateParams As CreateParams
         Get
@@ -57,6 +132,27 @@ Public Class HoverCardView
             Return cp
         End Get
     End Property
+
+    Protected Overrides Sub WndProc(ByRef m As Message)
+        Select Case m.Msg
+            Case NativeMethod.WM_NCPAINT
+                If NativeMethod.CheckAeroEnabled() Then
+                    Dim val = NativeMethod.DWMNC_ENABLED
+                    Const intSize = 4
+                    NativeMethod.DwmSetWindowAttribute(Handle, NativeMethod.DWMWA_NCRENDERING_POLICY, val, intSize)
+                    NativeMethod.DwmExtendFrameIntoClientArea(Handle, New NativeMethod.MARGINS() With {
+                        .BottomHeight = 1, .LeftWidth = 1, .RightWidth = 1, .TopHeight = 1 })
+                End If
+                Exit Select
+        End Select
+        MyBase.WndProc(m)
+    End Sub
+
+#Region "Timer"
+
+    Private Const OpacitySpeed = 0.1
+    Private WithEvents _timerShowForm As New Timer() With {.Interval = 1, .Enabled = False}
+    Private WithEvents _timerCloseForm As New Timer() With {.Interval = 1, .Enabled = False}
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
         MyBase.OnFormClosing(e)
@@ -83,12 +179,25 @@ Public Class HoverCardView
         End If
     End Sub
 
-    Private ReadOnly _titleLabel As New DD.LabelX()
-    Private ReadOnly _contentLabel As New DD.LabelX()
-    Private WithEvents _button As New DD.ButtonX()
+#End Region
 
-    Private _tip As TipItem
-    Private _tab As Tab
+#Region "布局"
+
+    Private ReadOnly _borderColor As Color = Color.FromArgb(200, 200, 200)
+    Private ReadOnly _startColor As Color = Color.white
+    Private ReadOnly _endColor As Color = Color.FromArgb(229, 229, 240)
+
+    Protected Overrides Sub OnPaint(e As PaintEventArgs)
+        MyBase.OnPaint(e)
+        Dim g = e.Graphics
+        Dim brush = New LinearGradientBrush(ClientRectangle, _startColor, _endColor, LinearGradientMode.Vertical)
+        g.FillRectangle(brush, ClientRectangle)
+        ControlPaint.DrawBorder(e.Graphics, ClientRectangle, _borderColor, ButtonBorderStyle.Solid)
+    End Sub
+
+    Private ReadOnly _titleLabel As New DD.LabelX With { .BackColor = Color.Transparent,.AutoSize = True, .WordWrap = False  }
+    Private ReadOnly _contentLabel As New DD.LabelX With { .BackColor = Color.Transparent,.AutoSize = True, .WordWrap = False  }
+    Private ReadOnly _button As New DD.ButtonX With { .BackColor = Color.Transparent, .Text = "×", .Tooltip = "关闭", .AccessibleRole = AccessibleRole.PushButton }
 
     Private ReadOnly _titleLeft = 10
     Private ReadOnly _contentLeft = 8
@@ -98,36 +207,22 @@ Public Class HoverCardView
     Private ReadOnly _buttonSize = 14
     Private ReadOnly _buttonMargin = 5
 
-    Private Sub ButtonClose_MouseDown(sender As Object, e As MouseEventArgs) Handles _button.MouseDown
-        _titleLabel.Focus()
-    End Sub
-
-    Private Sub ButtonClose_Clicked(sender As Object, e As EventArgs) Handles _button.Click
-        Close()
-    End Sub
-
+    ''' <summary>
+    ''' 加载 Label 布局
+    ''' </summary>
     Private Sub InitLabel()
-        _titleLabel.BackColor = Color.Transparent
         _titleLabel.BackgroundStyle.CornerType = DD.eCornerType.Square
-        _titleLabel.AutoSize = True
         _titleLabel.MaximumSize = New Size(Width - _titleLeft * 2 - 2 * _buttonMargin, 0)
-        _titleLabel.WordWrap = False
-
-        _contentLabel.BackColor = Color.Transparent
         _contentLabel.BackgroundStyle.CornerType = DD.eCornerType.Square
-        _contentLabel.AutoSize = True
         _contentLabel.MaximumSize = New Size(Width - _contentLeft * 2, 0)
-        _contentLabel.WordWrap = True
-
-        _button.BackColor = Color.Transparent
-        _button.Text = "×"
         _button.ColorTable = DD.eButtonColor.Orange
         _button.Size = New Size(_buttonSize, _buttonSize)
         _button.Style = DD.eDotNetBarStyle.StyleManagerControlled
-        _button.AccessibleRole = AccessibleRole.PushButton
         _button.Shape = New DD.RoundRectangleShapeDescriptor()
-        _button.Tooltip = "关闭"
+        AddHandler _button.MouseDown, Sub() _titleLabel.Focus()
+        AddHandler _button.Click, Sub() Close()
 
+        Controls.Clear()
         Controls.Add(_button)
         Controls.Add(_contentLabel)
         Controls.Add(_titleLabel)
@@ -142,6 +237,9 @@ Public Class HoverCardView
             End If
             If _tip.IsHighLight Then
                 highlight = $"<font color=""{_tip.Color.HexColor}"">{_tip.Color.Name}</font>高亮"
+            End If
+            If _tip.Done Then
+                highlight &= " 已完成"
             End If
 
             _titleLabel.Text = $"<b>{title} - {highlight}</b>"
@@ -167,31 +265,6 @@ Public Class HoverCardView
         _contentLabel.Location = New Point(_contentLeft, _titleLabel.Top + _titleLabel.Height + _contentTop)
         _button.Location = New Point(Width - _buttonMargin - _buttonSize, _buttonMargin)
         Height = _contentLabel.Top + _contentLabel.Height + _bottom
-    End Sub
-
-    Protected Overrides Sub OnPaint(e As PaintEventArgs)
-        MyBase.OnPaint(e)
-        Dim g = e.Graphics
-        Dim brush = New LinearGradientBrush(ClientRectangle, Color.White, Color.FromArgb(229, 229, 240), LinearGradientMode.Vertical)
-        g.FillRectangle(brush, ClientRectangle)
-        ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(200, 200, 200), ButtonBorderStyle.Solid)
-    End Sub
-
-#Region "P/Invoke Stuff"
-
-    Protected Overrides Sub WndProc(ByRef m As Message)
-        Select Case m.Msg
-            Case NativeMethod.WM_NCPAINT
-                If NativeMethod.CheckAeroEnabled() Then
-                    Dim val = NativeMethod.DWMNC_ENABLED
-                    Const intSize = 4
-                    NativeMethod.DwmSetWindowAttribute(Handle, NativeMethod.DWMWA_NCRENDERING_POLICY, val, intSize)
-                    NativeMethod.DwmExtendFrameIntoClientArea(Handle, New NativeMethod.MARGINS() With {
-                        .BottomHeight = 1, .LeftWidth = 1, .RightWidth = 1, .TopHeight = 1 })
-                End If
-                Exit Select
-        End Select
-        MyBase.WndProc(m)
     End Sub
 
 #End Region

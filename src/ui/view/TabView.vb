@@ -1,15 +1,18 @@
 ﻿Imports System.Threading
-Imports DevComponents.DotNetBar
 
+''' <summary>
+''' Tab 列表
+''' </summary>
 Public Class TabView
-    Inherits SuperTabStrip
+    Inherits DevComponents.DotNetBar.SuperTabStrip
     Implements ICollectionView
 
     Public Sub New()
     End Sub
 
-    Public Property DataSource As Object
-
+    ''' <summary>
+    ''' 实现 ICollectionView 接口
+    ''' </summary>
     Private ReadOnly Property BaseItems As IList Implements ICollectionView.BaseItems
         Get
             Return MyBase.Tabs
@@ -18,6 +21,14 @@ Public Class TabView
 
 #Region "属性"
 
+    ''' <summary>
+    ''' 数据源
+    ''' </summary>
+    Public Property DataSource As Object
+
+    ''' <summary>
+    ''' 所有 Tabs，类型为 TabItemsCollection
+    ''' </summary>
     Public Overloads ReadOnly Property Tabs As TabItemsCollection
         Get
             Return New TabItemsCollection(Me, MyBase.Tabs.Cast(Of TabViewItem)())
@@ -66,8 +77,12 @@ Public Class TabView
         Next
     End Sub
 
+    Protected Overrides Sub OnSizeChanged(e As EventArgs)
+        MyBase.OnSizeChanged(e)
+    End Sub
+
     ''' <summary>
-    ''' 右键 Tab 选中
+    ''' 单击列表重载，右键列表选中
     ''' </summary>
     Protected Overrides Sub OnMouseDown(e As MouseEventArgs)
         MyBase.OnMouseDown(e)
@@ -103,10 +118,11 @@ Public Class TabView
             End If
             Return
         End If
-        If Tabs.IndexOf(sel) = _hoverIndex Then Return
+        If Tabs.IndexOf(sel) = _hoverIndex Then Return ' 不用更新
         _hoverIndex = Tabs.IndexOf(sel)
 
         If _hoverIndex > -1 And Not My.Computer.Keyboard.CtrlKeyDown Then
+            ' <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             HideTooltip() ' Ctrl 没按下时隐藏悬浮卡片
             If e.Button = MouseButtons.None Then
                 _hoverThread = New Thread(New ParameterizedThreadStart(Sub (idx As Integer)
@@ -125,6 +141,7 @@ Public Class TabView
     Protected Overrides Sub OnMouseLeave(e As EventArgs)
         MyBase.OnMouseLeave(e)
         If _hoverIndex > -1 Then
+            ' <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             _hoverIndex = -1
             If Not My.Computer.Keyboard.CtrlKeyDown Then
                 HideTooltip() ' Ctrl 没按下时隐藏悬浮卡片
@@ -132,26 +149,24 @@ Public Class TabView
         End If
     End Sub
 
-    Private _hoverCardWidth As Integer = 200
-    Private _hoverGapDistance As Integer = 7
     Private _hoverWaitingDuration As Integer = 350
 
+    ''' <summary>
+    ''' 显示悬浮卡片
+    ''' </summary>
     Private Sub ShowTooltip(item As Tab)
-        Dim curPos = Cursor.Position
-        Dim cliPos = Parent.PointToClient(curPos)
-        Dim x = curPos.X - cliPos.X + Parent.Width + _hoverGapDistance
-        If x >= Screen.PrimaryScreen.Bounds.Width - _hoverCardWidth Then
-            x = curPos.X - (cliPos.X + _hoverCardWidth + _hoverGapDistance)
-        End If
-        Dim y = curPos.Y
-
-        HoverCardView.WidthFunc = Function() _hoverCardWidth
+        Dim curPos =  Cursor.Position
+        HoverCardView.HoverCursorPosition = curPos
+        HoverCardView.HoverParentPosition = Parent.PointToClient(curPos)
+        HoverCardView.HoverParentSize = Parent.Size
         HoverCardView.HoverTabFunc = Function() item
         HoverCardView.Opacity = 0
-        HoverCardView.PreLocation = New Point(x, y)
         HoverCardView.Show()
     End Sub
 
+    ''' <summary>
+    ''' 隐藏悬浮卡片
+    ''' </summary>
     Private Sub HideTooltip()
         HoverCardView.Close()
         If _hoverThread IsNot Nothing Then _hoverThread.Abort()
@@ -161,8 +176,16 @@ Public Class TabView
 
 #Region "内部类"
 
+    ''' <summary>
+    ''' TabItem 的显示，实现 DD.SuperTabItem
+    ''' </summary>
     Public Class TabViewItem
-        Inherits SuperTabItem
+        Inherits DevComponents.DotNetBar.SuperTabItem
+
+        ''' <summary>
+        ''' 每一个 Tab Item 的数据源
+        ''' </summary>
+        Public Property TabSource As Tab
 
         Public Sub New()
             MyBase.New()
@@ -173,8 +196,6 @@ Public Class TabView
             TabSource = tab
         End Sub
 
-        Public Property TabSource As Tab
-
         Public Overrides Property Text As String
             Get
                 If TabSource Is Nothing Then
@@ -183,10 +204,14 @@ Public Class TabView
                 Return TabSource.Title
             End Get
             Set
+                ' Nothing
             End Set
         End Property
     End Class
 
+    ''' <summary>
+    ''' TabViewItem 列表集合
+    ''' </summary>
     Public Class TabItemsCollection
         Inherits BaseItemsCollection(Of TabViewItem)
 

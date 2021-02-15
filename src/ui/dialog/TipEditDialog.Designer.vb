@@ -24,7 +24,7 @@ Partial Class TipEditDialog
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.LabelMessage = New System.Windows.Forms.Label()
-        Me.ButtonOK = New MenuButton()
+        Me.ButtonOK = New DesktopTips.MenuButton()
         Me.ButtonCancel = New System.Windows.Forms.Button()
         Me.TextBoxContent = New System.Windows.Forms.TextBox()
         Me.SplitContainer = New System.Windows.Forms.SplitContainer()
@@ -123,13 +123,13 @@ Partial Class TipEditDialog
         '
         Me.MenuOK.Name = "MenuOK"
         Me.MenuOK.Size = New System.Drawing.Size(152, 22)
-        Me.MenuOK.Text = "确定 (&O)"
+        Me.MenuOK.Text = "确定(&O)"
         '
         'MenuSave
         '
         Me.MenuSave.Name = "MenuSave"
         Me.MenuSave.Size = New System.Drawing.Size(152, 22)
-        Me.MenuSave.Text = "保存 (&S)"
+        Me.MenuSave.Text = "保存(&S)"
         '
         'TipEditDialog
         '
@@ -143,7 +143,7 @@ Partial Class TipEditDialog
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(320, 250)
+        Me.MinimumSize = New System.Drawing.Size(320, 200)
         Me.Name = "TipEditDialog"
         Me.ShowIcon = False
         Me.ShowInTaskbar = False
@@ -159,7 +159,7 @@ Partial Class TipEditDialog
 
     End Sub
     Friend WithEvents LabelMessage As System.Windows.Forms.Label
-    Friend WithEvents ButtonOK As MenuButton
+    Friend WithEvents ButtonOK As DesktopTips.MenuButton
     Friend WithEvents ButtonCancel As System.Windows.Forms.Button
     Friend WithEvents TextBoxContent As System.Windows.Forms.TextBox
     Friend WithEvents SplitContainer As System.Windows.Forms.SplitContainer

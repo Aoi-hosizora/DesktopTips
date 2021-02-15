@@ -384,7 +384,6 @@ Partial Class MainForm
         '
         Me.m_menu_MoveTipsSubMenu.Image = Global.DesktopTips.My.Resources.Resources.Right
         Me.m_menu_MoveTipsSubMenu.Name = "m_menu_MoveTipsSubMenu"
-        Me.m_menu_MoveTipsSubMenu.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlM)
         Me.m_menu_MoveTipsSubMenu.Text = "移动至(&M)"
         '
         'm_popup_OtherLabel

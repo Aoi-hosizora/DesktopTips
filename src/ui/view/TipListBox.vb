@@ -123,6 +123,17 @@ Public Class TipListBox
     End Sub
 
     ''' <summary>
+    ''' 按下键盘重载，Esc 键清除选择
+    ''' </summary>
+    Protected Overrides Sub OnKeyDown(e As KeyEventArgs)
+        MyBase.OnKeyDown(e)
+        If e.KeyCode = Keys.Escape Then
+            e.Handled = True
+            ClearSelected()
+        End If
+    End Sub
+
+    ''' <summary>
     ''' 利用 WM_NCMOUSEMOVE 信息触发的 Non-Client Area MouseMove 事件
     ''' </summary>
     Public Event NcMouseMove As MouseEventHandler

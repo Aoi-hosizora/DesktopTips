@@ -64,7 +64,7 @@ Partial Class LinkDialog
         Me.ButtonOpen.Location = New System.Drawing.Point(140, 274)
         Me.ButtonOpen.Name = "ButtonOpen"
         Me.ButtonOpen.Size = New System.Drawing.Size(75, 25)
-        Me.ButtonOpen.TabIndex = 1
+        Me.ButtonOpen.TabIndex = 2
         Me.ButtonOpen.Text = "打开(&O)"
         Me.ButtonOpen.UseVisualStyleBackColor = True
         '
@@ -76,7 +76,7 @@ Partial Class LinkDialog
         Me.ButtonBack.Location = New System.Drawing.Point(302, 274)
         Me.ButtonBack.Name = "ButtonBack"
         Me.ButtonBack.Size = New System.Drawing.Size(75, 25)
-        Me.ButtonBack.TabIndex = 3
+        Me.ButtonBack.TabIndex = 4
         Me.ButtonBack.Text = "返回(&B)"
         Me.ButtonBack.UseVisualStyleBackColor = True
         '
@@ -87,17 +87,18 @@ Partial Class LinkDialog
         Me.ButtonOpenAll.Location = New System.Drawing.Point(221, 274)
         Me.ButtonOpenAll.Name = "ButtonOpenAll"
         Me.ButtonOpenAll.Size = New System.Drawing.Size(75, 25)
-        Me.ButtonOpenAll.TabIndex = 2
+        Me.ButtonOpenAll.TabIndex = 3
         Me.ButtonOpenAll.Text = "打开所有(&A)"
         Me.ButtonOpenAll.UseVisualStyleBackColor = True
         '
         'CheckBoxOpenInNew
         '
+        Me.CheckBoxOpenInNew.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.CheckBoxOpenInNew.AutoSize = True
         Me.CheckBoxOpenInNew.Location = New System.Drawing.Point(12, 247)
         Me.CheckBoxOpenInNew.Name = "CheckBoxOpenInNew"
         Me.CheckBoxOpenInNew.Size = New System.Drawing.Size(135, 21)
-        Me.CheckBoxOpenInNew.TabIndex = 4
+        Me.CheckBoxOpenInNew.TabIndex = 1
         Me.CheckBoxOpenInNew.Text = "在新窗口打开浏览器"
         Me.CheckBoxOpenInNew.UseVisualStyleBackColor = True
         '
@@ -123,7 +124,7 @@ Partial Class LinkDialog
         Me.ShowIcon = False
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "搜索"
+        Me.Text = "包含的链接"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

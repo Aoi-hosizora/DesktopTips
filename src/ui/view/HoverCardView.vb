@@ -12,12 +12,12 @@ Public Class HoverCardView
     ''' <summary>
     ''' 悬浮卡片的 TipItem 内容，可为 Nothing
     ''' </summary>
-    Public Property HoverTipFunc As Func(Of TipItem)
+    Public Property HoverTipItem As TipItem
 
     ''' <summary>
     ''' 悬浮卡片的 Tab 内容，不能为 Nothing
     ''' </summary>
-    Public Property HoverTabFunc As Func(Of Tab)
+    Public Property HoverTab As Tab
 
     ''' <summary>
     ''' 悬浮卡片显示时的光标位置
@@ -44,15 +44,23 @@ Public Class HoverCardView
     ''' </summary>
     Private ReadOnly Property CardWidth As Integer
         Get
-            If HoverTipFunc IsNot Nothing Then
-                Dim value = HoverTipFunc.Invoke()
-                Select Case value.Content.Length
-                    Case <= 100 : Return 200
-                    Case <= 300 : Return 250
-                    Case <= 800 : Return 400
-                    Case Else : Return 500
-                End Select
-            Else If HoverTabFunc IsNot Nothing Then
+            If HoverTipItem IsNot Nothing Then
+                Dim sze = TextRenderer.MeasureText(HoverTipItem.Content, Font)
+                Dim newWidth = sze.Width + _contentHMargin * 2 + 12 ' Extra 12
+                If newWidth > Screen.PrimaryScreen.Bounds.Width * 2 / 5 Then
+                    newWidth = Screen.PrimaryScreen.Bounds.Width * 2 / 5
+                End If
+                If newWidth < 200 Then
+                    newWidth = 200
+                End If
+                Return newWidth
+                ' Select Case HoverTipItem.Content.Length
+                '     Case <= 100 : Return 200
+                '     Case <= 300 : Return 250
+                '     Case <= 800 : Return 400
+                '     Case Else : Return 500
+                ' End Select
+            Else If HoverTab IsNot Nothing Then
                 Return 200
             End If
             Return -1
@@ -70,25 +78,19 @@ Public Class HoverCardView
             Dim curPos = HoverCursorPosition
             Dim cliPos = HoverParentPosition
             Dim x = curPos.X - cliPos.X + HoverParentSize.Width + HoverGapDistance
-            If x >= Screen.PrimaryScreen.Bounds.Width - CardWidth Then
-                x = curPos.X - (cliPos.X + CardWidth + HoverGapDistance)
+            If Screen.AllScreens.Length > 1 And curPos.X > Screen.PrimaryScreen.Bounds.Width Then
+                x -= Screen.PrimaryScreen.Bounds.Width ' 扩展屏幕
             End If
-            Dim y = curPos.Y
-            Return New Point(x, y)
+            If HoverTipItem Is Nothing Or x >= Screen.PrimaryScreen.Bounds.Width - CardWidth Then
+                x = curPos.X - (cliPos.X + CardWidth + HoverGapDistance)
+            Else If Screen.AllScreens.Length > 1 And curPos.X > Screen.PrimaryScreen.Bounds.Width Then
+                x += Screen.PrimaryScreen.Bounds.Width ' 扩展屏幕
+            End If
+            Return New Point(x, curPos.Y)
         End Get
     End Property
 
     Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean = True
-
-    ''' <summary>
-    ''' 显示的 TipItem
-    ''' </summary>
-    Private _tip As TipItem
-
-    ''' <summary>
-    ''' 显示的 Tab
-    ''' </summary>
-    Private _tab As Tab
 
 #End Region
 
@@ -104,18 +106,17 @@ Public Class HoverCardView
             Close()
             Return
         End If
-        If HoverTabFunc IsNot Nothing Then _tab = HoverTabFunc.Invoke()
-        If HoverTipFunc IsNot Nothing Then _tip = HoverTipFunc.Invoke()
         Width = CardWidth ' <<<
+        InitialLayout()
         Dim pos = CardPosition
         Left = pos.X ' <<<
         Top = pos.Y ' <<<
-        If Height + Top > My.Computer.Screen.Bounds.Height Then
-            Top = My.Computer.Screen.Bounds.Height - Height
+        If Height + Top > Screen.PrimaryScreen.Bounds.Height - 10 Then
+            Top = Screen.PrimaryScreen.Bounds.Height - Height - 10
         End If
+        If Top < 0 Then Top = 0
         Top -= 1 / OpacitySpeed
 
-        InitLabel()
         _timerCloseForm.Enabled = false
         _timerShowForm.Enabled = true
     End Sub
@@ -195,30 +196,28 @@ Public Class HoverCardView
         ControlPaint.DrawBorder(e.Graphics, ClientRectangle, _borderColor, ButtonBorderStyle.Solid)
     End Sub
 
-    Private ReadOnly _titleLabel As New DD.LabelX With { .BackColor = Color.Transparent,.AutoSize = True, .WordWrap = False  }
-    Private ReadOnly _contentLabel As New DD.LabelX With { .BackColor = Color.Transparent,.AutoSize = True, .WordWrap = False  }
-    Private ReadOnly _button As New DD.ButtonX With { .BackColor = Color.Transparent, .Text = "×", .Tooltip = "关闭", .AccessibleRole = AccessibleRole.PushButton }
+    Private ReadOnly _titleLabel As New DD.LabelX With { .BackColor = Color.Transparent, .AutoSize = True, .WordWrap = False }
+    Private ReadOnly _contentLabel As New DD.LabelX With { .BackColor = Color.Transparent, .AutoSize = True, .WordWrap = True }
+    Private ReadOnly _button As New DD.ButtonX With { .Text = "×", .Tooltip = "关闭", .BackColor = Color.Transparent, .AccessibleRole = AccessibleRole.PushButton, .Style = DD.eDotNetBarStyle.StyleManagerControlled, .Shape = New DD.RoundRectangleShapeDescriptor() }
 
-    Private ReadOnly _titleLeft = 10
-    Private ReadOnly _contentLeft = 8
-    Private ReadOnly _titleTop = 5
-    Private ReadOnly _contentTop = 2
+    Private ReadOnly _titleHMargin = 10
+    Private ReadOnly _titleVMargin = 5
+    Private ReadOnly _contentHMargin = 8
+    Private ReadOnly _contentVMargin = 2
     Private ReadOnly _bottom = 6
     Private ReadOnly _buttonSize = 14
     Private ReadOnly _buttonMargin = 5
 
     ''' <summary>
-    ''' 加载 Label 布局
+    ''' 加载布局
     ''' </summary>
-    Private Sub InitLabel()
+    Private Sub InitialLayout()
         _titleLabel.BackgroundStyle.CornerType = DD.eCornerType.Square
-        _titleLabel.MaximumSize = New Size(Width - _titleLeft * 2 - 2 * _buttonMargin, 0)
+        _titleLabel.MaximumSize = New Size(Width - _titleHMargin * 2 - 2 * _buttonMargin, 0)
         _contentLabel.BackgroundStyle.CornerType = DD.eCornerType.Square
-        _contentLabel.MaximumSize = New Size(Width - _contentLeft * 2, 0)
+        _contentLabel.MaximumSize = New Size(Width - _contentHMargin * 2, 0)
         _button.ColorTable = DD.eButtonColor.Orange
         _button.Size = New Size(_buttonSize, _buttonSize)
-        _button.Style = DD.eDotNetBarStyle.StyleManagerControlled
-        _button.Shape = New DD.RoundRectangleShapeDescriptor()
         AddHandler _button.MouseDown, Sub() _titleLabel.Focus()
         AddHandler _button.Click, Sub() Close()
 
@@ -227,18 +226,20 @@ Public Class HoverCardView
         Controls.Add(_contentLabel)
         Controls.Add(_titleLabel)
 
-        If _tip IsNot Nothing Then
+        Dim tip = HoverTipItem
+        Dim tab = HoverTab
+        If tip IsNot Nothing Then
             ' For Tip
-            Dim title = _tab.Title
+            Dim title = tab.Title
             Dim highlight = "未高亮"
-            Dim body = _tip.Content.Replace("&", "&&")
+            Dim body = tip.Content.Replace("&", "&&")
             If body.Length > 1000 Then
                 body = body.Substring(0, 1000) & "..."
             End If
-            If _tip.IsHighLight Then
-                highlight = $"<font color=""{_tip.Color.HexColor}"">{_tip.Color.Name}</font>高亮"
+            If tip.IsHighLight Then
+                highlight = $"<font color=""{tip.Color.HexColor}"">{tip.Color.Name}</font>高亮"
             End If
-            If _tip.Done Then
+            If tip.Done Then
                 highlight &= " 已完成"
             End If
 
@@ -246,9 +247,9 @@ Public Class HoverCardView
             _contentLabel.Text = body
         Else
             ' For Tab
-            Dim title = _tab.Title & " 分组"
-            Dim counts = _tab.Tips.GroupBy(Function(t) t.Color).Select(Function(g) New Tuple(Of TipColor, Integer)(g.Key, g.Count())).OrderBy(Function(g) g.Item1?.Id)
-            Dim body = $"总共有 {_tab.Tips.Count} 项，其中："
+            Dim title = tab.Title & " 分组"
+            Dim counts = tab.Tips.GroupBy(Function(t) t.Color).Select(Function(g) New Tuple(Of TipColor, Integer)(g.Key, g.Count())).OrderBy(Function(g) g.Item1?.Id)
+            Dim body = $"总共有 {tab.Tips.Count} 项，其中："
             For Each g In counts
                 If g.Item1 Is Nothing Then
                     body &= $"<br />无高亮：{g.Item2} 项"
@@ -261,8 +262,8 @@ Public Class HoverCardView
             _contentLabel.Text = body
         End If
 
-        _titleLabel.Location = New Point(_titleLeft, _titleTop)
-        _contentLabel.Location = New Point(_contentLeft, _titleLabel.Top + _titleLabel.Height + _contentTop)
+        _titleLabel.Location = New Point(_titleHMargin, _titleVMargin)
+        _contentLabel.Location = New Point(_contentHMargin, _titleLabel.Top + _titleLabel.Height + _contentVMargin)
         _button.Location = New Point(Width - _buttonMargin - _buttonSize, _buttonMargin)
         Height = _contentLabel.Top + _contentLabel.Height + _bottom
     End Sub

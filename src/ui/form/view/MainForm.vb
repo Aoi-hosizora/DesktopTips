@@ -25,7 +25,7 @@ Public Class MainForm
         Me.TopMost = My.Settings.TopMost
 
         m_num_ListCount.Value = My.Settings.ListCount                                                   ' 列表高度
-        m_popup_LoadPosition.Enabled = My.Settings.SaveLeft <> - 1 And My.Settings.SaveTop <> - 1       ' 恢复位置
+        m_popup_LoadPosition.Enabled = My.Settings.SaveLeft <> -1 And My.Settings.SaveTop <> -1       ' 恢复位置
         m_popup_TopMost.Checked = My.Settings.TopMost                                                   ' 窗口置顶
         If My.Settings.IsUseHotKey Then
             _globalPresenter.RegisterHotKey(Handle, My.Settings.HotKey, HOTKEY_ID)                      ' 注册热键
@@ -56,28 +56,28 @@ Public Class MainForm
     End Sub
 
     Private Sub ExitApplication(sender As Object, e As EventArgs) Handles m_btn_Exit.Click, m_popup_Exit.Click
-        Dim ok = MessageBoxEx.Show("确定退出 DesktopTips 吗？", "关闭", MessageBoxButtons.YesNo, MessageBoxIcon.Question, Me)
+        Dim ok = MessageBoxEx.Show("确定退出 DesktopTips 吗？", "关闭", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, Me)
         If ok = vbYes Then
-            Me.Close()
+            Close()
         End If
     End Sub
 
     Private Sub On_Form_Deactivate(sender As Object, e As EventArgs) Handles Me.Deactivate
         m_ListView.ClearSelected()
-        If Me.Opacity > MaxOpacity Then
+        If Opacity > MaxOpacity Then
             FormOpacityDown()
         End If
     End Sub
 
     Private Sub On_Form_Closed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
-        My.Settings.Top = Me.Top
-        My.Settings.Left = Me.Left
-        My.Settings.Width = Me.Width
+        My.Settings.Top = Top
+        My.Settings.Left = Left
+        My.Settings.Width = Width
         My.Settings.ListCount = m_num_ListCount.Value
         My.Settings.Save()
         _globalPresenter.UnregisterHotKey(Handle, HOTKEY_ID)
     End Sub
-    
+
     Private Property IsLoading As Boolean = True
 
     Private Sub On_Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -89,10 +89,10 @@ Public Class MainForm
 
         Me.MouseLeaveCallback = Function() As Boolean
             Return m_menu_ListPopupMenu.PopupControl Is Nothing AndAlso
-                   m_menu_TabPopupMenu.PopupControl Is Nothing AndAlso
-                   m_menu_MoveTipsSubMenu.PopupControl Is Nothing AndAlso
-                   m_menu_HighlightSubMenu.PopupControl Is Nothing AndAlso
-                   _isMenuPopuping = False
+                m_menu_TabPopupMenu.PopupControl Is Nothing AndAlso
+                m_menu_MoveTipsSubMenu.PopupControl Is Nothing AndAlso
+                m_menu_HighlightSubMenu.PopupControl Is Nothing AndAlso
+                _isMenuPopuping = False
         End Function
         Me.IsLoading = False
 
@@ -102,8 +102,8 @@ Public Class MainForm
 
 #End Region
 
-#Region "标签: 增删改 移动 复制粘贴 全选" ' TODO
-    
+#Region "标签: 增删改 移动 复制粘贴 全选 完成" ' TODO
+
     Private Sub InsertTip(sender As Object, e As EventArgs) Handles m_btn_InsertTip.Click, m_popup_InsertTip.Click
         If _tipPresenter.Insert() Then
             m_ListView.Update()
@@ -180,6 +180,14 @@ Public Class MainForm
         For i = 0 To m_ListView.ItemCount - 1
             m_ListView.SetSelected(i, True)
         Next
+    End Sub
+
+    Private Sub CheckDoneTip(sender As Object, e As EventArgs) Handles m_menu_CheckDone.Click
+        Dim indices As New List(Of Integer)(m_ListView.SelectedIndices.Cast(Of Integer)().ToList())
+        If m_ListView.SelectedItems IsNot Nothing AndAlso _tipPresenter.CheckTipsDone(m_ListView.SelectedItems) Then
+            m_ListView.Update()
+            m_ListView.SetSelectedItems(indices.ToArray())
+        End If
     End Sub
 
 #End Region
@@ -327,7 +335,7 @@ Public Class MainForm
 
     Private Sub On_TabView_SelectedTabChanged(sender As Object, e As DD.SuperTabStripSelectedTabChangedEventArgs) Handles m_TabView.SelectedTabChanged
         HideAssistButtons()
-        If m_TabView.SelectedTabIndex <> - 1 AndAlso m_TabView.SelectedTab.TabSource IsNot Nothing Then
+        If m_TabView.SelectedTabIndex <> -1 AndAlso m_TabView.SelectedTab.TabSource IsNot Nothing Then
             GlobalModel.CurrentTab = m_TabView.SelectedTab.TabSource
             m_ListView.DataSource = GlobalModel.CurrentTab.Tips
             m_ListView.Update()
@@ -363,7 +371,7 @@ Public Class MainForm
             m_ListView.ClearSelected()
             For Each item As TipItem In tipItems
                 Dim idx As Integer = GlobalModel.CurrentTab.Tips.IndexOf(item)
-                If idx <> - 1 Then
+                If idx <> -1 Then
                     m_ListView.SetSelected(idx, True)
                 End If
             Next
@@ -491,9 +499,8 @@ Public Class MainForm
         m_popup_UpdateTip.Enabled = isSingle
         m_popup_CopyTips.Enabled = isNotEmpty
         m_popup_PasteAppendToTip.Enabled = isSingle
-
-        ' 高亮
-        ' CheckHighlightChecked()
+        m_menu_CheckDone.Enabled = isNotEmpty
+        m_menu_CheckDone.Checked = m_ListView.SelectedItems.Any(Function(item) item.Done)
 
         ' 浏览器
         m_popup_ViewLinksInTips.Enabled = _tipPresenter.GetLinks(m_ListView.SelectedItems).Count >= 1
@@ -536,7 +543,7 @@ Public Class MainForm
 #End Region
 
 #Region "显示: 弹出菜单 透明度" ' TODO
-    
+
     Private Sub On_ListView_KeyDown(sender As Object, e As KeyEventArgs) Handles m_ListView.KeyDown
         If e.KeyCode = Keys.OemPeriod And e.Control = True Then
             On_BtnOpenPopupMenu_Click(m_btn_OpenListPopup, New EventArgs)
@@ -577,8 +584,8 @@ Public Class MainForm
         Dim tipString = String.Join(vbNewLine, m_ListView.SelectedItems.Select(Function(t) t.Content))
         Dim highlightCount = m_ListView.Items.Where(Function(t) t.IsHighLight).Count
 
-        If tipString.Length > 500 Then
-            tipString = tipString.Substring(0, 500) & "..."
+        If tipString.Length > 300 Then
+            tipString = tipString.Substring(0, 300) & "..."
         End If
         m_popup_SelectedTipsTextLabel.Text = tipString
         m_popup_TipsCountLabel.Text = $"列表 (共 {m_ListView.ItemCount} 项，高亮 {highlightCount} 项)"

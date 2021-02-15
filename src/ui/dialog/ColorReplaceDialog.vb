@@ -1,7 +1,7 @@
 ﻿''' <summary>
-''' 选择替换被删除的颜色
+''' 替换颜色
 ''' </summary>
-Public Class ColorSelectDialog
+Public Class ColorReplaceDialog
     ''' <summary>
     ''' 完成回调，参数表示 TipColor 的 Id
     ''' </summary>
@@ -22,17 +22,23 @@ Public Class ColorSelectDialog
         Controls.Remove(TestCommandLink2)
         CommandPanel.Controls.Clear()
 
-        TitleWarningBox.Text = $"请选择一个颜色代替被删除的颜色 ""{SelectedColor.Name}"""
+        TitleWarningBox.Text = $"请选择一个颜色替换颜色 ""{SelectedColor.Name}"""
         Dim currentPos As New Point(12, 7)
         Dim marginInPanel As New Size(12, 7)
         Const buttonHeight = 57
-        Dim buttonWidth = CommandPanel.Width - 2 * marginInPanel.Width - 1
+        Dim buttonWidth = CommandPanel.Width - 2 * marginInPanel.Width
 
-        AllColors.ToList().Insert(0, Nothing)
-        For Each c As TipColor In AllColors
+        Dim l = AllColors.ToList()
+        l.Insert(0, Nothing)
+        AllColors = l
+        ButtonExit.TabIndex = AllColors.Count() + 1
+        For i = 0 To AllColors.Count() - 1
+            Dim c = AllColors.ElementAt(i)
             Dim btnTitle = If(c?.Name, "取消高亮")
             Dim hint = If(c Is Nothing, "", $"{c.HexColor} | {ColorToRgb(c.Color)}")
-            Dim button As New CommandLink() With {.Text = btnTitle, .Tag = c, .CommandLinkNote = hint, .Location = currentPos, .Size = New Size(buttonWidth, buttonHeight)}
+            Dim button As New CommandLink() With {
+                .Text = btnTitle, .Tag = c, .CommandLinkNote = hint, 
+                .TabIndex = i + 1,.Location = currentPos, .Size = New Size(buttonWidth - 20, buttonHeight) }
             currentPos.Y += buttonHeight + marginInPanel.Height
             AddHandler button.Click, AddressOf ColorCommandLink_Click
             CommandPanel.Controls.Add(button)

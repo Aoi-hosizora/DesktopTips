@@ -50,11 +50,11 @@ Public Class ColorDialog
 
         ' 存在相关联标签
         Dim tipString As String = String.Join(vbNewLine, tips.Select(Function(t) t.Content))
-        If tipString.Count > 350 Then
-            tipString = tipString.Substring(0, 347) & "..."
+        If tipString.Count > 800 Then
+            tipString = tipString.Substring(0, 797) & "..."
         End If
 
-        Dim ok2 = MessageBoxEx.Show($"颜色 ""{delColor.Name}"" 拥有一下 {tips.Count} 个已存在的标签，是否删除？{vbNewLine}{vbNewLine}{tipString}",
+        Dim ok2 = MessageBoxEx.Show($"颜色 ""{delColor.Name}"" 拥有以下 {tips.Count} 个已存在的标签，是否删除？{vbNewLine}{vbNewLine}{tipString}",
             "删除", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1, Me, {"修改高亮颜色", "直接删除", "取消"})
         If ok2 = vbNo Then
             ' 直接删除
@@ -62,15 +62,15 @@ Public Class ColorDialog
             RemoveFromListView(delColor)
         ElseIf ok2 = vbYes
             ' 修改高亮颜色
-            ColorSelectDialog.SelectedColor = delColor
-            ColorSelectDialog.AllColors = GlobalModel.Colors.Where(Function (c) c.Id <> delColor.Id).ToList()
-            ColorSelectDialog.OkCallback = Sub(id As Integer)
+            ColorReplaceDialog.SelectedColor = delColor
+            ColorReplaceDialog.AllColors = GlobalModel.Colors.Where(Function (c) c.Id <> delColor.Id).ToList()
+            ColorReplaceDialog.OkCallback = Sub(id As Integer)
                 For Each tip As TipItem In tips
                     tip.ColorId = id
                 Next
                 RemoveFromListView(delColor)
             End Sub
-            ColorSelectDialog.ShowDialog(Me) ' 修改
+            ColorReplaceDialog.ShowDialog(Me) ' 修改
         End If
     End Sub
 

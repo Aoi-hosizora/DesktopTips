@@ -1,7 +1,7 @@
 # DesktopTips
 
 + A persistent desktop memo tool written in `VB.net Winforms`
-+ Android version: please see [DesktopTips_Android](https://github.com/Aoi-hosizora/DesktopTips_Android) **not under maintenance**
++ For Android version, visit [DesktopTips_Android](https://github.com/Aoi-hosizora/DesktopTips_Android) (**under no maintenance**)
 
 ### Environment
 
@@ -16,20 +16,19 @@
 
 ### Functions (v3.0)
 
-+ [x] Memo CRUD
-+ [x] Highlight with multiple color
++ [x] Tip CRUD
++ [x] Highlight with multiple colors
 + [x] Color CRUD (With Memo)
-+ [x] Grouping CRUD
-+ [ ] Sync with Android (updating)
++ [x] Tab CRUD
 + [ ] ...
 
 ### Tips
 
-+ Main model file: `AppData\Roaming\DesktopTips\model.json`
++ Data file: `.config\DesktopTips\model.json`
 + Setting: `AppData\Local\DesktopTips`
 
 ### Screenshots
 
 |![Screenshots_1](./assets/Screenshots_1.jpg)|![Screenshots_2](./assets/Screenshots_2.jpg)|![Screenshots_3](./assets/Screenshots_3.jpg)|![Screenshots_4](./assets/Screenshots_4.jpg)|
-|:---:|:---:|:---:|:---:|
+|---|---|---|---|
 

@@ -26,7 +26,6 @@ Partial Class HotkeyDialog
         Me.ButtonCancel = New System.Windows.Forms.Button()
         Me.CheckBoxIsValid = New System.Windows.Forms.CheckBox()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.HotkeyEditBox = New DesktopTips.HotkeyBox()
         Me.ButtonDefault = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
@@ -38,7 +37,7 @@ Partial Class HotkeyDialog
         Me.ButtonOK.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ButtonOK.Name = "ButtonOK"
         Me.ButtonOK.Size = New System.Drawing.Size(75, 25)
-        Me.ButtonOK.TabIndex = 4
+        Me.ButtonOK.TabIndex = 2
         Me.ButtonOK.Text = "设置(&S)"
         Me.ButtonOK.UseVisualStyleBackColor = True
         '
@@ -51,7 +50,7 @@ Partial Class HotkeyDialog
         Me.ButtonCancel.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(75, 25)
-        Me.ButtonCancel.TabIndex = 5
+        Me.ButtonCancel.TabIndex = 4
         Me.ButtonCancel.Text = "取消(&X)"
         Me.ButtonCancel.UseVisualStyleBackColor = True
         '
@@ -76,17 +75,6 @@ Partial Class HotkeyDialog
         Me.Label1.TabIndex = 1
         Me.Label1.Text = "请键入快捷显示热键："
         '
-        'HotkeyEditBox
-        '
-        Me.HotkeyEditBox.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.HotkeyEditBox.CurrentKey = System.Windows.Forms.Keys.F4
-        Me.HotkeyEditBox.Location = New System.Drawing.Point(12, 65)
-        Me.HotkeyEditBox.Name = "HotkeyEditBox"
-        Me.HotkeyEditBox.Size = New System.Drawing.Size(237, 23)
-        Me.HotkeyEditBox.TabIndex = 2
-        Me.HotkeyEditBox.Text = "F4"
-        '
         'ButtonDefault
         '
         Me.ButtonDefault.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -106,7 +94,6 @@ Partial Class HotkeyDialog
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonCancel
         Me.ClientSize = New System.Drawing.Size(261, 137)
-        Me.Controls.Add(Me.HotkeyEditBox)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.CheckBoxIsValid)
         Me.Controls.Add(Me.ButtonCancel)
@@ -117,7 +104,7 @@ Partial Class HotkeyDialog
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.Name = "HotKeyDialog"
+        Me.Name = "HotkeyDialog"
         Me.ShowIcon = False
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen

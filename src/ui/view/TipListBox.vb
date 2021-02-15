@@ -78,6 +78,7 @@ Public Class TipListBox
         Dim temp = CType(DataSource, List(Of TipItem))
         DataSource = Nothing
         DataSource = temp
+        Refresh()
         AdjustLabelNothing()
         TopIndex = topIdx
     End Sub
@@ -269,8 +270,8 @@ Public Class TipListBox
         HoverCardView.HoverCursorPosition = curPos
         HoverCardView.HoverParentPosition = Parent.PointToClient(curPos)
         HoverCardView.HoverParentSize = Parent.Size
-        HoverCardView.HoverTipFunc = Function() item
-        HoverCardView.HoverTabFunc = Function() GlobalModel.CurrentTab
+        HoverCardView.HoverTipItem = item
+        HoverCardView.HoverTab = GlobalModel.CurrentTab
         HoverCardView.Opacity = 0
         HoverCardView.Show()
     End Sub

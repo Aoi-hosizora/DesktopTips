@@ -12,6 +12,8 @@ Public Class CommandLink
         RefreshCommandLinkUi()
     End Sub
 
+#Region "属性"
+
     Private _commandLinkNote As String
 
     ''' <summary>
@@ -28,6 +30,8 @@ Public Class CommandLink
             RefreshCommandLinkUi()
         End Set
     End Property
+
+#End Region
 
     Protected Overrides ReadOnly Property CreateParams As CreateParams
         Get

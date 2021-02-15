@@ -44,8 +44,8 @@ Public Class MainFormGlobalPresenter
     End Sub
 
     Public Sub SetupHotKey(handle As IntPtr, id As Integer) Implements MainFormContract.IGlobalPresenter.SetupHotKey
-        HotKeyDialog.HotkeyEditBox.CurrentKey = My.Settings.HotKey
-        HotKeyDialog.CheckBoxIsValid.Checked = My.Settings.IsUseHotKey
+        HotKeyDialog.CurrentHotkey = My.Settings.HotKey
+        HotKeyDialog.HotkeyEnabled = My.Settings.IsUseHotKey
         HotKeyDialog.OkCallback =
             Sub(key As Keys, use As Boolean)
                 UnregisterHotKey(handle, id)

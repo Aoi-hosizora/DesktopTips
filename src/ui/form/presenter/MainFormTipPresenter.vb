@@ -10,7 +10,8 @@
     End Sub
 
     Public Function Insert() As Boolean Implements MainFormContract.ITipPresenter.Insert
-        Dim msg As String = TipsEditDialog.ShowDialog("新的标签：", "添加").Trim()
+        TipEditDialog.SaveCallback = Nothing
+        Dim msg As String = TipEditDialog.ShowDialog("新的标签：", "添加").Trim()
         If msg <> "" Then
             Dim tip As New TipItem(GlobalModel.CurrentTab.Tips.Count, msg)
             GlobalModel.CurrentTab.Tips.Add(tip)
@@ -28,7 +29,6 @@
         If ok = vbOK Then
             For Each item As TipItem In items
                 GlobalModel.CurrentTab.Tips.Remove(item)
-                ' GlobalModel.CurrentTab.Tips.RemoveAll(Function(t) t.Id = item.Id)
             Next
             GlobalModel.ReorderTips(GlobalModel.CurrentTab.Tips)
             _globalPresenter.SaveFile()
@@ -42,7 +42,13 @@
         If content.Length > 600 Then
             content = content.Substring(0, 600) + "..."
         End If
-        Dim newStr As String = TipsEditDialog.ShowDialog($"修改标签 ""{content}"" 为：", "修改", item.Content).Trim()
+        Dim cb = Sub(text As String)
+            If text <> "" And text <> item.Content Then
+                item.Content = text
+                _globalPresenter.SaveFile()
+            End If
+        End Sub
+        Dim newStr As String = TipEditDialog.ShowDialog($"修改如下标签为：{vbNewLine}{vbNewLine}{content}", "修改", item.Content, cb).Trim()
         If newStr <> "" And newStr <> item.Content Then
             item.Content = newStr
             _globalPresenter.SaveFile()
@@ -128,9 +134,9 @@
             MessageBoxEx.Show($"未找到 ""{text}"" 。", "查找", MessageBoxButtons.OK, MessageBoxIcon.Information, _view.GetMe())
         Else
             SearchDialog.SearchText = text
-            SearchDialog.GetFunc = Function() results
-            SearchDialog.SearchFunc = Sub() Search()
-            SearchDialog.HighlightFunc = Sub(tabIndex As Integer, tipIndex As Integer)
+            SearchDialog.SearchResult = results
+            SearchDialog.NewSearchCallback = Sub() Search()
+            SearchDialog.SelectCallback = Sub(tabIndex As Integer, tipIndex As Integer)
                 _view.GetMe().Focus()
                 _view.GetMe().FormOpacityUp()
                 _view.FocusItem(tabIndex, tipIndex)
@@ -151,6 +157,15 @@
         End If
         _globalPresenter.SaveFile()
         Return True
+    End Function
+
+    Public Function CheckTipsDone(items As IEnumerable(Of TipItem)) As boolean Implements MainFormContract.ITipPresenter.CheckTipsDone
+        Dim tipItems = items.ToList()
+        Dim toDone = Not tipItems.All(Function(item) item.Done)
+        For Each item In tipItems
+            item.Done = toDone
+        Next
+        Return toDone
     End Function
 
     Public Sub ViewList(items As IEnumerable(Of TipItem), highlight As Boolean) Implements MainFormContract.ITipPresenter.ViewList
@@ -183,14 +198,16 @@
     End Sub
 
     Public Sub ViewAllLinks(items As IEnumerable(Of TipItem)) Implements MainFormContract.ITipPresenter.ViewAllLinks
-        Dim links As List(Of String) = GetLinks(items).ToList()
+        Dim itemList = items.ToList()
+        Dim links As List(Of String) = GetLinks(itemList).ToList()
         If links.Count = 0 Then
-            MessageBoxEx.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error, _view.GetMe())
+            MessageBoxEx.Show($"所选 {itemList.Count} 个标签内不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error, _view.GetMe())
         Else
             LinkDialog.Close()
-            LinkDialog.GetFunc = Function() links
-            LinkDialog.OpenBrowserFunc = Sub(l As IEnumerable(Of String), inNew As Boolean) OpenInDefaultBrowser(l, inNew)
-            LinkDialog.Show(_view.GetMe())
+            LinkDialog.Message = $"所选 {itemList.Count} 个标签包含了 {links.Count} 个链接："
+            LinkDialog.Links = links
+            LinkDialog.OkCallback = Sub(l As IEnumerable(Of String), inNew As Boolean) OpenInDefaultBrowser(l, inNew)
+            LinkDialog.ShowDialog(_view.GetMe())
         End If
     End Sub
 

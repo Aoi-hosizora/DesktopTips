@@ -97,7 +97,7 @@ Partial Class ColorDialog
         Me.ButtonRemove.Location = New System.Drawing.Point(369, 60)
         Me.ButtonRemove.Name = "ButtonRemove"
         Me.ButtonRemove.Size = New System.Drawing.Size(75, 25)
-        Me.ButtonRemove.TabIndex = 2
+        Me.ButtonRemove.TabIndex = 3
         Me.ButtonRemove.Text = "删除(&D)"
         Me.ButtonRemove.UseVisualStyleBackColor = True
         '
@@ -109,7 +109,7 @@ Partial Class ColorDialog
         Me.ButtonCancel.Location = New System.Drawing.Point(369, 371)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(75, 25)
-        Me.ButtonCancel.TabIndex = 2
+        Me.ButtonCancel.TabIndex = 4
         Me.ButtonCancel.Text = "返回(&X)"
         Me.ButtonCancel.UseVisualStyleBackColor = True
         '

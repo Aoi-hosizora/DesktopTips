@@ -48,6 +48,7 @@ Partial Class MainForm
         Me.m_popup_MoveTopTop = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_MoveTipBottom = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_HighlightSubMenu = New DevComponents.DotNetBar.ButtonItem()
+        Me.m_menu_CheckDone = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_SetupColors = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_FindTips = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_MoveTipsSubMenu = New DevComponents.DotNetBar.ButtonItem()
@@ -201,7 +202,7 @@ Partial Class MainForm
         '
         Me.m_menu_ListPopupMenu.AutoExpandOnClick = True
         Me.m_menu_ListPopupMenu.Name = "m_menu_ListPopupMenu"
-        Me.m_menu_ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SelectedTipsCountLabel, Me.m_popup_SelectedTipsTextLabel, Me.m_popup_TipsCountLabel, Me.m_popup_ListItemContainer, Me.m_popup_MoveTopTop, Me.m_popup_MoveTipBottom, Me.m_menu_HighlightSubMenu, Me.m_popup_ViewLinksInTips, Me.m_popup_FindTips, Me.m_menu_MoveTipsSubMenu, Me.m_popup_OtherLabel, Me.m_menu_FileSubMenu, Me.m_popup_Refresh, Me.m_menu_WindowSubMenu, Me.m_popup_Exit})
+        Me.m_menu_ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SelectedTipsCountLabel, Me.m_popup_SelectedTipsTextLabel, Me.m_popup_TipsCountLabel, Me.m_popup_ListItemContainer, Me.m_popup_MoveTopTop, Me.m_popup_MoveTipBottom, Me.m_menu_HighlightSubMenu, Me.m_menu_CheckDone,Me.m_popup_ViewLinksInTips, Me.m_popup_FindTips, Me.m_menu_MoveTipsSubMenu, Me.m_popup_OtherLabel, Me.m_menu_FileSubMenu, Me.m_popup_Refresh, Me.m_menu_WindowSubMenu, Me.m_popup_Exit})
         Me.m_menu_ListPopupMenu.Text = "ListPopup"
         '
         'm_popup_SelectedTipsCountLabel
@@ -349,7 +350,13 @@ Partial Class MainForm
         Me.m_menu_HighlightSubMenu.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlH)
         Me.m_menu_HighlightSubMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SetupColors})
         Me.m_menu_HighlightSubMenu.Text = "高亮(&H)"
-        Me.m_menu_HighlightSubMenu.Tooltip = "高亮"
+        '
+        'm_menu_CheckDone
+        '
+        Me.m_menu_CheckDone.Image = Global.DesktopTips.My.Resources.Resources.Done
+        Me.m_menu_CheckDone.Name = "m_menu_CheckDone"
+        Me.m_menu_CheckDone.Checked = False
+        Me.m_menu_CheckDone.Text = "标记为完成(&H)"
         '
         'm_popup_SetupColors
         '
@@ -690,6 +697,7 @@ Partial Class MainForm
     Friend WithEvents m_popup_ViewCurrentTips As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_Exit As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_menu_HighlightSubMenu As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents m_menu_CheckDone As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_menu_OpacitySubMenu As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_OtherLabel As DevComponents.DotNetBar.LabelItem
     Friend WithEvents m_popup_ShowSetListCount As DevComponents.DotNetBar.ButtonItem

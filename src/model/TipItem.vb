@@ -40,10 +40,11 @@ Public Class TipItem
         End Get
     End Property
 
-    Public Sub New(id As Integer, content As String, Optional colorId As Integer = -1)
+    Public Sub New(id As Integer, content As String, Optional colorId As Integer = -1, Optional done As Boolean = False)
         Me.Id = id
         Me.Content = content
         Me.ColorId = colorId
+        Me.Done = done
     End Sub
 
     Public Overrides Function ToString() As String

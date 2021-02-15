@@ -42,7 +42,7 @@ Partial Class SearchDialog
         Me.ListView.Name = "ListView"
         Me.ListView.ScrollAlwaysVisible = True
         Me.ListView.Size = New System.Drawing.Size(370, 239)
-        Me.ListView.TabIndex = 0
+        Me.ListView.TabIndex = 1
         '
         'LabelResult
         '
@@ -51,7 +51,7 @@ Partial Class SearchDialog
         Me.LabelResult.Location = New System.Drawing.Point(7, 7)
         Me.LabelResult.Name = "LabelResult"
         Me.LabelResult.Size = New System.Drawing.Size(370, 17)
-        Me.LabelResult.TabIndex = 1
+        Me.LabelResult.TabIndex = 0
         Me.LabelResult.Text = "共找到 0 个搜索结果: ""xxx"""
         '
         'ButtonSearch

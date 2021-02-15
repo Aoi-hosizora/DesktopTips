@@ -159,7 +159,7 @@ Public Class TabView
         HoverCardView.HoverCursorPosition = curPos
         HoverCardView.HoverParentPosition = Parent.PointToClient(curPos)
         HoverCardView.HoverParentSize = Parent.Size
-        HoverCardView.HoverTabFunc = Function() item
+        HoverCardView.HoverTab = item
         HoverCardView.Opacity = 0
         HoverCardView.Show()
     End Sub

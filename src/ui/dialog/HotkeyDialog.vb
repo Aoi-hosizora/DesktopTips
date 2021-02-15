@@ -3,9 +3,24 @@
 ''' </summary>
 Public Class HotkeyDialog
     ''' <summary>
+    ''' 当前的快捷键
+    ''' </summary>
+    Public Property CurrentHotkey As Keys
+
+    ''' <summary>
+    ''' 是否启动快捷键
+    ''' </summary>
+    Public Property HotkeyEnabled As Boolean
+
+    ''' <summary>
     ''' 完成回调，参数表示 Key 和开启快捷键
     ''' </summary>
-    Public OkCallback As Action(Of Keys, Boolean)
+    Public Property OkCallback As Action(Of Keys, Boolean)
+
+    Private Sub HotkeyDialog_Load(sender As Object, e As EventArgs) Handles Me.Load
+        HotkeyEditBox.CurrentKey = CurrentHotkey
+        HotkeyEditBox.Enabled = HotkeyEnabled
+    End Sub
 
     Private Sub CheckBoxIsValid_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBoxIsValid.CheckedChanged
         HotkeyEditBox.Enabled = CheckBoxIsValid.Checked

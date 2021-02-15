@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class ColorSelectDialog
+Partial Class ColorReplaceDialog
     Inherits System.Windows.Forms.Form
 
     'Form 重写 Dispose，以清理组件列表。
@@ -22,13 +22,10 @@ Partial Class ColorSelectDialog
     '不要使用代码编辑器修改它。
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(ColorSelectDialog))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(ColorReplaceDialog))
         Me.CommandPanel = New System.Windows.Forms.Panel()
-        Me.TestCommandLink2 = New DesktopTips.CommandLink()
-        Me.TestCommandLink1 = New DesktopTips.CommandLink()
         Me.TitleWarningBox = New DevComponents.DotNetBar.Controls.WarningBox()
         Me.ButtonExit = New System.Windows.Forms.Button()
-        Me.CommandPanel.SuspendLayout()
         Me.SuspendLayout()
         '
         'CommandPanel
@@ -38,47 +35,15 @@ Partial Class ColorSelectDialog
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.CommandPanel.AutoScroll = True
         Me.CommandPanel.BackColor = System.Drawing.Color.White
-        Me.CommandPanel.Controls.Add(Me.TestCommandLink2)
-        Me.CommandPanel.Controls.Add(Me.TestCommandLink1)
         Me.CommandPanel.Location = New System.Drawing.Point(0, 47)
         Me.CommandPanel.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.CommandPanel.Name = "CommandPanel"
         Me.CommandPanel.Size = New System.Drawing.Size(304, 328)
         Me.CommandPanel.TabIndex = 0
         '
-        'TestCommandLink2
-        '
-        Me.TestCommandLink2.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TestCommandLink2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.TestCommandLink2.CommandLinkNote = "123456"
-        Me.TestCommandLink2.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.TestCommandLink2.Location = New System.Drawing.Point(12, 70)
-        Me.TestCommandLink2.Name = "TestCommandLink2"
-        Me.TestCommandLink2.Size = New System.Drawing.Size(280, 57)
-        Me.TestCommandLink2.TabIndex = 0
-        Me.TestCommandLink2.Text = "Button1"
-        Me.TestCommandLink2.UseVisualStyleBackColor = True
-        Me.TestCommandLink2.Visible = False
-        '
-        'TestCommandLink1
-        '
-        Me.TestCommandLink1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TestCommandLink1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.TestCommandLink1.CommandLinkNote = "123456"
-        Me.TestCommandLink1.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.TestCommandLink1.Location = New System.Drawing.Point(12, 7)
-        Me.TestCommandLink1.Name = "TestCommandLink1"
-        Me.TestCommandLink1.Size = New System.Drawing.Size(280, 57)
-        Me.TestCommandLink1.TabIndex = 0
-        Me.TestCommandLink1.Text = "Button1"
-        Me.TestCommandLink1.UseVisualStyleBackColor = True
-        Me.TestCommandLink1.Visible = False
-        '
         'TitleWarningBox
         '
-        Me.TitleWarningBox.BackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(219, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.TitleWarningBox.BackColor = System.Drawing.Color.FromArgb(CType(CType(196, Byte), Integer), CType(CType(219, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.TitleWarningBox.CloseButtonVisible = False
         Me.TitleWarningBox.Dock = System.Windows.Forms.DockStyle.Top
         Me.TitleWarningBox.Image = CType(resources.GetObject("TitleWarningBox.Image"), System.Drawing.Image)
@@ -89,7 +54,7 @@ Partial Class ColorSelectDialog
         Me.TitleWarningBox.OptionsText = ""
         Me.TitleWarningBox.Size = New System.Drawing.Size(304, 47)
         Me.TitleWarningBox.TabIndex = 0
-        Me.TitleWarningBox.Text = "请选择一个颜色代替将被删除的颜色 ""xxx"""
+        Me.TitleWarningBox.Text = "请选择一个颜色替换颜色 ""xxx"""
         '
         'ButtonExit
         '
@@ -103,7 +68,7 @@ Partial Class ColorSelectDialog
         Me.ButtonExit.Text = "取消(&X)"
         Me.ButtonExit.UseVisualStyleBackColor = True
         '
-        'ColorSelectDialog
+        'ColorReplaceDialog
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
@@ -117,11 +82,10 @@ Partial Class ColorSelectDialog
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.Name = "ColorSelectDialog"
+        Me.Name = "ColorReplaceDialog"
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = "选择颜色"
-        Me.CommandPanel.ResumeLayout(False)
+        Me.Text = "替换颜色"
         Me.ResumeLayout(False)
 
     End Sub

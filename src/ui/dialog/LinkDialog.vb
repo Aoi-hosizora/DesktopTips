@@ -1,15 +1,25 @@
-﻿Public Class LinkDialog
-    Public GetFunc As Func(Of IEnumerable(Of String))
-    Public OpenBrowserFunc As Action(Of IEnumerable(Of String), Boolean)
+﻿''' <summary>
+''' 包含的链接
+''' </summary>
+Public Class LinkDialog
+    ''' <summary>
+    ''' 对话框标题
+    ''' </summary>
+    Public Message As String
+
+    ''' <summary>
+    ''' 链接
+    ''' </summary>
+    Public Links As IEnumerable(Of String)
+
+    ''' <summary>
+    ''' 打开回调，包含链接和是否新窗口打开
+    ''' </summary>
+    Public OkCallback As Action(Of IEnumerable(Of String), Boolean)
 
     Private Sub Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        If GetFunc Is Nothing Then
-            Close()
-            Return
-        End If
-
         ListView.Items.Clear()
-        For Each link As String In GetFunc.Invoke()
+        For Each link As String In Links
             ListView.Items.Add(link)
         Next
         ListView_SelectedValueChanged(sender, e)
@@ -18,35 +28,30 @@
     End Sub
 
     Private Sub ButtonOpen_Click(sender As Object, e As EventArgs) Handles ButtonOpen.Click
-        Dim links As New List(Of String)
+        Dim l As New List(Of String)
         For Each item In ListView.SelectedItems
-            links.Add(CStr(item))
+            l.Add(CStr(item))
         Next
-        If OpenBrowserFunc IsNot Nothing Then
-            OpenBrowserFunc.Invoke(links, CheckBoxOpenInNew.Checked)
-        End If
+        OkCallback?.Invoke(l, CheckBoxOpenInNew.Checked)
         Close()
     End Sub
 
     Private Sub ButtonOpenAll_Click(sender As System.Object, e As EventArgs) Handles ButtonOpenAll.Click
-        If OpenBrowserFunc IsNot Nothing Then
-            OpenBrowserFunc.Invoke(ListView.Items.Cast(Of String)(), CheckBoxOpenInNew.Checked)
-        End If
+        OkCallback?.Invoke(ListView.Items.Cast(Of String)(), CheckBoxOpenInNew.Checked)
         Close()
     End Sub
 
     Private Sub ListView_DoubleClick(sender As Object, e As EventArgs) Handles ListView.DoubleClick
         Dim ok = MessageBoxEx.Show($"是否打开以下链接？{vbNewLine}{vbNewLine}{ListView.SelectedItem}", "打开链接", MessageBoxButtons.OKCancel, MessageBoxIcon.Question)
         If ok = VbOk Then
-            If OpenBrowserFunc IsNot Nothing Then
-                OpenBrowserFunc.Invoke({CStr(ListView.SelectedItem)}, CheckBoxOpenInNew.Checked)
+            If OkCallback IsNot Nothing Then
+                OkCallback.Invoke({CStr(ListView.SelectedItem)}, CheckBoxOpenInNew.Checked)
             End If
-            Close()
         End If
     End Sub
 
     Private Sub ListView_SelectedValueChanged(sender As Object, e As EventArgs) Handles MyBase.Load, ListView.SelectedValueChanged
-        LabelTitle.Text = $"所选内容包含了 {ListView.Items.Count} 个链接 (选中 {ListView.SelectedItems.Count} 项)"
+        LabelTitle.Text = Message & $" (选中 {ListView.SelectedItems.Count} 项)"
         ButtonOpen.Enabled = ListView.SelectedItems.Count <> 0
     End Sub
 

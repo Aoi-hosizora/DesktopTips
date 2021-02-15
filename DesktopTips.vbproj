@@ -154,16 +154,16 @@
     <Compile Include="src\ui\dialog\ColorDialog.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\dialog\ColorSelectDialog.Designer.vb">
-      <DependentUpon>ColorSelectDialog.vb</DependentUpon>
+    <Compile Include="src\ui\dialog\ColorReplaceDialog.Designer.vb">
+      <DependentUpon>ColorReplaceDialog.vb</DependentUpon>
     </Compile>
-    <Compile Include="src\ui\dialog\ColorSelectDialog.vb">
+    <Compile Include="src\ui\dialog\ColorReplaceDialog.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\dialog\TipsEditDialog.Designer.vb">
-      <DependentUpon>TipsEditDialog.vb</DependentUpon>
+    <Compile Include="src\ui\dialog\TipEditDialog.Designer.vb">
+      <DependentUpon>TipEditDialog.vb</DependentUpon>
     </Compile>
-    <Compile Include="src\ui\dialog\TipsEditDialog.vb">
+    <Compile Include="src\ui\dialog\TipEditDialog.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\ui\form\contract\MainFormContract.vb" />
@@ -217,6 +217,7 @@
     <Compile Include="src\ui\view\HoverCardView.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="src\ui\view\MenuButton.vb" />
     <Compile Include="src\ui\view\TipListBox.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -230,8 +231,8 @@
     <EmbeddedResource Include="src\ui\dialog\ColorDialog.resx">
       <DependentUpon>ColorDialog.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ui\dialog\ColorSelectDialog.resx">
-      <DependentUpon>ColorSelectDialog.vb</DependentUpon>
+    <EmbeddedResource Include="src\ui\dialog\ColorReplaceDialog.resx">
+      <DependentUpon>ColorReplaceDialog.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\ui\dialog\HotKeyDialog.resx">
       <DependentUpon>HotkeyDialog.vb</DependentUpon>
@@ -248,8 +249,8 @@
     <EmbeddedResource Include="src\ui\dialog\SearchDialog.resx">
       <DependentUpon>SearchDialog.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ui\dialog\TipsEditDialog.resx">
-      <DependentUpon>TipsEditDialog.vb</DependentUpon>
+    <EmbeddedResource Include="src\ui\dialog\TipEditDialog.resx">
+      <DependentUpon>TipEditDialog.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\ui\form\view\MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
@@ -285,6 +286,7 @@
     <None Include="Resources\Bottom.png" />
     <None Include="Resources\Top.png" />
     <None Include="Resources\FileLinksToFiles.png" />
+    <None Include="Resources\Done.png" />
     <Content Include="src\ui\view\MessageBoxEx.Ref.cs" />
     <None Include="Resources\SelectAll.png" />
     <None Include="Resources\Star.png" />

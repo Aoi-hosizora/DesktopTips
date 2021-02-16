@@ -77,6 +77,16 @@ Public Class TabView
         Next
     End Sub
 
+    ''' <summary>
+    ''' 通过下标设置正在选中的 Tab
+    ''' </summary>
+    Public Sub SetSelectedIndex(index As Integer)
+        If index >= TabCount Then
+            index = TabCount - 1
+        End If
+        SelectedTabIndex = index
+    End Sub
+
     Protected Overrides Sub OnSizeChanged(e As EventArgs)
         MyBase.OnSizeChanged(e)
     End Sub

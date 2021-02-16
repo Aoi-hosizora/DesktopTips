@@ -48,14 +48,14 @@ Public Class NativeMethod
     End Sub
 
     Public Enum MouseEvent As UInteger
-        MOUSEEVENTF_LEFTDOWN = &H2      '左键按下
-        MOUSEEVENTF_LEFTUP = &H4        '左键释放
-        MOUSEEVENTF_MIDDLEDOWN = &H20   '中键按下
-        MOUSEEVENTF_MIDDLEUP = &H40     '中键释放
-        MOUSEEVENTF_RIGHTDOWN = &H8     '右键按下
-        MOUSEEVENTF_RIGHTUP = &H10      '右键释放
-        MOUSEEVENTF_MOVE = &H1          '指针移动
-        MOUSEEVENTF_ABSOLUTE = &H8000   '绝对移动
+        MOUSEEVENTF_LEFTDOWN = &H2    '左键按下
+        MOUSEEVENTF_LEFTUP = &H4      '左键释放
+        MOUSEEVENTF_MIDDLEDOWN = &H20 '中键按下
+        MOUSEEVENTF_MIDDLEUP = &H40   '中键释放
+        MOUSEEVENTF_RIGHTDOWN = &H8   '右键按下
+        MOUSEEVENTF_RIGHTUP = &H10    '右键释放
+        MOUSEEVENTF_MOVE = &H1        '指针移动
+        MOUSEEVENTF_ABSOLUTE = &H8000 '绝对移动
     End Enum
 
     ''' <summary>

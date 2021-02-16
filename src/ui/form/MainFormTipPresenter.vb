@@ -13,7 +13,8 @@
         TipEditDialog.SaveCallback = Nothing
         Dim msg As String = TipEditDialog.ShowDialog("新的标签：", "添加").Trim()
         If msg <> "" Then
-            Dim tip As New TipItem(GlobalModel.CurrentTab.Tips.Count, msg)
+            Dim now = DateTime.Now
+            Dim tip As New TipItem(GlobalModel.CurrentTab.Tips.Count, msg) With { .CreatedAt = now, .UpdatedAt = now }
             GlobalModel.CurrentTab.Tips.Add(tip)
             _globalPresenter.SaveFile()
             Return True
@@ -42,15 +43,17 @@
         If content.Length > 600 Then
             content = content.Substring(0, 600) + "..."
         End If
-        Dim cb = Sub(text As String)
+        Dim saveCallback = Sub(text As String)
             If text <> "" And text <> item.Content Then
                 item.Content = text
+                item.UpdatedAt = DateTime.Now
                 _globalPresenter.SaveFile()
             End If
         End Sub
-        Dim newStr As String = TipEditDialog.ShowDialog($"修改如下标签为：{vbNewLine}{vbNewLine}{content}", "修改", item.Content, cb).Trim()
+        Dim newStr As String = TipEditDialog.ShowDialog($"修改如下标签为：{vbNewLine}{vbNewLine}{content}", "修改", item.Content, saveCallback).Trim()
         If newStr <> "" And newStr <> item.Content Then
             item.Content = newStr
+            item.UpdatedAt = DateTime.Now
             _globalPresenter.SaveFile()
             Return True
         End If
@@ -66,13 +69,15 @@
         Dim clip As String = Clipboard.GetText().Trim()
         If clip <> "" Then
             Dim ok = MessageBoxEx.Show($"是否向当前标签项 ""{item.Content}"" 末尾添加剪贴板内容 ""{clip}""？", "粘贴",
-                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, _view.GetMe(), {"添加空格", "添加逗号", "不添加"})
+                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, _view.GetMe(), {"添加空格", "添加回车", "取消"})
             If ok = vbYes Then
-                item.Content += " " & clip
+                item.Content &= " " & clip
+                item.UpdatedAt = DateTime.Now
                 _globalPresenter.SaveFile()
                 Return True
             ElseIf ok = vbNo Then
-                item.Content += ", " & clip
+                item.Content &= vbNewLine & clip
+                item.UpdatedAt = DateTime.Now
                 _globalPresenter.SaveFile()
                 Return True
             End If
@@ -146,15 +151,24 @@
     End Sub
 
     Public Function HighlightTips(items As IEnumerable(Of TipItem), color As TipColor) As Boolean Implements MainFormContract.ITipPresenter.HighlightTips
-        If color Is Nothing Then
-            For Each item In items
-                item.ColorId = -1 ' UnHighlight
-            Next
-        Else
-            For Each item In items
-                item.ColorId = color.Id
-            Next
+        Dim tipItems = items.ToList()
+        Dim newColor = color
+        If tipItems.Count = 1 Then
+            If tipItems.First().IsHighLight AndAlso tipItems.First().ColorId = color.Id Then ' 已经高亮并且是当前颜色
+                newColor = Nothing
+            End If
+        Else If tipItems.Count > 1 Then
+            If tipItems.Where(Function (i) i.ColorId = color.Id).Count = tipItems.Count Then ' 所有选择项都是同种颜色
+                newColor = Nothing
+            End If
         End If
+
+        Dim newColorId = If(newColor?.Id, -1)
+        Dim now = DateTime.Now
+        For Each item In tipItems
+            item.ColorId = newColorId
+            item.UpdatedAt = now
+        Next
         _globalPresenter.SaveFile()
         Return True
     End Function
@@ -162,9 +176,12 @@
     Public Function CheckTipsDone(items As IEnumerable(Of TipItem)) As boolean Implements MainFormContract.ITipPresenter.CheckTipsDone
         Dim tipItems = items.ToList()
         Dim toDone = Not tipItems.All(Function(item) item.Done)
+        Dim now = DateTime.Now
         For Each item In tipItems
             item.Done = toDone
+            item.UpdatedAt = now
         Next
+        _globalPresenter.SaveFile()
         Return toDone
     End Function
 
@@ -218,4 +235,21 @@
         End Sub
         ColorDialog.ShowDialog(_view.GetMe())
     End Sub
+
+    Public Function GetTipsLabel(items As IEnumerable(Of TipItem), font As Font, size As Integer) As String Implements MainFormContract.ITipPresenter.GetTipsLabel
+        Dim itemList = items.ToList()
+        Dim result = ""
+        For i = 0 To itemList.Count - 1
+            Dim item = itemList.ElementAt(i)
+            If i >= 15 Then
+                result &= vbNewLine & $"...... (剩下 {itemList.Count - 15} 项)"
+                Exit For
+            End If
+            If result.Length > 0 Then result &= vbNewLine
+
+            Dim content = item.Content.Replace(vbNewLine, "↴")
+            result &= CommonUtil.TrimForEllipsis(content, font, size)
+        Next
+        Return result
+    End Function
 End Class

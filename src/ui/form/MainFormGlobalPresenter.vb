@@ -27,7 +27,7 @@ Public Class MainFormGlobalPresenter
     End Sub
 
     Public Sub OpenFileDir() Implements MainFormContract.IGlobalPresenter.OpenFileDir
-        'C:\Users\Windows 10\AppData\Roaming\DesktopTips
+        'C:\Users\Windows 10\.config\DesktopTips\data.json
         Process.Start("explorer.exe", $"/select,""{GlobalModel.StorageFilename}""")
     End Sub
 

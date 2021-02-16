@@ -15,7 +15,8 @@
             If GlobalModel.CheckDuplicateTab(tabName, GlobalModel.Tabs) Then
                 MessageBoxEx.Show("分组标题 """ & tabName & """ 已存在。", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error, _view.GetMe())
             Else
-                Dim tab As New Tab(tabName)
+                Dim now = DateTime.Now
+                Dim tab As New Tab(tabName) With { .CreatedAt = now, .UpdatedAt = now }
                 GlobalModel.Tabs.Add(tab)
                 _globalPresenter.SaveFile()
                 Return True
@@ -25,7 +26,10 @@
     End Function
 
     Public Function Delete(tab As Tab) As Boolean Implements MainFormContract.ITabPresenter.Delete
-        If tab.Tips.Count <> 0 Then
+        If GlobalModel.Tabs.Count = 1 Then
+            MessageBoxEx.Show("无法删除最后一个分组。", "删除",
+                MessageBoxButtons.OK, MessageBoxIcon.Error, _view.GetMe())
+        Else If tab.Tips.Count <> 0 Then
             MessageBoxEx.Show($"分组内存在 {tab.Tips.Count} 条标签，请先将标签移动到别的分组。", "删除",
                 MessageBoxButtons.OK, MessageBoxIcon.Error, _view.GetMe())
         Else
@@ -48,6 +52,7 @@
                     MessageBoxButtons.OK, MessageBoxIcon.Error, _view.GetMe())
             Else
                 tab.Title = newName
+                tab.UpdatedAt = DateTime.Now
                 _globalPresenter.SaveFile()
                 Return True
             End If
@@ -76,5 +81,19 @@
             Return True
         End If
         Return False
+    End Function
+
+    Public Function GetTabLabel(tab As Tab) As String Implements MainFormContract.ITabPresenter.GetTabLabel
+        Dim result = $"总共 {tab.Tips.Count} 项"
+        Dim counts = tab.Tips.GroupBy(Function(t) t.Color).
+            Select(Function(g) New Tuple(Of TipColor, Integer)(g.Key, g.Count())).
+            OrderBy(Function(g) g.Item1?.Id)
+        Return counts.Aggregate(result, Function(current, g)
+            If g.Item1 Is Nothing Then
+                Return current & $"<br />无高亮 {g.Item2} 项"
+            Else
+                Return current & $"<br /><font color=""{g.Item1.HexColor}"">{g.Item1.Name}</font> {g.Item2} 项"
+            End If
+        End Function)
     End Function
 End Class

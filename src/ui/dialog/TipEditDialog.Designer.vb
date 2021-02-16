@@ -54,13 +54,12 @@ Partial Class TipEditDialog
         '
         Me.ButtonOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonOK.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.ButtonOK.Font = New System.Drawing.Font("Yu Gothic UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ButtonOK.Location = New System.Drawing.Point(380, 9)
         Me.ButtonOK.Menu = Me.ContextMenuStripOK
         Me.ButtonOK.Name = "ButtonOK"
         Me.ButtonOK.Size = New System.Drawing.Size(75, 25)
         Me.ButtonOK.TabIndex = 1
-        Me.ButtonOK.Text = "OK"
+        Me.ButtonOK.Text = "确定"
         Me.ButtonOK.UseVisualStyleBackColor = True
         '
         'ButtonCancel
@@ -68,12 +67,11 @@ Partial Class TipEditDialog
         Me.ButtonCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.ButtonCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonCancel.Font = New System.Drawing.Font("Yu Gothic UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ButtonCancel.Location = New System.Drawing.Point(380, 40)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(75, 25)
         Me.ButtonCancel.TabIndex = 2
-        Me.ButtonCancel.Text = "キャンセル"
+        Me.ButtonCancel.Text = "取消"
         Me.ButtonCancel.UseVisualStyleBackColor = True
         '
         'TextBoxContent
@@ -143,7 +141,7 @@ Partial Class TipEditDialog
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(320, 200)
+        Me.MinimumSize = New System.Drawing.Size(320, 220)
         Me.Name = "TipEditDialog"
         Me.ShowIcon = False
         Me.ShowInTaskbar = False

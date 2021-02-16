@@ -17,11 +17,25 @@ Public Class TipItem
     ' <JsonProperty("images")>
     ' Public Property Images As List(Of String)
 
-    ' <JsonProperty("created_at")>
-    ' Public Property CreatedAt As DateTime
+    <JsonProperty("created_at")>
+    Public Property CreatedAt As DateTime
 
-    ' <JsonProperty("updated_at")>
-    ' Public Property UpdatedAt As DateTime
+    <JsonProperty("updated_at")>
+    Public Property UpdatedAt As DateTime
+
+    <JsonIgnore>
+    Public ReadOnly Property IsDefaultCreatedAt As Boolean
+        Get
+            Return CreatedAt.Year = 1 ' 0001-01-01T00:00:00
+        End Get
+    End Property
+
+    <JsonIgnore>
+    Public ReadOnly Property IsDefaultUpdatedAt As Boolean
+        Get
+            Return UpdatedAt.Year = 1
+        End Get
+    End Property
 
     <JsonIgnore>
     Public Property Color As TipColor

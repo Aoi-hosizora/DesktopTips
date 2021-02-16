@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports System.Text
 Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Converters
 
 Partial Public Class GlobalModel
 
@@ -11,13 +12,19 @@ Partial Public Class GlobalModel
     Public Shared ReadOnly StorageFilename As String = StorageFilepath & "\data.json"
 
     ''' <summary>
+    ''' JsonConvert 默认设置
+    ''' </summary>
+    Private Shared ReadOnly JsonConvertSetting As New JsonSerializerSettings() With { 
+        .Converters = {New IsoDateTimeConverter()}, .Formatting = Formatting.Indented }
+
+    ''' <summary>
     ''' 加载文件并写入 GlobalModel
     ''' </summary>
     Public Shared Sub LoadAllData()
         Dim obj As FileModel
         Try
             Dim json = Load(StorageFilename)
-            obj = JsonConvert.DeserializeObject(Of FileModel)(json)
+            obj = JsonConvert.DeserializeObject(Of FileModel)(json, JsonConvertSetting)
         Catch ex As Exception
             Throw New FileLoadException(ex.Message)
         End Try
@@ -41,7 +48,7 @@ Partial Public Class GlobalModel
     ''' </summary>
     Public Shared Sub SaveAllData()
         Dim obj As New FileModel(Colors, Tabs)
-        Dim json = JsonConvert.SerializeObject(obj, Formatting.Indented)
+        Dim json = JsonConvert.SerializeObject(obj, JsonConvertSetting)
         Save(json, StorageFilename)
     End Sub
 
@@ -55,7 +62,7 @@ Partial Public Class GlobalModel
         reader.Close()
         fs.Close()
         If String.IsNullOrWhiteSpace(json) Then
-            json = JsonConvert.SerializeObject(FileModel.DefaultModel(), Formatting.Indented)
+            json = JsonConvert.SerializeObject(FileModel.DefaultModel(), JsonConvertSetting)
             Save(json, StorageFilename)
         End If
         Return json

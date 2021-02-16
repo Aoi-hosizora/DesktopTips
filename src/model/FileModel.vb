@@ -17,11 +17,25 @@ Public Class FileModel
     ''' 默认文件内容
     ''' </summary>
     Public Shared Function DefaultModel() As FileModel
-        Dim colorList As New List(Of TipColor) From {New TipColor(0, "红色", Color.Red), New TipColor(1, "蓝色", Color.Blue)}
-        Dim tabList As New List(Of Tab) From {New Tab("默认")}
-        tabList.First().Tips.AddRange({ _
-            New TipItem(0, "普通标签"), New TipItem(1, "红色高亮标签", 0), New TipItem(2, "蓝色高亮标签", 1)
+        Dim now = DateTime.Now
+
+        Dim colorList As New List(Of TipColor)
+        colorList.AddRange({ _
+            New TipColor(0, "红色", Color.Red) With { .CreatedAt = now, .UpdatedAt = now },
+            New TipColor(1, "蓝色", Color.Blue) With { .CreatedAt = now, .UpdatedAt = now },
+            New TipColor(2, "橙色", Color.Orange) With { .CreatedAt = now, .UpdatedAt = now }
         })
+
+        Dim tab1 As New Tab("默认") With { .CreatedAt = now, .UpdatedAt = now }
+        Dim tab2 As New Tab("备用") With { .CreatedAt = now, .UpdatedAt = now }
+        Dim tabList As New List(Of Tab) From {tab1, tab2}
+        tab1.Tips.AddRange({ _
+            New TipItem(0, "普通标签") With { .CreatedAt = now, .UpdatedAt = now },
+            New TipItem(1, "红色高亮标签", 0) With { .CreatedAt = now, .UpdatedAt = now },
+            New TipItem(2, "蓝色高亮标签", 1) With { .CreatedAt = now, .UpdatedAt = now },
+            New TipItem(3, "橙色高亮标签 已完成", 2, True) With { .CreatedAt = now, .UpdatedAt = now }
+        })
+
         Return New FileModel(colorList, tabList)
     End Function
 End Class

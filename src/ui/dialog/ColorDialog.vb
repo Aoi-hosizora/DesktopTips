@@ -24,7 +24,8 @@ Public Class ColorDialog
         Dim title As String = InputBox("新颜色的标签：", "新建", "颜色").Trim()
         If title <> "" Then
             Dim id As Integer = ColorListView.Items.Count
-            Dim tipColor As New TipColor(id, title) ' 默认红色
+            Dim now = DateTime.Now
+            Dim tipColor As New TipColor(id, title) With { .CreatedAt = now, .UpdatedAt = now } ' 默认红色
             AddToListView(tipColor)
             UpdateListViewColumn()
             SetListViewSelect(id)
@@ -65,8 +66,10 @@ Public Class ColorDialog
             ColorReplaceDialog.SelectedColor = delColor
             ColorReplaceDialog.AllColors = GlobalModel.Colors.Where(Function (c) c.Id <> delColor.Id).ToList()
             ColorReplaceDialog.OkCallback = Sub(id As Integer)
+                Dim now = DateTime.Now
                 For Each tip As TipItem In tips
                     tip.ColorId = id
+                    tip.UpdatedAt = now
                 Next
                 RemoveFromListView(delColor)
             End Sub
@@ -136,11 +139,16 @@ Public Class ColorDialog
         Dim item As ListViewItem = ColorListView.Items.Add(c.Id)
         item.Tag = c ' Tag 保存原值
         item.UseItemStyleForSubItems = False
-        item.SubItems.Add(c.Name)
-        item.SubItems.Add(c.HexColor)
-        item.SubItems.Add(ColorToRgb(c.Color))
-        Dim subItem As ListViewItem.ListViewSubItem = item.SubItems.Add("")
+        item.SubItems.Add(c.Name) ' 标签
+        item.SubItems.Add(c.HexColor) ' Hex
+        item.SubItems.Add(ColorToRgb(c.Color)) ' RGB
+        Dim subItem As ListViewItem.ListViewSubItem = item.SubItems.Add("") ' 预览
         subItem.BackColor = c.Color
+
+        Dim tooltip = $"{c.Name} - {c.HexColor} / ({ColorToRgb(c.Color)})" & vbNewLine
+        ToolTip &= "创建于 " & If(c.IsDefaultCreatedAt, "未知时间", c.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")) & vbNewLine
+        ToolTip &= "更新于 " & If(c.IsDefaultUpdatedAt, "未知时间", c.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
+        item.ToolTipText = ToolTip
     End Sub
 
     ''' <summary>
@@ -162,6 +170,7 @@ Public Class ColorDialog
         Dim newName = InputBox("修改颜色标签：", "修改", currTipColor.Name).Trim()
         If newName <> "" Then
             currTipColor.Name = newName
+            currTipColor.UpdatedAt = DateTime.Now
             item.Tag = currTipColor
             item.SubItems(ColumnHeaderName.DisplayIndex).Text = newName
             UpdateListViewColumn()
@@ -182,6 +191,7 @@ Public Class ColorDialog
         Dim newColor As Color = colorDlg.Color
 
         tipColor.Color = newColor
+        tipColor.UpdatedAt = DateTime.Now
         item.Tag = tipColor
         item.SubItems(ColumnHeaderHex.DisplayIndex).Text = tipColor.HexColor
         item.SubItems(ColumnHeaderRgb.DisplayIndex).Text = ColorToRgb(tipColor.Color)

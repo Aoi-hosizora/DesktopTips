@@ -21,6 +21,26 @@ Public Class TipColor
         End Set
     End Property
 
+    <JsonProperty("created_at")>
+    Public Property CreatedAt As DateTime
+
+    <JsonProperty("updated_at")>
+    Public Property UpdatedAt As DateTime
+
+    <JsonIgnore>
+    Public ReadOnly Property IsDefaultCreatedAt As Boolean
+        Get
+            Return CreatedAt.Year = 1 ' 0001-01-01T00:00:00
+        End Get
+    End Property
+
+    <JsonIgnore>
+    Public ReadOnly Property IsDefaultUpdatedAt As Boolean
+        Get
+            Return UpdatedAt.Year = 1
+        End Get
+    End Property
+
     Public Sub New()
         Me.New(0, "默认高亮", Color.Red) ' Json 序列化需要默认构造函数
     End Sub

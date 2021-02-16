@@ -80,18 +80,6 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("10")>  _
-        Public Property ListCount() As Integer
-            Get
-                Return CType(Me("ListCount"),Integer)
-            End Get
-            Set
-                Me("ListCount") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("200")>  _
         Public Property Width() As Integer
             Get
@@ -99,6 +87,18 @@ Namespace My
             End Get
             Set
                 Me("Width") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("350")>  _
+        Public Property Height() As Integer
+            Get
+                Return CType(Me("Height"),Integer)
+            End Get
+            Set
+                Me("Height") = value
             End Set
         End Property
         

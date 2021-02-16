@@ -54,6 +54,7 @@ Partial Class ColorDialog
         Me.ColorListView.HideSelection = False
         Me.ColorListView.Location = New System.Drawing.Point(12, 29)
         Me.ColorListView.Name = "ColorListView"
+        Me.ColorListView.ShowItemToolTips = True
         Me.ColorListView.Size = New System.Drawing.Size(343, 367)
         Me.ColorListView.TabIndex = 1
         Me.ColorListView.UseCompatibleStateImageBehavior = False

@@ -228,38 +228,42 @@ Public Class HoverCardView
 
         Dim tip = HoverTipItem
         Dim tab = HoverTab
-        If tip IsNot Nothing Then
-            ' For Tip
-            Dim title = tab.Title
-            Dim highlight = "未高亮"
-            Dim body = tip.Content.Replace("&", "&&")
-            If body.Length > 1000 Then
-                body = body.Substring(0, 1000) & "..."
-            End If
+        Const hr = "-----------------------------" ' 29
+        If tip IsNot Nothing Then ' For Tip
+            Dim title1 = tab.Title
+            Dim title2 = "未高亮"
             If tip.IsHighLight Then
-                highlight = $"<font color=""{tip.Color.HexColor}"">{tip.Color.Name}</font>高亮"
+                title2 = $"<font color=""{tip.Color.HexColor}"">{tip.Color.Name}</font>高亮"
             End If
             If tip.Done Then
-                highlight &= " 已完成"
+                title2 &= " 已完成"
             End If
 
-            _titleLabel.Text = $"<b>{title} - {highlight}</b>"
-            _contentLabel.Text = body
-        Else
-            ' For Tab
+            Dim body1 = tip.Content.Replace("&", "&&")
+            If body1.Length > 1000 Then
+                body1 = body1.Substring(0, 1000) & "..."
+            End If
+            Dim body2 = "创建于 " & If(tip.IsDefaultCreatedAt, "未知时间", tip.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
+            body2 &= "<br />更新于 " & If(tip.IsDefaultUpdatedAt, "未知时间", tip.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
+
+            _titleLabel.Text = $"<b>{title1} - {title2}</b>"
+            _contentLabel.Text = $"{body1}<br />{hr}<br /><font size=""-1"">{body2}</font>"
+        Else ' For Tab
             Dim title = tab.Title & " 分组"
+            Dim body1 = $"总共有 {tab.Tips.Count} 项" & If(tab.Tips.Count = 0, "", "，其中：")
             Dim counts = tab.Tips.GroupBy(Function(t) t.Color).Select(Function(g) New Tuple(Of TipColor, Integer)(g.Key, g.Count())).OrderBy(Function(g) g.Item1?.Id)
-            Dim body = $"总共有 {tab.Tips.Count} 项，其中："
             For Each g In counts
                 If g.Item1 Is Nothing Then
-                    body &= $"<br />无高亮：{g.Item2} 项"
+                    body1 &= $"<br />无高亮：{g.Item2} 项"
                 Else
-                    body &= $"<br /><font color=""{g.Item1.HexColor}"">{g.Item1.Name}</font>：{g.Item2} 项"
+                    body1 &= $"<br /><font color=""{g.Item1.HexColor}"">{g.Item1.Name}</font>：{g.Item2} 项"
                 End If
             Next
+            Dim body2 = "创建于 " & If(tab.IsDefaultCreatedAt, "未知时间", tab.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
+            body2 &= "<br />更新于 " & If(tab.IsDefaultUpdatedAt, "未知时间", tab.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
 
             _titleLabel.Text = $"<b>{title}</b>"
-            _contentLabel.Text = body
+            _contentLabel.Text = $"{body1}<br />{hr}<br /><font size=""-1"">{body2}</font>"
         End If
 
         _titleLabel.Location = New Point(_titleHMargin, _titleVMargin)

@@ -16,10 +16,11 @@
 
 ### Functions (v3.0)
 
++ [x] Tip with color, done check, time record
 + [x] Tip CRUD
-+ [x] Highlight with multiple colors
-+ [x] Color CRUD (With Memo)
++ [x] Color CRUD
 + [x] Tab CRUD
++ [x] Image upload
 + [ ] ...
 
 ### Tips

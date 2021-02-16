@@ -239,7 +239,7 @@ Public Class HoverCardView
                 title2 &= " 已完成"
             End If
 
-            Dim body1 = tip.Content.Replace("&", "&&")
+            Dim body1 = tip.Content.Replace("&", "&&").Replace(vbNewLine, "<br />")
             If body1.Length > 1000 Then
                 body1 = body1.Substring(0, 1000) & "..."
             End If

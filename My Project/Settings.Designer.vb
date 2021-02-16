@@ -197,6 +197,18 @@ Namespace My
                 Me("OpenInNewBrowser") = value
             End Set
         End Property
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("x")>  _
+        Public Property SmToken() As String
+            Get
+                Return CType(Me("SmToken"),String)
+            End Get
+            Set
+                Me("SmToken") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

@@ -10,7 +10,6 @@
     End Sub
 
     Public Function Insert() As Boolean Implements MainFormContract.ITipPresenter.Insert
-        TipEditDialog.SaveCallback = Nothing
         Dim msg As String = TipEditDialog.ShowDialog("新的标签：", "添加").Trim()
         If msg <> "" Then
             Dim now = DateTime.Now

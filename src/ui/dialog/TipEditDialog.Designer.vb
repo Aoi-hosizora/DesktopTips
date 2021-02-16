@@ -31,6 +31,8 @@ Partial Class TipEditDialog
         Me.ContextMenuStripOK = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.MenuOK = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuSave = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuUploadImage = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuClipboardImage = New System.Windows.Forms.ToolStripMenuItem()
         CType(Me.SplitContainer, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer.Panel1.SuspendLayout()
         Me.SplitContainer.Panel2.SuspendLayout()
@@ -46,7 +48,7 @@ Partial Class TipEditDialog
         Me.LabelMessage.AutoEllipsis = True
         Me.LabelMessage.Location = New System.Drawing.Point(12, 9)
         Me.LabelMessage.Name = "LabelMessage"
-        Me.LabelMessage.Size = New System.Drawing.Size(360, 56)
+        Me.LabelMessage.Size = New System.Drawing.Size(200, 56)
         Me.LabelMessage.TabIndex = 0
         Me.LabelMessage.Text = "内容"
         '
@@ -54,7 +56,7 @@ Partial Class TipEditDialog
         '
         Me.ButtonOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonOK.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.ButtonOK.Location = New System.Drawing.Point(380, 9)
+        Me.ButtonOK.Location = New System.Drawing.Point(220, 9)
         Me.ButtonOK.Menu = Me.ContextMenuStripOK
         Me.ButtonOK.Name = "ButtonOK"
         Me.ButtonOK.Size = New System.Drawing.Size(75, 25)
@@ -67,7 +69,7 @@ Partial Class TipEditDialog
         Me.ButtonCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.ButtonCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonCancel.Location = New System.Drawing.Point(380, 40)
+        Me.ButtonCancel.Location = New System.Drawing.Point(220, 40)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(75, 25)
         Me.ButtonCancel.TabIndex = 2
@@ -83,7 +85,7 @@ Partial Class TipEditDialog
         Me.TextBoxContent.Multiline = True
         Me.TextBoxContent.Name = "TextBoxContent"
         Me.TextBoxContent.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.TextBoxContent.Size = New System.Drawing.Size(440, 252)
+        Me.TextBoxContent.Size = New System.Drawing.Size(280, 90)
         Me.TextBoxContent.TabIndex = 4
         Me.TextBoxContent.Text = "文本框"
         '
@@ -106,14 +108,14 @@ Partial Class TipEditDialog
         '
         Me.SplitContainer.Panel2.Controls.Add(Me.TextBoxContent)
         Me.SplitContainer.Panel2MinSize = 100
-        Me.SplitContainer.Size = New System.Drawing.Size(464, 341)
+        Me.SplitContainer.Size = New System.Drawing.Size(304, 181)
         Me.SplitContainer.SplitterDistance = 70
         Me.SplitContainer.SplitterWidth = 5
         Me.SplitContainer.TabIndex = 3
         '
         'ContextMenuStripOK
         '
-        Me.ContextMenuStripOK.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MenuOK, Me.MenuSave})
+        Me.ContextMenuStripOK.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MenuOK, Me.MenuSave, Me.MenuUploadImage, Me.MenuClipboardImage})
         Me.ContextMenuStripOK.Name = "ContextMenuStripOK"
         Me.ContextMenuStripOK.Size = New System.Drawing.Size(153, 70)
         '
@@ -129,12 +131,24 @@ Partial Class TipEditDialog
         Me.MenuSave.Size = New System.Drawing.Size(152, 22)
         Me.MenuSave.Text = "保存(&S)"
         '
+        'MenuUploadImage
+        '
+        Me.MenuUploadImage.Name = "MenuUploadImage"
+        Me.MenuUploadImage.Size = New System.Drawing.Size(152, 22)
+        Me.MenuUploadImage.Text = "上传图片(&S)"
+        '
+        'MenuClipboardImage
+        '
+        Me.MenuClipboardImage.Name = "MenuClipboardImage"
+        Me.MenuClipboardImage.Size = New System.Drawing.Size(152, 22)
+        Me.MenuClipboardImage.Text = "插入剪贴板的图片(&C)"
+        '
         'TipEditDialog
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonCancel
-        Me.ClientSize = New System.Drawing.Size(464, 341)
+        Me.ClientSize = New System.Drawing.Size(320, 220)
         Me.Controls.Add(Me.SplitContainer)
         Me.Font = New System.Drawing.Font("微软雅黑", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.KeyPreview = True
@@ -164,4 +178,6 @@ Partial Class TipEditDialog
     Friend WithEvents ContextMenuStripOK As System.Windows.Forms.ContextMenuStrip
     Friend WithEvents MenuOK As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MenuSave As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents MenuUploadImage As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents MenuClipboardImage As System.Windows.Forms.ToolStripMenuItem
 End Class

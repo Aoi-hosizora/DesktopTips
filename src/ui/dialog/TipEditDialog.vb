@@ -166,7 +166,6 @@ Public Class TipEditDialog
         End If
         Dim filename = Path.GetTempFileName()
         image.Save(filename)
-        MessageBox.Show(filename)
 
         ' 上传
         UploadImage(filename, token, True)

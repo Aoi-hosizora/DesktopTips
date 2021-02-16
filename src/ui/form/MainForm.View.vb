@@ -9,25 +9,6 @@
         Return Me
     End Function
 
-    Public Sub ShowTextForm(title As String, content As String, textColor As Color) Implements MainFormContract.IView.ShowTextForm
-        Dim formSize = New Size(500, 300)
-
-        Dim textBox As New TextBox With {
-                .Text = content, .ReadOnly = True, .Multiline = True, .ScrollBars = ScrollBars.Both, .WordWrap = False,
-                .BackColor = Color.White, .ForeColor = textColor, .Font = New Font("Microsoft YaHei UI", 9.0!),
-                .Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top}
-        Dim form As New BaseEscCbForm With {
-                .Text = title, .Size = formSize, .TopMost = True, .FormBorderStyle = FormBorderStyle.Sizable}
-        form.Controls.Add(textBox)
-        textBox.Dock = DockStyle.Fill
-        AddHandler form.Load, Sub()
-                                  form.Top = Me.Top
-                                  form.Left = Me.Left - formSize.Width - 15
-                                  textBox.Select(0, 0)
-                              End Sub
-        form.Show()
-    End Sub
-
     Public Sub FocusItem(tabIdx As Integer, tipIdx As Integer) Implements MainFormContract.IView.FocusItem
         If tabIdx < m_TabView.TabCount Then
             m_TabView.SelectedTabIndex = tabIdx
@@ -35,5 +16,29 @@
                 m_ListView.SetSelectedItems(tipIdx)
             End If
         End If
+    End Sub
+
+    Public Sub ShowTextForm(title As String, contents As List(Of Tuple(Of String, Color))) Implements MainFormContract.IView.ShowTextForm
+        Dim formSize = New Size(500, 300)
+        Dim form As New BaseEscCbForm With { .Text = title, .Size = formSize, .TopMost = True, .FormBorderStyle = FormBorderStyle.Sizable}
+        Dim f = New Font("Microsoft YaHei UI", 10.0!)
+        Dim richBox As New RichTextBox With {
+            .ReadOnly = True, .Multiline = True, .ScrollBars = RichTextBoxScrollBars.ForcedBoth, .WordWrap = False, 
+            .BackColor = Color.White, .Font = f, .HideSelection = False, .DetectUrls = False, .ShortcutsEnabled = True, 
+            .Location = New Point(0, 0), .Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top}
+        form.Controls.Add(richBox)
+        richBox.Dock = DockStyle.Fill
+        AddHandler form.Load, Sub()
+            form.Top = Top
+            form.Left = Left - formSize.Width - 8
+            richBox.Select(0, 0)
+        End Sub
+
+        For Each content In contents
+            richBox.SelectionColor = content.Item2
+            richBox.SelectionFont = f
+            richBox.SelectedText &= content.Item1 & vbNewLine
+        Next
+        form.Show()
     End Sub
 End Class

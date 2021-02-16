@@ -1,8 +1,8 @@
 ﻿Public Interface MainFormContract
     Public Interface IView
-        Function GetMe() As MainForm                                                        ' 获得 this 指针
-        Sub ShowTextForm(title As String, content As String, textColor As Color)            ' 显示文本对话框
+        Function GetMe() As MainForm                                                        ' 获得本窗口
         Sub FocusItem(tabIndex As Integer, tipIndex As Integer)                             ' 选择某一搜索结果
+        Sub ShowTextForm(title As String, contents As List(Of Tuple(Of String, Color)))     ' 显示文本对话框
     End Interface
 
     Public Interface IGlobalPresenter

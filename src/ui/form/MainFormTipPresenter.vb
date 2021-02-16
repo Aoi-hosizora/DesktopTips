@@ -185,13 +185,20 @@
     End Function
 
     Public Sub ViewList(items As IEnumerable(Of TipItem), highlight As Boolean) Implements MainFormContract.ITipPresenter.ViewList
+        If highlight Then
+            items = items.Where(Function(t) t.IsHighLight)
+        End If
+
+        Dim contents As New List(Of Tuple(Of String, Color))
+        For Each item In items
+            Dim content = item.Content.Replace(vbNewLine, "↴") & If (item.IsHighLight, $" [{item.Color.Name}]", "")
+            contents.Add(New Tuple(Of String, Color)(content, If(item.Color?.Color, Color.Black)))
+        Next
+
         If Not highlight Then
-            Dim tipString = String.Join(vbNewLine, items.Select(Function(t) t.Content & If(t.IsHighLight, $" [高亮 {t.Color.Name}]", "")))
-            _view.ShowTextForm($"浏览列表 (共 {items.Count} 项)", tipString.ToString(), Color.Black)
+            _view.ShowTextForm($"浏览列表 (共 {items.Count} 项)", contents)
         Else
-            Dim highLightItems = items.Where(Function(t) t.IsHighLight).Select(Function(t) $"{t.Content} [{t.Color.Name}]")
-            Dim tipString = String.Join(vbNewLine, highLightItems)
-            _view.ShowTextForm($"浏览高亮 (共 {highLightItems.Count} 项)", tipString.ToString(), Color.Black)
+            _view.ShowTextForm($"浏览高亮 (共 {items.Count} 项)", contents)
         End If
     End Sub
 

@@ -6,7 +6,7 @@
 ### Environment
 
 + `VB.NET` 14.0
-+ `.NET Framework` 4.0
++ `.NET Framework` v4.8
 + (`Visual Studio` 2010 + `Rider` 2020.3.2)
 
 ### Dependencies
@@ -16,20 +16,52 @@
 
 ### Functions (v3.0)
 
-+ [x] Tip with color, done check, time record
 + [x] Tip CRUD
 + [x] Color CRUD
 + [x] Tab CRUD
++ [x] Tip with highlight color, tab grouped, done check, time record
 + [x] Image upload
 + [ ] ...
 
 ### Tips
 
-+ Data file: `.config\DesktopTips\model.json`
++ Data file: `.config\DesktopTips\data.json`
 + Setting: `AppData\Local\DesktopTips`
++ File format:
+
+```json
+{
+  "colors": [
+    {
+      "id": 0,
+      "name": "红色",
+      "color": "#FF0000",
+      "created_at": "2021-02-17T02:36:46.3517519+08:00",
+      "updated_at": "2021-02-17T02:36:46.3517519+08:00"
+    }
+  ],
+  "tabs": [
+    {
+      "title": "默认",
+      "created_at": "2021-02-17T02:36:46.3517519+08:00",
+      "updated_at": "2021-02-17T02:36:46.3517519+08:00",
+      "tips": [
+        {
+          "id": 0,
+          "content": "普通标签",
+          "color": -1,
+          "done": false,
+          "created_at": "2021-02-17T02:36:46.3517519+08:00",
+          "updated_at": "2021-02-17T02:36:46.3517519+08:00"
+        }
+      ]
+    }
+  ]
+}
+```
 
 ### Screenshots
 
-|![Screenshots_1](./assets/Screenshots_1.jpg)|![Screenshots_2](./assets/Screenshots_2.jpg)|![Screenshots_3](./assets/Screenshots_3.jpg)|![Screenshots_4](./assets/Screenshots_4.jpg)|
+|![Screenshots_1](./assets/screenshot1.png)|![Screenshots_2](./assets/screenshot2.png)|![Screenshots_3](./assets/screenshot3.png)|
 |---|---|---|---|
-
+|![Screenshots_4](./assets/screenshot4.png)|![Screenshots_5](./assets/screenshot5.png)|![Screenshots_6](./assets/screenshot6.png)|

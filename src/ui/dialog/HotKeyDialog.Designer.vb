@@ -25,9 +25,9 @@ Partial Class HotkeyDialog
         Me.ButtonOK = New System.Windows.Forms.Button()
         Me.ButtonCancel = New System.Windows.Forms.Button()
         Me.CheckBoxIsValid = New System.Windows.Forms.CheckBox()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.HotkeyEditBox = New DesktopTips.HotkeyBox()
+        Me.LabelHint = New System.Windows.Forms.Label()
         Me.ButtonDefault = New System.Windows.Forms.Button()
+        Me.HotkeyEditBox = New DesktopTips.HotkeyBox()
         Me.SuspendLayout()
         '
         'ButtonOK
@@ -38,7 +38,7 @@ Partial Class HotkeyDialog
         Me.ButtonOK.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ButtonOK.Name = "ButtonOK"
         Me.ButtonOK.Size = New System.Drawing.Size(75, 25)
-        Me.ButtonOK.TabIndex = 4
+        Me.ButtonOK.TabIndex = 2
         Me.ButtonOK.Text = "设置(&S)"
         Me.ButtonOK.UseVisualStyleBackColor = True
         '
@@ -51,7 +51,7 @@ Partial Class HotkeyDialog
         Me.ButtonCancel.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(75, 25)
-        Me.ButtonCancel.TabIndex = 5
+        Me.ButtonCancel.TabIndex = 4
         Me.ButtonCancel.Text = "取消(&X)"
         Me.ButtonCancel.UseVisualStyleBackColor = True
         '
@@ -67,25 +67,21 @@ Partial Class HotkeyDialog
         Me.CheckBoxIsValid.Text = "是否启用快捷显示热键(&H)"
         Me.CheckBoxIsValid.UseVisualStyleBackColor = True
         '
-        'Label1
+        'LabelHint
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(11, 42)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(128, 17)
-        Me.Label1.TabIndex = 1
-        Me.Label1.Text = "请键入快捷显示热键："
+        Me.LabelHint.AutoSize = True
+        Me.LabelHint.Location = New System.Drawing.Point(11, 42)
+        Me.LabelHint.Name = "LabelHint"
+        Me.LabelHint.Size = New System.Drawing.Size(128, 17)
+        Me.LabelHint.TabIndex = 1
+        Me.LabelHint.Text = "请键入快捷显示热键："
         '
         'HotkeyEditBox
         '
-        Me.HotkeyEditBox.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.HotkeyEditBox.CurrentKey = System.Windows.Forms.Keys.F4
-        Me.HotkeyEditBox.Location = New System.Drawing.Point(12, 65)
+        Me.HotkeyEditBox.Location = New System.Drawing.Point(12, 69)
         Me.HotkeyEditBox.Name = "HotkeyEditBox"
         Me.HotkeyEditBox.Size = New System.Drawing.Size(237, 23)
         Me.HotkeyEditBox.TabIndex = 2
-        Me.HotkeyEditBox.Text = "F4"
         '
         'ButtonDefault
         '
@@ -107,7 +103,7 @@ Partial Class HotkeyDialog
         Me.CancelButton = Me.ButtonCancel
         Me.ClientSize = New System.Drawing.Size(261, 137)
         Me.Controls.Add(Me.HotkeyEditBox)
-        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.LabelHint)
         Me.Controls.Add(Me.CheckBoxIsValid)
         Me.Controls.Add(Me.ButtonCancel)
         Me.Controls.Add(Me.ButtonDefault)
@@ -117,7 +113,7 @@ Partial Class HotkeyDialog
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.Name = "HotKeyDialog"
+        Me.Name = "HotkeyDialog"
         Me.ShowIcon = False
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -130,7 +126,7 @@ Partial Class HotkeyDialog
     Friend WithEvents ButtonOK As System.Windows.Forms.Button
     Friend WithEvents ButtonCancel As System.Windows.Forms.Button
     Friend WithEvents CheckBoxIsValid As System.Windows.Forms.CheckBox
-    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents LabelHint As System.Windows.Forms.Label
     Friend WithEvents HotkeyEditBox As DesktopTips.HotkeyBox
     Friend WithEvents ButtonDefault As System.Windows.Forms.Button
 End Class

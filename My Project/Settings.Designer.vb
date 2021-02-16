@@ -80,18 +80,6 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("10")>  _
-        Public Property ListCount() As Integer
-            Get
-                Return CType(Me("ListCount"),Integer)
-            End Get
-            Set
-                Me("ListCount") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("200")>  _
         Public Property Width() As Integer
             Get
@@ -99,6 +87,18 @@ Namespace My
             End Get
             Set
                 Me("Width") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("350")>  _
+        Public Property Height() As Integer
+            Get
+                Return CType(Me("Height"),Integer)
+            End Get
+            Set
+                Me("Height") = value
             End Set
         End Property
         
@@ -164,18 +164,6 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("127.0.0.1:8776")>  _
-        Public Property LastMobileIP() As String
-            Get
-                Return CType(Me("LastMobileIP"),String)
-            End Get
-            Set
-                Me("LastMobileIP") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
         Public Property IsUseHotKey() As Boolean
             Get
@@ -209,16 +197,16 @@ Namespace My
                 Me("OpenInNewBrowser") = value
             End Set
         End Property
-        
+
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("8455")>  _
-        Public Property LastLocalPort() As String
+         Global.System.Configuration.DefaultSettingValueAttribute("x")>  _
+        Public Property SmToken() As String
             Get
-                Return CType(Me("LastLocalPort"),String)
+                Return CType(Me("SmToken"),String)
             End Get
             Set
-                Me("LastLocalPort") = value
+                Me("SmToken") = value
             End Set
         End Property
     End Class

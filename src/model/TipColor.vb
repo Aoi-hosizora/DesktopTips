@@ -8,36 +8,45 @@ Public Class TipColor
     <JsonProperty("name")>
     Public Property Name As String
 
+    <JsonIgnore>
+    Public Property Color As Color
+
     <JsonProperty("color")>
     Public Property HexColor As String
         Get
-            Return ColorTranslator.ToHtml(Color.FromArgb(_color.ToArgb()))
+            Return ColorTranslator.ToHtml(Color.FromArgb(Color.ToArgb()))
         End Get
         Set
-            _color = ColorTranslator.FromHtml(value)
+            Color = ColorTranslator.FromHtml(value)
         End Set
     End Property
 
-    <JsonIgnore>
-    Public Property Color As Color = _color
+    <JsonProperty("created_at")>
+    Public Property CreatedAt As DateTime
+
+    <JsonProperty("updated_at")>
+    Public Property UpdatedAt As DateTime
 
     <JsonIgnore>
-    Public Readonly Property RgbColor As String
+    Public ReadOnly Property IsDefaultCreatedAt As Boolean
         Get
-            Return String.Format("{0}, {1}, {2}", Color.R, Color.G, Color.B)
+            Return CreatedAt.Year = 1 ' 0001-01-01T00:00:00
+        End Get
+    End Property
+
+    <JsonIgnore>
+    Public ReadOnly Property IsDefaultUpdatedAt As Boolean
+        Get
+            Return UpdatedAt.Year = 1
         End Get
     End Property
 
     Public Sub New()
-        Me.New(0, "默认高亮")
+        Me.New(0, "默认高亮", Color.Red) ' Json 序列化需要默认构造函数
     End Sub
 
     Public Sub New(id As Integer, name As String)
         Me.New(id, name, Color.Red)
-    End Sub
-
-    Public Sub New(tipColor As TipColor)
-        Me.New(tipColor.Id, tipColor.Name, tipColor.Color)
     End Sub
 
     Public Sub New(id As Integer, name As String, color As Color)

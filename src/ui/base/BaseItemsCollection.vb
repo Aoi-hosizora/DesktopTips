@@ -1,4 +1,11 @@
 ﻿''' <summary>
+''' 抽象容器类的 CollectionView，要求必须提供 BaseItems 只读属性，以便 CollectionView 能够快速重载 ItemsCollection
+''' </summary>
+Public Interface ICollectionView
+    ReadOnly Property BaseItems As IList
+End Interface
+
+''' <summary>
 ''' 给 ICollectionView 提供 ItemsCollection 重载
 ''' </summary>
 Public MustInherit Class BaseItemsCollection(Of T)
@@ -20,33 +27,33 @@ Public MustInherit Class BaseItemsCollection(Of T)
     End Sub
 
     Public Overloads Sub Add(obj As T)
-        Me.InsertItem(Items.Count, obj)
+        InsertItem(Items.Count, obj)
     End Sub
 
     Public Overloads Sub AddRange(obj As IEnumerable(Of T))
         For Each o As T In obj
-            Me.InsertItem(Items.Count, o)
+            InsertItem(Items.Count, o)
         Next
     End Sub
 
     Protected Overrides Sub InsertItem(index As Integer, obj As T)
         MyBase.InsertItem(index, obj)
-        _owner.baseItems.Insert(index, obj)
+        _owner.BaseItems.Insert(index, obj)
     End Sub
 
     Protected Overrides Sub RemoveItem(index As Integer)
         MyBase.RemoveItem(index)
-        _owner.baseItems.RemoveAt(index)
+        _owner.BaseItems.RemoveAt(index)
     End Sub
 
     Protected Overrides Sub ClearItems()
         MyBase.ClearItems()
-        _owner.baseItems.Clear()
+        _owner.BaseItems.Clear()
     End Sub
 
     Protected Overrides Sub SetItem(index As Integer, obj As T)
         MyBase.SetItem(index, obj)
-        _owner.baseItems(index) = obj
+        _owner.BaseItems(index) = obj
     End Sub
 
     Protected Overrides Sub Finalize()

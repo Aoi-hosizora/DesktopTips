@@ -17,6 +17,14 @@ Public Class NativeMethod
     Public Const WM_KEYDOWN = &H100
     Public Const WM_SYSKEYDOWN = &H104
     Public Const WM_NCPAINT = &H85
+    Public Const WM_NCMOUSEMOVE = &HA0
+    Public Const WM_NCMOUSELEAVE = &H2A2
+    Public Const WM_NCLBUTTONDOWN = &HA1
+    Public Const WM_NCRBUTTONDOWN = &HA4
+    Public Const WM_NCMBUTTONDOWN = &HA7
+    Public Const WM_NCLBUTTONUP = &HA2
+    Public Const WM_NCRBUTTONUP = &HA5
+    Public Const WM_NCMBUTTONUP = &HA8
 
     Public Const CS_DROPSHADOW = &H20000
 
@@ -24,9 +32,12 @@ Public Class NativeMethod
     Public Const DWMWA_NCRENDERING_POLICY = 2
     Public Const DWMWA_EXCLUDED_FROM_PEEK = 12
     Public Const DWMNC_ENABLED = 2
-    
+
     Public Const LWA_ALPHA = &H2
     Public Const LWA_COLORKEY = &H1
+
+    Public Const BS_COMMANDLINK As Integer = &HE
+    Public Const BCM_SETNOTE As Integer = &H1609
 
 #End Region
 
@@ -37,14 +48,14 @@ Public Class NativeMethod
     End Sub
 
     Public Enum MouseEvent As UInteger
-        MOUSEEVENTF_LEFTDOWN = &H2      '左键按下
-        MOUSEEVENTF_LEFTUP = &H4        '左键释放
-        MOUSEEVENTF_MIDDLEDOWN = &H20   '中键按下
-        MOUSEEVENTF_MIDDLEUP = &H40     '中键释放
-        MOUSEEVENTF_RIGHTDOWN = &H8     '右键按下
-        MOUSEEVENTF_RIGHTUP = &H10      '右键释放
-        MOUSEEVENTF_MOVE = &H1          '指针移动
-        MOUSEEVENTF_ABSOLUTE = &H8000   '绝对移动
+        MOUSEEVENTF_LEFTDOWN = &H2    '左键按下
+        MOUSEEVENTF_LEFTUP = &H4      '左键释放
+        MOUSEEVENTF_MIDDLEDOWN = &H20 '中键按下
+        MOUSEEVENTF_MIDDLEUP = &H40   '中键释放
+        MOUSEEVENTF_RIGHTDOWN = &H8   '右键按下
+        MOUSEEVENTF_RIGHTUP = &H10    '右键释放
+        MOUSEEVENTF_MOVE = &H1        '指针移动
+        MOUSEEVENTF_ABSOLUTE = &H8000 '绝对移动
     End Enum
 
     ''' <summary>
@@ -100,6 +111,12 @@ Public Class NativeMethod
     Public Shared Function GetClassName(hWnd As IntPtr, pClassName As StringBuilder, nMaxCount As Integer) As Integer
     End Function
 
+    Public Shared Function GetWindowClassName(handle As IntPtr) As String
+        Dim sb As New StringBuilder(256)
+        GetClassName(handle, sb, sb.Capacity)
+        Return sb.ToString()
+    End Function
+
     <DllImport("user32.dll")>
     Public Shared Function SetWindowPos(hWnd As IntPtr, hWndInsertAfter As IntPtr, X As Integer, Y As Integer, cx As Integer, cy As Integer, uFlags As Integer) As Boolean
     End Function
@@ -108,27 +125,26 @@ Public Class NativeMethod
     Public Shared Function SetWindowText(hwnd As IntPtr, lpString As String) As Boolean
     End Function
 
-    Public Shared Function GetWindowClassName(handle As IntPtr) As String
-        Dim sb As New StringBuilder(256)
-        GetClassName(handle, sb, sb.Capacity)
-        Return sb.ToString()
-    End Function
-    
     <DllImport("user32.dll")>
     Public Shared Function SetLayeredWindowAttributes(hwnd As IntPtr, crKey As COLORREF, bAlpha As Byte, dwFlags As UInteger) As Boolean
     End Function
-    
+
     <StructLayout(LayoutKind.Sequential)>
     Public Structure COLORREF
         Public R As Byte
         Public G As Byte
         Public B As Byte
-        Public Sub New (color As Color)
+
+        Public Sub New(color As Color)
             R = color.R
             G = color.G
             B = color.B
         End Sub
     End Structure
+
+    <DllImport("user32.dll")>
+    Public Shared Function SendMessage(hWnd As IntPtr, msg As Integer, wParam As IntPtr, <MarshalAs(UnmanagedType.LPWStr)> lParam As String) As IntPtr
+    End Function
 
 #End Region
 

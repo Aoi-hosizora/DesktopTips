@@ -6,8 +6,6 @@ using System.Windows.Forms;
 
 namespace Utils {
 
-    // https://www.cnblogs.com/code1992/p/9719856.html
-
     public class MessageBoxEx {
         public static DialogResult Show(string text, string caption, MessageBoxButtons buttons, string[] buttonTitles = null) {
             MessageForm frm = new MessageForm(buttons, buttonTitles);

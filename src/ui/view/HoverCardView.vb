@@ -1,49 +1,125 @@
 ﻿Imports System.Drawing.Drawing2D
 Imports DD = DevComponents.DotNetBar
 
+''' <summary>
+''' 悬浮卡片
+''' </summary>
 Public Class HoverCardView
     Inherits Form
 
-    Private WithEvents _timerShowForm As New Timer() With {.Interval = 1, .Enabled = False}
-    Private WithEvents _timerCloseForm As New Timer() With {.Interval = 1, .Enabled = False}
+#Region "属性"
 
-    Public ReadOnly Property OpacitySpeed = 0.1
-    Public Property PreLocation As New Point()
+    ''' <summary>
+    ''' 悬浮卡片的 TipItem 内容，可为 Nothing
+    ''' </summary>
+    Public Property HoverTipItem As TipItem
 
-    Public Property WidthFunc As Func(Of Integer)
-    Public Property HoverTipFunc As Func(Of TipItem)
-    Public Property HoverTabFunc As Func(Of Tab)
+    ''' <summary>
+    ''' 悬浮卡片的 Tab 内容，不能为 Nothing
+    ''' </summary>
+    Public Property HoverTab As Tab
+
+    ''' <summary>
+    ''' 悬浮卡片显示时的光标位置
+    ''' </summary>
+    Public Property HoverCursorPosition As Point
+
+    ''' <summary>
+    ''' 悬浮卡片显示时 Parent 的光标位置
+    ''' </summary>
+    Public Property HoverParentPosition As Point
+
+    ''' <summary>
+    ''' 悬浮卡片显示时 Parent 的大小
+    ''' </summary>
+    Public Property HoverParentSize As Size
+
+    ''' <summary>
+    ''' 悬浮卡片显示的间隙
+    ''' </summary>
+    Private ReadOnly Property HoverGapDistance As Integer = 7
+
+    ''' <summary>
+    ''' 卡片窗口大小
+    ''' </summary>
+    Private ReadOnly Property CardWidth As Integer
+        Get
+            If HoverTipItem IsNot Nothing Then
+                Dim sze = TextRenderer.MeasureText(HoverTipItem.Content, Font)
+                Dim newWidth = sze.Width + _contentHMargin * 2 + 12 ' Extra 12
+                If newWidth > Screen.PrimaryScreen.Bounds.Width * 2 / 5 Then
+                    newWidth = Screen.PrimaryScreen.Bounds.Width * 2 / 5
+                End If
+                If newWidth < 200 Then
+                    newWidth = 200
+                End If
+                Return newWidth
+                ' Select Case HoverTipItem.Content.Length
+                '     Case <= 100 : Return 200
+                '     Case <= 300 : Return 250
+                '     Case <= 800 : Return 400
+                '     Case Else : Return 500
+                ' End Select
+            Else If HoverTab IsNot Nothing Then
+                Return 200
+            End If
+            Return -1
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' 卡片窗口位置
+    ''' </summary>
+    Private ReadOnly Property CardPosition As Point
+        Get
+            If CardWidth < 0 Then
+                Return New Point(0, 0)
+            End If
+            Dim curPos = HoverCursorPosition
+            Dim cliPos = HoverParentPosition
+            Dim x = curPos.X - cliPos.X + HoverParentSize.Width + HoverGapDistance
+            If Screen.AllScreens.Length > 1 And curPos.X > Screen.PrimaryScreen.Bounds.Width Then
+                x -= Screen.PrimaryScreen.Bounds.Width ' 扩展屏幕
+            End If
+            If HoverTipItem Is Nothing Or x >= Screen.PrimaryScreen.Bounds.Width - CardWidth Then
+                x = curPos.X - (cliPos.X + CardWidth + HoverGapDistance)
+            Else If Screen.AllScreens.Length > 1 And curPos.X > Screen.PrimaryScreen.Bounds.Width Then
+                x += Screen.PrimaryScreen.Bounds.Width ' 扩展屏幕
+            End If
+            Return New Point(x, curPos.Y)
+        End Get
+    End Property
+
+    Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean = True
+
+#End Region
 
     Protected Overrides Sub OnLoad(e As EventArgs)
         MyBase.OnLoad(e)
-        Me.AutoScaleMode = AutoScaleMode.Font
-        Me.Font = New Font("Microsoft YaHei UI", 9.0!)
-        Me.FormBorderStyle = FormBorderStyle.None
-        Me.ShowInTaskbar = false
-        Me.Opacity = 0
-        If WidthFunc Is Nothing OrElse HoverTabFunc Is Nothing Then
-            Me.Close()
+        AutoScaleMode = AutoScaleMode.Font
+        Font = New Font("Microsoft YaHei UI", 9.0!)
+        FormBorderStyle = FormBorderStyle.None
+        ShowInTaskbar = false
+        Opacity = 0
+
+        If CardWidth <= 0 Then
+            Close()
             Return
         End If
-        Me.Width = WidthFunc.Invoke()
-        _tab = HoverTabFunc.Invoke()
-        If Not HoverTipFunc Is Nothing Then
-            _tip = HoverTipFunc.Invoke()
+        Width = CardWidth ' <<<
+        InitialLayout()
+        Dim pos = CardPosition
+        Left = pos.X ' <<<
+        Top = pos.Y ' <<<
+        If Height + Top > Screen.PrimaryScreen.Bounds.Height - 10 Then
+            Top = Screen.PrimaryScreen.Bounds.Height - Height - 10
         End If
-        initLabel()
-
-        Me.Left = PreLocation.X
-        Me.Top = PreLocation.Y
-        If Me.Height + Me.Top > My.Computer.Screen.Bounds.Height Then
-            Me.Top = My.Computer.Screen.Bounds.Height - Me.Height
-        End If
-        Me.Top -= 1 / OpacitySpeed
+        If Top < 0 Then Top = 0
+        Top -= 1 / OpacitySpeed
 
         _timerCloseForm.Enabled = false
         _timerShowForm.Enabled = true
     End Sub
-
-    Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean = True
 
     Protected Overrides ReadOnly Property CreateParams As CreateParams
         Get
@@ -58,127 +134,6 @@ Public Class HoverCardView
         End Get
     End Property
 
-    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
-        MyBase.OnFormClosing(e)
-        e.Cancel = Opacity > 0
-        _timerShowForm.Enabled = False
-        _timerCloseForm.Enabled = true
-    End Sub
-
-    Private Sub TimerShowForm_Tick(sender As Object, e As EventArgs) Handles _timerShowForm.Tick
-        Me.Opacity += OpacitySpeed
-        Me.Top += 1
-        If Me.Opacity >= 1 Then
-            Me.Opacity = 1
-            _timerShowForm.Enabled = False
-        End If
-    End Sub
-
-    Private Sub TimerCloseForm_Tick(sender As Object, e As EventArgs) Handles _timerCloseForm.Tick
-        Me.Opacity -= OpacitySpeed
-        Me.Top -= 1
-        If Me.Opacity <= 0 Then
-            MyBase.Close()
-            _timerCloseForm.Enabled = False
-        End If
-    End Sub
-
-    Private ReadOnly _titleLabel As New DD.LabelX()
-    Private ReadOnly _contentLabel As New DD.LabelX()
-    Private WithEvents _button As New DD.ButtonX()
-
-    Private _tip As TipItem
-    Private _tab As Tab
-
-    Private ReadOnly _titleLeft = 10
-    Private ReadOnly _contentLeft = 8
-    Private ReadOnly _titleTop = 5
-    Private ReadOnly _contentTop = 2
-    Private ReadOnly _bottom = 6
-    Private ReadOnly _buttonSize = 14
-    Private ReadOnly _buttonMargin = 5
-
-    Private Sub ButtonClose_MouseDown(sender As Object, e As MouseEventArgs) Handles _button.MouseDown
-        _titleLabel.Focus()
-    End Sub
-
-    Private Sub ButtonClose_Clicked(sender As Object, e As EventArgs) Handles _button.Click
-        Me.Close()
-    End Sub
-
-    Private Sub initLabel()
-        _titleLabel.BackColor = Color.Transparent
-        _titleLabel.BackgroundStyle.CornerType = DD.eCornerType.Square
-        _titleLabel.AutoSize = True
-        _titleLabel.MaximumSize = New Size(Me.Width - _titleLeft * 2 - 2 * _buttonMargin, 0)
-        _titleLabel.WordWrap = False
-
-        _contentLabel.BackColor = Color.Transparent
-        _contentLabel.BackgroundStyle.CornerType = DD.eCornerType.Square
-        _contentLabel.AutoSize = True
-        _contentLabel.MaximumSize = New Size(Me.Width - _contentLeft * 2, 0)
-        _contentLabel.WordWrap = True
-
-        _button.BackColor = Color.Transparent
-        _button.Text = "×"
-        _button.ColorTable = DD.eButtonColor.Orange
-        _button.Size = New Size(_buttonSize, _buttonSize)
-        _button.Style = DD.eDotNetBarStyle.StyleManagerControlled
-        _button.AccessibleRole = AccessibleRole.PushButton
-        _button.Shape = New DD.RoundRectangleShapeDescriptor()
-        _button.Tooltip = "关闭"
-
-        Me.Controls.Add(_button)
-        Me.Controls.Add(_contentLabel)
-        Me.Controls.Add(_titleLabel)
-
-        If _tip IsNot Nothing Then
-            ' For Tip
-            Dim title = _tab.Title
-            Dim highlight = "未高亮"
-            Dim body = _tip.ContentForShow
-            If body.Length > 1000 Then
-                body = body.Substring(0, 1000) & "..."
-            End If
-            If _tip.IsHighLight Then
-                highlight = $"<font color=""{_tip.Color.HexColor}"">{_tip.Color.Name}</font>高亮"
-            End If
-
-            _titleLabel.Text = $"<b>{title} - {highlight}</b>"
-            _contentLabel.Text = body
-        Else
-            ' For Tab
-            Dim title = _tab.Title & " 分组"
-            Dim counts = _tab.Tips.GroupBy(Function(t) t.Color).Select(Function(g) New Tuple(Of TipColor, Integer)(g.Key, g.Count())).OrderBy(Function(g) g.Item1?.Id)
-            Dim body = $"总共有 {_tab.Tips.Count} 项，其中："
-            For Each g In counts
-                If g.Item1 Is Nothing Then
-                    body &= $"<br />无高亮：{g.Item2} 项"
-                Else
-                    body &= $"<br /><font color=""{g.Item1.HexColor}"">{g.Item1.Name}</font>：{g.Item2} 项"
-                End If
-            Next
-
-            _titleLabel.Text = $"<b>{title}</b>"
-            _contentLabel.Text = body
-        End If
-
-        _titleLabel.Location = New Point(_titleLeft, _titleTop)
-        _contentLabel.Location = New Point(_contentLeft, _titleLabel.Top + _titleLabel.Height + _contentTop)
-        _button.Location = New Point(Me.Width - _buttonMargin - _buttonSize, _buttonMargin)
-        Me.Height = _contentLabel.Top + _contentLabel.Height + _bottom
-    End Sub
-
-    Protected Overrides Sub OnPaint(e As PaintEventArgs)
-        MyBase.OnPaint(e)
-        Dim g = e.Graphics
-        Dim brush = New LinearGradientBrush(ClientRectangle, Color.White, Color.FromArgb(229, 229, 240), LinearGradientMode.Vertical)
-        g.FillRectangle(brush, ClientRectangle)
-        ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.FromArgb(200, 200, 200), ButtonBorderStyle.Solid)
-    End Sub
-
-#Region "P/Invoke Stuff"
-
     Protected Overrides Sub WndProc(ByRef m As Message)
         Select Case m.Msg
             Case NativeMethod.WM_NCPAINT
@@ -187,12 +142,134 @@ Public Class HoverCardView
                     Const intSize = 4
                     NativeMethod.DwmSetWindowAttribute(Handle, NativeMethod.DWMWA_NCRENDERING_POLICY, val, intSize)
                     NativeMethod.DwmExtendFrameIntoClientArea(Handle, New NativeMethod.MARGINS() With {
-                        .BottomHeight = 1, .LeftWidth = 1, .RightWidth = 1, .TopHeight = 1
-                        })
+                        .BottomHeight = 1, .LeftWidth = 1, .RightWidth = 1, .TopHeight = 1 })
                 End If
                 Exit Select
         End Select
         MyBase.WndProc(m)
+    End Sub
+
+#Region "Timer"
+
+    Private Const OpacitySpeed = 0.1
+    Private WithEvents _timerShowForm As New Timer() With {.Interval = 1, .Enabled = False}
+    Private WithEvents _timerCloseForm As New Timer() With {.Interval = 1, .Enabled = False}
+
+    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
+        MyBase.OnFormClosing(e)
+        e.Cancel = Opacity > 0
+        _timerShowForm.Enabled = False
+        _timerCloseForm.Enabled = true
+    End Sub
+
+    Private Sub TimerShowForm_Tick(sender As Object, e As EventArgs) Handles _timerShowForm.Tick
+        Opacity += OpacitySpeed
+        Top += 1
+        If Opacity >= 1 Then
+            Opacity = 1
+            _timerShowForm.Enabled = False
+        End If
+    End Sub
+
+    Private Sub TimerCloseForm_Tick(sender As Object, e As EventArgs) Handles _timerCloseForm.Tick
+        Opacity -= OpacitySpeed
+        Top -= 1
+        If Opacity <= 0 Then
+            Close()
+            _timerCloseForm.Enabled = False
+        End If
+    End Sub
+
+#End Region
+
+#Region "布局"
+
+    Private ReadOnly _borderColor As Color = Color.FromArgb(200, 200, 200)
+    Private ReadOnly _startColor As Color = Color.white
+    Private ReadOnly _endColor As Color = Color.FromArgb(229, 229, 240)
+
+    Protected Overrides Sub OnPaint(e As PaintEventArgs)
+        MyBase.OnPaint(e)
+        Dim g = e.Graphics
+        Dim brush = New LinearGradientBrush(ClientRectangle, _startColor, _endColor, LinearGradientMode.Vertical)
+        g.FillRectangle(brush, ClientRectangle)
+        ControlPaint.DrawBorder(e.Graphics, ClientRectangle, _borderColor, ButtonBorderStyle.Solid)
+    End Sub
+
+    Private ReadOnly _titleLabel As New DD.LabelX With { .BackColor = Color.Transparent, .AutoSize = True, .WordWrap = False }
+    Private ReadOnly _contentLabel As New DD.LabelX With { .BackColor = Color.Transparent, .AutoSize = True, .WordWrap = True }
+    Private ReadOnly _button As New DD.ButtonX With { .Text = "×", .Tooltip = "关闭", .BackColor = Color.Transparent, .AccessibleRole = AccessibleRole.PushButton, .Style = DD.eDotNetBarStyle.StyleManagerControlled, .Shape = New DD.RoundRectangleShapeDescriptor() }
+
+    Private ReadOnly _titleHMargin = 10
+    Private ReadOnly _titleVMargin = 5
+    Private ReadOnly _contentHMargin = 8
+    Private ReadOnly _contentVMargin = 2
+    Private ReadOnly _bottom = 6
+    Private ReadOnly _buttonSize = 14
+    Private ReadOnly _buttonMargin = 5
+
+    ''' <summary>
+    ''' 加载布局
+    ''' </summary>
+    Private Sub InitialLayout()
+        _titleLabel.BackgroundStyle.CornerType = DD.eCornerType.Square
+        _titleLabel.MaximumSize = New Size(Width - _titleHMargin * 2 - 2 * _buttonMargin, 0)
+        _contentLabel.BackgroundStyle.CornerType = DD.eCornerType.Square
+        _contentLabel.MaximumSize = New Size(Width - _contentHMargin * 2, 0)
+        _button.ColorTable = DD.eButtonColor.Orange
+        _button.Size = New Size(_buttonSize, _buttonSize)
+        AddHandler _button.MouseDown, Sub() _titleLabel.Focus()
+        AddHandler _button.Click, Sub() Close()
+
+        Controls.Clear()
+        Controls.Add(_button)
+        Controls.Add(_contentLabel)
+        Controls.Add(_titleLabel)
+
+        Dim tip = HoverTipItem
+        Dim tab = HoverTab
+        Const hr = "-----------------------------" ' 29
+        If tip IsNot Nothing Then ' For Tip
+            Dim title1 = tab.Title
+            Dim title2 = "未高亮"
+            If tip.IsHighLight Then
+                title2 = $"<font color=""{tip.Color.HexColor}"">{tip.Color.Name}</font>高亮"
+            End If
+            If tip.Done Then
+                title2 &= " 已完成"
+            End If
+
+            Dim body1 = tip.Content.Replace("&", "&&").Replace(vbNewLine, "<br />")
+            If body1.Length > 1000 Then
+                body1 = body1.Substring(0, 1000) & "..."
+            End If
+            Dim body2 = "创建于 " & If(tip.IsDefaultCreatedAt, "未知时间", tip.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
+            body2 &= "<br />更新于 " & If(tip.IsDefaultUpdatedAt, "未知时间", tip.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
+
+            _titleLabel.Text = $"<b>{title1} - {title2}</b>"
+            _contentLabel.Text = $"{body1}<br />{hr}<br /><font size=""-1"">{body2}</font>"
+        Else ' For Tab
+            Dim title = tab.Title & " 分组"
+            Dim body1 = $"总共有 {tab.Tips.Count} 项" & If(tab.Tips.Count = 0, "", "，其中：")
+            Dim counts = tab.Tips.GroupBy(Function(t) t.Color).Select(Function(g) New Tuple(Of TipColor, Integer)(g.Key, g.Count())).OrderBy(Function(g) g.Item1?.Id)
+            For Each g In counts
+                If g.Item1 Is Nothing Then
+                    body1 &= $"<br />无高亮：{g.Item2} 项"
+                Else
+                    body1 &= $"<br /><font color=""{g.Item1.HexColor}"">{g.Item1.Name}</font>：{g.Item2} 项"
+                End If
+            Next
+            Dim body2 = "创建于 " & If(tab.IsDefaultCreatedAt, "未知时间", tab.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
+            body2 &= "<br />更新于 " & If(tab.IsDefaultUpdatedAt, "未知时间", tab.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
+
+            _titleLabel.Text = $"<b>{title}</b>"
+            _contentLabel.Text = $"{body1}<br />{hr}<br /><font size=""-1"">{body2}</font>"
+        End If
+
+        _titleLabel.Location = New Point(_titleHMargin, _titleVMargin)
+        _contentLabel.Location = New Point(_contentHMargin, _titleLabel.Top + _titleLabel.Height + _contentVMargin)
+        _button.Location = New Point(Width - _buttonMargin - _buttonSize, _buttonMargin)
+        Height = _contentLabel.Top + _contentLabel.Height + _bottom
     End Sub
 
 #End Region

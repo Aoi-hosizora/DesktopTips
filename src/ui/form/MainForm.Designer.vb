@@ -29,7 +29,6 @@ Partial Class MainForm
         Me.m_ListView = New DesktopTips.TipListBox()
         Me.m_btn_Exit = New DevComponents.DotNetBar.ButtonX()
         Me.m_btn_OpenListPopup = New DevComponents.DotNetBar.ButtonX()
-        Me.m_num_ListCount = New System.Windows.Forms.NumericUpDown()
         Me.m_SuperTooltip = New DevComponents.DotNetBar.SuperTooltip()
         Me.m_menu_ContextMenuBar = New DevComponents.DotNetBar.ContextMenuBar()
         Me.m_menu_ListPopupMenu = New DevComponents.DotNetBar.ButtonItem()
@@ -48,6 +47,7 @@ Partial Class MainForm
         Me.m_popup_MoveTopTop = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_MoveTipBottom = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_HighlightSubMenu = New DevComponents.DotNetBar.ButtonItem()
+        Me.m_menu_CheckDone = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_SetupColors = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_FindTips = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_MoveTipsSubMenu = New DevComponents.DotNetBar.ButtonItem()
@@ -60,12 +60,9 @@ Partial Class MainForm
         Me.m_popup_OpenDir = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_Refresh = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_ViewLinksInTips = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_menu_SyncDataSubMenu = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_popup_SyncDataTo = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_popup_SyncDataFrom = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_WindowSubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_SetupHotkey = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_popup_ShowSetListCount = New DevComponents.DotNetBar.ButtonItem()
+        Me.m_popup_SetupToken = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_OpacitySubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_TopMost = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_LoadPosition = New DevComponents.DotNetBar.ButtonItem()
@@ -83,7 +80,6 @@ Partial Class MainForm
         Me.m_btn_MoveTipUp = New DevComponents.DotNetBar.ButtonX()
         Me.m_btn_Resize = New DevComponents.DotNetBar.ButtonX()
         Me.m_btn_MoveTipDown = New DevComponents.DotNetBar.ButtonX()
-        CType(Me.m_num_ListCount, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.m_menu_ContextMenuBar, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.m_TabView, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -172,17 +168,6 @@ Partial Class MainForm
         Me.m_btn_OpenListPopup.TabIndex = 2
         Me.m_btn_OpenListPopup.Text = "≡"
         '
-        'm_num_ListCount
-        '
-        Me.m_num_ListCount.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.m_num_ListCount.Location = New System.Drawing.Point(46, 239)
-        Me.m_num_ListCount.Minimum = New Decimal(New Integer() {5, 0, 0, 0})
-        Me.m_num_ListCount.Name = "m_num_ListCount"
-        Me.m_num_ListCount.Size = New System.Drawing.Size(35, 23)
-        Me.m_num_ListCount.TabIndex = 3
-        Me.m_num_ListCount.Value = New Decimal(New Integer() {8, 0, 0, 0})
-        Me.m_num_ListCount.Visible = False
-        '
         'm_SuperTooltip
         '
         Me.m_SuperTooltip.DefaultFont = New System.Drawing.Font("Microsoft YaHei UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -204,7 +189,7 @@ Partial Class MainForm
         '
         Me.m_menu_ListPopupMenu.AutoExpandOnClick = True
         Me.m_menu_ListPopupMenu.Name = "m_menu_ListPopupMenu"
-        Me.m_menu_ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SelectedTipsCountLabel, Me.m_popup_SelectedTipsTextLabel, Me.m_popup_TipsCountLabel, Me.m_popup_ListItemContainer, Me.m_popup_MoveTopTop, Me.m_popup_MoveTipBottom, Me.m_menu_HighlightSubMenu, Me.m_popup_ViewLinksInTips, Me.m_popup_FindTips, Me.m_menu_MoveTipsSubMenu, Me.m_popup_OtherLabel, Me.m_menu_FileSubMenu, Me.m_popup_Refresh, Me.m_menu_SyncDataSubMenu, Me.m_menu_WindowSubMenu, Me.m_popup_Exit})
+        Me.m_menu_ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SelectedTipsCountLabel, Me.m_popup_SelectedTipsTextLabel, Me.m_popup_TipsCountLabel, Me.m_popup_ListItemContainer, Me.m_popup_MoveTopTop, Me.m_popup_MoveTipBottom, Me.m_menu_HighlightSubMenu, Me.m_menu_CheckDone, Me.m_popup_ViewLinksInTips, Me.m_popup_FindTips, Me.m_menu_MoveTipsSubMenu, Me.m_popup_OtherLabel, Me.m_menu_FileSubMenu, Me.m_popup_Refresh, Me.m_menu_WindowSubMenu, Me.m_popup_Exit})
         Me.m_menu_ListPopupMenu.Text = "ListPopup"
         '
         'm_popup_SelectedTipsCountLabel
@@ -352,7 +337,13 @@ Partial Class MainForm
         Me.m_menu_HighlightSubMenu.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlH)
         Me.m_menu_HighlightSubMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SetupColors})
         Me.m_menu_HighlightSubMenu.Text = "高亮(&H)"
-        Me.m_menu_HighlightSubMenu.Tooltip = "高亮"
+        '
+        'm_menu_CheckDone
+        '
+        Me.m_menu_CheckDone.Image = Global.DesktopTips.My.Resources.Resources.Done
+        Me.m_menu_CheckDone.Name = "m_menu_CheckDone"
+        Me.m_menu_CheckDone.Checked = False
+        Me.m_menu_CheckDone.Text = "标记为完成(&H)"
         '
         'm_popup_SetupColors
         '
@@ -380,7 +371,6 @@ Partial Class MainForm
         '
         Me.m_menu_MoveTipsSubMenu.Image = Global.DesktopTips.My.Resources.Resources.Right
         Me.m_menu_MoveTipsSubMenu.Name = "m_menu_MoveTipsSubMenu"
-        Me.m_menu_MoveTipsSubMenu.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlM)
         Me.m_menu_MoveTipsSubMenu.Text = "移动至(&M)"
         '
         'm_popup_OtherLabel
@@ -434,27 +424,11 @@ Partial Class MainForm
         Me.m_popup_Refresh.Name = "m_popup_Refresh"
         Me.m_popup_Refresh.Text = "刷新数据(&R)"
         '
-        'm_menu_SyncDataSubMenu
-        '
-        Me.m_menu_SyncDataSubMenu.Name = "m_menu_SyncDataSubMenu"
-        Me.m_menu_SyncDataSubMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SyncDataTo, Me.m_popup_SyncDataFrom})
-        Me.m_menu_SyncDataSubMenu.Text = "数据同步(&Y)"
-        '
-        'm_popup_SyncDataTo
-        '
-        Me.m_popup_SyncDataTo.Name = "m_popup_SyncDataTo"
-        Me.m_popup_SyncDataTo.Text = "同步到移动端(&T)"
-        '
-        'm_popup_SyncDataFrom
-        '
-        Me.m_popup_SyncDataFrom.Name = "m_popup_SyncDataFrom"
-        Me.m_popup_SyncDataFrom.Text = "从移动端同步(&F)"
-        '
         'm_menu_WindowSubMenu
         '
         Me.m_menu_WindowSubMenu.BeginGroup = True
         Me.m_menu_WindowSubMenu.Name = "m_menu_WindowSubMenu"
-        Me.m_menu_WindowSubMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SetupHotkey, Me.m_popup_ShowSetListCount, Me.m_menu_OpacitySubMenu, Me.m_popup_TopMost, Me.m_popup_LoadPosition, Me.m_popup_SavePosition})
+        Me.m_menu_WindowSubMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SetupHotkey, Me.m_popup_SetupToken, Me.m_menu_OpacitySubMenu, Me.m_popup_TopMost, Me.m_popup_LoadPosition, Me.m_popup_SavePosition})
         Me.m_menu_WindowSubMenu.Text = "设置与显示(&S)"
         '
         'm_popup_SetupHotkey
@@ -462,10 +436,10 @@ Partial Class MainForm
         Me.m_popup_SetupHotkey.Name = "m_popup_SetupHotkey"
         Me.m_popup_SetupHotkey.Text = "快捷键设置(&R)"
         '
-        'm_popup_ShowSetListCount
+        'm_popup_SetupToken
         '
-        Me.m_popup_ShowSetListCount.Name = "m_popup_ShowSetListCount"
-        Me.m_popup_ShowSetListCount.Text = "列表高度设置(&E)"
+        Me.m_popup_SetupToken.Name = "m_popup_SetupToken"
+        Me.m_popup_SetupToken.Text = "SmToken设置(&T)"
         '
         'm_menu_OpacitySubMenu
         '
@@ -619,12 +593,12 @@ Partial Class MainForm
         Me.m_btn_MoveTipUp.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
         Me.m_btn_MoveTipUp.Font = New System.Drawing.Font("Yu Gothic UI", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.m_btn_MoveTipUp.Image = Global.DesktopTips.My.Resources.Resources.UpIcon
-        Me.m_btn_MoveTipUp.Location = New System.Drawing.Point(229, 139)
+        Me.m_btn_MoveTipUp.Location = New System.Drawing.Point(229, 0)
         Me.m_btn_MoveTipUp.Name = "m_btn_MoveTipUp"
         Me.m_btn_MoveTipUp.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
         Me.m_btn_MoveTipUp.Size = New System.Drawing.Size(17, 9)
         Me.m_btn_MoveTipUp.TabIndex = 7
-        Me.m_btn_MoveTipUp.Tag = "True"
+        Me.m_btn_MoveTipUp.Tag = "Assist"
         Me.m_btn_MoveTipUp.Tooltip = "上移(U)"
         '
         'm_btn_Resize
@@ -632,9 +606,10 @@ Partial Class MainForm
         Me.m_btn_Resize.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton
         Me.m_btn_Resize.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.m_btn_Resize.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
-        Me.m_btn_Resize.Cursor = System.Windows.Forms.Cursors.SizeWE
+        Me.m_btn_Resize.Cursor = System.Windows.Forms.Cursors.SizeAll
         Me.m_btn_Resize.Location = New System.Drawing.Point(316, 239)
         Me.m_btn_Resize.Name = "m_btn_Resize"
+        Me.m_SuperTooltip.SetSuperTooltip(Me.m_btn_Resize, New DevComponents.DotNetBar.SuperTooltipInfo("调整大小", "", "左键拖动调整宽度，右键拖动调整高度。", Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(180, 68)))
         Me.m_btn_Resize.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
         Me.m_btn_Resize.Size = New System.Drawing.Size(10, 23)
         Me.m_btn_Resize.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
@@ -647,12 +622,12 @@ Partial Class MainForm
         Me.m_btn_MoveTipDown.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground
         Me.m_btn_MoveTipDown.Font = New System.Drawing.Font("Yu Gothic UI Semibold", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(128, Byte))
         Me.m_btn_MoveTipDown.Image = Global.DesktopTips.My.Resources.Resources.DownIcon
-        Me.m_btn_MoveTipDown.Location = New System.Drawing.Point(229, 147)
+        Me.m_btn_MoveTipDown.Location = New System.Drawing.Point(229, 17)
         Me.m_btn_MoveTipDown.Name = "m_btn_MoveTipDown"
         Me.m_btn_MoveTipDown.Shape = New DevComponents.DotNetBar.RoundRectangleShapeDescriptor()
         Me.m_btn_MoveTipDown.Size = New System.Drawing.Size(17, 9)
         Me.m_btn_MoveTipDown.TabIndex = 8
-        Me.m_btn_MoveTipDown.Tag = "True"
+        Me.m_btn_MoveTipDown.Tag = "Assist"
         Me.m_btn_MoveTipDown.Tooltip = "下移(D)"
         '
         'MainForm
@@ -670,7 +645,6 @@ Partial Class MainForm
         Me.Controls.Add(Me.m_btn_Exit)
         Me.Controls.Add(Me.m_btn_InsertTip)
         Me.Controls.Add(Me.m_btn_RemoveTips)
-        Me.Controls.Add(Me.m_num_ListCount)
         Me.Font = New System.Drawing.Font("Microsoft YaHei UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
@@ -682,7 +656,6 @@ Partial Class MainForm
         Me.ShowIcon = False
         Me.ShowInTaskbar = False
         Me.Text = "DesktopTips"
-        CType(Me.m_num_ListCount, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.m_menu_ContextMenuBar, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.m_TabView, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
@@ -694,7 +667,6 @@ Partial Class MainForm
     Friend WithEvents m_ListView As TipListBox
     Friend WithEvents m_btn_Exit As DevComponents.DotNetBar.ButtonX
     Friend WithEvents m_btn_OpenListPopup As DevComponents.DotNetBar.ButtonX
-    Friend WithEvents m_num_ListCount As System.Windows.Forms.NumericUpDown
     Friend WithEvents m_SuperTooltip As DevComponents.DotNetBar.SuperTooltip
     Friend WithEvents m_menu_ContextMenuBar As DevComponents.DotNetBar.ContextMenuBar
     Friend WithEvents m_menu_ListPopupMenu As DevComponents.DotNetBar.ButtonItem
@@ -709,9 +681,9 @@ Partial Class MainForm
     Friend WithEvents m_popup_ViewCurrentTips As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_Exit As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_menu_HighlightSubMenu As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents m_menu_CheckDone As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_menu_OpacitySubMenu As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_OtherLabel As DevComponents.DotNetBar.LabelItem
-    Friend WithEvents m_popup_ShowSetListCount As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_btn_MoveTipUp As DevComponents.DotNetBar.ButtonX
     Friend WithEvents m_popup_SelectedTipsCountLabel As DevComponents.DotNetBar.LabelItem
     Friend WithEvents m_popup_SelectedTipsTextLabel As DevComponents.DotNetBar.LabelItem
@@ -733,12 +705,10 @@ Partial Class MainForm
     Friend WithEvents m_popup_CopyTips As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_SavePosition As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_LoadPosition As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents m_menu_SyncDataSubMenu As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents m_popup_SyncDataTo As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents m_popup_SyncDataFrom As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_PasteAppendToTip As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_ViewLinksInTips As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_SetupHotkey As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents m_popup_SetupToken As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_menu_FileSubMenu As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_Refresh As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_SetupColors As DevComponents.DotNetBar.ButtonItem

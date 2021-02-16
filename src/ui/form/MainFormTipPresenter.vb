@@ -10,9 +10,10 @@
     End Sub
 
     Public Function Insert() As Boolean Implements MainFormContract.ITipPresenter.Insert
-        Dim msg As String = TipsEditDialog.ShowDialog("新的标签：", "添加").Trim()
+        Dim msg As String = TipEditDialog.ShowDialog("新的标签：", "添加").Trim()
         If msg <> "" Then
-            Dim tip As New TipItem(msg)
+            Dim now = DateTime.Now
+            Dim tip As New TipItem(GlobalModel.CurrentTab.Tips.Count, msg) With { .CreatedAt = now, .UpdatedAt = now }
             GlobalModel.CurrentTab.Tips.Add(tip)
             _globalPresenter.SaveFile()
             Return True
@@ -29,6 +30,7 @@
             For Each item As TipItem In items
                 GlobalModel.CurrentTab.Tips.Remove(item)
             Next
+            GlobalModel.ReorderTips(GlobalModel.CurrentTab.Tips)
             _globalPresenter.SaveFile()
             Return True
         End If
@@ -36,13 +38,21 @@
     End Function
 
     Public Function Update(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.Update
-        Dim content = item.ContentForShow
+        Dim content = item.Content
         If content.Length > 600 Then
             content = content.Substring(0, 600) + "..."
         End If
-        Dim newStr As String = TipsEditDialog.ShowDialog($"修改标签 ""{content}"" 为：", "修改", item.Content).Trim()
+        Dim saveCallback = Sub(text As String)
+            If text <> "" And text <> item.Content Then
+                item.Content = text
+                item.UpdatedAt = DateTime.Now
+                _globalPresenter.SaveFile()
+            End If
+        End Sub
+        Dim newStr As String = TipEditDialog.ShowDialog($"修改如下标签为：{vbNewLine}{vbNewLine}{content}", "修改", item.Content, saveCallback).Trim()
         If newStr <> "" And newStr <> item.Content Then
             item.Content = newStr
+            item.UpdatedAt = DateTime.Now
             _globalPresenter.SaveFile()
             Return True
         End If
@@ -57,14 +67,16 @@
     Public Function Paste(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.Paste
         Dim clip As String = Clipboard.GetText().Trim()
         If clip <> "" Then
-            Dim ok = MessageBoxEx.Show($"是否向当前标签项 ""{item.ContentForShow}"" 末尾添加剪贴板内容 ""{clip}""？", "粘贴",
-                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, _view.GetMe(), {"添加空格", "添加逗号", "不添加"})
+            Dim ok = MessageBoxEx.Show($"是否向当前标签项 ""{item.Content}"" 末尾添加剪贴板内容 ""{clip}""？", "粘贴",
+                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, _view.GetMe(), {"添加空格", "添加回车", "取消"})
             If ok = vbYes Then
-                item.Content += " " & clip
+                item.Content &= " " & clip
+                item.UpdatedAt = DateTime.Now
                 _globalPresenter.SaveFile()
                 Return True
             ElseIf ok = vbNo Then
-                item.Content += ", " & clip
+                item.Content &= vbNewLine & clip
+                item.UpdatedAt = DateTime.Now
                 _globalPresenter.SaveFile()
                 Return True
             End If
@@ -126,9 +138,9 @@
             MessageBoxEx.Show($"未找到 ""{text}"" 。", "查找", MessageBoxButtons.OK, MessageBoxIcon.Information, _view.GetMe())
         Else
             SearchDialog.SearchText = text
-            SearchDialog.GetFunc = Function() results
-            SearchDialog.SearchFunc = Sub() Search()
-            SearchDialog.HighlightFunc = Sub(tabIndex As Integer, tipIndex As Integer)
+            SearchDialog.SearchResult = results
+            SearchDialog.NewSearchCallback = Sub() Search()
+            SearchDialog.SelectCallback = Sub(tabIndex As Integer, tipIndex As Integer)
                 _view.GetMe().Focus()
                 _view.GetMe().FormOpacityUp()
                 _view.FocusItem(tabIndex, tipIndex)
@@ -138,27 +150,55 @@
     End Sub
 
     Public Function HighlightTips(items As IEnumerable(Of TipItem), color As TipColor) As Boolean Implements MainFormContract.ITipPresenter.HighlightTips
-        If color Is Nothing Then
-            For Each item In items
-                item.ColorId = - 1 ' UnHighlight
-            Next
-        Else
-            For Each item In items
-                item.ColorId = color.Id
-            Next
+        Dim tipItems = items.ToList()
+        Dim newColor = color
+        If tipItems.Count = 1 Then
+            If tipItems.First().IsHighLight AndAlso tipItems.First().ColorId = color.Id Then ' 已经高亮并且是当前颜色
+                newColor = Nothing
+            End If
+        Else If tipItems.Count > 1 Then
+            If tipItems.Where(Function (i) i.ColorId = color.Id).Count = tipItems.Count Then ' 所有选择项都是同种颜色
+                newColor = Nothing
+            End If
         End If
+
+        Dim newColorId = If(newColor?.Id, -1)
+        Dim now = DateTime.Now
+        For Each item In tipItems
+            item.ColorId = newColorId
+            item.UpdatedAt = now
+        Next
         _globalPresenter.SaveFile()
         Return True
     End Function
 
+    Public Function CheckTipsDone(items As IEnumerable(Of TipItem)) As boolean Implements MainFormContract.ITipPresenter.CheckTipsDone
+        Dim tipItems = items.ToList()
+        Dim toDone = Not tipItems.All(Function(item) item.Done)
+        Dim now = DateTime.Now
+        For Each item In tipItems
+            item.Done = toDone
+            item.UpdatedAt = now
+        Next
+        _globalPresenter.SaveFile()
+        Return toDone
+    End Function
+
     Public Sub ViewList(items As IEnumerable(Of TipItem), highlight As Boolean) Implements MainFormContract.ITipPresenter.ViewList
+        If highlight Then
+            items = items.Where(Function(t) t.IsHighLight)
+        End If
+
+        Dim contents As New List(Of Tuple(Of String, Color))
+        For Each item In items
+            Dim content = item.Content.Replace(vbNewLine, "↴") & If (item.IsHighLight, $" [{item.Color.Name}]", "")
+            contents.Add(New Tuple(Of String, Color)(content, If(item.Color?.Color, Color.Black)))
+        Next
+
         If Not highlight Then
-            Dim tipString = String.Join(vbNewLine, items.Select(Function(t) t.Content & If(t.IsHighLight, $" [高亮 {t.Color.Name}]", "")))
-            _view.ShowTextForm($"浏览列表 (共 {items.Count} 项)", tipString.ToString(), Color.Black)
+            _view.ShowTextForm($"浏览列表 (共 {items.Count} 项)", contents)
         Else
-            Dim highLightItems = items.Where(Function(t) t.IsHighLight).Select(Function(t) $"{t.Content} [{t.Color.Name}]")
-            Dim tipString = String.Join(vbNewLine, highLightItems)
-            _view.ShowTextForm($"浏览高亮 (共 {highLightItems.Count} 项)", tipString.ToString(), Color.Black)
+            _view.ShowTextForm($"浏览高亮 (共 {items.Count} 项)", contents)
         End If
     End Sub
 
@@ -181,22 +221,41 @@
     End Sub
 
     Public Sub ViewAllLinks(items As IEnumerable(Of TipItem)) Implements MainFormContract.ITipPresenter.ViewAllLinks
-        Dim links As List(Of String) = GetLinks(items).ToList()
+        Dim itemList = items.ToList()
+        Dim links As List(Of String) = GetLinks(itemList).ToList()
         If links.Count = 0 Then
-            MessageBoxEx.Show("所选项不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error, _view.GetMe())
+            MessageBoxEx.Show($"所选 {itemList.Count} 个标签内不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error, _view.GetMe())
         Else
             LinkDialog.Close()
-            LinkDialog.GetFunc = Function() links
-            LinkDialog.OpenBrowserFunc = Sub(l As IEnumerable(Of String), inNew As Boolean) OpenInDefaultBrowser(l, inNew)
-            LinkDialog.Show(_view.GetMe())
+            LinkDialog.Message = $"所选 {itemList.Count} 个标签包含了 {links.Count} 个链接："
+            LinkDialog.Links = links
+            LinkDialog.OkCallback = Sub(l As IEnumerable(Of String), inNew As Boolean) OpenInDefaultBrowser(l, inNew)
+            LinkDialog.ShowDialog(_view.GetMe())
         End If
     End Sub
 
     Public Sub SetupHighlightColor(cb As Action) Implements MainFormContract.ITipPresenter.SetupHighlightColor
-        ColorDialog.SaveFunc = Sub()
+        ColorDialog.SaveCallback = Sub()
             _globalPresenter.SaveFile()
             cb()
         End Sub
         ColorDialog.ShowDialog(_view.GetMe())
     End Sub
+
+    Public Function GetTipsLabel(items As IEnumerable(Of TipItem), font As Font, size As Integer) As String Implements MainFormContract.ITipPresenter.GetTipsLabel
+        Dim itemList = items.ToList()
+        Dim result = ""
+        For i = 0 To itemList.Count - 1
+            Dim item = itemList.ElementAt(i)
+            If i >= 15 Then
+                result &= vbNewLine & $"...... (剩下 {itemList.Count - 15} 项)"
+                Exit For
+            End If
+            If result.Length > 0 Then result &= vbNewLine
+
+            Dim content = item.Content.Replace(vbNewLine, "↴")
+            result &= CommonUtil.TrimForEllipsis(content, font, size)
+        Next
+        Return result
+    End Function
 End Class

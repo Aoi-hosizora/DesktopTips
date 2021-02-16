@@ -1,10 +1,16 @@
-﻿Public Class HotkeyBox
+﻿''' <summary>
+''' 用于输入快捷键的 TextBox
+''' </summary>
+Public Class HotkeyBox
     Inherits TextBox
 
 #Region "属性"
 
     Private _currentKey As Keys = Keys.None
 
+    ''' <summary>
+    ''' 当前的快捷键
+    ''' </summary>
     Public Property CurrentKey As Keys
         Get
             Return _currentKey
@@ -12,7 +18,7 @@
         Set
             _currentKey = value
             Dim e As New KeyEventArgs(value)
-            ShowHotKeyValue(e.Modifiers, e.KeyCode)
+            ShowHotKeyValue(e.Modifiers, e.KeyCode) ' 显示
         End Set
     End Property
 
@@ -20,50 +26,56 @@
 
 #Region "方法"
 
+    ''' <summary>
+    ''' 显示快捷键
+    ''' </summary>
     Private Sub ShowHotKeyValue(modifiers As Keys, keyCode As Keys)
-        Dim hotKeyValue% = 0
-        Dim hotKeyString$ = ""
-        If Modifiers <> Keys.None Then
-            Select Case Modifiers
+        Dim value = 0
+        Dim str = ""
+        If modifiers <> Keys.None Then
+            Select Case modifiers
                 Case Keys.Control
-                    hotKeyString += "Ctrl + "
+                    str += "Ctrl + "
                 Case Keys.Alt
-                    hotKeyString += "Alt + "
+                    str += "Alt + "
                 Case Keys.Shift
-                    hotKeyString += "Shift + "
+                    str += "Shift + "
                 Case Keys.Control Or Keys.Alt
-                    hotKeyString += "Ctrl + Alt + "
+                    str += "Ctrl + Alt + "
                 Case Keys.Control Or Keys.Shift
-                    hotKeyString += "Ctrl + Shift + "
+                    str += "Ctrl + Shift + "
                 Case Keys.Alt Or Keys.Shift
-                    hotKeyString += "Alt + Shift + "
+                    str += "Alt + Shift + "
                 Case Keys.Control Or Keys.Alt Or Keys.Shift
-                    hotKeyString += "Ctrl + Alt + Shift + "
+                    str += "Ctrl + Alt + Shift + "
             End Select
-            hotKeyValue = CInt(Modifiers)
-            If KeyCode <> Keys.None And KeyCode <> Keys.ControlKey And KeyCode <> Keys.Menu And KeyCode <> Keys.ShiftKey Then
-                hotKeyString += KeyCodeToString(KeyCode)
-                hotKeyValue += CInt(KeyCode)
+            value = CInt(modifiers)
+            If keyCode <> Keys.None And keyCode <> Keys.ControlKey And keyCode <> Keys.Menu And keyCode <> Keys.ShiftKey Then
+                str += KeyCodeToString(keyCode)
+                value += CInt(keyCode)
             End If
         Else
-            If KeyCode = Keys.Delete Or KeyCode = Keys.Back Then
-                hotKeyString = ""
-                hotKeyValue = - 1
-            ElseIf KeyCode <> Keys.None Then
-                hotKeyString += KeyCodeToString(KeyCode)
-                hotKeyValue += CInt(KeyCode)
+            If keyCode = Keys.Delete Or keyCode = Keys.Back Then
+                str = ""
+                value = -1
+            ElseIf keyCode <> Keys.None Then
+                str += KeyCodeToString(keyCode)
+                value += CInt(keyCode)
             End If
         End If
-        hotKeyValue = If(hotKeyValue = 0, - 1, hotKeyValue)
+        value = If(value = 0, -1, value)
 
-        If Me.CurrentKey <> hotKeyValue Then
-            Me.CurrentKey = hotKeyValue
+        If CurrentKey <> value Then
+            CurrentKey = value
         End If
-        Me.Text = hotKeyString
-        Me.SelectionStart = Me.Text.Length
+        Text = str
+        SelectionStart = Text.Length
     End Sub
 
-    Private Shared Function KeyCodeToString(keyCode As Keys) As String
+    ''' <summary>
+    ''' keyCode 转字符串
+    ''' </summary>
+    Private Function KeyCodeToString(keyCode As Keys) As String
         If KeyCode >= Keys.D0 And KeyCode <= Keys.D9 Then
             Return KeyCode.ToString().Remove(0, 1)
         ElseIf KeyCode >= Keys.NumPad0 And KeyCode <= Keys.NumPad9 Then
@@ -73,11 +85,14 @@
         End If
     End Function
 
+    ''' <summary>
+    ''' 检查控件状态，并修改显示，比如置空
+    ''' </summary>
     Private Sub CheckHotkey()
-        If Me.Text.Trim().EndsWith("+") Or String.IsNullOrWhiteSpace(Me.Text) Then
-            Me.CurrentKey = - 1
-            Me.Text = ""
-            Me.SelectionStart = 0
+        If Text.Trim().EndsWith("+") Or String.IsNullOrWhiteSpace(Text) Then
+            CurrentKey = -1
+            Text = ""
+            SelectionStart = 0
         End If
     End Sub
 

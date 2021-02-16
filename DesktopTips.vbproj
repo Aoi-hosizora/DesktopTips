@@ -13,8 +13,9 @@
     <AssemblyName>DesktopTips</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>WindowsForms</MyType>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -112,6 +113,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -142,50 +144,44 @@
     <Compile Include="src\model\Tab.vb" />
     <Compile Include="src\model\TipColor.vb" />
     <Compile Include="src\model\TipItem.vb" />
-    <Compile Include="src\service\SyncData.vb" />
     <Compile Include="src\ui\base\BaseMainForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\base\BaseEscCloseForm.vb">
+    <Compile Include="src\ui\base\BaseEscCbForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\base\ICollectionView.vb" />
     <Compile Include="src\ui\dialog\ColorDialog.Designer.vb">
       <DependentUpon>ColorDialog.vb</DependentUpon>
     </Compile>
     <Compile Include="src\ui\dialog\ColorDialog.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\dialog\ColorSelectDialog.Designer.vb">
-      <DependentUpon>ColorSelectDialog.vb</DependentUpon>
+    <Compile Include="src\ui\dialog\ColorReplaceDialog.Designer.vb">
+      <DependentUpon>ColorReplaceDialog.vb</DependentUpon>
     </Compile>
-    <Compile Include="src\ui\dialog\ColorSelectDialog.vb">
+    <Compile Include="src\ui\dialog\ColorReplaceDialog.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\dialog\TipsEditDialog.Designer.vb">
-      <DependentUpon>TipsEditDialog.vb</DependentUpon>
+    <Compile Include="src\ui\dialog\TipEditDialog.Designer.vb">
+      <DependentUpon>TipEditDialog.vb</DependentUpon>
     </Compile>
-    <Compile Include="src\ui\dialog\TipsEditDialog.vb">
+    <Compile Include="src\ui\dialog\TipEditDialog.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\form\contract\MainFormContract.vb" />
-    <Compile Include="src\ui\form\presenter\MainFormGlobalPresenter.vb" />
-    <Compile Include="src\ui\form\presenter\MainFormTabPresenter.vb" />
-    <Compile Include="src\ui\form\presenter\MainFormTipPresenter.vb" />
-    <Compile Include="src\ui\form\view\MainForm.Designer.vb">
+    <Compile Include="src\ui\form\MainForm.Designer.vb">
       <DependentUpon>MainForm.vb</DependentUpon>
     </Compile>
-    <Compile Include="src\ui\form\view\MainForm.Partial.vb">
-      <DependentUpon>MainForm.vb</DependentUpon>
+    <Compile Include="src\ui\form\MainForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\form\view\MainForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\ui\form\view\MainForm.View.vb">
+    <Compile Include="src\ui\form\MainForm.View.vb">
       <DependentUpon>MainForm.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="src\ui\form\MainFormContract.vb" />
+    <Compile Include="src\ui\form\MainFormGlobalPresenter.vb" />
+    <Compile Include="src\ui\form\MainFormTabPresenter.vb" />
+    <Compile Include="src\ui\form\MainFormTipPresenter.vb" />
     <Compile Include="src\ui\view\CommandLink.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -223,6 +219,7 @@
     <Compile Include="src\ui\view\HoverCardView.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="src\ui\view\MenuButton.vb" />
     <Compile Include="src\ui\view\TipListBox.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -231,13 +228,14 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\util\NativeMethod.vb" />
+    <Compile Include="src\util\SmmsUtil.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="src\ui\dialog\ColorDialog.resx">
       <DependentUpon>ColorDialog.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ui\dialog\ColorSelectDialog.resx">
-      <DependentUpon>ColorSelectDialog.vb</DependentUpon>
+    <EmbeddedResource Include="src\ui\dialog\ColorReplaceDialog.resx">
+      <DependentUpon>ColorReplaceDialog.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\ui\dialog\HotKeyDialog.resx">
       <DependentUpon>HotkeyDialog.vb</DependentUpon>
@@ -254,10 +252,10 @@
     <EmbeddedResource Include="src\ui\dialog\SearchDialog.resx">
       <DependentUpon>SearchDialog.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ui\dialog\TipsEditDialog.resx">
-      <DependentUpon>TipsEditDialog.vb</DependentUpon>
+    <EmbeddedResource Include="src\ui\dialog\TipEditDialog.resx">
+      <DependentUpon>TipEditDialog.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ui\form\view\MainForm.resx">
+    <EmbeddedResource Include="src\ui\form\MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
@@ -274,7 +272,6 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
-    <None Include="src\ui\form\view\MainForm.Designer.vb.temp" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\ui\view\TabView.vb">
@@ -292,7 +289,7 @@
     <None Include="Resources\Bottom.png" />
     <None Include="Resources\Top.png" />
     <None Include="Resources\FileLinksToFiles.png" />
-    <Content Include="src\ui\form\view\MainForm.vb.temp" />
+    <None Include="Resources\Done.png" />
     <Content Include="src\ui\view\MessageBoxEx.Ref.cs" />
     <None Include="Resources\SelectAll.png" />
     <None Include="Resources\Star.png" />
@@ -327,7 +324,6 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

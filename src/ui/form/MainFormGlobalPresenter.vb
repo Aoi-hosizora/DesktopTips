@@ -27,8 +27,8 @@ Public Class MainFormGlobalPresenter
     End Sub
 
     Public Sub OpenFileDir() Implements MainFormContract.IGlobalPresenter.OpenFileDir
-        'C:\Users\Windows 10\AppData\Roaming\DesktopTips
-        Process.Start("explorer.exe", $"/select,""{GlobalModel.STORAGE_FILENAME}""")
+        'C:\Users\Windows 10\.config\DesktopTips\data.json
+        Process.Start("explorer.exe", $"/select,""{GlobalModel.StorageFilename}""")
     End Sub
 
     Public Function RegisterHotKey(handle As IntPtr, key As Keys, id As Integer) As Boolean Implements MainFormContract.IGlobalPresenter.RegisterHotKey
@@ -44,9 +44,9 @@ Public Class MainFormGlobalPresenter
     End Sub
 
     Public Sub SetupHotKey(handle As IntPtr, id As Integer) Implements MainFormContract.IGlobalPresenter.SetupHotKey
-        HotKeyDialog.HotkeyEditBox.CurrentKey = My.Settings.HotKey
-        HotKeyDialog.CheckBoxIsValid.Checked = My.Settings.IsUseHotKey
-        HotKeyDialog.RegisterFunc =
+        HotKeyDialog.CurrentHotkey = My.Settings.HotKey
+        HotKeyDialog.HotkeyEnabled = My.Settings.IsUseHotKey
+        HotKeyDialog.OkCallback =
             Sub(key As Keys, use As Boolean)
                 UnregisterHotKey(handle, id)
                 If Not use OrElse RegisterHotKey(handle, key, id) Then

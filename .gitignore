@@ -6,7 +6,7 @@
 
 ### Project ###
 *.user
-*.temp
+*.suo
 
 ### Build ###
 build/

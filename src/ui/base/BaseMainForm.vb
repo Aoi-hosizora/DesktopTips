@@ -1,129 +1,125 @@
-﻿Imports System.Drawing.Drawing2D
-Imports DD = DevComponents.DotNetBar
+﻿Imports DD = DevComponents.DotNetBar
 
 ''' <summary>
-''' 实现了 透明度动画 窗口拖动 不显示图标 功能
+''' 实现 透明度动画 窗口拖动 隐藏图标 隐藏Peek
 ''' </summary>
 Public Class BaseMainForm
     Inherits Form
 
-    Private WithEvents _timerShowForm As New Timer() With {.Interval = 1, .Enabled = False}
-    Private WithEvents _timerCloseForm As New Timer() With {.Interval = 1, .Enabled = False}
-    Private WithEvents _timerMouseIn As New Timer() With {.Interval = 10, .Enabled = False}
-    Private WithEvents _timerMouseOut As New Timer() With {.Interval = 10, .Enabled = False}
-    Private WithEvents _labelFocus As New Label() With {.Visible = False}
+    Private WithEvents _timerShowForm As New Timer With {.Interval = 1, .Enabled = False}
+    Private WithEvents _timerCloseForm As New Timer With {.Interval = 1, .Enabled = False}
+    Private WithEvents _timerMouseIn As New Timer With {.Interval = 10, .Enabled = False}
+    Private WithEvents _timerMouseOut As New Timer With {.Interval = 10, .Enabled = False}
+    Private WithEvents _labelFocus As New Label With {.Visible = False}
 
+    ''' <summary>
+    ''' 窗口动画，最大透明度
+    ''' </summary>
     Protected Property MaxOpacity As Double = 0.6
-    Protected Property CanMouseLeaveFunc As Func(Of Boolean)
-    Protected Property IsLoading As Boolean = True
 
-    Public Sub New()
-        UpdateShape()
-    End Sub
+    ''' <summary>
+    ''' MouseLeave 回调，是否触发对应事件
+    ''' </summary>
+    Protected Property MouseLeaveCallback As Func(Of Boolean)
 
     Protected Overrides Sub OnLoad(e As EventArgs)
+        Controls.Add(_labelFocus)
+        Opacity = 0
+        RefreshAppearance()
+
         MyBase.OnLoad(e)
-        Me.Controls.Add(_labelFocus)
-        Me.Opacity = 0
         ShowForm()
+        HideFocus()
 
         Dim ctrls As New List(Of Control)
         ctrls.Add(Me)
-        ctrls.AddRange(Me.Controls.Cast(Of Control)())
-        InitHandler(ctrls)
-        HideButtonXFocus(Me, e)
-        IsLoading = False
+        ctrls.AddRange(Controls.Cast(Of Control)())
+        AddHandlers(ctrls)
     End Sub
 
-    Private Sub InitHandler(ctrls As IEnumerable(Of Control))
+    Protected Overrides Sub OnSizeChanged(e As EventArgs)
+        MyBase.OnSizeChanged(e)
+        RefreshAppearance()
+    End Sub
+
+    ''' <summary>
+    ''' 刷新窗口外观，包括背景色和全透明颜色
+    ''' </summary>
+    Private Sub RefreshAppearance()
+        BackColor = Color.DarkRed
+        TransparencyKey = Color.DarkRed
+    End Sub
+
+    ''' <summary>
+    ''' 隐藏焦点框
+    ''' </summary>
+    Private Sub HideFocus()
+        _labelFocus.Focus()
+        _labelFocus.Select()
+    End Sub
+
+    ''' <summary>
+    ''' 注册事件 Handlers 到给定控件
+    ''' </summary>
+    Private Sub AddHandlers(ctrls As IEnumerable(Of Control))
         For Each ctrl As Control In ctrls
             Dim isFrm As Boolean = ctrl.GetType() = GetType(MainForm) OrElse ctrl.GetType() = GetType(Form)
             Dim isBtn As Boolean = ctrl.GetType() = GetType(Button) OrElse ctrl.GetType() = GetType(DD.ButtonX)
             Dim isNum As Boolean = ctrl.GetType() = GetType(NumericUpDown)
-            Dim isTab As Boolean = ctrl.GetType() = GetType(TabView.TabViewItem) OrElse ctrl.GetType() = GetType(DD.SuperTabItem) OrElse
-                                   ctrl.GetType() = GetType(TabView) OrElse ctrl.GetType() = GetType(DD.SuperTabStrip)
+            Dim isTab As Boolean = ctrl.GetType() = GetType(TabView) OrElse ctrl.GetType() = GetType(TabView.TabViewItem) OrElse
+                ctrl.GetType() = GetType(DD.SuperTabStrip) OrElse ctrl.GetType() = GetType(DD.SuperTabItem)
 
-            ' 任何控件都可以监听 鼠标移动
-            AddHandler ctrl.MouseMove, AddressOf FormMouseMove
-            AddHandler ctrl.MouseLeave, AddressOf FormMouseLeave
-
-            ' 窗口的非活动实现
+            ' 窗口: 取消活动窗口
             If isFrm Then
                 AddHandler CType(ctrl, Form).Deactivate, AddressOf FormDeactivate
             End If
 
-            ' 非 Tab 和 Num 才可以监听 鼠标点击 (Button 由于存在 ResizeFlag)
+            ' 按钮: 消除焦点框
+            If isBtn Then
+                AddHandler ctrl.MouseDown, Sub(sender As Object, e As EventArgs) HideFocus()
+            End If
+
+            ' 所有控件: 鼠标移动
+            AddHandler ctrl.MouseMove, AddressOf FormMouseMove
+            AddHandler ctrl.MouseLeave, AddressOf FormMouseLeave
+            If ctrl.GetType() = GetType(TipListBox) Then
+                Dim tl = CType(ctrl, TipListBox)
+                AddHandler tl.NcMouseMove, AddressOf FormMouseMove
+                AddHandler tl.NcMouseLeave, AddressOf FormMouseLeave
+            End If
+
+            ' 非Tab/Num: 鼠标点击
             If Not isTab AndAlso Not isNum Then
                 AddHandler ctrl.MouseDown, AddressOf FormMouseDown
                 AddHandler ctrl.MouseUp, AddressOf FormMouseUp
             End If
 
-            ' 非 Button 和 Tab 和 Num 才可以监听拖动
+            ' 非Btn/Tab/Num: 鼠标拖动
             If Not isBtn AndAlso Not isTab AndAlso Not isNum Then
-                AddHandler ctrl.MouseMove, AddressOf FormMouseDownMove
-            End If
-
-            ' Button 消除焦点框
-            If isBtn Then
-                AddHandler ctrl.MouseDown, AddressOf HideButtonXFocus
+                AddHandler ctrl.MouseMove, AddressOf FormMouseDrag
             End If
 
             ' 递归
-            InitHandler(ctrl.Controls.Cast(Of Control)())
+            AddHandlers(ctrl.Controls.Cast(Of Control)())
         Next
     End Sub
 
-    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
-        MyBase.OnFormClosing(e)
-        e.Cancel = Opacity > 0
-        CloseForm()
-    End Sub
-
-    Private Sub HideButtonXFocus(sender As Object, e As EventArgs)
-        _labelFocus.Focus()
-        _labelFocus.Select()
-    End Sub
-
+    ''' <summary>
+    ''' 窗口的 CreateParams 属性
+    ''' </summary>
     Protected Overrides ReadOnly Property CreateParams As CreateParams
         Get
             Dim cp As CreateParams = MyBase.CreateParams
             cp.ExStyle = cp.ExStyle And Not NativeMethod.WS_EX_APPWINDOW ' 不显示在TaskBar
             cp.ExStyle = cp.ExStyle Or NativeMethod.WS_EX_TOOLWINDOW ' 不显示在Alt-Tab
             cp.ExStyle = cp.ExStyle Or NativeMethod.WS_EX_LAYERED
-            ' cp.ClassStyle = cp.ClassStyle Or NativeMethod.CS_DROPSHADOW
             Return cp
         End Get
     End Property
 
-    Protected Overrides Sub OnSizeChanged(e As EventArgs)
-        MyBase.OnSizeChanged(e)
-        UpdateShape()
-    End Sub
-
-    Protected Sub UpdateShape()
-        Me.BackColor = Color.DarkRed
-        Me.TransparencyKey = Color.DarkRed
-
-        ' Dim x = Me.Width
-        ' Dim y = Me.Height
-        ' Dim yy = 23
-        ' Dim lxx = 24 * 2 - 1
-        ' Dim rxx = 24 * 2 + 10 - 2
-        '
-        ' Dim points As New List(Of Point)
-        ' points.Add(New Point(0, 0))
-        ' points.Add(New Point(x, 0))
-        ' points.Add(New Point(x, y))
-        ' points.Add(New Point(x - rxx, y))
-        ' points.Add(New Point(x - rxx, y - yy))
-        ' points.Add(New Point(lxx, y - yy))
-        ' points.Add(New Point(lxx, y))
-        ' points.Add(New Point(0, y))
-        ' Dim gp As New GraphicsPath
-        ' gp.AddLines(points.ToArray())
-        ' Me.Region = New Region(gp)
-    End Sub
-
+    ''' <summary>
+    ''' 窗口的 WndProc 方法
+    ''' </summary>
     Protected Overrides Sub WndProc(ByRef m As Message)
         Select Case m.Msg
             Case NativeMethod.WM_NCPAINT
@@ -131,10 +127,6 @@ Public Class BaseMainForm
                     Dim val = NativeMethod.DWMNC_ENABLED
                     Const intSize = 4
                     NativeMethod.DwmSetWindowAttribute(Handle, NativeMethod.DWMWA_EXCLUDED_FROM_PEEK, val, intSize)
-                    ' NativeMethod.DwmSetWindowAttribute(Handle, NativeMethod.DWMWA_NCRENDERING_POLICY, val, intSize)
-                    ' NativeMethod.DwmExtendFrameIntoClientArea(Handle, New NativeMethod.MARGINS() With {
-                    '     .BottomHeight = 1, .LeftWidth = 1, .RightWidth = 1, .TopHeight = 1
-                    '     })
                 End If
                 Exit Select
         End Select
@@ -144,35 +136,35 @@ Public Class BaseMainForm
 #Region "Timer"
 
     Private Sub TimerShowForm_Tick(sender As Object, e As EventArgs) Handles _timerShowForm.Tick
-        Me.Opacity += 0.08
-        Me.Top += 1
-        If Me.Opacity >= MaxOpacity Then
-            Me.Opacity = MaxOpacity
+        Opacity += 0.08
+        Top += 1
+        If Opacity >= MaxOpacity Then
+            Opacity = MaxOpacity
             _timerShowForm.Enabled = False
         End If
     End Sub
 
     Private Sub TimerCloseForm_Tick(sender As Object, e As EventArgs) Handles _timerCloseForm.Tick
-        Me.Opacity -= 0.08
-        Me.Top -= 1
-        If Me.Opacity <= 0 Then
-            MyBase.Close()
+        Opacity -= 0.08
+        Top -= 1
+        If Opacity <= 0 Then
+            Close()
             _timerCloseForm.Enabled = False
         End If
     End Sub
 
     Private Sub TimerMouseIn_Tick(sender As Object, e As EventArgs) Handles _timerMouseIn.Tick
-        Me.Opacity += 0.05
-        If Me.Opacity >= 1 Then
-            Me.Opacity = 1
+        Opacity += 0.05
+        If Opacity >= 1 Then
+            Opacity = 1
             _timerMouseIn.Enabled = False
         End If
     End Sub
 
     Private Sub TimerMouseOut_Tick(sender As Object, e As EventArgs) Handles _timerMouseOut.Tick
-        Me.Opacity -= 0.02
-        If Me.Opacity <= Me.MaxOpacity Then
-            Me.Opacity = Me.MaxOpacity
+        Opacity -= 0.02
+        If Opacity <= MaxOpacity Then
+            Opacity = MaxOpacity
             _timerMouseOut.Enabled = False
         End If
     End Sub
@@ -181,16 +173,28 @@ Public Class BaseMainForm
 
 #Region "Opecity"
 
+    ''' <summary>
+    ''' 鼠标移动，不透明化窗口
+    ''' </summary>
     Private Sub FormMouseMove(sender As Object, e As EventArgs)
-        If Cursor.Position.X >= Me.Left And Cursor.Position.X <= Me.Right And Cursor.Position.Y >= Me.Top And Cursor.Position.Y <= Me.Bottom Then
+        If Cursor.Position.X >= Left And Cursor.Position.X <= Right And Cursor.Position.Y >= Top And Cursor.Position.Y <= Bottom Then
             FormOpacityUp()
         End If
     End Sub
 
+    ''' <summary>
+    ''' 鼠标移出，透明化窗口，需要判断 MouseLeaveCallback
+    ''' </summary>
     Private Sub FormMouseLeave(sender As Object, e As EventArgs)
-        If CanMouseLeaveFunc IsNot Nothing AndAlso CanMouseLeaveFunc.Invoke() Then
+        If MouseLeaveCallback IsNot Nothing AndAlso MouseLeaveCallback.Invoke() Then
             FormOpacityDown()
         End If
+    End Sub
+
+    Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
+        MyBase.OnFormClosing(e)
+        e.Cancel = Opacity > 0
+        CloseForm()
     End Sub
 
     Private Sub ShowForm()
@@ -229,25 +233,25 @@ Public Class BaseMainForm
     Private Sub FormMouseDown(sender As Object, e As MouseEventArgs)
         _isMouseDown = e.Button = MouseButtons.Left
         _pushDownMousePosition = Cursor.Position
-        _pushDownWindowSize = New Size(Me.Width, Me.Height)
-        _pushDownWindowPosition = New Point(Me.Left, Me.Top)
+        _pushDownWindowSize = New Size(Width, Height)
+        _pushDownWindowPosition = New Point(Left, Top)
     End Sub
 
     Private Sub FormMouseUp(sender As Object, e As MouseEventArgs)
         _isMouseDown = False
-        Me.Cursor = Cursors.Default
+        Cursor = Cursors.Default
     End Sub
 
     Private Sub FormDeactivate(sender As Object, e As EventArgs)
         _isMouseDown = False
-        Me.Cursor = Cursors.Default
+        Cursor = Cursors.Default
     End Sub
 
-    Private Sub FormMouseDownMove(sender As Object, e As MouseEventArgs)
+    Private Sub FormMouseDrag(sender As Object, e As MouseEventArgs)
         If _isMouseDown Then
-            Me.Cursor = Cursors.SizeAll
-            Me.Top = _pushDownWindowPosition.Y + Cursor.Position.Y - _pushDownMousePosition.Y
-            Me.Left = _pushDownWindowPosition.X + Cursor.Position.X - _pushDownMousePosition.X
+            Cursor = Cursors.SizeAll
+            Top = _pushDownWindowPosition.Y + Cursor.Position.Y - _pushDownMousePosition.Y
+            Left = _pushDownWindowPosition.X + Cursor.Position.X - _pushDownMousePosition.X
         End If
     End Sub
 

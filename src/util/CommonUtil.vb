@@ -2,6 +2,37 @@
 
 Public Class CommonUtil
     ''' <summary>
+    ''' 绘制颜色填充的正方形 Bitmap
+    ''' </summary>
+    Public Shared Function DrawColoredSquare(size As Integer, rect As Rectangle, color As Color) As Bitmap
+        Dim bmp As New Bitmap(size, size)
+        Dim g As Graphics = Graphics.FromImage(bmp)
+        Using brush As New SolidBrush(color)
+            g.FillRectangle(brush, rect)
+        End Using
+        Return bmp
+    End Function
+    
+    ''' <summary>
+    ''' Trim 字符串用于添加末尾省略号
+    ''' </summary>
+    Public Shared Function TrimForEllipsis(text As String, font As Font, maxSize As Integer)
+        Dim g = (New Label()).CreateGraphics()
+        Dim trimmed = text
+        Dim currentSize = CInt(g.MeasureString(trimmed, font).Width)
+        Dim ratio = maxSize / currentSize
+        Dim cnt = 0 ' 防止 while 死循环
+        While ratio < 1.0
+            cnt += 1
+            If cnt > 10 Then Exit While
+            trimmed = trimmed.Substring(0, CInt(trimmed.Length * ratio) - 3) & "..."
+            currentSize = CInt(g.MeasureString(trimmed, font).Width)
+            ratio = maxSize / currentSize
+        End While
+        Return trimmed
+    End Function
+
+    ''' <summary>
     ''' 获取 Keys 的 Modifiers 部分
     ''' </summary>
     Public Shared Function GetModifiersFromKey(key As Keys) As Keys

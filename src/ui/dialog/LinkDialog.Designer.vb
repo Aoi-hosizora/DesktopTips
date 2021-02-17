@@ -27,7 +27,7 @@ Partial Class LinkDialog
         Me.ButtonOpen = New System.Windows.Forms.Button()
         Me.ButtonBack = New System.Windows.Forms.Button()
         Me.ButtonOpenAll = New System.Windows.Forms.Button()
-        Me.CheckBoxOpenInNew = New System.Windows.Forms.CheckBox()
+        Me.CheckBoxOption = New System.Windows.Forms.CheckBox()
         Me.SuspendLayout()
         '
         'ListView
@@ -93,14 +93,14 @@ Partial Class LinkDialog
         '
         'CheckBoxOpenInNew
         '
-        Me.CheckBoxOpenInNew.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.CheckBoxOpenInNew.AutoSize = True
-        Me.CheckBoxOpenInNew.Location = New System.Drawing.Point(12, 247)
-        Me.CheckBoxOpenInNew.Name = "CheckBoxOpenInNew"
-        Me.CheckBoxOpenInNew.Size = New System.Drawing.Size(135, 21)
-        Me.CheckBoxOpenInNew.TabIndex = 1
-        Me.CheckBoxOpenInNew.Text = "在新窗口打开浏览器"
-        Me.CheckBoxOpenInNew.UseVisualStyleBackColor = True
+        Me.CheckBoxOption.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.CheckBoxOption.AutoSize = True
+        Me.CheckBoxOption.Location = New System.Drawing.Point(12, 247)
+        Me.CheckBoxOption.Name = "CheckBoxOption"
+        Me.CheckBoxOption.Size = New System.Drawing.Size(135, 21)
+        Me.CheckBoxOption.TabIndex = 1
+        Me.CheckBoxOption.Text = "在新窗口打开浏览器"
+        Me.CheckBoxOption.UseVisualStyleBackColor = True
         '
         'LinkDialog
         '
@@ -109,7 +109,7 @@ Partial Class LinkDialog
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonBack
         Me.ClientSize = New System.Drawing.Size(384, 311)
-        Me.Controls.Add(Me.CheckBoxOpenInNew)
+        Me.Controls.Add(Me.CheckBoxOption)
         Me.Controls.Add(Me.ButtonBack)
         Me.Controls.Add(Me.ButtonOpenAll)
         Me.Controls.Add(Me.ButtonOpen)
@@ -134,5 +134,5 @@ Partial Class LinkDialog
     Friend WithEvents ButtonBack As System.Windows.Forms.Button
     Private WithEvents LabelTitle As System.Windows.Forms.Label
     Friend WithEvents ButtonOpenAll As System.Windows.Forms.Button
-    Friend WithEvents CheckBoxOpenInNew As System.Windows.Forms.CheckBox
+    Friend WithEvents CheckBoxOption As System.Windows.Forms.CheckBox
 End Class

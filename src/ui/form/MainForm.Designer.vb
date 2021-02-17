@@ -60,6 +60,7 @@ Partial Class MainForm
         Me.m_popup_OpenDir = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_Refresh = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_ViewLinksInTips = New DevComponents.DotNetBar.ButtonItem()
+        Me.m_popup_ViewImagesInTips = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_WindowSubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_SetupHotkey = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_SetupToken = New DevComponents.DotNetBar.ButtonItem()
@@ -189,7 +190,7 @@ Partial Class MainForm
         '
         Me.m_menu_ListPopupMenu.AutoExpandOnClick = True
         Me.m_menu_ListPopupMenu.Name = "m_menu_ListPopupMenu"
-        Me.m_menu_ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SelectedTipsCountLabel, Me.m_popup_SelectedTipsTextLabel, Me.m_popup_TipsCountLabel, Me.m_popup_ListItemContainer, Me.m_popup_MoveTopTop, Me.m_popup_MoveTipBottom, Me.m_menu_HighlightSubMenu, Me.m_menu_CheckDone, Me.m_popup_ViewLinksInTips, Me.m_popup_FindTips, Me.m_menu_MoveTipsSubMenu, Me.m_popup_OtherLabel, Me.m_menu_FileSubMenu, Me.m_popup_Refresh, Me.m_menu_WindowSubMenu, Me.m_popup_Exit})
+        Me.m_menu_ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SelectedTipsCountLabel, Me.m_popup_SelectedTipsTextLabel, Me.m_popup_TipsCountLabel, Me.m_popup_ListItemContainer, Me.m_popup_MoveTopTop, Me.m_popup_MoveTipBottom, Me.m_menu_HighlightSubMenu, Me.m_menu_CheckDone, Me.m_popup_ViewLinksInTips, Me.m_popup_ViewImagesInTips, Me.m_popup_FindTips, Me.m_menu_MoveTipsSubMenu, Me.m_popup_OtherLabel, Me.m_menu_FileSubMenu, Me.m_popup_Refresh, Me.m_menu_WindowSubMenu, Me.m_popup_Exit})
         Me.m_menu_ListPopupMenu.Text = "ListPopup"
         '
         'm_popup_SelectedTipsCountLabel
@@ -359,6 +360,12 @@ Partial Class MainForm
         Me.m_popup_ViewLinksInTips.Image = Global.DesktopTips.My.Resources.Resources.Browser
         Me.m_popup_ViewLinksInTips.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlL)
         Me.m_popup_ViewLinksInTips.Text = "浏览链接(&L)"
+        '
+        'm_popup_ViewImagesInTips
+        '
+        Me.m_popup_ViewImagesInTips.Name = "m_popup_ViewImagesInTips"
+        Me.m_popup_ViewImagesInTips.Image = Global.DesktopTips.My.Resources.Resources.Image
+        Me.m_popup_ViewImagesInTips.Text = "浏览图片链接(&I)"
         '
         'm_popup_FindTips
         '
@@ -707,6 +714,7 @@ Partial Class MainForm
     Friend WithEvents m_popup_LoadPosition As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_PasteAppendToTip As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_ViewLinksInTips As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents m_popup_ViewImagesInTips As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_SetupHotkey As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_SetupToken As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_menu_FileSubMenu As DevComponents.DotNetBar.ButtonItem

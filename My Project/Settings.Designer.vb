@@ -197,6 +197,18 @@ Namespace My
                 Me("OpenInNewBrowser") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property OpenImageLocal() As Boolean
+            Get
+                Return CType(Me("OpenImageLocal"),Boolean)
+            End Get
+            Set
+                Me("OpenImageLocal") = value
+            End Set
+        End Property
 
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _

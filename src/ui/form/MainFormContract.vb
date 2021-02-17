@@ -28,8 +28,10 @@
         Function HighlightTips(items As IEnumerable(Of TipItem), color As TipColor) As boolean              ' 设置高亮
         Function CheckTipsDone(items As IEnumerable(Of TipItem)) As boolean                                 ' 设置已完成
         Sub ViewList(items As IEnumerable(Of TipItem), highlight As Boolean)                                ' 浏览当前列表
-        Function GetLinks(items As IEnumerable(Of TipItem)) As IEnumerable(Of String)                       ' 打开所有链接
+        Function GetLinks(items As IEnumerable(Of TipItem)) As IEnumerable(Of String)                       ' 获取链接列表
         Sub ViewAllLinks(items As IEnumerable(Of TipItem))                                                  ' 浏览所有链接
+        Function GetImages(items As IEnumerable(Of TipItem)) As IEnumerable(Of Tuple(Of String, String))    ' 获取图片链接列表
+        Sub ViewAllImages(items As IEnumerable(Of TipItem))                                                 ' 浏览所有图片链接
         Sub SetupHighlightColor(cb As Action)                                                               ' 设置高亮颜色集合
         Function GetTipsLabel(items As IEnumerable(Of TipItem), font As Font, size As Integer) As String    ' 获取菜单的标签文本
     End Interface

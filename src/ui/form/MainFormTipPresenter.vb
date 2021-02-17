@@ -1,4 +1,6 @@
-﻿Public Class MainFormTipPresenter
+﻿Imports System.Text.RegularExpressions
+
+Public Class MainFormTipPresenter
     Implements MainFormContract.ITipPresenter
 
     Private ReadOnly _view As MainFormContract.IView
@@ -202,11 +204,6 @@
         End If
     End Sub
 
-    Public Function GetLinks(items As IEnumerable(Of TipItem)) As IEnumerable(Of String) Implements MainFormContract.ITipPresenter.GetLinks
-        Return items.SelectMany(Function(t) t.Content.Split(New Char() {" ", vbCrLf, vbCr, vbLf}, StringSplitOptions.RemoveEmptyEntries)).
-            Where(Function(s) s.StartsWith("http://") Or s.StartsWith("https://"))
-    End Function
-
     Private Sub OpenInDefaultBrowser(links As IEnumerable(Of String), inNew As Boolean)
         If inNew Then
             Dim browser As String = CommonUtil.GetDefaultBrowserPath().ToLower()
@@ -220,16 +217,65 @@
         links.ToList().ForEach(Sub(link) Process.Start(link))
     End Sub
 
+    Public Function GetLinks(items As IEnumerable(Of TipItem)) As IEnumerable(Of String) Implements MainFormContract.ITipPresenter.GetLinks
+        Return items.SelectMany(Function(t) t.Content.Split(New Char() {" ", vbCrLf, vbCr, vbLf}, StringSplitOptions.RemoveEmptyEntries)).
+            Where(Function(s) s.StartsWith("http://") Or s.StartsWith("https://"))
+    End Function
+
     Public Sub ViewAllLinks(items As IEnumerable(Of TipItem)) Implements MainFormContract.ITipPresenter.ViewAllLinks
         Dim itemList = items.ToList()
         Dim links As List(Of String) = GetLinks(itemList).ToList()
         If links.Count = 0 Then
-            MessageBoxEx.Show($"所选 {itemList.Count} 个标签内不包含任何链接。", "打开链接", MessageBoxButtons.OK, MessageBoxIcon.Error, _view.GetMe())
+            MessageBoxEx.Show($"所选 {itemList.Count} 个标签内不包含任何链接。", "浏览链接", MessageBoxButtons.OK, MessageBoxIcon.Error, _view.GetMe())
         Else
             LinkDialog.Close()
+            LinkDialog.Text = "浏览链接"
             LinkDialog.Message = $"所选 {itemList.Count} 个标签包含了 {links.Count} 个链接："
             LinkDialog.Links = links
+            LinkDialog.CheckBoxText = "在新窗口打开浏览器"
+            LinkDialog.CheckBoxChecked = My.Settings.OpenInNewBrowser
+            LinkDialog.CheckBoxChangedCallback = Sub(c) 
+                My.Settings.OpenInNewBrowser = c
+                My.Settings.Save()
+            End Sub
             LinkDialog.OkCallback = Sub(l As IEnumerable(Of String), inNew As Boolean) OpenInDefaultBrowser(l, inNew)
+            LinkDialog.ShowDialog(_view.GetMe())
+        End If
+    End Sub
+
+    Public Function GetImages(items As IEnumerable(Of TipItem)) As IEnumerable(Of Tuple(Of String, String)) Implements MainFormContract.ITipPresenter.GetImages
+        Dim re As New Regex("!\[(.+?)\]\((\S+?)\)") ' ![...](...)
+        Dim result As New List(Of Tuple(Of String, String))
+        For Each item In items
+            Dim matches = re.Matches(item.Content)
+            For Each match As Match In matches
+                If match.Groups.Count < 3 Then Continue For
+                Dim name = match.Groups(1).Value
+                Dim url = match.Groups(2).Value
+                result.Add(New Tuple(Of String,String)(name, url))
+            Next
+        Next
+        Return result
+    End Function
+
+    Public Sub ViewAllImages(items As IEnumerable(Of TipItem)) Implements MainFormContract.ITipPresenter.ViewAllImages
+        Dim itemList = items.ToList()
+        Dim images As List(Of Tuple(Of String, String)) = GetImages(itemList).ToList()
+        If images.Count = 0 Then
+            MessageBoxEx.Show($"所选 {itemList.Count} 个标签内不包含任何图片。", "浏览图片链接", MessageBoxButtons.OK, MessageBoxIcon.Error, _view.GetMe())
+        Else
+            LinkDialog.Close()
+            LinkDialog.Text = "浏览图片链接"
+            LinkDialog.Message = $"所选 {itemList.Count} 个标签包含了 {images.Count} 个图片链接："
+            LinkDialog.Links = images.Select(Function(t) $"[{t.Item1}] - {t.Item2}")
+            LinkDialog.CheckBoxText = "下载图片到本地并打开"
+            LinkDialog.CheckBoxChecked = My.Settings.OpenImageLocal
+            LinkDialog.CheckBoxChangedCallback = Sub(c) 
+                My.Settings.OpenImageLocal = c
+                My.Settings.Save()
+            End Sub
+            LinkDialog.OkCallback = Sub(l As IEnumerable(Of String), openLocal As Boolean)
+            End Sub
             LinkDialog.ShowDialog(_view.GetMe())
         End If
     End Sub

@@ -5,15 +5,30 @@ Public Class LinkDialog
     ''' <summary>
     ''' 对话框标题
     ''' </summary>
-    Public Message As String
+    Public Property Message As String
 
     ''' <summary>
     ''' 链接
     ''' </summary>
-    Public Links As IEnumerable(Of String)
+    Public Property Links As IEnumerable(Of String)
+    
+    ''' <summary>
+    ''' 选择框文本
+    ''' </summary>
+    Public Property CheckBoxText As String
+    
+    ''' <summary>
+    ''' 选择框选中
+    ''' </summary>
+    Public Property CheckBoxChecked As Boolean
+    
+    ''' <summary>
+    ''' 选择框回调
+    ''' </summary>
+    Public Property CheckBoxChangedCallback As Action(Of Boolean)
 
     ''' <summary>
-    ''' 打开回调，包含链接和是否新窗口打开
+    ''' 打开回调，包含链接和选择框
     ''' </summary>
     Public OkCallback As Action(Of IEnumerable(Of String), Boolean)
 
@@ -24,7 +39,8 @@ Public Class LinkDialog
         Next
         ListView_SelectedValueChanged(sender, e)
 
-        CheckBoxOpenInNew.Checked = My.Settings.OpenInNewBrowser
+        CheckBoxOption.Text = CheckBoxText
+        CheckBoxOption.Checked = CheckBoxChecked
     End Sub
 
     Private Sub ButtonOpen_Click(sender As Object, e As EventArgs) Handles ButtonOpen.Click
@@ -32,20 +48,20 @@ Public Class LinkDialog
         For Each item In ListView.SelectedItems
             l.Add(CStr(item))
         Next
-        OkCallback?.Invoke(l, CheckBoxOpenInNew.Checked)
+        OkCallback?.Invoke(l, CheckBoxOption.Checked)
         Close()
     End Sub
 
     Private Sub ButtonOpenAll_Click(sender As System.Object, e As EventArgs) Handles ButtonOpenAll.Click
-        OkCallback?.Invoke(ListView.Items.Cast(Of String)(), CheckBoxOpenInNew.Checked)
+        OkCallback?.Invoke(ListView.Items.Cast(Of String)(), CheckBoxOption.Checked)
         Close()
     End Sub
 
     Private Sub ListView_DoubleClick(sender As Object, e As EventArgs) Handles ListView.DoubleClick
-        Dim ok = MessageBoxEx.Show($"是否打开以下链接？{vbNewLine}{vbNewLine}{ListView.SelectedItem}", "打开链接", MessageBoxButtons.OKCancel, MessageBoxIcon.Question)
+        Dim ok = MessageBoxEx.Show($"是否打开以下链接？{vbNewLine}{vbNewLine}{ListView.SelectedItem}", Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Question)
         If ok = VbOk Then
             If OkCallback IsNot Nothing Then
-                OkCallback.Invoke({CStr(ListView.SelectedItem)}, CheckBoxOpenInNew.Checked)
+                OkCallback.Invoke({CStr(ListView.SelectedItem)}, CheckBoxOption.Checked)
             End If
         End If
     End Sub
@@ -83,8 +99,7 @@ Public Class LinkDialog
         End If
     End Sub
 
-    Private Sub CheckBoxOpenInNew_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBoxOpenInNew.CheckedChanged
-        My.Settings.OpenInNewBrowser = CheckBoxOpenInNew.Checked
-        My.Settings.Save()
+    Private Sub CheckBoxOption_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBoxOption.CheckedChanged
+        CheckBoxChangedCallback?.Invoke(CheckBoxOption.Checked)
     End Sub
 End Class

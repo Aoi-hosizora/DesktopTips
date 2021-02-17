@@ -14,9 +14,6 @@ Public Class TipItem
     <JsonProperty("done")>
     Public Property Done As Boolean
 
-    ' <JsonProperty("images")>
-    ' Public Property Images As List(Of String)
-
     <JsonProperty("created_at")>
     Public Property CreatedAt As DateTime
 

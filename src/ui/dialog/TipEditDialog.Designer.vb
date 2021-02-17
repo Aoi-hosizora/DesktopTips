@@ -31,8 +31,6 @@ Partial Class TipEditDialog
         Me.ContextMenuStripOK = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.MenuOK = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuSave = New System.Windows.Forms.ToolStripMenuItem()
-        Me.MenuUploadImage = New System.Windows.Forms.ToolStripMenuItem()
-        Me.MenuClipboardImage = New System.Windows.Forms.ToolStripMenuItem()
         CType(Me.SplitContainer, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer.Panel1.SuspendLayout()
         Me.SplitContainer.Panel2.SuspendLayout()
@@ -115,7 +113,7 @@ Partial Class TipEditDialog
         '
         'ContextMenuStripOK
         '
-        Me.ContextMenuStripOK.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MenuOK, Me.MenuSave, Me.MenuUploadImage, Me.MenuClipboardImage})
+        Me.ContextMenuStripOK.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MenuOK, Me.MenuSave})
         Me.ContextMenuStripOK.Name = "ContextMenuStripOK"
         Me.ContextMenuStripOK.Size = New System.Drawing.Size(153, 70)
         '
@@ -130,18 +128,6 @@ Partial Class TipEditDialog
         Me.MenuSave.Name = "MenuSave"
         Me.MenuSave.Size = New System.Drawing.Size(152, 22)
         Me.MenuSave.Text = "保存(&S)"
-        '
-        'MenuUploadImage
-        '
-        Me.MenuUploadImage.Name = "MenuUploadImage"
-        Me.MenuUploadImage.Size = New System.Drawing.Size(152, 22)
-        Me.MenuUploadImage.Text = "上传图片(&S)"
-        '
-        'MenuClipboardImage
-        '
-        Me.MenuClipboardImage.Name = "MenuClipboardImage"
-        Me.MenuClipboardImage.Size = New System.Drawing.Size(152, 22)
-        Me.MenuClipboardImage.Text = "插入剪贴板的图片(&C)"
         '
         'TipEditDialog
         '
@@ -178,6 +164,4 @@ Partial Class TipEditDialog
     Friend WithEvents ContextMenuStripOK As System.Windows.Forms.ContextMenuStrip
     Friend WithEvents MenuOK As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MenuSave As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents MenuUploadImage As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents MenuClipboardImage As System.Windows.Forms.ToolStripMenuItem
 End Class

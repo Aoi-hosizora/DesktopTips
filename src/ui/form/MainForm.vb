@@ -261,13 +261,6 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
-    ''' 浏览图片链接，用于：菜单事件
-    ''' </summary>
-    Private Sub ViewTipAllImages(sender As Object, e As EventArgs) Handles m_popup_ViewImagesInTips.Click
-        _tipPresenter.ViewAllImages(m_ListView.SelectedItems)
-    End Sub
-
-    ''' <summary>
     ''' 查找，用于：菜单事件
     ''' </summary>
     Private Sub FindTips(sender As Object, e As EventArgs) Handles m_popup_FindTips.Click
@@ -536,7 +529,6 @@ Public Class MainForm
 
         ' 链接 图片 标记完成
         m_popup_ViewLinksInTips.Enabled = _tipPresenter.GetLinks(m_ListView.SelectedItems).Count >= 1
-        m_popup_ViewImagesInTips.Enabled = _tipPresenter.GetImages(m_ListView.SelectedItems).Count >= 1
         m_menu_CheckDone.Enabled = isNotEmpty
         m_menu_CheckDone.Checked = m_ListView.SelectedItems.Any(Function(item) item.Done)
 
@@ -816,39 +808,6 @@ Public Class MainForm
     ''' </summary>
     Private Sub SetupHotkey(sender As Object, e As EventArgs) Handles m_popup_SetupHotkey.Click
         _globalPresenter.SetupHotKey(Handle, HotkeyId)
-    End Sub
-
-    ''' <summary>
-    ''' 设置激活窗口热键，用于：菜单事件
-    ''' </summary>
-    Private Sub SetupToken(sender As Object, e As EventArgs) Handles m_popup_SetupToken.Click
-        ' 判断存在
-        If My.Settings.SmToken <> "x" Then
-            Dim ok = MessageBoxEx.Show("当前已经设置了 SmToken，是否覆盖设置？", "设置 SmToken", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question,
-                Me, {"覆盖", "删除", "取消"})
-            If ok = vbCancel Then Return
-            If ok = vbNo Then
-                My.Settings.SmToken = "x"
-                My.Settings.Save()
-                MessageBoxEx.Show("成功删除 SmToken。", "设置 SmToken", MessageBoxButtons.OK, MessageBoxIcon.Information, Me)
-            End If
-        End If
-
-        ' 设置
-        Dim result = InputBox("请输入新的 SmToken (可通过 https://sm.ms 获取)：", "设置 SmToken").Trim()
-        If result = "" Then Return
-        SmmsUtil.CheckToken(result).ContinueWith(Sub(t As Task(Of SmmsUtil.TaskResult(Of Boolean)))
-            Dim r = t.Result
-            If Not r.Success Then
-                MessageBoxEx.Show($"检查 SmToken 失败，请重试。{vbNewLine}错误信息：{r.Ex.Message}", "设置 SmToken", MessageBoxButtons.OK, MessageBoxIcon.Error, Me)
-            Else If Not r.Result Then
-                MessageBoxEx.Show("无效 SmToken。", "设置 SmToken", MessageBoxButtons.OK, MessageBoxIcon.Error, Me)
-            Else
-                My.Settings.SmToken = result
-                My.Settings.Save()
-                MessageBoxEx.Show("SmToken 设置成功。", "设置 SmToken", MessageBoxButtons.OK, MessageBoxIcon.Information, Me)
-            End If
-        End Sub)
     End Sub
 
     ''' <summary>

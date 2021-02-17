@@ -1,7 +1,4 @@
-﻿Imports System.IO
-Imports System.Threading.Tasks
-
-''' <summary>
+﻿''' <summary>
 ''' 编辑 TipItem
 ''' </summary>
 Public Class TipEditDialog
@@ -126,80 +123,5 @@ Public Class TipEditDialog
             e.Handled = True
             MenuSave_Click(sender, New EventArgs) ' Ctrl+S
         End If
-    End Sub
-
-    Private Sub MenuUploadImage_Click(sender As Object, e As EventArgs) Handles MenuUploadImage.Click
-        ' 获取 Token
-        Dim token = My.Settings.SmToken
-        If token = "x" Then
-            MessageBox.Show("没有设置 SmToken，请先设置。", "上传图片", MessageBoxButtons.Ok, MessageBoxIcon.Exclamation)
-            Return
-        End If
-
-        ' 选择文件
-        Dim dlg As New OpenFileDialog
-        dlg.InitialDirectory = Environment.SpecialFolder.Desktop
-        dlg.Filter = "JPEG 图片 (*.jpg, *.jpeg)|*.jpg;*.jpeg|PNG 图片 (*.png)|*.png|BMP 图片 (*.bmp)|*.bmp|GIF 图片 (*.gif)|*.gif"
-        dlg.FilterIndex = 0
-        dlg.CheckFileExists = True
-        If dlg.ShowDialog() <> vbOk Then Return
-        Dim ok = MessageBox.Show($"确定上传图片 ""{Path.GetFileName(dlg.Filename)}""？", "上传图片", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-        If ok = vbNo Then Return
-
-        ' 上传
-        UploadImage(dlg.Filename, token)
-    End Sub
-
-    Private Sub MenuClipboardImage_Click(sender As Object, e As EventArgs) Handles MenuClipboardImage.Click
-        ' 获取 Token
-        Dim token = My.Settings.SmToken
-        If token = "x" Then
-            MessageBox.Show("没有设置 SmToken，请先设置。", "插入图片", MessageBoxButtons.Ok, MessageBoxIcon.Exclamation)
-            Return
-        End If
-
-        ' 获取图片并保存
-        Dim image = Clipboard.GetImage()
-        If image Is Nothing Then
-            MessageBox.Show("剪贴板内没有图片。", "插入图片", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Return
-        End If
-        Dim filename = Path.GetTempFileName()
-        image.Save(filename)
-
-        ' 上传
-        UploadImage(filename, token, True)
-    End Sub
-
-    ''' <summary>
-    ''' 上传图片
-    ''' </summary>
-    Private Sub UploadImage(filename As String, token As String, Optional needDelete As Boolean = False)
-        SmmsUtil.UploadImage(filename, token).ContinueWith(Sub(t As Task(Of SmmsUtil.TaskResult(Of Tuple(Of String, String))))
-            ' 窗口未关闭
-            If Not _closed Then
-                Dim r = t.Result
-                If Not r.Success Then
-                    MessageBox.Show($"图片上传失败，请重试。{vbNewLine}错误信息：{r.Ex.Message}", "上传图片", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    Return
-                End If
-
-                ' 成功
-                Dim tuple = r.Result
-                Dim ok2 = MessageBoxEx.Show($"图片 ""{tuple.Item1}"" 上传成功，获得图片链接：{vbNewLine}{tuple.Item2}", "上传图片", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information,
-                    Me, {"插入", "复制", "取消"})
-                If ok2 = vbNo Then
-                    Clipboard.SetText(tuple.Item2)
-                Else If ok2 = vbYes
-                    TextBoxContent.Text &= vbNewLine & vbNewLine & $"![{tuple.Item1}]({tuple.Item2})"
-                End If
-            End If
-
-            ' 删除
-            If needDelete Then
-                Dim file = New FileInfo(filename)
-                file.Delete()
-            End If
-        End Sub)
     End Sub
 End Class

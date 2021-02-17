@@ -14,13 +14,12 @@
 + `Dotnetbar` 10.8.0.0
 + `Newtonsoft.Json` 12.0.2
 
-### Functions (v3.0)
+### Functions (v3.1)
 
 + [x] Tip CRUD
 + [x] Color CRUD
 + [x] Tab CRUD
 + [x] Tip with highlight color, tab grouped, done check, time record
-+ [x] Image upload
 + [ ] ...
 
 ### Tips

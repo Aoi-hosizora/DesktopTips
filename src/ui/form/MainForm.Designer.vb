@@ -60,10 +60,8 @@ Partial Class MainForm
         Me.m_popup_OpenDir = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_Refresh = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_ViewLinksInTips = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_popup_ViewImagesInTips = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_WindowSubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_SetupHotkey = New DevComponents.DotNetBar.ButtonItem()
-        Me.m_popup_SetupToken = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_OpacitySubMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_TopMost = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_LoadPosition = New DevComponents.DotNetBar.ButtonItem()
@@ -190,7 +188,7 @@ Partial Class MainForm
         '
         Me.m_menu_ListPopupMenu.AutoExpandOnClick = True
         Me.m_menu_ListPopupMenu.Name = "m_menu_ListPopupMenu"
-        Me.m_menu_ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SelectedTipsCountLabel, Me.m_popup_SelectedTipsTextLabel, Me.m_popup_TipsCountLabel, Me.m_popup_ListItemContainer, Me.m_popup_MoveTopTop, Me.m_popup_MoveTipBottom, Me.m_menu_HighlightSubMenu, Me.m_menu_CheckDone, Me.m_popup_ViewLinksInTips, Me.m_popup_ViewImagesInTips, Me.m_popup_FindTips, Me.m_menu_MoveTipsSubMenu, Me.m_popup_OtherLabel, Me.m_menu_FileSubMenu, Me.m_popup_Refresh, Me.m_menu_WindowSubMenu, Me.m_popup_Exit})
+        Me.m_menu_ListPopupMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SelectedTipsCountLabel, Me.m_popup_SelectedTipsTextLabel, Me.m_popup_TipsCountLabel, Me.m_popup_ListItemContainer, Me.m_popup_MoveTopTop, Me.m_popup_MoveTipBottom, Me.m_menu_HighlightSubMenu, Me.m_menu_CheckDone, Me.m_popup_ViewLinksInTips, Me.m_popup_FindTips, Me.m_menu_MoveTipsSubMenu, Me.m_popup_OtherLabel, Me.m_menu_FileSubMenu, Me.m_popup_Refresh, Me.m_menu_WindowSubMenu, Me.m_popup_Exit})
         Me.m_menu_ListPopupMenu.Text = "ListPopup"
         '
         'm_popup_SelectedTipsCountLabel
@@ -361,12 +359,6 @@ Partial Class MainForm
         Me.m_popup_ViewLinksInTips.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlL)
         Me.m_popup_ViewLinksInTips.Text = "浏览链接(&L)"
         '
-        'm_popup_ViewImagesInTips
-        '
-        Me.m_popup_ViewImagesInTips.Name = "m_popup_ViewImagesInTips"
-        Me.m_popup_ViewImagesInTips.Image = Global.DesktopTips.My.Resources.Resources.Image
-        Me.m_popup_ViewImagesInTips.Text = "浏览图片链接(&I)"
-        '
         'm_popup_FindTips
         '
         Me.m_popup_FindTips.Image = Global.DesktopTips.My.Resources.Resources.Find
@@ -435,18 +427,13 @@ Partial Class MainForm
         '
         Me.m_menu_WindowSubMenu.BeginGroup = True
         Me.m_menu_WindowSubMenu.Name = "m_menu_WindowSubMenu"
-        Me.m_menu_WindowSubMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SetupHotkey, Me.m_popup_SetupToken, Me.m_menu_OpacitySubMenu, Me.m_popup_TopMost, Me.m_popup_LoadPosition, Me.m_popup_SavePosition})
+        Me.m_menu_WindowSubMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SetupHotkey, Me.m_menu_OpacitySubMenu, Me.m_popup_TopMost, Me.m_popup_LoadPosition, Me.m_popup_SavePosition})
         Me.m_menu_WindowSubMenu.Text = "设置与显示(&S)"
         '
         'm_popup_SetupHotkey
         '
         Me.m_popup_SetupHotkey.Name = "m_popup_SetupHotkey"
         Me.m_popup_SetupHotkey.Text = "快捷键设置(&R)"
-        '
-        'm_popup_SetupToken
-        '
-        Me.m_popup_SetupToken.Name = "m_popup_SetupToken"
-        Me.m_popup_SetupToken.Text = "SmToken设置(&T)"
         '
         'm_menu_OpacitySubMenu
         '
@@ -714,9 +701,7 @@ Partial Class MainForm
     Friend WithEvents m_popup_LoadPosition As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_PasteAppendToTip As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_ViewLinksInTips As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents m_popup_ViewImagesInTips As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_SetupHotkey As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents m_popup_SetupToken As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_menu_FileSubMenu As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_Refresh As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_SetupColors As DevComponents.DotNetBar.ButtonItem

@@ -46,7 +46,6 @@
       "updated_at": "2021-02-17T02:36:46.3517519+08:00",
       "tips": [
         {
-          "id": 0,
           "content": "普通标签",
           "color": -1,
           "done": false,

@@ -38,7 +38,6 @@ Partial Public Class GlobalModel
             End If
         Next
 
-        Tabs.ForEach(Sub(t) ReorderTips(t.Tips, reorder := true))
         ReorderColors(Colors, Tabs, reorder := true)
         SaveAllData()
     End Sub
@@ -93,18 +92,6 @@ Partial Public Class GlobalModel
             Return tab.Title.Trim() = newTitle.Trim() AndAlso (currTab Is Nothing OrElse tab.Title.Trim() <> currTab.Title.Trim())
         End Function)
     End Function
-
-    ''' <summary>
-    ''' 处理标签编号
-    ''' </summary>
-    Public Shared Sub ReorderTips(ByRef tipList As List(Of TipItem), Optional reorder As Boolean = False)
-        If reorder Then
-            tipList = tipList.OrderBy(function(t) t.Id).ToList()
-        End If
-        For i = 0 To tipList.Count - 1
-            tipList.ElementAt(i).Id = i ' 更新 Id 为 i
-        Next
-    End Sub
 
     ''' <summary>
     ''' 处理颜色顺序和编号

@@ -2,9 +2,6 @@
 
 <Serializable, JsonObject>
 Public Class TipItem
-    <JsonProperty("id")>
-    Public Property Id As Integer
-
     <JsonProperty("content")>
     Public Property Content As String
 
@@ -51,8 +48,7 @@ Public Class TipItem
         End Get
     End Property
 
-    Public Sub New(id As Integer, content As String, Optional colorId As Integer = -1, Optional done As Boolean = False)
-        Me.Id = id
+    Public Sub New(content As String, Optional colorId As Integer = -1, Optional done As Boolean = False)
         Me.Content = content
         Me.ColorId = colorId
         Me.Done = done

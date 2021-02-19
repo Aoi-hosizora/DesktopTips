@@ -30,7 +30,6 @@
             For Each item As TipItem In items
                 GlobalModel.CurrentTab.Tips.Remove(item)
             Next
-            GlobalModel.ReorderTips(GlobalModel.CurrentTab.Tips)
             _globalPresenter.SaveFile()
             Return True
         End If

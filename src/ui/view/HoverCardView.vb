@@ -5,7 +5,7 @@ Imports DD = DevComponents.DotNetBar
 ''' 悬浮卡片
 ''' </summary>
 Public Class HoverCardView
-    Inherits Form
+    Inherits BaseEscCbForm
 
 #Region "属性"
 
@@ -46,7 +46,7 @@ Public Class HoverCardView
         Get
             If HoverTipItem IsNot Nothing Then
                 Dim sze = TextRenderer.MeasureText(HoverTipItem.Content, Font)
-                Dim newWidth = sze.Width + _contentHMargin * 2 + 12 ' Extra 12
+                Dim newWidth = sze.Width + _contentHMargin * 2 + 18 ' Extra 18
                 If newWidth > Screen.PrimaryScreen.Bounds.Width * 2 / 5 Then
                     newWidth = Screen.PrimaryScreen.Bounds.Width * 2 / 5
                 End If
@@ -187,6 +187,7 @@ Public Class HoverCardView
     Private ReadOnly _borderColor As Color = Color.FromArgb(200, 200, 200)
     Private ReadOnly _startColor As Color = Color.white
     Private ReadOnly _endColor As Color = Color.FromArgb(229, 229, 240)
+    Private ReadOnly _splitterColor As Color = Color.FromArgb(60, 86, 159)
 
     Protected Overrides Sub OnPaint(e As PaintEventArgs)
         MyBase.OnPaint(e)
@@ -198,15 +199,19 @@ Public Class HoverCardView
 
     Private ReadOnly _titleLabel As New DD.LabelX With { .BackColor = Color.Transparent, .AutoSize = True, .WordWrap = False }
     Private ReadOnly _contentLabel As New DD.LabelX With { .BackColor = Color.Transparent, .AutoSize = True, .WordWrap = True }
+    Private ReadOnly _timeLabel As New DD.LabelX With { .BackColor = Color.Transparent, .AutoSize = False, .WordWrap = False, .Font = New Font("微软雅黑", 8.0!), .TextLineAlignment = StringAlignment.Far }
     Private ReadOnly _button As New DD.ButtonX With { .Text = "×", .Tooltip = "关闭", .BackColor = Color.Transparent, .AccessibleRole = AccessibleRole.PushButton, .Style = DD.eDotNetBarStyle.StyleManagerControlled, .Shape = New DD.RoundRectangleShapeDescriptor() }
 
     Private ReadOnly _titleHMargin = 10
     Private ReadOnly _titleVMargin = 5
     Private ReadOnly _contentHMargin = 8
     Private ReadOnly _contentVMargin = 2
-    Private ReadOnly _bottom = 6
-    Private ReadOnly _buttonSize = 14
+    Private ReadOnly _timeHMargin = 10
+    Private ReadOnly _timeVMargin = 8
+    Private ReadOnly _timeHeight = 44
+    Private ReadOnly _buttonSize = 16
     Private ReadOnly _buttonMargin = 5
+    Private ReadOnly _bottom = 4
 
     ''' <summary>
     ''' 加载布局
@@ -216,6 +221,11 @@ Public Class HoverCardView
         _titleLabel.MaximumSize = New Size(Width - _titleHMargin * 2 - 2 * _buttonMargin, 0)
         _contentLabel.BackgroundStyle.CornerType = DD.eCornerType.Square
         _contentLabel.MaximumSize = New Size(Width - _contentHMargin * 2, 0)
+        _timeLabel.BackgroundStyle.CornerType = DD.eCornerType.Square
+        _timeLabel.PaddingLeft = _timeHMargin
+        _timeLabel.BackgroundStyle.BorderTop = DD.eStyleBorderType.Solid
+        _timeLabel.BackgroundStyle.BorderTopWidth = 1
+        _timeLabel.BackgroundStyle.BorderTopColor = _splitterColor
         _button.ColorTable = DD.eButtonColor.Orange
         _button.Size = New Size(_buttonSize, _buttonSize)
         AddHandler _button.MouseDown, Sub() _titleLabel.Focus()
@@ -223,12 +233,12 @@ Public Class HoverCardView
 
         Controls.Clear()
         Controls.Add(_button)
-        Controls.Add(_contentLabel)
         Controls.Add(_titleLabel)
+        Controls.Add(_contentLabel)
+        Controls.Add(_timeLabel)
 
         Dim tip = HoverTipItem
         Dim tab = HoverTab
-        Const hr = "-----------------------------" ' 29
         If tip IsNot Nothing Then ' For Tip
             Dim title1 = tab.Title
             Dim title2 = "未高亮"
@@ -239,37 +249,45 @@ Public Class HoverCardView
                 title2 &= " 已完成"
             End If
 
-            Dim body1 = tip.Content.Replace("&", "&&").Replace(vbNewLine, "<br />")
-            If body1.Length > 1000 Then
-                body1 = body1.Substring(0, 1000) & "..."
+            ' See https://en.wikipedia.org/wiki/Thin_space
+            ' Dim body = tip.Content.Replace(" ", "  ").Replace("&", "&&").Replace(vbNewLine, "<br/>")
+            Dim body = tip.Content.Replace("&", "&&")
+            If body.Length > 2000 Then
+                body = body.Substring(0, 2000) & "..."
             End If
-            Dim body2 = "创建于 " & If(tip.IsDefaultCreatedAt, "未知时间", tip.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
-            body2 &= "<br />更新于 " & If(tip.IsDefaultUpdatedAt, "未知时间", tip.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
+            Dim time = "创建于 " & If(tip.IsDefaultCreatedAt, "未知时间", tip.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
+            time &= "<br/>更新于 " & If(tip.IsDefaultUpdatedAt, "未知时间", tip.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
 
             _titleLabel.Text = $"<b>{title1} - {title2}</b>"
-            _contentLabel.Text = $"{body1}<br />{hr}<br /><font size=""-1"">{body2}</font>"
+            _contentLabel.EnableMarkup = False
+            _contentLabel.Text = body
+            _timeLabel.Text = time
         Else ' For Tab
             Dim title = tab.Title & " 分组"
-            Dim body1 = $"总共有 {tab.Tips.Count} 项" & If(tab.Tips.Count = 0, "", "，其中：")
+            Dim body = $"总共有 {tab.Tips.Count} 项" & If(tab.Tips.Count = 0, "", "，其中：")
             Dim counts = tab.Tips.GroupBy(Function(t) t.Color).Select(Function(g) New Tuple(Of TipColor, Integer)(g.Key, g.Count())).OrderBy(Function(g) g.Item1?.Id)
             For Each g In counts
                 If g.Item1 Is Nothing Then
-                    body1 &= $"<br />无高亮：{g.Item2} 项"
+                    body &= $"<br/><font>无高亮</font>：{g.Item2} 项"
                 Else
-                    body1 &= $"<br /><font color=""{g.Item1.HexColor}"">{g.Item1.Name}</font>：{g.Item2} 项"
+                    body &= $"<br/><font color=""{g.Item1.HexColor}"">{g.Item1.Name}</font>：{g.Item2} 项"
                 End If
             Next
-            Dim body2 = "创建于 " & If(tab.IsDefaultCreatedAt, "未知时间", tab.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
-            body2 &= "<br />更新于 " & If(tab.IsDefaultUpdatedAt, "未知时间", tab.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
+            Dim time = "创建于 " & If(tab.IsDefaultCreatedAt, "未知时间", tab.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
+            time &= "<br/>更新于 " & If(tab.IsDefaultUpdatedAt, "未知时间", tab.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
 
             _titleLabel.Text = $"<b>{title}</b>"
-            _contentLabel.Text = $"{body1}<br />{hr}<br /><font size=""-1"">{body2}</font>"
+            _contentLabel.EnableMarkup = True
+            _contentLabel.Text = body
+            _timeLabel.Text = time
         End If
 
         _titleLabel.Location = New Point(_titleHMargin, _titleVMargin)
         _contentLabel.Location = New Point(_contentHMargin, _titleLabel.Top + _titleLabel.Height + _contentVMargin)
+        _timeLabel.Size = New Size(Width, _timeHeight)
+        _timeLabel.Location = New Point(0, _contentLabel.Top + _contentLabel.Height + _timeVMargin)
         _button.Location = New Point(Width - _buttonMargin - _buttonSize, _buttonMargin)
-        Height = _contentLabel.Top + _contentLabel.Height + _bottom
+        Height = _timeLabel.Top + _timeLabel.Height + _bottom
     End Sub
 
 #End Region

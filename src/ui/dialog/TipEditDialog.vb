@@ -13,11 +13,6 @@ Public Class TipEditDialog
     Private _changed As Boolean = False
 
     ''' <summary>
-    ''' 判断是否已经关闭
-    ''' </summary>
-    Private _closed As Boolean = False
-
-    ''' <summary>
     ''' 是否允许保存，并且指定保存回调
     ''' </summary>
     Private _saveCallback As Action(Of String)
@@ -71,10 +66,6 @@ Public Class TipEditDialog
 
     Private Sub TipEditDialog_Load(sender As Object, e As EventArgs) Handles Me.Load
         MenuSave.Enabled = _saveCallback IsNot Nothing
-    End Sub
-
-    Private Sub TipEditDialog_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
-        _closed = True
     End Sub
 
     Private Sub OK_Click(sender As Object, e As EventArgs) Handles ButtonOK.Click, MenuOK.Click

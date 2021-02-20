@@ -13,7 +13,7 @@
         Dim msg As String = TipEditDialog.ShowDialog("新的标签：", "添加").Trim()
         If msg <> "" Then
             Dim now = DateTime.Now
-            Dim tip As New TipItem(GlobalModel.CurrentTab.Tips.Count, msg) With { .CreatedAt = now, .UpdatedAt = now }
+            Dim tip As New TipItem(msg) With { .CreatedAt = now, .UpdatedAt = now }
             GlobalModel.CurrentTab.Tips.Add(tip)
             _globalPresenter.SaveFile()
             Return True
@@ -24,6 +24,9 @@
     Public Function Delete(items As IEnumerable(Of TipItem)) As Boolean Implements MainFormContract.ITipPresenter.Delete
         items = items.ToList()
         Dim tipString As String = String.Join(vbNewLine, items.Select(Function(t) t.Content))
+        If tipString.Length > 600 Then
+            tipString = tipString.SubString(0, 600) + "..."
+        End If
         Dim ok = MessageBoxEx.Show($"确定删除以下 {items.Count} 个标签吗？{vbNewLine}{vbNewLine}{tipString}", "删除",
             MessageBoxButtons.OKCancel, MessageBoxIcon.Question, _view.GetMe())
         If ok = vbOK Then
@@ -66,7 +69,11 @@
     Public Function Paste(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.Paste
         Dim clip As String = Clipboard.GetText().Trim()
         If clip <> "" Then
-            Dim ok = MessageBoxEx.Show($"是否向当前标签项 ""{item.Content}"" 末尾添加剪贴板内容 ""{clip}""？", "粘贴",
+            Dim content = item.Content
+            If content.Length > 600 Then
+                content = content.Substring(0, 600) + "..."
+            End If
+            Dim ok = MessageBoxEx.Show($"是否向当前标签项 ""{content}"" 末尾添加剪贴板内容 ""{clip}""？", "粘贴",
                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, _view.GetMe(), {"添加空格", "添加回车", "取消"})
             If ok = vbYes Then
                 item.Content &= " " & clip
@@ -122,14 +129,21 @@
     End Function
 
     Public Sub Search() Implements MainFormContract.ITipPresenter.Search
-        Dim text As String = InputBox("请输入搜索内容：", "搜索").Trim()
-        If text = "" Then
-            Return
-        End If
+        Dim text As String = InputBox("请输入搜索内容 (使用 || 和 &&&& 分隔关键字)：", "搜索").Trim().ToLower()
+        If text = "" Then Return
+
+        Dim ors = text.Split({"||"}, StringSplitOptions.RemoveEmptyEntries).Select(Function(s)
+            Return s.Split({"&&"}, StringSplitOptions.RemoveEmptyEntries).Select(Function(w) w.Trim()).ToList()
+        End Function).ToList()
         Dim results As List(Of Tuple(Of Integer, Integer)) = GlobalModel.Tabs.SelectMany(Function(tab)
-            Return tab.Tips.Where(Function(tip) tip.Content.ToLower().Contains(text.ToLower())).ToList().Select(Function(tip)
-                Return New Tuple(Of Integer, Integer)(GlobalModel.Tabs.IndexOf(tab), tab.Tips.IndexOf(tip))
-            End Function)
+            Return tab.Tips.
+                Where(Function(tip) 
+                    Dim content = tip.Content.ToLower()
+                    Return ors.Any(Function(ands) ands.All(Function(a) content.Contains(a))) ' 先 || 后 &&
+                End Function).
+                Select(Function(tip)
+                    Return New Tuple(Of Integer, Integer)(GlobalModel.Tabs.IndexOf(tab), tab.Tips.IndexOf(tip)) ' tabIdx, tipIdx
+                End Function)
         End Function).ToList()
 
         SearchDialog.Close()

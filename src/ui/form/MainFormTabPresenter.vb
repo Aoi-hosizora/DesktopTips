@@ -90,9 +90,9 @@
             OrderBy(Function(g) g.Item1?.Id)
         Return counts.Aggregate(result, Function(current, g)
             If g.Item1 Is Nothing Then
-                Return current & $"<br />无高亮 {g.Item2} 项"
+                Return current & $"<br/>无高亮 {g.Item2} 项"
             Else
-                Return current & $"<br /><font color=""{g.Item1.HexColor}"">{g.Item1.Name}</font> {g.Item2} 项"
+                Return current & $"<br/><font color=""{g.Item1.HexColor}"">{g.Item1.Name}</font> {g.Item2} 项"
             End If
         End Function)
     End Function

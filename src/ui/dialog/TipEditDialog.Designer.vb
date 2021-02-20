@@ -46,7 +46,7 @@ Partial Class TipEditDialog
         Me.LabelMessage.AutoEllipsis = True
         Me.LabelMessage.Location = New System.Drawing.Point(12, 9)
         Me.LabelMessage.Name = "LabelMessage"
-        Me.LabelMessage.Size = New System.Drawing.Size(200, 56)
+        Me.LabelMessage.Size = New System.Drawing.Size(260, 56)
         Me.LabelMessage.TabIndex = 0
         Me.LabelMessage.Text = "内容"
         '
@@ -54,7 +54,7 @@ Partial Class TipEditDialog
         '
         Me.ButtonOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonOK.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.ButtonOK.Location = New System.Drawing.Point(220, 9)
+        Me.ButtonOK.Location = New System.Drawing.Point(280, 9)
         Me.ButtonOK.Menu = Me.ContextMenuStripOK
         Me.ButtonOK.Name = "ButtonOK"
         Me.ButtonOK.Size = New System.Drawing.Size(75, 25)
@@ -67,7 +67,7 @@ Partial Class TipEditDialog
         Me.ButtonCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.ButtonCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonCancel.Location = New System.Drawing.Point(220, 40)
+        Me.ButtonCancel.Location = New System.Drawing.Point(280, 40)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(75, 25)
         Me.ButtonCancel.TabIndex = 2
@@ -83,7 +83,7 @@ Partial Class TipEditDialog
         Me.TextBoxContent.Multiline = True
         Me.TextBoxContent.Name = "TextBoxContent"
         Me.TextBoxContent.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.TextBoxContent.Size = New System.Drawing.Size(280, 90)
+        Me.TextBoxContent.Size = New System.Drawing.Size(340, 125)
         Me.TextBoxContent.TabIndex = 4
         Me.TextBoxContent.Text = "文本框"
         '
@@ -106,7 +106,7 @@ Partial Class TipEditDialog
         '
         Me.SplitContainer.Panel2.Controls.Add(Me.TextBoxContent)
         Me.SplitContainer.Panel2MinSize = 100
-        Me.SplitContainer.Size = New System.Drawing.Size(304, 181)
+        Me.SplitContainer.Size = New System.Drawing.Size(364, 211)
         Me.SplitContainer.SplitterDistance = 70
         Me.SplitContainer.SplitterWidth = 5
         Me.SplitContainer.TabIndex = 3
@@ -134,14 +134,14 @@ Partial Class TipEditDialog
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonCancel
-        Me.ClientSize = New System.Drawing.Size(320, 220)
+        Me.ClientSize = New System.Drawing.Size(380, 250)
         Me.Controls.Add(Me.SplitContainer)
         Me.Font = New System.Drawing.Font("微软雅黑", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(320, 220)
+        Me.MinimumSize = New System.Drawing.Size(380, 250)
         Me.Name = "TipEditDialog"
         Me.ShowIcon = False
         Me.ShowInTaskbar = False

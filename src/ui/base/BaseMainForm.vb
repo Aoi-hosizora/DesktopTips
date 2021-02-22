@@ -1,4 +1,5 @@
-﻿Imports DD = DevComponents.DotNetBar
+﻿Imports Microsoft.Win32
+Imports DD = DevComponents.DotNetBar
 
 ''' <summary>
 ''' 实现 透明度动画 窗口拖动 隐藏图标 隐藏Peek
@@ -35,6 +36,9 @@ Public Class BaseMainForm
         ctrls.Add(Me)
         ctrls.AddRange(Controls.Cast(Of Control)())
         AddHandlers(ctrls)
+
+        AddHandler SystemEvents.DisplaySettingsChanged, AddressOf DisplaySettingsChanged
+        DisplaySettingsChanged(Me, New EventArgs())
     End Sub
 
     Protected Overrides Sub OnSizeChanged(e As EventArgs)
@@ -253,6 +257,22 @@ Public Class BaseMainForm
             Top = _pushDownWindowPosition.Y + Cursor.Position.Y - _pushDownMousePosition.Y
             Left = _pushDownWindowPosition.X + Cursor.Position.X - _pushDownMousePosition.X
         End If
+    End Sub
+
+    Private _prevHeight As Integer
+    Private _prevWidth As Integer
+
+    Private Sub DisplaySettingsChanged(sender As Object, e As EventArgs)
+        Dim currHeight = Screen.PrimaryScreen.Bounds.Height
+        Dim currWidth = Screen.PrimaryScreen.Bounds.Width
+
+        ' 修改窗口位置
+        If _prevHeight <> 0 AndAlso _prevWidth <> 0 Then
+            Left += currWidth - _prevWidth ' 默认靠右
+        End If
+
+        _prevHeight = currHeight
+        _prevWidth = currWidth
     End Sub
 
 #End Region

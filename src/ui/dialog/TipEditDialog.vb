@@ -29,6 +29,7 @@ Public Class TipEditDialog
             ._previousContent = content
             .ButtonOK.Enabled = content <> ""
             ._saveCallback = saveCallback
+            ._changed = False
 
             Dim newWidth = TextRenderer.MeasureText(message, .Font, .LabelMessage.Size).Width
             If newWidth > Screen.PrimaryScreen.Bounds.Width * 8 / 9 Then
@@ -51,6 +52,10 @@ Public Class TipEditDialog
         Return dlg.TextBoxContent.Text.Trim()
     End Function
 
+    Private Sub TipEditDialog_Load(sender As Object, e As EventArgs) Handles Me.Load
+        MenuSave.Enabled = _saveCallback IsNot Nothing
+    End Sub
+
     ''' <summary>
     ''' 关闭检查
     ''' </summary>
@@ -64,23 +69,19 @@ Public Class TipEditDialog
         End If
     End Sub
 
-    Private Sub TipEditDialog_Load(sender As Object, e As EventArgs) Handles Me.Load
-        MenuSave.Enabled = _saveCallback IsNot Nothing
-    End Sub
-
     Private Sub OK_Click(sender As Object, e As EventArgs) Handles ButtonOK.Click, MenuOK.Click
         _changed = False
         DialogResult = DialogResult.OK
         Close()
     End Sub
 
-    Private Sub MenuSave_Click(sender As Object, e As EventArgs) Handles MenuSave.Click
+    Private Sub Save_Click(sender As Object, e As EventArgs) Handles MenuSave.Click
         _changed = False
         _previousContent = TextBoxContent.Text.Trim()
         _saveCallback?.Invoke(_previousContent)
     End Sub
 
-    Private Sub ButtonCancel_Click(sender As Object, e As EventArgs) Handles ButtonCancel.Click
+    Private Sub Cancel_Click(sender As Object, e As EventArgs) Handles ButtonCancel.Click
         _changed = TextBoxContent.Text.Trim() <> _previousContent.Trim()
         DialogResult = DialogResult.Cancel
         Close()
@@ -92,7 +93,7 @@ Public Class TipEditDialog
     End Sub
 
     Private Sub TipEditDialog_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
-        If e.KeyCode = Keys.Enter And e.Control Then
+        If e.KeyCode = (Keys.Enter And e.Control) Then
             e.Handled = True
             OK_Click(sender, New EventArgs) ' Ctrl+Enter
         End If
@@ -110,9 +111,9 @@ Public Class TipEditDialog
         If e.KeyCode = Keys.A And e.Control Then
             e.Handled = True
             TextBoxContent.SelectAll() ' Ctrl+A
-        Else If e.KeyCode = Keys.S And e.Control Then
+        Else If e.KeyCode = (Keys.S And e.Control) Then
             e.Handled = True
-            MenuSave_Click(sender, New EventArgs) ' Ctrl+S
+            Save_Click(sender, New EventArgs) ' Ctrl+S
         End If
     End Sub
 End Class

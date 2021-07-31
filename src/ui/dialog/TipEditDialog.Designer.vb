@@ -24,50 +24,58 @@ Partial Class TipEditDialog
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.LabelMessage = New System.Windows.Forms.Label()
-        Me.ButtonOK = New DesktopTips.MenuButton()
-        Me.ButtonCancel = New System.Windows.Forms.Button()
-        Me.TextBoxContent = New System.Windows.Forms.TextBox()
-        Me.SplitContainer = New System.Windows.Forms.SplitContainer()
         Me.ContextMenuStripOK = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.MenuOK = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuSave = New System.Windows.Forms.ToolStripMenuItem()
-        CType(Me.SplitContainer, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SplitContainer.Panel1.SuspendLayout()
-        Me.SplitContainer.Panel2.SuspendLayout()
-        Me.SplitContainer.SuspendLayout()
+        Me.ButtonCancel = New System.Windows.Forms.Button()
+        Me.TextBoxContent = New System.Windows.Forms.TextBox()
+        Me.ButtonShowOrigin = New System.Windows.Forms.Button()
+        Me.CheckBoxStyle = New System.Windows.Forms.CheckBox()
+        Me.TextBoxOrigin = New System.Windows.Forms.TextBox()
+        Me.SplitContainerTextBox = New System.Windows.Forms.SplitContainer()
+        Me.ButtonOK = New DesktopTips.MenuButton()
         Me.ContextMenuStripOK.SuspendLayout()
+        CType(Me.SplitContainerTextBox, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SplitContainerTextBox.Panel1.SuspendLayout()
+        Me.SplitContainerTextBox.Panel2.SuspendLayout()
+        Me.SplitContainerTextBox.SuspendLayout()
         Me.SuspendLayout()
         '
         'LabelMessage
         '
-        Me.LabelMessage.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.LabelMessage.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.LabelMessage.AutoEllipsis = True
         Me.LabelMessage.Location = New System.Drawing.Point(12, 9)
         Me.LabelMessage.Name = "LabelMessage"
-        Me.LabelMessage.Size = New System.Drawing.Size(260, 56)
+        Me.LabelMessage.Size = New System.Drawing.Size(352, 56)
         Me.LabelMessage.TabIndex = 0
         Me.LabelMessage.Text = "内容"
         '
-        'ButtonOK
+        'ContextMenuStripOK
         '
-        Me.ButtonOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ButtonOK.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.ButtonOK.Location = New System.Drawing.Point(280, 9)
-        Me.ButtonOK.Menu = Me.ContextMenuStripOK
-        Me.ButtonOK.Name = "ButtonOK"
-        Me.ButtonOK.Size = New System.Drawing.Size(75, 25)
-        Me.ButtonOK.TabIndex = 1
-        Me.ButtonOK.Text = "确定"
-        Me.ButtonOK.UseVisualStyleBackColor = True
+        Me.ContextMenuStripOK.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MenuOK, Me.MenuSave})
+        Me.ContextMenuStripOK.Name = "ContextMenuStripOK"
+        Me.ContextMenuStripOK.Size = New System.Drawing.Size(116, 48)
+        '
+        'MenuOK
+        '
+        Me.MenuOK.Name = "MenuOK"
+        Me.MenuOK.Size = New System.Drawing.Size(115, 22)
+        Me.MenuOK.Text = "确定(&O)"
+        '
+        'MenuSave
+        '
+        Me.MenuSave.Name = "MenuSave"
+        Me.MenuSave.Size = New System.Drawing.Size(115, 22)
+        Me.MenuSave.Text = "保存(&S)"
         '
         'ButtonCancel
         '
         Me.ButtonCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.ButtonCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonCancel.Location = New System.Drawing.Point(280, 40)
+        Me.ButtonCancel.Location = New System.Drawing.Point(370, 40)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(75, 25)
         Me.ButtonCancel.TabIndex = 2
@@ -76,92 +84,124 @@ Partial Class TipEditDialog
         '
         'TextBoxContent
         '
-        Me.TextBoxContent.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.TextBoxContent.Location = New System.Drawing.Point(12, 0)
+        Me.TextBoxContent.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TextBoxContent.Location = New System.Drawing.Point(0, 0)
         Me.TextBoxContent.Multiline = True
         Me.TextBoxContent.Name = "TextBoxContent"
         Me.TextBoxContent.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.TextBoxContent.Size = New System.Drawing.Size(340, 125)
-        Me.TextBoxContent.TabIndex = 4
+        Me.TextBoxContent.Size = New System.Drawing.Size(215, 128)
+        Me.TextBoxContent.TabIndex = 3
         Me.TextBoxContent.Text = "文本框"
         '
-        'SplitContainer
+        'ButtonShowOrigin
         '
-        Me.SplitContainer.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1
-        Me.SplitContainer.Location = New System.Drawing.Point(0, 0)
-        Me.SplitContainer.Name = "SplitContainer"
-        Me.SplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal
+        Me.ButtonShowOrigin.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ButtonShowOrigin.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.ButtonShowOrigin.Location = New System.Drawing.Point(367, 205)
+        Me.ButtonShowOrigin.Name = "ButtonShowOrigin"
+        Me.ButtonShowOrigin.Size = New System.Drawing.Size(75, 25)
+        Me.ButtonShowOrigin.TabIndex = 6
+        Me.ButtonShowOrigin.Text = "显示原文"
+        Me.ButtonShowOrigin.UseVisualStyleBackColor = True
         '
-        'SplitContainer.Panel1
+        'CheckBoxStyle
         '
-        Me.SplitContainer.Panel1.Controls.Add(Me.LabelMessage)
-        Me.SplitContainer.Panel1.Controls.Add(Me.ButtonOK)
-        Me.SplitContainer.Panel1.Controls.Add(Me.ButtonCancel)
-        Me.SplitContainer.Panel1MinSize = 70
+        Me.CheckBoxStyle.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.CheckBoxStyle.AutoSize = True
+        Me.CheckBoxStyle.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBoxStyle.Location = New System.Drawing.Point(13, 207)
+        Me.CheckBoxStyle.Name = "CheckBoxStyle"
+        Me.CheckBoxStyle.Size = New System.Drawing.Size(152, 22)
+        Me.CheckBoxStyle.TabIndex = 5
+        Me.CheckBoxStyle.Text = "使用 Markdown 样式"
+        Me.CheckBoxStyle.UseVisualStyleBackColor = True
         '
-        'SplitContainer.Panel2
+        'TextBoxOrigin
         '
-        Me.SplitContainer.Panel2.Controls.Add(Me.TextBoxContent)
-        Me.SplitContainer.Panel2MinSize = 100
-        Me.SplitContainer.Size = New System.Drawing.Size(364, 211)
-        Me.SplitContainer.SplitterDistance = 70
-        Me.SplitContainer.SplitterWidth = 5
-        Me.SplitContainer.TabIndex = 3
+        Me.TextBoxOrigin.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.TextBoxOrigin.Location = New System.Drawing.Point(0, 0)
+        Me.TextBoxOrigin.Multiline = True
+        Me.TextBoxOrigin.Name = "TextBoxOrigin"
+        Me.TextBoxOrigin.ReadOnly = True
+        Me.TextBoxOrigin.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+        Me.TextBoxOrigin.Size = New System.Drawing.Size(211, 128)
+        Me.TextBoxOrigin.TabIndex = 4
+        Me.TextBoxOrigin.Text = "文本框"
         '
-        'ContextMenuStripOK
+        'SplitContainerTextBox
         '
-        Me.ContextMenuStripOK.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MenuOK, Me.MenuSave})
-        Me.ContextMenuStripOK.Name = "ContextMenuStripOK"
-        Me.ContextMenuStripOK.Size = New System.Drawing.Size(153, 70)
+        Me.SplitContainerTextBox.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.SplitContainerTextBox.Location = New System.Drawing.Point(12, 71)
+        Me.SplitContainerTextBox.Name = "SplitContainerTextBox"
         '
-        'MenuOK
+        'SplitContainerTextBox.Panel1
         '
-        Me.MenuOK.Name = "MenuOK"
-        Me.MenuOK.Size = New System.Drawing.Size(152, 22)
-        Me.MenuOK.Text = "确定(&O)"
+        Me.SplitContainerTextBox.Panel1.Controls.Add(Me.TextBoxContent)
         '
-        'MenuSave
+        'SplitContainerTextBox.Panel2
         '
-        Me.MenuSave.Name = "MenuSave"
-        Me.MenuSave.Size = New System.Drawing.Size(152, 22)
-        Me.MenuSave.Text = "保存(&S)"
+        Me.SplitContainerTextBox.Panel2.Controls.Add(Me.TextBoxOrigin)
+        Me.SplitContainerTextBox.Size = New System.Drawing.Size(430, 128)
+        Me.SplitContainerTextBox.SplitterDistance = 215
+        Me.SplitContainerTextBox.TabIndex = 7
+        '
+        'ButtonOK
+        '
+        Me.ButtonOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.ButtonOK.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.ButtonOK.Location = New System.Drawing.Point(370, 9)
+        Me.ButtonOK.Menu = Me.ContextMenuStripOK
+        Me.ButtonOK.Name = "ButtonOK"
+        Me.ButtonOK.Size = New System.Drawing.Size(75, 25)
+        Me.ButtonOK.TabIndex = 1
+        Me.ButtonOK.Text = "确定"
+        Me.ButtonOK.UseVisualStyleBackColor = True
         '
         'TipEditDialog
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonCancel
-        Me.ClientSize = New System.Drawing.Size(380, 250)
-        Me.Controls.Add(Me.SplitContainer)
-        Me.Font = New System.Drawing.Font("微软雅黑", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ClientSize = New System.Drawing.Size(454, 236)
+        Me.Controls.Add(Me.SplitContainerTextBox)
+        Me.Controls.Add(Me.CheckBoxStyle)
+        Me.Controls.Add(Me.LabelMessage)
+        Me.Controls.Add(Me.ButtonOK)
+        Me.Controls.Add(Me.ButtonShowOrigin)
+        Me.Controls.Add(Me.ButtonCancel)
+        Me.Font = New System.Drawing.Font("Microsoft YaHei", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(380, 250)
+        Me.MinimumSize = New System.Drawing.Size(380, 275)
         Me.Name = "TipEditDialog"
         Me.ShowIcon = False
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "标题"
-        Me.SplitContainer.Panel1.ResumeLayout(False)
-        Me.SplitContainer.Panel2.ResumeLayout(False)
-        Me.SplitContainer.Panel2.PerformLayout()
-        CType(Me.SplitContainer, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.SplitContainer.ResumeLayout(False)
         Me.ContextMenuStripOK.ResumeLayout(False)
+        Me.SplitContainerTextBox.Panel1.ResumeLayout(False)
+        Me.SplitContainerTextBox.Panel1.PerformLayout()
+        Me.SplitContainerTextBox.Panel2.ResumeLayout(False)
+        Me.SplitContainerTextBox.Panel2.PerformLayout()
+        CType(Me.SplitContainerTextBox, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.SplitContainerTextBox.ResumeLayout(False)
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
     Friend WithEvents LabelMessage As System.Windows.Forms.Label
     Friend WithEvents ButtonOK As DesktopTips.MenuButton
     Friend WithEvents ButtonCancel As System.Windows.Forms.Button
     Friend WithEvents TextBoxContent As System.Windows.Forms.TextBox
-    Friend WithEvents SplitContainer As System.Windows.Forms.SplitContainer
     Friend WithEvents ContextMenuStripOK As System.Windows.Forms.ContextMenuStrip
     Friend WithEvents MenuOK As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MenuSave As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ButtonShowOrigin As Button
+    Friend WithEvents CheckBoxStyle As CheckBox
+    Friend WithEvents TextBoxOrigin As TextBox
+    Friend WithEvents SplitContainerTextBox As SplitContainer
 End Class

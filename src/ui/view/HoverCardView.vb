@@ -251,7 +251,10 @@ Public Class HoverCardView
 
             ' See https://en.wikipedia.org/wiki/Thin_space
             ' Dim body = tip.Content.Replace(" ", "  ").Replace("&", "&&").Replace(vbNewLine, "<br/>")
-            Dim body = CommonUtil.Markdown2Markup(CommonUtil.EscapeForXML(tip.Content))
+            Dim body = tip.Content.Replace("&", "&&")
+            If tip.Markdown Then
+                body = CommonUtil.Markdown2Markup(CommonUtil.EscapeForXML(tip.Content))
+            End If
             If body.Length > 4000 Then
                 body = body.Substring(0, 3997) & "..."
             End If
@@ -260,7 +263,7 @@ Public Class HoverCardView
 
             _titleLabel.EnableMarkup = True
             _titleLabel.Text = $"<b>{title1} - {title2}</b>"
-            _contentLabel.EnableMarkup = True
+            _contentLabel.EnableMarkup = tip.Markdown
             _contentLabel.Text = body
             _timeLabel.Text = time
         Else ' For Tab

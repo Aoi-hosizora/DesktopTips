@@ -5,6 +5,11 @@ Public Class TipEditDialog
     ''' <summary>
     ''' 未修改前的内容
     ''' </summary>
+    Private _originContent As String = ""
+
+    ''' <summary>
+    ''' 未保存前的内容
+    ''' </summary>
     Private _previousContent As String = ""
 
     ''' <summary>
@@ -20,36 +25,34 @@ Public Class TipEditDialog
     ''' <summary>
     ''' 显示编辑对话框
     ''' </summary>
-    Public Overloads Shared Function ShowDialog(message As String, title As String, Optional content As String = "", Optional saveCallback As Action(Of String) = Nothing) As String
+    Public Overloads Shared Function ShowDialog(message As String, title As String, Optional content As String = "", Optional ByRef markdown As Boolean = False, Optional saveCallback As Action(Of String) = Nothing) As String
         Dim dlg As New TipEditDialog
         With dlg
             .Text = title
-            .LabelMessage.Text = message ' <<<
-            .TextBoxContent.Text = content ' <<<
+            .LabelMessage.Text = message
+            ._originContent = content
             ._previousContent = content
+            .TextBoxOrigin.Text = content
+            .TextBoxContent.Text = content
             .ButtonOK.Enabled = content <> ""
+            .SplitContainerTextBox.Panel2Collapsed = True
+            .CheckBoxStyle.Checked = markdown
             ._saveCallback = saveCallback
             ._changed = False
 
-            Dim newWidth = TextRenderer.MeasureText(message, .Font, .LabelMessage.Size).Width
-            If newWidth > Screen.PrimaryScreen.Bounds.Width * 8 / 9 Then
-                newWidth = Screen.PrimaryScreen.Bounds.Width * 8 / 9
-            End If
-            .Width += newWidth - .LabelMessage.Width
-            Dim newHeight% = TextRenderer.MeasureText(message, .Font, .LabelMessage.Size).Height
-            If newHeight > Screen.PrimaryScreen.Bounds.Height * 3 / 5 Then
-                newHeight = Screen.PrimaryScreen.Bounds.Height * 3 / 5
-            End If
-            Dim dh = newHeight - .LabelMessage.Height
-            .Height += dh
-            .SplitContainer.SplitterDistance += dh
+            Dim newSize = TextRenderer.MeasureText(content, .Font, Size.Empty)
+            Dim maxWidth = Screen.PrimaryScreen.Bounds.Width * 8 / 9
+            Dim maxHeight = Screen.PrimaryScreen.Bounds.Height * 3 / 5
+            .Width += Math.Min(newSize.Width + 30, maxWidth) - .TextBoxContent.Width
+            .Height += Math.Min(newSize.Height + 50, maxHeight) - .TextBoxContent.Height
 
             .TextBoxContent.Focus()
             .TextBoxContent.Select()
-        End With
 
-        If dlg.ShowDialog() = vbCancel Then Return ""
-        Return dlg.TextBoxContent.Text.Trim()
+            If .ShowDialog() = vbCancel Then Return ""
+            markdown = .CheckBoxStyle.Checked
+            Return .TextBoxContent.Text.Trim()
+        End With
     End Function
 
     Private Sub TipEditDialog_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -87,9 +90,22 @@ Public Class TipEditDialog
         Close()
     End Sub
 
+    Private Sub ShowOrigin_Click(sender As Object, e As EventArgs) Handles ButtonShowOrigin.Click
+        If SplitContainerTextBox.Panel2Collapsed Then
+            SplitContainerTextBox.Panel2Collapsed = False
+            Width = Width * 2 - 40
+            ButtonShowOrigin.Text = "隐藏原文"
+        Else
+            SplitContainerTextBox.Panel2Collapsed = True
+            Width = (Width + 40) / 2
+            ButtonShowOrigin.Text = "显示原文"
+        End If
+    End Sub
+
     Private Sub TextBoxContent_TextChanged(sender As Object, e As EventArgs) Handles TextBoxContent.TextChanged
         ButtonOK.Enabled = TextBoxContent.Text.Trim() <> ""
         _changed = TextBoxContent.Text.Trim() <> _previousContent.Trim()
+        Text = Text.TrimEnd(" (已保存)")
     End Sub
 
     Private Sub TipEditDialog_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
@@ -108,12 +124,15 @@ Public Class TipEditDialog
     End Sub
 
     Private Sub TextBoxContent_KeyDown(sender As Object, e As KeyEventArgs) Handles TextBoxContent.KeyDown
-        If e.KeyCode = Keys.A And e.Control Then
+        If e.KeyCode = (Keys.A And e.Control) Then
             e.Handled = True
             TextBoxContent.SelectAll() ' Ctrl+A
-        Else If e.KeyCode = (Keys.S And e.Control) Then
+        ElseIf e.KeyCode = (Keys.S And e.Control) Then
             e.Handled = True
             Save_Click(sender, New EventArgs) ' Ctrl+S
+            If Not Text.EndsWith("(已保存)") Then
+                Text += " (已保存)"
+            End If
         End If
     End Sub
 End Class

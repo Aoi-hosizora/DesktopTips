@@ -10,10 +10,11 @@
     End Sub
 
     Public Function Insert() As Boolean Implements MainFormContract.ITipPresenter.Insert
-        Dim msg As String = TipEditDialog.ShowDialog("新的标签：", "添加").Trim()
+        Dim markdown = False
+        Dim msg As String = TipEditDialog.ShowDialog("新的标签：", "添加", markdown:=markdown).Trim()
         If msg <> "" Then
             Dim now = DateTime.Now
-            Dim tip As New TipItem(msg) With { .CreatedAt = now, .UpdatedAt = now }
+            Dim tip As New TipItem(msg) With {.Markdown = markdown, .CreatedAt = now, .UpdatedAt = now}
             GlobalModel.CurrentTab.Tips.Add(tip)
             _globalPresenter.SaveFile()
             Return True
@@ -50,10 +51,12 @@
                 item.UpdatedAt = DateTime.Now
                 _globalPresenter.SaveFile()
             End If
-        End Sub
-        Dim newStr As String = TipEditDialog.ShowDialog($"修改如下标签为：{vbNewLine}{vbNewLine}{content}", "修改", item.Content, saveCallback).Trim()
-        If newStr <> "" And newStr <> item.Content Then
+                           End Sub
+        Dim markdown = item.Markdown
+        Dim newStr As String = TipEditDialog.ShowDialog($"修改标签为：", "修改", item.Content, markdown:=markdown, saveCallback:=saveCallback).Trim()
+        If newStr <> "" And (newStr <> item.Content OrElse markdown <> item.Markdown) Then
             item.Content = newStr
+            item.Markdown = markdown
             item.UpdatedAt = DateTime.Now
             _globalPresenter.SaveFile()
             Return True
@@ -136,15 +139,15 @@
             Return s.Split({"&&"}, StringSplitOptions.RemoveEmptyEntries).Select(Function(w) w.Trim()).ToList()
         End Function).ToList()
         Dim results As List(Of Tuple(Of Integer, Integer)) = GlobalModel.Tabs.SelectMany(Function(tab)
-            Return tab.Tips.
-                Where(Function(tip) 
-                    Dim content = tip.Content.ToLower()
-                    Return ors.Any(Function(ands) ands.All(Function(a) content.Contains(a))) ' 先 || 后 &&
-                End Function).
+                                                                                             Return tab.Tips.
+                Where(Function(tip)
+                          Dim content = tip.Content.ToLower()
+                          Return ors.Any(Function(ands) ands.All(Function(a) content.Contains(a))) ' 先 || 后 &&
+                      End Function).
                 Select(Function(tip)
-                    Return New Tuple(Of Integer, Integer)(GlobalModel.Tabs.IndexOf(tab), tab.Tips.IndexOf(tip)) ' tabIdx, tipIdx
-                End Function)
-        End Function).ToList()
+                           Return New Tuple(Of Integer, Integer)(GlobalModel.Tabs.IndexOf(tab), tab.Tips.IndexOf(tip)) ' tabIdx, tipIdx
+                       End Function)
+                                                                                         End Function).ToList()
 
         SearchDialog.Close()
         If results.Count = 0 Then
@@ -154,10 +157,10 @@
             SearchDialog.SearchResult = results
             SearchDialog.NewSearchCallback = Sub() Search()
             SearchDialog.SelectCallback = Sub(tabIndex As Integer, tipIndex As Integer)
-                _view.GetMe().Focus()
-                _view.GetMe().FormOpacityUp()
-                _view.FocusItem(tabIndex, tipIndex)
-            End Sub
+                                              _view.GetMe().Focus()
+                                              _view.GetMe().FormOpacityUp()
+                                              _view.FocusItem(tabIndex, tipIndex)
+                                          End Sub
             SearchDialog.Show(_view.GetMe())
         End If
     End Sub
@@ -169,8 +172,8 @@
             If tipItems.First().IsHighLight AndAlso tipItems.First().ColorId = color.Id Then ' 已经高亮并且是当前颜色
                 newColor = Nothing
             End If
-        Else If tipItems.Count > 1 Then
-            If tipItems.Where(Function (i) i.ColorId = color.Id).Count = tipItems.Count Then ' 所有选择项都是同种颜色
+        ElseIf tipItems.Count > 1 Then
+            If tipItems.Where(Function(i) i.ColorId = color.Id).Count = tipItems.Count Then ' 所有选择项都是同种颜色
                 newColor = Nothing
             End If
         End If
@@ -185,7 +188,7 @@
         Return True
     End Function
 
-    Public Function CheckTipsDone(items As IEnumerable(Of TipItem)) As boolean Implements MainFormContract.ITipPresenter.CheckTipsDone
+    Public Function CheckTipsDone(items As IEnumerable(Of TipItem)) As Boolean Implements MainFormContract.ITipPresenter.CheckTipsDone
         Dim tipItems = items.ToList()
         Dim toDone = Not tipItems.All(Function(item) item.Done)
         Dim now = DateTime.Now
@@ -204,7 +207,7 @@
 
         Dim contents As New List(Of Tuple(Of String, Color))
         For Each item In items
-            Dim content = item.Content.Replace(vbNewLine, "↴") & If (item.IsHighLight, $" [{item.Color.Name}]", "")
+            Dim content = item.Content.Replace(vbNewLine, "↴") & If(item.IsHighLight, $" [{item.Color.Name}]", "")
             contents.Add(New Tuple(Of String, Color)(content, If(item.Color?.Color, Color.Black)))
         Next
 
@@ -245,10 +248,10 @@
             LinkDialog.Links = links
             LinkDialog.CheckBoxText = "在新窗口打开浏览器"
             LinkDialog.CheckBoxChecked = My.Settings.OpenInNewBrowser
-            LinkDialog.CheckBoxChangedCallback = Sub(c) 
-                My.Settings.OpenInNewBrowser = c
-                My.Settings.Save()
-            End Sub
+            LinkDialog.CheckBoxChangedCallback = Sub(c)
+                                                     My.Settings.OpenInNewBrowser = c
+                                                     My.Settings.Save()
+                                                 End Sub
             LinkDialog.OkCallback = Sub(l As IEnumerable(Of String), inNew As Boolean) OpenInDefaultBrowser(l, inNew)
             LinkDialog.ShowDialog(_view.GetMe())
         End If

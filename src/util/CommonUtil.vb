@@ -1,4 +1,5 @@
 ﻿Imports Microsoft.Win32
+Imports System.Text.RegularExpressions
 
 Public Class CommonUtil
     ''' <summary>
@@ -12,7 +13,7 @@ Public Class CommonUtil
         End Using
         Return bmp
     End Function
-    
+
     ''' <summary>
     ''' Trim 字符串用于添加末尾省略号
     ''' </summary>
@@ -30,6 +31,26 @@ Public Class CommonUtil
             ratio = maxSize / currentSize
         End While
         Return trimmed
+    End Function
+
+    ''' <summary>
+    ''' 转义字符串为 XML 兼容
+    ''' </summary>
+    Public Shared Function EscapeForXML(s As String) As String
+        Return s.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;")
+    End Function
+
+    ''' <summary>
+    ''' Markdown 样式转为 Markup 样式
+    ''' </summary>
+    Public Shared Function Markdown2Markup(s As String) As String
+        s = s.Replace("\\", "＼")
+        s = New Regex("(?<!\\)\*\*([^\n]+?)\*\*").Replace(s, "<b>$1</b>")
+        s = New Regex("(?<!\\)\*([^\n]+?)\*").Replace(s, "<i>$1</i>").Replace("\*", "*")
+        s = New Regex("(?<!\\)_([^\n]+?)_").Replace(s, "<u>$1</u>").Replace("\_", "_")
+        s = New Regex("(?<!\\)~~([^\n]+?)~~").Replace(s, "<s>$1</s>").Replace("\~", "~")
+        s = s.Replace("＼", "\").Replace(vbNewLine, "<br/>")
+        Return s
     End Function
 
     ''' <summary>

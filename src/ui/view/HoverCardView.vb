@@ -251,19 +251,20 @@ Public Class HoverCardView
 
             ' See https://en.wikipedia.org/wiki/Thin_space
             ' Dim body = tip.Content.Replace(" ", "  ").Replace("&", "&&").Replace(vbNewLine, "<br/>")
-            Dim body = tip.Content.Replace("&", "&&")
-            If body.Length > 2000 Then
-                body = body.Substring(0, 2000) & "..."
+            Dim body = CommonUtil.Markdown2Markup(CommonUtil.EscapeForXML(tip.Content))
+            If body.Length > 4000 Then
+                body = body.Substring(0, 3997) & "..."
             End If
             Dim time = "创建于 " & If(tip.IsDefaultCreatedAt, "未知时间", tip.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
             time &= "<br/>更新于 " & If(tip.IsDefaultUpdatedAt, "未知时间", tip.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
 
+            _titleLabel.EnableMarkup = True
             _titleLabel.Text = $"<b>{title1} - {title2}</b>"
-            _contentLabel.EnableMarkup = False
+            _contentLabel.EnableMarkup = True
             _contentLabel.Text = body
             _timeLabel.Text = time
         Else ' For Tab
-            Dim title = tab.Title & " 分组"
+            Dim title = CommonUtil.EscapeForXML(tab.Title) & " 分组"
             Dim body = $"总共有 {tab.Tips.Count} 项" & If(tab.Tips.Count = 0, "", "，其中：")
             Dim counts = tab.Tips.GroupBy(Function(t) t.Color).Select(Function(g) New Tuple(Of TipColor, Integer)(g.Key, g.Count())).OrderBy(Function(g) g.Item1?.Id)
             For Each g In counts
@@ -276,6 +277,7 @@ Public Class HoverCardView
             Dim time = "创建于 " & If(tab.IsDefaultCreatedAt, "未知时间", tab.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
             time &= "<br/>更新于 " & If(tab.IsDefaultUpdatedAt, "未知时间", tab.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
 
+            _titleLabel.EnableMarkup = True
             _titleLabel.Text = $"<b>{title}</b>"
             _contentLabel.EnableMarkup = True
             _contentLabel.Text = body

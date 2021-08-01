@@ -39,6 +39,7 @@ Public Class TipEditDialog
             .CheckBoxStyle.Checked = markdown
             ._saveCallback = saveCallback
             ._changed = False
+            .Text = .Text.TrimStart("*")
 
             Dim newSize = TextRenderer.MeasureText(content, .Font, Size.Empty)
             Dim maxWidth = Screen.PrimaryScreen.Bounds.Width * 8 / 9
@@ -82,6 +83,7 @@ Public Class TipEditDialog
         _changed = False
         _previousContent = TextBoxContent.Text.Trim()
         _saveCallback?.Invoke(_previousContent)
+        Text = Text.TrimStart("*")
     End Sub
 
     Private Sub Cancel_Click(sender As Object, e As EventArgs) Handles ButtonCancel.Click
@@ -105,7 +107,9 @@ Public Class TipEditDialog
     Private Sub TextBoxContent_TextChanged(sender As Object, e As EventArgs) Handles TextBoxContent.TextChanged
         ButtonOK.Enabled = TextBoxContent.Text.Trim() <> ""
         _changed = TextBoxContent.Text.Trim() <> _previousContent.Trim()
-        Text = Text.TrimEnd(" (已保存)")
+        If Not Text.StartsWith("*") Then
+            Text = "*" & Text
+        End If
     End Sub
 
     Private Sub TipEditDialog_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
@@ -128,10 +132,9 @@ Public Class TipEditDialog
             e.Handled = True
             TextBoxContent.SelectAll() ' Ctrl+A
         ElseIf e.KeyCode = (Keys.S And e.Control) Then
-            e.Handled = True
-            Save_Click(sender, New EventArgs) ' Ctrl+S
-            If Not Text.EndsWith("(已保存)") Then
-                Text += " (已保存)"
+            If _saveCallback IsNot Nothing Then
+                e.Handled = True
+                Save_Click(sender, New EventArgs) ' Ctrl+S
             End If
         End If
     End Sub

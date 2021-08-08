@@ -54,6 +54,17 @@ Public Class CommonUtil
     End Function
 
     ''' <summary>
+    ''' 格式化处理文本
+    ''' </summary>
+    Public Shared Function FormatText(s As String) As String
+        s = s.Trim()
+        s = New Regex("\r\n[ \t]+").Replace(s, vbNewLine)
+        s = New Regex("[ \t]+\r\n").Replace(s, vbNewLine)
+        s = New Regex("\r\n(\r\n)+").Replace(s, vbNewLine + vbNewLine)
+        Return s
+    End Function
+
+    ''' <summary>
     ''' 获取 Keys 的 Modifiers 部分
     ''' </summary>
     Public Shared Function GetModifiersFromKey(key As Keys) As Keys

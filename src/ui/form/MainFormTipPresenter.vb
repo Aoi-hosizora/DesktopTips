@@ -1,4 +1,6 @@
-﻿Public Class MainFormTipPresenter
+﻿Imports System.Text.RegularExpressions
+
+Public Class MainFormTipPresenter
     Implements MainFormContract.ITipPresenter
 
     Private ReadOnly _view As MainFormContract.IView
@@ -11,7 +13,8 @@
 
     Public Function Insert() As Boolean Implements MainFormContract.ITipPresenter.Insert
         Dim markdown = False
-        Dim msg As String = TipEditDialog.ShowDialog("新的标签：", "添加", markdown:=markdown).Trim()
+        Dim msg As String = TipEditDialog.ShowDialog("新的标签：", "添加", markdown:=markdown)
+        msg = CommonUtil.FormatText(msg)
         If msg <> "" Then
             Dim now = DateTime.Now
             Dim tip As New TipItem(msg) With {.Markdown = markdown, .CreatedAt = now, .UpdatedAt = now}
@@ -24,9 +27,9 @@
 
     Public Function Delete(items As IEnumerable(Of TipItem)) As Boolean Implements MainFormContract.ITipPresenter.Delete
         items = items.ToList()
-        Dim tipString As String = String.Join(vbNewLine, items.Select(Function(t) t.Content))
+        Dim tipString As String = String.Join(vbNewLine, items.Select(Function(t) t.Content.Replace(vbNewLine, "↴")))
         If tipString.Length > 600 Then
-            tipString = tipString.SubString(0, 600) + "..."
+            tipString = tipString.Substring(0, 600) + "..."
         End If
         Dim ok = MessageBoxEx.Show($"确定删除以下 {items.Count} 个标签吗？{vbNewLine}{vbNewLine}{tipString}", "删除",
             MessageBoxButtons.OKCancel, MessageBoxIcon.Question, _view.GetMe())
@@ -46,14 +49,15 @@
             content = content.Substring(0, 600) + "..."
         End If
         Dim saveCallback = Sub(text As String)
-            If text <> "" And text <> item.Content Then
-                item.Content = text
-                item.UpdatedAt = DateTime.Now
-                _globalPresenter.SaveFile()
-            End If
+                               If text <> "" And text <> item.Content Then
+                                   item.Content = text
+                                   item.UpdatedAt = DateTime.Now
+                                   _globalPresenter.SaveFile()
+                               End If
                            End Sub
         Dim markdown = item.Markdown
-        Dim newStr As String = TipEditDialog.ShowDialog($"修改标签为：", "修改", item.Content, markdown:=markdown, saveCallback:=saveCallback).Trim()
+        Dim newStr As String = TipEditDialog.ShowDialog($"修改标签为：", "修改", item.Content, markdown:=markdown, saveCallback:=saveCallback)
+        newStr = CommonUtil.FormatText(newStr)
         If newStr <> "" And (newStr <> item.Content OrElse markdown <> item.Markdown) Then
             item.Content = newStr
             item.Markdown = markdown
@@ -136,8 +140,8 @@
         If text = "" Then Return
 
         Dim ors = text.Split({"||"}, StringSplitOptions.RemoveEmptyEntries).Select(Function(s)
-            Return s.Split({"&&"}, StringSplitOptions.RemoveEmptyEntries).Select(Function(w) w.Trim()).ToList()
-        End Function).ToList()
+                                                                                       Return s.Split({"&&"}, StringSplitOptions.RemoveEmptyEntries).Select(Function(w) w.Trim()).ToList()
+                                                                                   End Function).ToList()
         Dim results As List(Of Tuple(Of Integer, Integer)) = GlobalModel.Tabs.SelectMany(Function(tab)
                                                                                              Return tab.Tips.
                 Where(Function(tip)
@@ -161,7 +165,7 @@
                                               _view.GetMe().FormOpacityUp()
                                               _view.FocusItem(tabIndex, tipIndex)
                                           End Sub
-            SearchDialog.Show(_view.GetMe())
+            SearchDialog.ShowDialog()
         End If
     End Sub
 
@@ -232,7 +236,7 @@
     End Sub
 
     Public Function GetLinks(items As IEnumerable(Of TipItem)) As IEnumerable(Of String) Implements MainFormContract.ITipPresenter.GetLinks
-        Return items.SelectMany(Function(t) t.Content.Split(New Char() {" ", vbCrLf, vbCr, vbLf}, StringSplitOptions.RemoveEmptyEntries)).
+        Return items.SelectMany(Function(t) t.Content.Split(New Char() {" ", vbTab, vbCrLf, vbCr, vbLf}, StringSplitOptions.RemoveEmptyEntries)).
             Where(Function(s) s.StartsWith("http://") Or s.StartsWith("https://"))
     End Function
 
@@ -259,9 +263,9 @@
 
     Public Sub SetupHighlightColor(cb As Action) Implements MainFormContract.ITipPresenter.SetupHighlightColor
         ColorDialog.SaveCallback = Sub()
-            _globalPresenter.SaveFile()
-            cb()
-        End Sub
+                                       _globalPresenter.SaveFile()
+                                       cb()
+                                   End Sub
         ColorDialog.ShowDialog(_view.GetMe())
     End Sub
 

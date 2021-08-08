@@ -230,7 +230,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\util\NativeMethod.vb" />
-    <Compile Include="src\util\SmmsUtil.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="src\ui\dialog\ColorDialog.resx">

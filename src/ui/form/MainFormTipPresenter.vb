@@ -1,4 +1,5 @@
-﻿Imports System.Text.RegularExpressions
+﻿Imports System.Text
+Imports System.Text.RegularExpressions
 
 Public Class MainFormTipPresenter
     Implements MainFormContract.ITipPresenter
@@ -27,11 +28,26 @@ Public Class MainFormTipPresenter
 
     Public Function Delete(items As IEnumerable(Of TipItem)) As Boolean Implements MainFormContract.ITipPresenter.Delete
         items = items.ToList()
-        Dim tipString As String = String.Join(vbNewLine, items.Select(Function(t) t.Content.Replace(vbNewLine, "↴")))
-        If tipString.Length > 600 Then
-            tipString = tipString.Substring(0, 600) + "..."
+        Dim sb As New StringBuilder
+        Dim toMany = False
+        For i = 0 To items.Count - 1
+            Dim content = items(i).Content.Replace(vbNewLine, "↴")
+            If content.Length > 35 Then
+                content = content.Substring(0, 33) & "..."
+            End If
+            If i <= 25 Then
+                sb.AppendLine(content)
+            Else
+                toMany = True
+                Continue For
+            End If
+        Next i
+        If toMany Then
+            sb.AppendLine("......")
         End If
-        Dim ok = MessageBoxEx.Show($"确定删除以下 {items.Count} 个标签吗？{vbNewLine}{vbNewLine}{tipString}", "删除",
+
+        Dim tipsString = sb.ToString()
+        Dim ok = MessageBoxEx.Show($"确定删除以下 {items.Count} 个标签吗？{vbNewLine}{vbNewLine}{tipsString}", "删除",
             MessageBoxButtons.OKCancel, MessageBoxIcon.Question, _view.GetMe())
         If ok = vbOK Then
             For Each item As TipItem In items
@@ -139,11 +155,13 @@ Public Class MainFormTipPresenter
         Dim text As String = InputBox("请输入搜索内容 (使用 || 和 &&&& 分隔关键字)：", "搜索").Trim().ToLower()
         If text = "" Then Return
 
-        Dim ors = text.Split({"||"}, StringSplitOptions.RemoveEmptyEntries).Select(Function(s)
-                                                                                       Return s.Split({"&&"}, StringSplitOptions.RemoveEmptyEntries).Select(Function(w) w.Trim()).ToList()
-                                                                                   End Function).ToList()
-        Dim results As List(Of Tuple(Of Integer, Integer)) = GlobalModel.Tabs.SelectMany(Function(tab)
-                                                                                             Return tab.Tips.
+        Dim ors = text.Split({"||"}, StringSplitOptions.RemoveEmptyEntries).Select(
+            Function(s)
+                Return s.Split({"&&"}, StringSplitOptions.RemoveEmptyEntries).Select(Function(w) w.Trim()).ToList()
+            End Function).ToList()
+        Dim results As List(Of Tuple(Of Integer, Integer)) = GlobalModel.Tabs.SelectMany(
+            Function(tab)
+                Return tab.Tips.
                 Where(Function(tip)
                           Dim content = tip.Content.ToLower()
                           Return ors.Any(Function(ands) ands.All(Function(a) content.Contains(a))) ' 先 || 后 &&
@@ -151,15 +169,16 @@ Public Class MainFormTipPresenter
                 Select(Function(tip)
                            Return New Tuple(Of Integer, Integer)(GlobalModel.Tabs.IndexOf(tab), tab.Tips.IndexOf(tip)) ' tabIdx, tipIdx
                        End Function)
-                                                                                         End Function).ToList()
+            End Function).ToList()
 
-        SearchDialog.Close()
         If results.Count = 0 Then
             MessageBoxEx.Show($"未找到 ""{text}"" 。", "查找", MessageBoxButtons.OK, MessageBoxIcon.Information, _view.GetMe())
         Else
             SearchDialog.SearchText = text
             SearchDialog.SearchResult = results
-            SearchDialog.NewSearchCallback = Sub() Search()
+            SearchDialog.NewSearchCallback = Sub()
+                                                 Search()
+                                             End Sub
             SearchDialog.SelectCallback = Sub(tabIndex As Integer, tipIndex As Integer)
                                               _view.GetMe().Focus()
                                               _view.GetMe().FormOpacityUp()

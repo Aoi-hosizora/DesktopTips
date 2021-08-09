@@ -1,4 +1,5 @@
-﻿''' <summary>
+﻿Imports System.Threading
+''' <summary>
 ''' 搜索
 ''' </summary>
 Public Class SearchDialog
@@ -28,7 +29,7 @@ Public Class SearchDialog
         ListView.Items.Clear()
         For Each tuple As Tuple(Of Integer, Integer) In SearchResult
             Dim tab As Tab = GlobalModel.Tabs.Item(tuple.Item1)
-            ListView.Items.Add($"[{tab.Title}] - {tab.Tips.Item(tuple.Item2).Content}")
+            ListView.Items.Add($"[{tab.Title}] - {tab.Tips.Item(tuple.Item2).Content.Replace(vbNewLine, "↴")}")
         Next
     End Sub
 
@@ -42,9 +43,11 @@ Public Class SearchDialog
     End Sub
 
     Private Sub ButtonSearch_Click(sender As Object, e As EventArgs) Handles ButtonSearch.Click
-        Close()
         If NewSearchCallback IsNot Nothing Then
-            NewSearchCallback.Invoke()
+            DialogResult = DialogResult.Cancel
+            Close()
+            Dim a As New Thread(Sub() NewSearchCallback.Invoke())
+            a.Start()
         End If
     End Sub
 
@@ -55,6 +58,7 @@ Public Class SearchDialog
     End Sub
 
     Private Sub ButtonClose_Click(sender As Object, e As EventArgs) Handles ButtonClose.Click
+        DialogResult = DialogResult.Cancel
         Close()
     End Sub
 End Class

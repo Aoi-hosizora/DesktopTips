@@ -17,7 +17,7 @@ Public Class CommonUtil
     ''' <summary>
     ''' Trim 字符串用于添加末尾省略号
     ''' </summary>
-    Public Shared Function TrimForEllipsis(text As String, font As Font, maxSize As Integer)
+    Public Shared Function TrimForEllipsis(text As String, font As Font, maxSize As Integer) As String
         Dim g = (New Label()).CreateGraphics()
         Dim trimmed = text
         Dim currentSize = CInt(g.MeasureString(trimmed, font).Width)
@@ -44,12 +44,29 @@ Public Class CommonUtil
     ''' Markdown 样式转为 Markup 样式
     ''' </summary>
     Public Shared Function Markdown2Markup(s As String) As String
-        s = s.Replace("\\", "＼")
-        s = New Regex("(?<!\\)\*\*([^\n]+?)\*\*").Replace(s, "<b>$1</b>")
-        s = New Regex("(?<!\\)\*([^\n]+?)\*").Replace(s, "<i>$1</i>").Replace("\*", "*")
-        s = New Regex("(?<!\\)_([^\n]+?)_").Replace(s, "<u>$1</u>").Replace("\_", "_")
-        s = New Regex("(?<!\\)~~([^\n]+?)~~").Replace(s, "<s>$1</s>").Replace("\~", "~")
-        s = s.Replace("＼", "\").Replace(vbNewLine, "<br/>")
+        s = s.Replace("\\", "＼").Replace("\*", "＊").Replace("\_", "＿").Replace("\~", "～").Replace("\=", "＝")
+        s = s.Replace("\+", "＋").Replace("\-", "－").Replace("\`", "｀").Replace("\#", "＃")
+        s = New Regex("(?<!\\)\*\*(.+?)\*\*").Replace(s, "<b>$1</b>")                           ' **...**
+        s = New Regex("(?<!\\)\*(.+?)\*").Replace(s, "<i>$1</i>")                               ' *...*
+        s = New Regex("(?<!\\)__(.+?)__").Replace(s, "<u>$1</u>")                               ' __...__
+        s = New Regex("(?<!\\)~~(.+?)~~").Replace(s, "<s>$1</s>")                               ' ~~...~~
+        s = New Regex("(?<!\\)==(.+?)==").Replace(s, "<font color=""red"">$1</font>")           ' ==...==
+        s = New Regex("(?<!\\)=:(.+?)=(.+?)==").Replace(s, "<font color=""$1"">$2</font>")      ' =:x=...==
+        s = New Regex("(?<=^|\s|>)\+ (.+)").Replace(s, "•　$1")                               ' + x
+        s = New Regex("(?<=^|\s|>)\- (.+)").Replace(s, "◦　$1")                               ' - x
+        s = New Regex("(?<!\\)```(?:\r\n)*([\s\S]+?)(?:\r\n)*```", RegexOptions.Multiline).Replace(s, "<font face=""consolas"">$1</font>")
+        s = New Regex("(?<!\\)`(.+?)`").Replace(s, "<font face=""consolas"">$1</font>")
+
+        s = New Regex("(?<=^|\n|>)###### (.+)\n?").Replace(s, "<h6>$1</h6>")
+        s = New Regex("(?<=^|\n|>)##### (.+)\n?").Replace(s, "<h5>$1</h5>")
+        s = New Regex("(?<=^|\n|>)#### (.+)\n?").Replace(s, "<h4>$1</h4>")
+        s = New Regex("(?<=^|\n|>)### (.+)\n?").Replace(s, "<h3>$1</h3>")
+        s = New Regex("(?<=^|\n|>)## (.+)\n?").Replace(s, "<h2>$1</h2>")
+        s = New Regex("(?<=^|\n|>)# (.+)\n?").Replace(s, "<h1>$1</h1>")
+
+        s = s.Replace("＼", "\").Replace("＊", "*").Replace("＿", "_").Replace("～", "~").Replace("＝", "=")
+        s = s.Replace("＋", "+").Replace("－", "-").Replace("｀", "`").Replace("＃", "#")
+        s = s.Replace(vbNewLine, "<br/>")
         Return s
     End Function
 

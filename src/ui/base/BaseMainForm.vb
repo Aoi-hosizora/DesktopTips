@@ -177,12 +177,16 @@ Public Class BaseMainForm
 
 #Region "Opecity"
 
+    Private _closing As Boolean = False
+
     ''' <summary>
     ''' 鼠标移动，不透明化窗口
     ''' </summary>
     Private Sub FormMouseMove(sender As Object, e As EventArgs)
-        If Cursor.Position.X >= Left And Cursor.Position.X <= Right And Cursor.Position.Y >= Top And Cursor.Position.Y <= Bottom Then
-            FormOpacityUp()
+        If Not _closing Then
+            If Cursor.Position.X >= Left And Cursor.Position.X <= Right And Cursor.Position.Y >= Top And Cursor.Position.Y <= Bottom Then
+                FormOpacityUp()
+            End If
         End If
     End Sub
 
@@ -197,11 +201,13 @@ Public Class BaseMainForm
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
         MyBase.OnFormClosing(e)
+        _closing = True
         e.Cancel = Opacity > 0
         CloseForm()
     End Sub
 
     Private Sub ShowForm()
+        _timerMouseIn.Enabled = False
         _timerMouseOut.Enabled = False
         _timerCloseForm.Enabled = False
         _timerShowForm.Enabled = True
@@ -209,11 +215,13 @@ Public Class BaseMainForm
 
     Private Sub CloseForm()
         _timerMouseIn.Enabled = False
+        _timerMouseOut.Enabled = False
         _timerShowForm.Enabled = False
         _timerCloseForm.Enabled = True
     End Sub
 
     Public Sub FormOpacityUp()
+        _timerShowForm.Enabled = False
         _timerCloseForm.Enabled = False
         _timerMouseOut.Enabled = False
         _timerMouseIn.Enabled = True
@@ -221,6 +229,7 @@ Public Class BaseMainForm
 
     Public Sub FormOpacityDown()
         _timerShowForm.Enabled = False
+        _timerCloseForm.Enabled = False
         _timerMouseIn.Enabled = False
         _timerMouseOut.Enabled = True
     End Sub

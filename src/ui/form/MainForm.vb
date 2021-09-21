@@ -1,5 +1,4 @@
-﻿Imports System.Threading.Tasks
-Imports DD = DevComponents.DotNetBar
+﻿Imports DD = DevComponents.DotNetBar
 
 Public Class MainForm
 
@@ -298,7 +297,7 @@ Public Class MainForm
         ' 插入高亮颜色菜单
         m_menu_HighlightSubMenu.SubItems.Clear()
         For Each colorItem In GlobalModel.Colors
-            Dim btn As New DD.ButtonItem With { .Text = $"{colorItem.Id}: {colorItem.Name}", .Tag = colorItem }
+            Dim btn As New DD.ButtonItem With {.Text = $"{colorItem.Id}: {colorItem.Name}", .Tag = colorItem}
             btn.Image = CommonUtil.DrawColoredSquare(16, New Rectangle(2, 2, 12, 12), colorItem.Color)
             AddHandler btn.Click, AddressOf HighlightTips
             m_menu_HighlightSubMenu.SubItems.Add(btn)
@@ -342,18 +341,18 @@ Public Class MainForm
     ''' 浏览所有列表内容，用于：菜单事件
     ''' </summary>
     Private Sub ViewAllTips(sender As Object, e As EventArgs) Handles m_popup_ViewAllTips.Click
-        _tipPresenter.ViewList(GlobalModel.Tabs.SelectMany(Function(tab) 
-            Return tab.Tips.Select(Function(tip) New TipItem($"[{tab.Title}] - {tip.Content}", tip.ColorId))
-        End Function), False)
+        _tipPresenter.ViewList(GlobalModel.Tabs.SelectMany(Function(tab)
+                                                               Return tab.Tips.Select(Function(tip) New TipItem($"[{tab.Title}] - {tip.Content}", tip.ColorId))
+                                                           End Function), False)
     End Sub
 
     ''' <summary>
     ''' 浏览所有列表高亮内容，用于：菜单事件
     ''' </summary>
     Private Sub ViewAllHighlights(sender As Object, e As EventArgs) Handles m_popup_ViewAllHighlights.Click
-        _tipPresenter.ViewList(GlobalModel.Tabs.SelectMany(Function(tab) 
-            Return tab.Tips.Select(Function(tip) New TipItem($"[{tab.Title}] - {tip.Content}", tip.ColorId))
-        End Function), True)
+        _tipPresenter.ViewList(GlobalModel.Tabs.SelectMany(Function(tab)
+                                                               Return tab.Tips.Select(Function(tip) New TipItem($"[{tab.Title}] - {tip.Content}", tip.ColorId))
+                                                           End Function), True)
     End Sub
 
     ''' <summary>

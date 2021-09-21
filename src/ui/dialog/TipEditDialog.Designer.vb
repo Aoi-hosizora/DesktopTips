@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class TipEditDialog
     Inherits System.Windows.Forms.Form
 
     'Form 重写 Dispose，以清理组件列表。
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,7 +20,7 @@ Partial Class TipEditDialog
     '注意: 以下过程是 Windows 窗体设计器所必需的
     '可以使用 Windows 窗体设计器修改它。
     '不要使用代码编辑器修改它。
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.LabelMessage = New System.Windows.Forms.Label()
@@ -33,8 +33,8 @@ Partial Class TipEditDialog
         Me.CheckBoxStyle = New System.Windows.Forms.CheckBox()
         Me.TextBoxOrigin = New System.Windows.Forms.TextBox()
         Me.SplitContainerTextBox = New System.Windows.Forms.SplitContainer()
-        Me.ButtonOK = New DesktopTips.MenuButton()
         Me.SuperTooltip1 = New DevComponents.DotNetBar.SuperTooltip()
+        Me.ButtonOK = New DesktopTips.MenuButton()
         Me.ContextMenuStripOK.SuspendLayout()
         CType(Me.SplitContainerTextBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainerTextBox.Panel1.SuspendLayout()
@@ -150,6 +150,10 @@ Partial Class TipEditDialog
         Me.SplitContainerTextBox.SplitterDistance = 215
         Me.SplitContainerTextBox.TabIndex = 7
         '
+        'SuperTooltip1
+        '
+        Me.SuperTooltip1.DefaultFont = New System.Drawing.Font("Microsoft YaHei UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        '
         'ButtonOK
         '
         Me.ButtonOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -162,10 +166,6 @@ Partial Class TipEditDialog
         Me.ButtonOK.TabIndex = 1
         Me.ButtonOK.Text = "确定"
         Me.ButtonOK.UseVisualStyleBackColor = True
-        '
-        'SuperTooltip1
-        '
-        Me.SuperTooltip1.DefaultFont = New System.Drawing.Font("Microsoft YaHei UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         '
         'TipEditDialog
         '

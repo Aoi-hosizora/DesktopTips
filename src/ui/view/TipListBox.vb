@@ -241,7 +241,7 @@ Public Class TipListBox
                 ' <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                 HideTooltip() ' Ctrl 没按下时隐藏悬浮卡片
                 If e.Button = MouseButtons.None Then
-                    _hoverThread = New Thread(New ParameterizedThreadStart(Sub(idx As Integer) 
+                    _hoverThread = New Thread(New ParameterizedThreadStart(Sub(idx As Integer)
                         If _hoverIndex <> idx Then Return
                         Thread.Sleep(_hoverWaitingDuration)
                         Invoke(Sub() ShowTooltip(Items(idx))) ' 显示悬浮卡片

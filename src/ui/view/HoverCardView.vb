@@ -76,16 +76,25 @@ Public Class HoverCardView
                 Return New Point(0, 0)
             End If
             Dim curPos = HoverCursorPosition
-            Dim cliPos = HoverParentPosition
-            Dim x = curPos.X - cliPos.X + HoverParentSize.Width + HoverGapDistance
-            If Screen.AllScreens.Length > 1 And curPos.X > Screen.PrimaryScreen.Bounds.Width Then
+
+            ' 出现在右边
+            Dim x = curPos.X - HoverParentPosition.X + HoverParentSize.Width + HoverGapDistance
+            If Screen.AllScreens.Length > 1 AndAlso curPos.X > Screen.PrimaryScreen.Bounds.Width Then
                 x -= Screen.PrimaryScreen.Bounds.Width ' 扩展屏幕
             End If
+
+            ' 出现在左边
             If HoverTipItem Is Nothing Or x >= Screen.PrimaryScreen.Bounds.Width - CardWidth Then
-                x = curPos.X - (cliPos.X + CardWidth + HoverGapDistance)
-            Else If Screen.AllScreens.Length > 1 And curPos.X > Screen.PrimaryScreen.Bounds.Width Then
-                x += Screen.PrimaryScreen.Bounds.Width ' 扩展屏幕
+                x = curPos.X - HoverParentPosition.X - CardWidth - HoverGapDistance
+                If Screen.AllScreens.Length > 1 AndAlso curPos.X > Screen.PrimaryScreen.Bounds.Width Then
+                    x += Screen.PrimaryScreen.Bounds.Width ' 扩展屏幕
+                End If
+                If x < 0 Then
+                    x = 0 ' 极端情况
+                    curPos.Y += 10
+                End If
             End If
+
             Return New Point(x, curPos.Y)
         End Get
     End Property

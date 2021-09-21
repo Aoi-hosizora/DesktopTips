@@ -23,6 +23,7 @@ Partial Class TipEditDialog
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(TipEditDialog))
         Me.LabelMessage = New System.Windows.Forms.Label()
         Me.ContextMenuStripOK = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.MenuOK = New System.Windows.Forms.ToolStripMenuItem()
@@ -113,8 +114,7 @@ Partial Class TipEditDialog
         Me.CheckBoxStyle.Location = New System.Drawing.Point(13, 207)
         Me.CheckBoxStyle.Name = "CheckBoxStyle"
         Me.CheckBoxStyle.Size = New System.Drawing.Size(152, 22)
-        Me.SuperTooltip1.SetSuperTooltip(Me.CheckBoxStyle, New DevComponents.DotNetBar.SuperTooltipInfo("Markdown 样式", "", "开启此选项后，会将一些 Markdown 语法显示为样式。如：" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "**Bold**" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "*Italic*" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "_Underline_" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "~~Strokline~~" &
-            "", Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(257, 145)))
+        Me.SuperTooltip1.SetSuperTooltip(Me.CheckBoxStyle, New DevComponents.DotNetBar.SuperTooltipInfo("使用 Markdown 样式", "", resources.GetString("CheckBoxStyle.SuperTooltip"), Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(280, 295)))
         Me.CheckBoxStyle.TabIndex = 5
         Me.CheckBoxStyle.Text = "使用 Markdown 样式"
         Me.CheckBoxStyle.UseVisualStyleBackColor = True
@@ -162,7 +162,7 @@ Partial Class TipEditDialog
         Me.ButtonOK.Menu = Me.ContextMenuStripOK
         Me.ButtonOK.Name = "ButtonOK"
         Me.ButtonOK.Size = New System.Drawing.Size(75, 25)
-        Me.SuperTooltip1.SetSuperTooltip(Me.ButtonOK, New DevComponents.DotNetBar.SuperTooltipInfo("保存修改并退出", "", "保存时文本会进行一些格式化操作，包括：" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "1. 删除行前行末空白符" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "2. 最多仅保留两个换行" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10), Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(265, 100)))
+        Me.SuperTooltip1.SetSuperTooltip(Me.ButtonOK, New DevComponents.DotNetBar.SuperTooltipInfo("保存修改并退出", "", "保存时文本会进行一些格式化操作，包括：" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "1. 删除行前行末的空白符" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "2. 最多仅保留两个空行" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10), Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(265, 100)))
         Me.ButtonOK.TabIndex = 1
         Me.ButtonOK.Text = "确定"
         Me.ButtonOK.UseVisualStyleBackColor = True

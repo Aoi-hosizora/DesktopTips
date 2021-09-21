@@ -133,6 +133,9 @@ Public Class TipListBox
         End If
     End Sub
 
+    Private _vScrolling As Boolean = False
+    Private _ncMouseLeave As Boolean = False
+
     ''' <summary>
     ''' 利用 WM_NCMOUSEMOVE 信息触发的 Non-Client Area MouseMove 事件
     ''' </summary>
@@ -147,9 +150,18 @@ Public Class TipListBox
         MyBase.WndProc(m)
         Select Case m.Msg
             Case NativeMethod.WM_NCMOUSEMOVE
+                _ncMouseLeave = False
                 RaiseEvent NcMouseMove(Me, Nothing)
             Case NativeMethod.WM_NCMOUSELEAVE
-                RaiseEvent NcMouseLeave(Me, Nothing)
+                _ncMouseLeave = True
+                If Not _vScrolling Then
+                    RaiseEvent NcMouseLeave(Me, Nothing)
+                End If
+            Case NativeMethod.WM_VSCROLL
+                _vScrolling = NativeMethod.LOWORD(m.WParam) <> NativeMethod.SB_ENDSCROLL
+                If Not _vScrolling AndAlso _ncMouseLeave Then
+                    RaiseEvent NcMouseLeave(Me, Nothing)
+                End If
         End Select
     End Sub
 
@@ -170,7 +182,7 @@ Public Class TipListBox
     ''' 重绘列表颜色和高亮
     ''' </summary>
     Protected Overrides Sub OnDrawItem(e As DrawItemEventArgs)
-        If e.Index < 0 OrElse e.Index >= ItemCount Then Return
+        If e.Index <0 OrElse e.Index >= ItemCount Then Return
         Dim item = Items.ElementAt(e.Index)
         Dim itemColor = If(item.Color?.Color, Color.Black)
 

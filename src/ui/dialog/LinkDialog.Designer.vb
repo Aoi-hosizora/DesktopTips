@@ -91,13 +91,14 @@ Partial Class LinkDialog
         Me.ButtonOpenAll.Text = "打开所有(&A)"
         Me.ButtonOpenAll.UseVisualStyleBackColor = True
         '
-        'CheckBoxOpenInNew
+        'CheckBoxOption
         '
         Me.CheckBoxOption.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.CheckBoxOption.AutoSize = True
-        Me.CheckBoxOption.Location = New System.Drawing.Point(12, 247)
+        Me.CheckBoxOption.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.CheckBoxOption.Location = New System.Drawing.Point(12, 246)
         Me.CheckBoxOption.Name = "CheckBoxOption"
-        Me.CheckBoxOption.Size = New System.Drawing.Size(135, 21)
+        Me.CheckBoxOption.Size = New System.Drawing.Size(141, 22)
         Me.CheckBoxOption.TabIndex = 1
         Me.CheckBoxOption.Text = "在新窗口打开浏览器"
         Me.CheckBoxOption.UseVisualStyleBackColor = True

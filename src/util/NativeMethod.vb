@@ -17,6 +17,7 @@ Public Class NativeMethod
     Public Const WM_KEYDOWN = &H100
     Public Const WM_SYSKEYDOWN = &H104
     Public Const WM_NCPAINT = &H85
+    Public Const WM_VSCROLL = &H115
     Public Const WM_NCMOUSEMOVE = &HA0
     Public Const WM_NCMOUSELEAVE = &H2A2
     Public Const WM_NCLBUTTONDOWN = &HA1
@@ -25,6 +26,8 @@ Public Class NativeMethod
     Public Const WM_NCLBUTTONUP = &HA2
     Public Const WM_NCRBUTTONUP = &HA5
     Public Const WM_NCMBUTTONUP = &HA8
+
+    Public Const SB_ENDSCROLL = 8
 
     Public Const CS_DROPSHADOW = &H20000
 
@@ -38,6 +41,14 @@ Public Class NativeMethod
 
     Public Const BS_COMMANDLINK As Integer = &HE
     Public Const BCM_SETNOTE As Integer = &H1609
+
+    Public Shared Function HIWORD(a As Integer) As Short
+        Return a >> 16
+    End Function
+
+    Public Shared Function LOWORD(a As Integer) As Short
+        Return a And &HFFFF
+    End Function
 
 #End Region
 

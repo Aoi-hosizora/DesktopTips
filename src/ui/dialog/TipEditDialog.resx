@@ -123,4 +123,22 @@
   <metadata name="SuperTooltip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>184, 17</value>
   </metadata>
+  <data name="CheckBoxStyle.SuperTooltip" xml:space="preserve">
+    <value>开启此选项后，会将一些 Markdown 语法显示为样式。如：
+
+**Bold**
+*Italic*
+_ _Underline_ _
+~~Strokeline~~
+==Highlight==
+=:red=Color==
+=:#00FF00=Color==
++ Item 1
+- Item 2
+`Single line code`
+```Multiline code```
+# Level 1 title
+## Level 2 title
+### Level 3 title</value>
+  </data>
 </root>

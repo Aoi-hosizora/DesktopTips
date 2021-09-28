@@ -173,7 +173,7 @@ Public Class MainForm
     ''' <summary>
     ''' 置顶标签，用于：菜单事件
     ''' </summary>
-    Private Sub MoveTipTop(sender As Object, e As EventArgs) Handles m_popup_MoveTopTop.Click
+    Private Sub MoveTipTop(sender As Object, e As EventArgs) Handles m_popup_MoveTipTop.Click
         If _tipPresenter.MoveTop(m_ListView.SelectedItem) Then
             m_ListView.Update()
             m_ListView.SetSelectedItems(0)
@@ -213,6 +213,33 @@ Public Class MainForm
             If sender.Tag = "Assist" Then
                 NativeMethod.MouseMoveDown(Cursor.Position, ListItemHeight)
             End If
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 选择标签新位置模式
+    ''' </summary>
+    Private _selectingTipNewIndex As Boolean = False
+    Private _previousTipItem As TipItem = Nothing
+
+    ''' <summary>
+    ''' 开启选择标签新位置模式，用于：菜单选中状态变更事件
+    ''' </summary>
+    Private Sub EnableMoveTipToMode(sender As Object, e As EventArgs) Handles m_popup_MoveTipTo.CheckedChanged
+        _selectingTipNewIndex = m_popup_MoveTipTo.Checked
+        If _selectingTipNewIndex Then
+            _previousTipItem = m_ListView.SelectedItem
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 移动标签到指定位置
+    ''' </summary>
+    Private Sub MoveTipTo(newIndex As Integer)
+        m_popup_MoveTipTo.Checked = False
+        If _tipPresenter.MoveTo(_previousTipItem, newIndex) Then
+            m_ListView.Update()
+            m_ListView.SetSelectedItems(newIndex)
         End If
     End Sub
 
@@ -363,14 +390,17 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
-    ''' 用户操作列表相关，包括更新选择项、辅助按钮，用于：列表选择事件、列表按下事件
+    ''' 用户操作列表相关，包括更新选择项、辅助按钮、选择移动标签，用于：列表选择事件、列表按下事件
     ''' </summary>
-    Private Sub ChangeSelectedTips(sender As Object, e As EventArgs) Handles m_ListView.SelectedIndexChanged, m_ListView.MouseDown
+    Private Sub ChangeSelectedTips(sender As Object, e As EventArgs) Handles m_ListView.SelectedIndexChanged ', m_ListView.MouseDown
         CheckListMenuEnable()
         If m_ListView.SelectedCount = 1 Then
             ShowAssistButtons()
         Else
             HideAssistButtons()
+        End If
+        If m_ListView.SelectedCount = 1 And _selectingTipNewIndex Then
+            MoveTipTo(m_ListView.SelectedIndex)
         End If
     End Sub
 
@@ -435,6 +465,7 @@ Public Class MainForm
     ''' 用户操作分组相关，包括修改当前分组、辅助按钮，用于：分组选择事件
     ''' </summary>
     Private Sub ChangeSelectedTab(sender As Object, e As DD.SuperTabStripSelectedTabChangedEventArgs) Handles m_TabView.SelectedTabChanged
+        m_popup_MoveTipTo.Checked = False ' 取消选择新位置模式
         HideAssistButtons() ' 隐藏辅助按钮
         If m_TabView.SelectedTabIndex <> -1 AndAlso m_TabView.SelectedTab.TabSource IsNot Nothing Then
             GlobalModel.CurrentTab = m_TabView.SelectedTab.TabSource
@@ -473,13 +504,13 @@ Public Class MainForm
     Private Sub PopupOpenMoveToMenu(sender As Object, e As DD.PopupOpenEventArgs) Handles m_menu_MoveTipsSubMenu.PopupOpen, m_menu_MoveToTabSubMenu.PopupOpen
         ' 生成当前未选择的按钮列表
         Dim generateFunc = Function(moveAll As Boolean) As IEnumerable(Of DD.ButtonItem)
-            Return GlobalModel.Tabs.Where(Function(tab) m_TabView.SelectedTab IsNot Nothing AndAlso m_TabView.SelectedTab.TabSource.Title <> tab.Title).ToList().Select(
+                               Return GlobalModel.Tabs.Where(Function(tab) m_TabView.SelectedTab IsNot Nothing AndAlso m_TabView.SelectedTab.TabSource.Title <> tab.Title).ToList().Select(
                 Function(tab) As DD.ButtonItem
-                    Dim btn As New DD.ButtonItem With { .Text = tab.Title, .Tag = New Object() {tab, moveAll} } ' Tag 包括：分组、移动对象
+                    Dim btn As New DD.ButtonItem With {.Text = tab.Title, .Tag = New Object() {tab, moveAll}} ' Tag 包括：分组、移动对象
                     AddHandler btn.Click, AddressOf MoveTipsToTab
                     Return btn
                 End Function)
-        End Function
+                           End Function
 
         ' 列表菜单
         Dim moveSomeBtns = generateFunc(False)
@@ -522,9 +553,13 @@ Public Class MainForm
         m_btn_MoveTipUp.Enabled = isSingle And Not isTop
         m_btn_MoveTipDown.Enabled = isSingle And Not isBottom
         m_popup_MoveTipUp.Enabled = isSingle And Not isTop
-        m_popup_MoveTopTop.Enabled = isSingle And Not isTop
+        m_popup_MoveTipTop.Enabled = isSingle And Not isTop
         m_popup_MoveTipBottom.Enabled = isSingle And Not isBottom
         m_popup_MoveTipDown.Enabled = isSingle And Not isBottom
+        m_popup_MoveTipTo.Enabled = isSingle
+        If Not isSingle Then
+            m_popup_MoveTipTo.Checked = False
+        End If
 
         ' 链接 图片 标记完成
         m_popup_ViewLinksInTips.Enabled = _tipPresenter.GetLinks(m_ListView.SelectedItems).Count >= 1

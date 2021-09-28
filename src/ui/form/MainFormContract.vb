@@ -24,6 +24,7 @@
         Function MoveDown(item As TipItem) As Boolean                                                       ' 下移
         Function MoveTop(item As TipItem) As Boolean                                                        ' 置顶
         Function MoveBottom(item As TipItem) As Boolean                                                     ' 置底
+        Function MoveTo(item As TipItem, ByRef newIndex As Integer) As Boolean                              ' 移至指定位置
         Sub Search()                                                                                        ' 搜索
         Function HighlightTips(items As IEnumerable(Of TipItem), color As TipColor) As boolean              ' 设置高亮
         Function CheckTipsDone(items As IEnumerable(Of TipItem)) As boolean                                 ' 设置已完成

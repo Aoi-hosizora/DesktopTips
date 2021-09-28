@@ -151,6 +151,30 @@ Public Class MainFormTipPresenter
         Return True
     End Function
 
+    Public Function MoveTo(item As TipItem, ByRef newIndex As Integer) As Boolean Implements MainFormContract.ITipPresenter.MoveTo
+        Dim oldIndex = GlobalModel.CurrentTab.Tips.IndexOf(item)
+        If oldIndex = newIndex Or oldIndex = newIndex + 1 Then
+            MessageBoxEx.Show("标签位置未移动。", "移动标签", MessageBoxButtons.OK, MessageBoxIcon.Information, _view.GetMe())
+            Return False
+        End If
+
+        Dim item2 = GlobalModel.CurrentTab.Tips.ElementAt(newIndex)
+        Dim ok = MessageBoxEx.Show($"是否移动标签{vbNewLine}""{item.Content.Replace(vbNewLine, "↴")}""{vbNewLine}至标签{vbNewLine}""{item2.Content.Replace(vbNewLine, "↴")}""{vbNewLine}之下？",
+                                   "移动标签", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, _view.GetMe())
+        If ok = vbCancel Or ok = vbNo Then
+            Return False
+        End If
+        newIndex += 1
+
+        If oldIndex < newIndex Then
+            newIndex -= 1
+        End If
+        GlobalModel.CurrentTab.Tips.RemoveAt(oldIndex)
+        GlobalModel.CurrentTab.Tips.Insert(newIndex, item)
+        _globalPresenter.SaveFile()
+        Return True
+    End Function
+
     Public Sub Search() Implements MainFormContract.ITipPresenter.Search
         Dim text As String = InputBox("请输入搜索内容 (使用 || 和 &&&& 分隔关键字)：", "搜索").Trim().ToLower()
         If text = "" Then Return

@@ -34,6 +34,43 @@ Public Class CommonUtil
     End Function
 
     ''' <summary>
+    ''' 文本类型
+    ''' </summary>
+    Public Enum TextType
+        Plain = 0
+        Markdown
+        HTML
+    End Enum
+
+    ''' <summary>
+    ''' 下标转文本类型
+    ''' </summary>
+    Public Shared Function IndexToTextType(i As Integer) As TextType
+        Select Case i
+            Case 0
+                Return TextType.Plain
+            Case 1
+                Return TextType.Markdown
+            Case Else
+                Return TextType.HTML
+        End Select
+    End Function
+
+    ''' <summary>
+    ''' 文本类型转下标
+    ''' </summary>
+    Public Shared Function TextTypeToIndex(t As TextType) As Integer
+        Select Case t
+            Case TextType.Plain
+                Return 0
+            Case TextType.Markdown
+                Return 1
+            Case Else
+                Return 2
+        End Select
+    End Function
+
+    ''' <summary>
     ''' 转义字符串为 XML 兼容
     ''' </summary>
     Public Shared Function EscapeForXML(s As String) As String
@@ -41,7 +78,7 @@ Public Class CommonUtil
     End Function
 
     ''' <summary>
-    ''' Markdown 样式转为 Markup 样式
+    ''' Markdown 文本类型转为 Markup 样式
     ''' </summary>
     Public Shared Function Markdown2Markup(s As String) As String
         s = s.Replace("\\", "＼").Replace("\*", "＊").Replace("\_", "＿").Replace("\~", "～").Replace("\=", "＝")
@@ -71,11 +108,20 @@ Public Class CommonUtil
     End Function
 
     ''' <summary>
+    ''' HTML 文本类型转为 Markup 样式
+    ''' </summary>
+    Public Shared Function SugarText2Markup(s As String) As String
+        s = New Regex("\n").Replace(s, "<br/>")
+        s = New Regex("<l ([0-9]+)>(.*?)</l>").Replace(s, "<span width=""$1"">$2</span> ")
+        Return s
+    End Function
+
+    ''' <summary>
     ''' 格式化处理文本
     ''' </summary>
     Public Shared Function FormatText(s As String) As String
         s = s.Trim()
-        s = New Regex("\r\n[ \t]+").Replace(s, vbNewLine)
+        's = New Regex("\r\n[ \t]+").Replace(s, vbNewLine)
         s = New Regex("[ \t]+\r\n").Replace(s, vbNewLine)
         s = New Regex("\r\n(\r\n)+").Replace(s, vbNewLine + vbNewLine)
         Return s

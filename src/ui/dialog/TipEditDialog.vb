@@ -25,7 +25,8 @@ Public Class TipEditDialog
     ''' <summary>
     ''' 显示编辑对话框
     ''' </summary>
-    Public Overloads Shared Function ShowDialog(message As String, title As String, Optional content As String = "", Optional ByRef markdown As Boolean = False, Optional saveCallback As Action(Of String) = Nothing) As String
+    Public Overloads Shared Function ShowDialog(message As String, title As String, Optional content As String = "", Optional ByRef textType As CommonUtil.TextType = CommonUtil.TextType.Plain,
+                                                Optional saveCallback As Action(Of String) = Nothing) As String
         Dim dlg As New TipEditDialog
         With dlg
             .Text = title
@@ -36,7 +37,7 @@ Public Class TipEditDialog
             .TextBoxContent.Text = content
             .ButtonOK.Enabled = content <> ""
             .SplitContainerTextBox.Panel2Collapsed = True
-            .CheckBoxStyle.Checked = markdown
+            .ComboBoxTextType.SelectedIndex = CommonUtil.TextTypeToIndex(textType)
             ._saveCallback = saveCallback
             ._changed = False
             .Text = .Text.TrimStart("*")
@@ -51,7 +52,7 @@ Public Class TipEditDialog
             .TextBoxContent.Select()
 
             If .ShowDialog() = vbCancel Then Return ""
-            markdown = .CheckBoxStyle.Checked
+            textType = CommonUtil.IndexToTextType(.ComboBoxTextType.SelectedIndex)
             Return .TextBoxContent.Text.Trim()
         End With
     End Function

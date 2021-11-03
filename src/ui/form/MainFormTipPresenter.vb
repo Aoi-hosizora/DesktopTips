@@ -13,12 +13,12 @@ Public Class MainFormTipPresenter
     End Sub
 
     Public Function Insert() As Boolean Implements MainFormContract.ITipPresenter.Insert
-        Dim markdown = False
-        Dim msg As String = TipEditDialog.ShowDialog("新的标签：", "添加", markdown:=markdown)
+        Dim type = CommonUtil.TextType.Plain
+        Dim msg As String = TipEditDialog.ShowDialog("新的标签：", "添加", textType:=type)
         msg = CommonUtil.FormatText(msg)
         If msg <> "" Then
             Dim now = DateTime.Now
-            Dim tip As New TipItem(msg) With {.Markdown = markdown, .CreatedAt = now, .UpdatedAt = now}
+            Dim tip As New TipItem(msg) With {.TextType = type, .CreatedAt = now, .UpdatedAt = now}
             GlobalModel.CurrentTab.Tips.Add(tip)
             _globalPresenter.SaveFile()
             Return True
@@ -71,12 +71,12 @@ Public Class MainFormTipPresenter
                                    _globalPresenter.SaveFile()
                                End If
                            End Sub
-        Dim markdown = item.Markdown
-        Dim newStr As String = TipEditDialog.ShowDialog($"修改标签为：", "修改", item.Content, markdown:=markdown, saveCallback:=saveCallback)
+        Dim type = item.TextType
+        Dim newStr As String = TipEditDialog.ShowDialog($"修改标签为：", "修改", item.Content, textType:=type, saveCallback:=saveCallback)
         newStr = CommonUtil.FormatText(newStr)
-        If newStr <> "" And (newStr <> item.Content OrElse markdown <> item.Markdown) Then
+        If newStr <> "" And (newStr <> item.Content OrElse type <> item.TextType) Then
             item.Content = newStr
-            item.Markdown = markdown
+            item.TextType = type
             item.UpdatedAt = DateTime.Now
             _globalPresenter.SaveFile()
             Return True

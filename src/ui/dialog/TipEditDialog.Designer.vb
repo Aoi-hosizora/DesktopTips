@@ -31,10 +31,11 @@ Partial Class TipEditDialog
         Me.ButtonCancel = New System.Windows.Forms.Button()
         Me.TextBoxContent = New System.Windows.Forms.TextBox()
         Me.ButtonShowOrigin = New System.Windows.Forms.Button()
-        Me.CheckBoxStyle = New System.Windows.Forms.CheckBox()
         Me.TextBoxOrigin = New System.Windows.Forms.TextBox()
         Me.SplitContainerTextBox = New System.Windows.Forms.SplitContainer()
         Me.SuperTooltip1 = New DevComponents.DotNetBar.SuperTooltip()
+        Me.ComboBoxTextType = New System.Windows.Forms.ComboBox()
+        Me.LabelTextType = New System.Windows.Forms.Label()
         Me.ButtonOK = New DesktopTips.MenuButton()
         Me.ContextMenuStripOK.SuspendLayout()
         CType(Me.SplitContainerTextBox, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -50,7 +51,7 @@ Partial Class TipEditDialog
         Me.LabelMessage.AutoEllipsis = True
         Me.LabelMessage.Location = New System.Drawing.Point(12, 9)
         Me.LabelMessage.Name = "LabelMessage"
-        Me.LabelMessage.Size = New System.Drawing.Size(352, 56)
+        Me.LabelMessage.Size = New System.Drawing.Size(262, 56)
         Me.LabelMessage.TabIndex = 0
         Me.LabelMessage.Text = "内容"
         '
@@ -77,7 +78,7 @@ Partial Class TipEditDialog
         Me.ButtonCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.ButtonCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonCancel.Location = New System.Drawing.Point(370, 40)
+        Me.ButtonCancel.Location = New System.Drawing.Point(280, 40)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(75, 25)
         Me.ButtonCancel.TabIndex = 2
@@ -91,7 +92,7 @@ Partial Class TipEditDialog
         Me.TextBoxContent.Multiline = True
         Me.TextBoxContent.Name = "TextBoxContent"
         Me.TextBoxContent.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.TextBoxContent.Size = New System.Drawing.Size(215, 128)
+        Me.TextBoxContent.Size = New System.Drawing.Size(170, 128)
         Me.TextBoxContent.TabIndex = 3
         Me.TextBoxContent.Text = "文本框"
         '
@@ -99,25 +100,12 @@ Partial Class TipEditDialog
         '
         Me.ButtonShowOrigin.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonShowOrigin.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonShowOrigin.Location = New System.Drawing.Point(367, 205)
+        Me.ButtonShowOrigin.Location = New System.Drawing.Point(277, 205)
         Me.ButtonShowOrigin.Name = "ButtonShowOrigin"
         Me.ButtonShowOrigin.Size = New System.Drawing.Size(75, 25)
         Me.ButtonShowOrigin.TabIndex = 6
         Me.ButtonShowOrigin.Text = "显示原文"
         Me.ButtonShowOrigin.UseVisualStyleBackColor = True
-        '
-        'CheckBoxStyle
-        '
-        Me.CheckBoxStyle.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.CheckBoxStyle.AutoSize = True
-        Me.CheckBoxStyle.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBoxStyle.Location = New System.Drawing.Point(13, 207)
-        Me.CheckBoxStyle.Name = "CheckBoxStyle"
-        Me.CheckBoxStyle.Size = New System.Drawing.Size(152, 22)
-        Me.SuperTooltip1.SetSuperTooltip(Me.CheckBoxStyle, New DevComponents.DotNetBar.SuperTooltipInfo("使用 Markdown 样式", "", resources.GetString("CheckBoxStyle.SuperTooltip"), Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(280, 295)))
-        Me.CheckBoxStyle.TabIndex = 5
-        Me.CheckBoxStyle.Text = "使用 Markdown 样式"
-        Me.CheckBoxStyle.UseVisualStyleBackColor = True
         '
         'TextBoxOrigin
         '
@@ -127,7 +115,7 @@ Partial Class TipEditDialog
         Me.TextBoxOrigin.Name = "TextBoxOrigin"
         Me.TextBoxOrigin.ReadOnly = True
         Me.TextBoxOrigin.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.TextBoxOrigin.Size = New System.Drawing.Size(211, 128)
+        Me.TextBoxOrigin.Size = New System.Drawing.Size(166, 128)
         Me.TextBoxOrigin.TabIndex = 4
         Me.TextBoxOrigin.Text = "文本框"
         '
@@ -146,23 +134,47 @@ Partial Class TipEditDialog
         'SplitContainerTextBox.Panel2
         '
         Me.SplitContainerTextBox.Panel2.Controls.Add(Me.TextBoxOrigin)
-        Me.SplitContainerTextBox.Size = New System.Drawing.Size(430, 128)
-        Me.SplitContainerTextBox.SplitterDistance = 215
+        Me.SplitContainerTextBox.Size = New System.Drawing.Size(340, 128)
+        Me.SplitContainerTextBox.SplitterDistance = 170
         Me.SplitContainerTextBox.TabIndex = 7
         '
         'SuperTooltip1
         '
         Me.SuperTooltip1.DefaultFont = New System.Drawing.Font("Microsoft YaHei UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         '
+        'ComboBoxTextType
+        '
+        Me.ComboBoxTextType.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ComboBoxTextType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.ComboBoxTextType.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.ComboBoxTextType.FormattingEnabled = True
+        Me.ComboBoxTextType.Items.AddRange(New Object() {"纯文本", "Markdown", "HTML"})
+        Me.ComboBoxTextType.Location = New System.Drawing.Point(80, 205)
+        Me.ComboBoxTextType.Name = "ComboBoxTextType"
+        Me.ComboBoxTextType.Size = New System.Drawing.Size(123, 25)
+        Me.ComboBoxTextType.TabIndex = 8
+        '
+        'LabelTextType
+        '
+        Me.LabelTextType.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.LabelTextType.AutoSize = True
+        Me.LabelTextType.Location = New System.Drawing.Point(12, 208)
+        Me.LabelTextType.Name = "LabelTextType"
+        Me.LabelTextType.Size = New System.Drawing.Size(68, 17)
+        Me.SuperTooltip1.SetSuperTooltip(Me.LabelTextType, New DevComponents.DotNetBar.SuperTooltipInfo("文本类型", "", resources.GetString("LabelTextType.SuperTooltip"), Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, False, New System.Drawing.Size(380, 410)))
+        Me.LabelTextType.TabIndex = 4
+        Me.LabelTextType.Text = "文本类型："
+        '
         'ButtonOK
         '
         Me.ButtonOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonOK.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.ButtonOK.Location = New System.Drawing.Point(370, 9)
+        Me.ButtonOK.Location = New System.Drawing.Point(280, 9)
         Me.ButtonOK.Menu = Me.ContextMenuStripOK
         Me.ButtonOK.Name = "ButtonOK"
         Me.ButtonOK.Size = New System.Drawing.Size(75, 25)
-        Me.SuperTooltip1.SetSuperTooltip(Me.ButtonOK, New DevComponents.DotNetBar.SuperTooltipInfo("保存修改并退出", "", "保存时文本会进行一些格式化操作，包括：" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "1. 删除行前行末的空白符" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "2. 最多仅保留两个空行" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10), Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(265, 100)))
+        Me.SuperTooltip1.SetSuperTooltip(Me.ButtonOK, New DevComponents.DotNetBar.SuperTooltipInfo("保存修改并退出", "", "保存时文本会进行一些格式化操作，包括：" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "1. 删除行末的空白符（空格与制表符）" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "2. 最多仅保留两个空行" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "3. Markdown 类型下会将部分全角字符" &
+            "换写为半角（包括＋－＊＿＝＼～｀＃）" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10), Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(285, 135)))
         Me.ButtonOK.TabIndex = 1
         Me.ButtonOK.Text = "确定"
         Me.ButtonOK.UseVisualStyleBackColor = True
@@ -172,9 +184,10 @@ Partial Class TipEditDialog
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonCancel
-        Me.ClientSize = New System.Drawing.Size(454, 236)
+        Me.ClientSize = New System.Drawing.Size(364, 236)
+        Me.Controls.Add(Me.LabelTextType)
+        Me.Controls.Add(Me.ComboBoxTextType)
         Me.Controls.Add(Me.SplitContainerTextBox)
-        Me.Controls.Add(Me.CheckBoxStyle)
         Me.Controls.Add(Me.LabelMessage)
         Me.Controls.Add(Me.ButtonOK)
         Me.Controls.Add(Me.ButtonShowOrigin)
@@ -209,8 +222,9 @@ Partial Class TipEditDialog
     Friend WithEvents MenuOK As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MenuSave As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ButtonShowOrigin As Button
-    Friend WithEvents CheckBoxStyle As CheckBox
     Friend WithEvents TextBoxOrigin As TextBox
     Friend WithEvents SplitContainerTextBox As SplitContainer
     Friend WithEvents SuperTooltip1 As DevComponents.DotNetBar.SuperTooltip
+    Friend WithEvents ComboBoxTextType As ComboBox
+    Friend WithEvents LabelTextType As Label
 End Class

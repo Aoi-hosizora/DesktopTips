@@ -11,8 +11,8 @@ Public Class TipItem
     <JsonProperty("done")>
     Public Property Done As Boolean
 
-    <JsonProperty("markdown")>
-    Public Property Markdown As Boolean
+    <JsonProperty("text_type")>
+    Public Property TextType As CommonUtil.TextType
 
     <JsonProperty("created_at")>
     Public Property CreatedAt As DateTime

@@ -123,22 +123,37 @@
   <metadata name="SuperTooltip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>184, 17</value>
   </metadata>
-  <data name="CheckBoxStyle.SuperTooltip" xml:space="preserve">
-    <value>开启此选项后，会将一些 Markdown 语法显示为样式。如：
+  <data name="LabelTextType.SuperTooltip" xml:space="preserve">
+    <value>Markdown / HTML 类型标识会将文本中的部分 Markdown / HTML语法显示为样式。&lt;br/&gt;
+注意：错误使用如 img 等  HTML 标签会可能导致程序崩溃。&lt;br/&gt;&lt;br/&gt;
 
-**Bold**
-*Italic*
-_ _Underline_ _
-~~Strokeline~~
-==Highlight==
-=:red=Color==
-=:#00FF00=Color==
-+ Item 1
-- Item 2
-`Single line code`
-```Multiline code```
-# Level 1 title
-## Level 2 title
-### Level 3 title</value>
+Markdown 支持的格式包括：&lt;br/&gt;
+&lt;span width="150"&gt;**Bold**&lt;/span&gt;
+&lt;span width="150"&gt;*Italic*&lt;/span&gt;&lt;br/&gt;
+&lt;span width="150"&gt;_ _Underline_ _&lt;/span&gt;
+&lt;span width="150"&gt;~~Strokeline~~&lt;/span&gt;&lt;br/&gt;
+&lt;span width="150"&gt;==Highlight==&lt;/span&gt;
+&lt;span width="150"&gt;=:#00FF00=Color==&lt;/span&gt;&lt;br/&gt;
+&lt;span width="150"&gt;+ Item level 1&lt;/span&gt;
+&lt;span width="150"&gt;- Item level 2&lt;/span&gt;&lt;br/&gt;
+&lt;span width="150"&gt;`Single line code`&lt;/span&gt;
+&lt;span width="150"&gt;```Multiline code```&lt;/span&gt;&lt;br/&gt;
+&lt;span width="150"&gt;# Level 1 title&lt;/span&gt;
+&lt;span width="150"&gt;## Level 2 title&lt;/span&gt;&lt;br/&gt;
+&lt;span width="150"&gt;### Level 3 title&lt;/span&gt;
+&lt;span width="150"&gt;###### Level 6 title&lt;/span&gt;&lt;br/&gt;&lt;br/&gt;
+
+HTML 支持的格式包括：&lt;br/&gt;
+&lt;span width="150"&gt;b&lt;/span&gt;
+&lt;span width="150"&gt;i&lt;/span&gt;&lt;br/&gt;
+&lt;span width="150"&gt;u&lt;/span&gt;
+&lt;span width="150"&gt;s&lt;/span&gt;&lt;br/&gt;
+&lt;span width="150"&gt;p width&lt;/span&gt;
+&lt;span width="150"&gt;div width&lt;/span&gt;&lt;br/&gt;
+&lt;span width="150"&gt;span width&lt;/span&gt;
+&lt;span width="150"&gt;br&lt;/span&gt;&lt;br/&gt;
+&lt;span width="150"&gt;font size color face&lt;/span&gt;
+&lt;span width="150"&gt;h1~h6&lt;/span&gt;&lt;br/&gt;
+一个用于表格显示的 span 标签语法糖：&amp;lt;l 50&amp;gt;...&amp;lt;/l&amp;gt;</value>
   </data>
 </root>

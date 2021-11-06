@@ -45,25 +45,14 @@ Public Class HoverCardView
     Private ReadOnly Property CardWidth As Integer
         Get
             If HoverTipItem IsNot Nothing Then
-                Dim sze = TextRenderer.MeasureText(HoverTipItem.Content, Font)
-                Dim newWidth = sze.Width + _contentHMargin * 2 + 18 ' Extra 18
-                If newWidth > Screen.PrimaryScreen.Bounds.Width * 2 / 5 Then
-                    newWidth = Screen.PrimaryScreen.Bounds.Width * 2 / 5
-                End If
-                If newWidth < 200 Then
-                    newWidth = 200
-                End If
+                Dim sze = TextRenderer.MeasureText(HoverTipItem.Content, Font, Size.Empty)
+                Dim maxWidth = Screen.PrimaryScreen.Bounds.Width * 2 / 5
+                Dim newWidth = Math.Max(Math.Min(sze.Width + _contentHMargin * 2 + 20, maxWidth), 200)
                 Return newWidth
-                ' Select Case HoverTipItem.Content.Length
-                '     Case <= 100 : Return 200
-                '     Case <= 300 : Return 250
-                '     Case <= 800 : Return 400
-                '     Case Else : Return 500
-                ' End Select
-            Else If HoverTab IsNot Nothing Then
+            ElseIf HoverTab IsNot Nothing Then
                 Return 200
             End If
-            Return -1
+            Return 1
         End Get
     End Property
 
@@ -266,8 +255,8 @@ Public Class HoverCardView
             ElseIf tip.TextType = CommonUtil.TextType.HTML Then
                 body = CommonUtil.SugarText2Markup(tip.Content)
             End If
-            If body.Length > 4000 Then
-                body = body.Substring(0, 3997) & "..."
+            If body.Length > 5000 Then
+                body = body.Substring(0, 4997) & "..."
             End If
             Dim time = "创建于 " & If(tip.IsDefaultCreatedAt, "未知时间", tip.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
             time &= "<br/>更新于 " & If(tip.IsDefaultUpdatedAt, "未知时间", tip.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
@@ -283,9 +272,9 @@ Public Class HoverCardView
             Dim counts = tab.Tips.GroupBy(Function(t) t.Color).Select(Function(g) New Tuple(Of TipColor, Integer)(g.Key, g.Count())).OrderBy(Function(g) g.Item1?.Id)
             For Each g In counts
                 If g.Item1 Is Nothing Then
-                    body &= $"<br/><font>无高亮</font>：{g.Item2} 项"
+                    body &= $"<br/>  <font>无高亮</font>：{g.Item2} 项"
                 Else
-                    body &= $"<br/><font color=""{g.Item1.HexColor}"">{g.Item1.Name}</font>：{g.Item2} 项"
+                    body &= $"<br/>  <font color=""{g.Item1.HexColor}"">{g.Item1.Name}</font>：{g.Item2} 项"
                 End If
             Next
             Dim time = "创建于 " & If(tab.IsDefaultCreatedAt, "未知时间", tab.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"))

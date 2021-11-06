@@ -34,9 +34,9 @@ Partial Class TipEditDialog
         Me.TextBoxOrigin = New System.Windows.Forms.TextBox()
         Me.SplitContainerTextBox = New System.Windows.Forms.SplitContainer()
         Me.SuperTooltip1 = New DevComponents.DotNetBar.SuperTooltip()
-        Me.ComboBoxTextType = New System.Windows.Forms.ComboBox()
         Me.LabelTextType = New System.Windows.Forms.Label()
         Me.ButtonOK = New DesktopTips.MenuButton()
+        Me.ComboBoxTextType = New System.Windows.Forms.ComboBox()
         Me.ContextMenuStripOK.SuspendLayout()
         CType(Me.SplitContainerTextBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainerTextBox.Panel1.SuspendLayout()
@@ -51,7 +51,7 @@ Partial Class TipEditDialog
         Me.LabelMessage.AutoEllipsis = True
         Me.LabelMessage.Location = New System.Drawing.Point(12, 9)
         Me.LabelMessage.Name = "LabelMessage"
-        Me.LabelMessage.Size = New System.Drawing.Size(262, 56)
+        Me.LabelMessage.Size = New System.Drawing.Size(282, 56)
         Me.LabelMessage.TabIndex = 0
         Me.LabelMessage.Text = "内容"
         '
@@ -78,7 +78,7 @@ Partial Class TipEditDialog
         Me.ButtonCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.ButtonCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonCancel.Location = New System.Drawing.Point(280, 40)
+        Me.ButtonCancel.Location = New System.Drawing.Point(300, 39)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(75, 25)
         Me.ButtonCancel.TabIndex = 2
@@ -92,7 +92,7 @@ Partial Class TipEditDialog
         Me.TextBoxContent.Multiline = True
         Me.TextBoxContent.Name = "TextBoxContent"
         Me.TextBoxContent.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.TextBoxContent.Size = New System.Drawing.Size(170, 128)
+        Me.TextBoxContent.Size = New System.Drawing.Size(180, 128)
         Me.TextBoxContent.TabIndex = 3
         Me.TextBoxContent.Text = "文本框"
         '
@@ -100,9 +100,9 @@ Partial Class TipEditDialog
         '
         Me.ButtonShowOrigin.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonShowOrigin.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonShowOrigin.Location = New System.Drawing.Point(277, 205)
+        Me.ButtonShowOrigin.Location = New System.Drawing.Point(300, 205)
         Me.ButtonShowOrigin.Name = "ButtonShowOrigin"
-        Me.ButtonShowOrigin.Size = New System.Drawing.Size(75, 25)
+        Me.ButtonShowOrigin.Size = New System.Drawing.Size(75, 26)
         Me.ButtonShowOrigin.TabIndex = 6
         Me.ButtonShowOrigin.Text = "显示原文"
         Me.ButtonShowOrigin.UseVisualStyleBackColor = True
@@ -115,7 +115,7 @@ Partial Class TipEditDialog
         Me.TextBoxOrigin.Name = "TextBoxOrigin"
         Me.TextBoxOrigin.ReadOnly = True
         Me.TextBoxOrigin.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.TextBoxOrigin.Size = New System.Drawing.Size(166, 128)
+        Me.TextBoxOrigin.Size = New System.Drawing.Size(176, 128)
         Me.TextBoxOrigin.TabIndex = 4
         Me.TextBoxOrigin.Text = "文本框"
         '
@@ -134,34 +134,22 @@ Partial Class TipEditDialog
         'SplitContainerTextBox.Panel2
         '
         Me.SplitContainerTextBox.Panel2.Controls.Add(Me.TextBoxOrigin)
-        Me.SplitContainerTextBox.Size = New System.Drawing.Size(340, 128)
-        Me.SplitContainerTextBox.SplitterDistance = 170
+        Me.SplitContainerTextBox.Size = New System.Drawing.Size(360, 128)
+        Me.SplitContainerTextBox.SplitterDistance = 180
         Me.SplitContainerTextBox.TabIndex = 7
         '
         'SuperTooltip1
         '
         Me.SuperTooltip1.DefaultFont = New System.Drawing.Font("Microsoft YaHei UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         '
-        'ComboBoxTextType
-        '
-        Me.ComboBoxTextType.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.ComboBoxTextType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.ComboBoxTextType.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ComboBoxTextType.FormattingEnabled = True
-        Me.ComboBoxTextType.Items.AddRange(New Object() {"纯文本", "Markdown", "HTML"})
-        Me.ComboBoxTextType.Location = New System.Drawing.Point(80, 205)
-        Me.ComboBoxTextType.Name = "ComboBoxTextType"
-        Me.ComboBoxTextType.Size = New System.Drawing.Size(123, 25)
-        Me.ComboBoxTextType.TabIndex = 8
-        '
         'LabelTextType
         '
         Me.LabelTextType.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.LabelTextType.AutoSize = True
-        Me.LabelTextType.Location = New System.Drawing.Point(12, 208)
+        Me.LabelTextType.Location = New System.Drawing.Point(12, 209)
         Me.LabelTextType.Name = "LabelTextType"
         Me.LabelTextType.Size = New System.Drawing.Size(68, 17)
-        Me.SuperTooltip1.SetSuperTooltip(Me.LabelTextType, New DevComponents.DotNetBar.SuperTooltipInfo("文本类型", "", resources.GetString("LabelTextType.SuperTooltip"), Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, False, New System.Drawing.Size(380, 410)))
+        Me.SuperTooltip1.SetSuperTooltip(Me.LabelTextType, New DevComponents.DotNetBar.SuperTooltipInfo("文本类型", "", resources.GetString("LabelTextType.SuperTooltip"), Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, False, New System.Drawing.Size(405, 408)))
         Me.LabelTextType.TabIndex = 4
         Me.LabelTextType.Text = "文本类型："
         '
@@ -169,7 +157,7 @@ Partial Class TipEditDialog
         '
         Me.ButtonOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonOK.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.ButtonOK.Location = New System.Drawing.Point(280, 9)
+        Me.ButtonOK.Location = New System.Drawing.Point(300, 9)
         Me.ButtonOK.Menu = Me.ContextMenuStripOK
         Me.ButtonOK.Name = "ButtonOK"
         Me.ButtonOK.Size = New System.Drawing.Size(75, 25)
@@ -179,12 +167,26 @@ Partial Class TipEditDialog
         Me.ButtonOK.Text = "确定"
         Me.ButtonOK.UseVisualStyleBackColor = True
         '
+        'ComboBoxTextType
+        '
+        Me.ComboBoxTextType.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ComboBoxTextType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.ComboBoxTextType.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.ComboBoxTextType.Font = New System.Drawing.Font("Microsoft YaHei", 8.0!)
+        Me.ComboBoxTextType.FormattingEnabled = True
+        Me.ComboBoxTextType.IntegralHeight = False
+        Me.ComboBoxTextType.Items.AddRange(New Object() {"纯文本", "Markdown", "HTML"})
+        Me.ComboBoxTextType.Location = New System.Drawing.Point(81, 206)
+        Me.ComboBoxTextType.Name = "ComboBoxTextType"
+        Me.ComboBoxTextType.Size = New System.Drawing.Size(123, 24)
+        Me.ComboBoxTextType.TabIndex = 8
+        '
         'TipEditDialog
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonCancel
-        Me.ClientSize = New System.Drawing.Size(364, 236)
+        Me.ClientSize = New System.Drawing.Size(384, 236)
         Me.Controls.Add(Me.LabelTextType)
         Me.Controls.Add(Me.ComboBoxTextType)
         Me.Controls.Add(Me.SplitContainerTextBox)
@@ -197,7 +199,7 @@ Partial Class TipEditDialog
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(380, 275)
+        Me.MinimumSize = New System.Drawing.Size(400, 275)
         Me.Name = "TipEditDialog"
         Me.ShowIcon = False
         Me.ShowInTaskbar = False

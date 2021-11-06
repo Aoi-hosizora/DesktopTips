@@ -228,7 +228,10 @@ Public Class MainForm
     Private Sub EnableMoveTipToMode(sender As Object, e As EventArgs) Handles m_popup_MoveTipTo.CheckedChanged
         _selectingTipNewIndex = m_popup_MoveTipTo.Checked
         If _selectingTipNewIndex Then
+            m_ListView.Cursor = Cursors.UpArrow
             _previousTipItem = m_ListView.SelectedItem
+        Else
+            m_ListView.Cursor = Cursors.Default
         End If
     End Sub
 

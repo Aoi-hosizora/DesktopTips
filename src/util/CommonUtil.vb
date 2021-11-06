@@ -112,7 +112,7 @@ Public Class CommonUtil
     ''' </summary>
     Public Shared Function SugarText2Markup(s As String) As String
         s = New Regex("\n").Replace(s, "<br/>")
-        s = New Regex("<l ([0-9]+)>(.*?)</l>").Replace(s, "<span width=""$1"">$2</span> ")
+        s = New Regex("<l w([0-9]+)>(.*?)</l>").Replace(s, "<span width=""$1"">$2</span> ")
         Return s
     End Function
 

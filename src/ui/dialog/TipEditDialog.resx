@@ -133,7 +133,9 @@
 &lt;span width="180"&gt;_ _Underline_ _&lt;/span&gt;
 &lt;span width="180"&gt;~~Strokeline~~&lt;/span&gt;&lt;br/&gt;
 &lt;span width="180"&gt;==Highlight==&lt;/span&gt;
-&lt;span width="180"&gt;=:#00FF00=Color==&lt;/span&gt;&lt;br/&gt;
+&lt;span width="180"&gt;=:red=Color==&lt;/span&gt;&lt;br/&gt;
+&lt;span width="180"&gt;=:#00FF00=Color==&lt;/span&gt;
+&lt;span width="180"&gt;&amp;gt; Reference text&lt;/span&gt;&lt;br/&gt;
 &lt;span width="180"&gt;+ Item level 1&lt;/span&gt;
 &lt;span width="180"&gt;- Item level 2&lt;/span&gt;&lt;br/&gt;
 &lt;span width="180"&gt;`Single line code`&lt;/span&gt;

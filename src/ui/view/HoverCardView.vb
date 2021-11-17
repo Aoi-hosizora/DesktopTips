@@ -46,9 +46,10 @@ Public Class HoverCardView
         Get
             If HoverTipItem IsNot Nothing Then
                 Dim sze = TextRenderer.MeasureText(HoverTipItem.Content, Font, Size.Empty)
-                Dim maxWidth = Screen.PrimaryScreen.Bounds.Width * 2 / 5
-                Dim newWidth = Math.Max(Math.Min(sze.Width + _contentHMargin * 2 + 20, maxWidth), 200)
-                Return newWidth
+                Dim wantWidth = sze.Width + _contentHMargin * 2 + 30
+                Dim maxWidth = Screen.PrimaryScreen.Bounds.Width * 5 / 7
+                Dim minWidth = 200
+                Return Math.Max(Math.Min(wantWidth, maxWidth), minWidth)
             ElseIf HoverTab IsNot Nothing Then
                 Return 200
             End If
@@ -185,7 +186,7 @@ Public Class HoverCardView
     Private ReadOnly _borderColor As Color = Color.FromArgb(200, 200, 200)
     Private ReadOnly _startColor As Color = Color.white
     Private ReadOnly _endColor As Color = Color.FromArgb(229, 229, 240)
-    Private ReadOnly _splitterColor As Color = Color.FromArgb(60, 86, 159)
+    Private ReadOnly _splitterColor As Color = Color.FromArgb(40, 66, 139)
 
     Protected Overrides Sub OnPaint(e As PaintEventArgs)
         MyBase.OnPaint(e)
@@ -195,18 +196,19 @@ Public Class HoverCardView
         ControlPaint.DrawBorder(e.Graphics, ClientRectangle, _borderColor, ButtonBorderStyle.Solid)
     End Sub
 
-    Private ReadOnly _titleLabel As New DD.LabelX With { .BackColor = Color.Transparent, .AutoSize = True, .WordWrap = False }
-    Private ReadOnly _contentLabel As New DD.LabelX With { .BackColor = Color.Transparent, .AutoSize = True, .WordWrap = True }
-    Private ReadOnly _timeLabel As New DD.LabelX With { .BackColor = Color.Transparent, .AutoSize = False, .WordWrap = False, .Font = New Font("微软雅黑", 8.0!), .TextLineAlignment = StringAlignment.Far }
-    Private ReadOnly _button As New DD.ButtonX With { .Text = "×", .Tooltip = "关闭", .BackColor = Color.Transparent, .AccessibleRole = AccessibleRole.PushButton, .Style = DD.eDotNetBarStyle.StyleManagerControlled, .Shape = New DD.RoundRectangleShapeDescriptor() }
+    Private ReadOnly _titleLabel As New DD.LabelX With {.BackColor = Color.Transparent, .AutoSize = True, .WordWrap = False}
+    Private ReadOnly _contentLabel As New DD.LabelX With {.BackColor = Color.Transparent, .AutoSize = True, .WordWrap = True}
+    Private ReadOnly _metaLabel As New DD.LabelX With {.BackColor = Color.Transparent, .AutoSize = False, .WordWrap = False, .Font = New Font("微软雅黑", 8.0!), .TextLineAlignment = StringAlignment.Far}
+    Private ReadOnly _button As New DD.ButtonX With {.Text = "×", .Tooltip = "关闭", .BackColor = Color.Transparent, .AccessibleRole = AccessibleRole.PushButton, .Style = DD.eDotNetBarStyle.StyleManagerControlled, .Shape = New DD.RoundRectangleShapeDescriptor()}
 
     Private ReadOnly _titleHMargin = 10
     Private ReadOnly _titleVMargin = 5
     Private ReadOnly _contentHMargin = 8
     Private ReadOnly _contentVMargin = 2
-    Private ReadOnly _timeHMargin = 10
-    Private ReadOnly _timeVMargin = 8
-    Private ReadOnly _timeHeight = 44
+    Private ReadOnly _mataHMargin = 10
+    Private ReadOnly _metaVMargin = 8
+    Private ReadOnly _metaHeight = 44
+    Private _metaExtraHeight = 0
     Private ReadOnly _buttonSize = 16
     Private ReadOnly _buttonMargin = 5
     Private ReadOnly _bottom = 4
@@ -219,11 +221,11 @@ Public Class HoverCardView
         _titleLabel.MaximumSize = New Size(Width - _titleHMargin * 2 - 2 * _buttonMargin, 0)
         _contentLabel.BackgroundStyle.CornerType = DD.eCornerType.Square
         _contentLabel.MaximumSize = New Size(Width - _contentHMargin * 2, 0)
-        _timeLabel.BackgroundStyle.CornerType = DD.eCornerType.Square
-        _timeLabel.PaddingLeft = _timeHMargin
-        _timeLabel.BackgroundStyle.BorderTop = DD.eStyleBorderType.Solid
-        _timeLabel.BackgroundStyle.BorderTopWidth = 1
-        _timeLabel.BackgroundStyle.BorderTopColor = _splitterColor
+        _metaLabel.BackgroundStyle.CornerType = DD.eCornerType.Square
+        _metaLabel.PaddingLeft = _mataHMargin
+        _metaLabel.BackgroundStyle.BorderTop = DD.eStyleBorderType.Solid
+        _metaLabel.BackgroundStyle.BorderTopWidth = 1
+        _metaLabel.BackgroundStyle.BorderTopColor = _splitterColor
         _button.ColorTable = DD.eButtonColor.Orange
         _button.Size = New Size(_buttonSize, _buttonSize)
         AddHandler _button.MouseDown, Sub() _titleLabel.Focus()
@@ -233,7 +235,7 @@ Public Class HoverCardView
         Controls.Add(_button)
         Controls.Add(_titleLabel)
         Controls.Add(_contentLabel)
-        Controls.Add(_timeLabel)
+        Controls.Add(_metaLabel)
 
         Dim tip = HoverTipItem
         Dim tab = HoverTab
@@ -249,6 +251,7 @@ Public Class HoverCardView
 
             ' See https://en.wikipedia.org/wiki/Thin_space
             ' Dim body = tip.Content.Replace(" ", "  ").Replace("&", "&&").Replace(vbNewLine, "<br/>")
+            Dim bodyCount = tip.Content.Length
             Dim body = tip.Content.Replace("&", "&&")
             If tip.TextType = CommonUtil.TextType.Markdown Then
                 body = CommonUtil.Markdown2Markup(CommonUtil.EscapeForXML(tip.Content))
@@ -258,23 +261,24 @@ Public Class HoverCardView
             If body.Length > 5000 Then
                 body = body.Substring(0, 4997) & "..."
             End If
-            Dim time = "创建于 " & If(tip.IsDefaultCreatedAt, "未知时间", tip.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
-            time &= "<br/>更新于 " & If(tip.IsDefaultUpdatedAt, "未知时间", tip.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
+            Dim time = "创建于 " & If(tab.IsDefaultCreatedAt, "未知时间", tab.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
+            time &= "<br/>更新于 " & If(tab.IsDefaultUpdatedAt, "未知时间", tab.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
 
             _titleLabel.EnableMarkup = True
             _titleLabel.Text = $"<b>{title1} - {title2}</b>"
             _contentLabel.EnableMarkup = tip.TextType <> CommonUtil.TextType.Plain
             _contentLabel.Text = body
-            _timeLabel.Text = time
+            _metaLabel.Text = $"标签字符总数：{bodyCount}<br/>{time}"
+            _metaExtraHeight += 17
         Else ' For Tab
             Dim title = CommonUtil.EscapeForXML(tab.Title) & " 分组"
             Dim body = $"总共有 {tab.Tips.Count} 项" & If(tab.Tips.Count = 0, "", "，其中：")
             Dim counts = tab.Tips.GroupBy(Function(t) t.Color).Select(Function(g) New Tuple(Of TipColor, Integer)(g.Key, g.Count())).OrderBy(Function(g) g.Item1?.Id)
             For Each g In counts
                 If g.Item1 Is Nothing Then
-                    body &= $"<br/>  <font>无高亮</font>：{g.Item2} 项"
+                    body &= $"<br/>•  <font>无高亮</font>：{g.Item2} 项"
                 Else
-                    body &= $"<br/>  <font color=""{g.Item1.HexColor}"">{g.Item1.Name}</font>：{g.Item2} 项"
+                    body &= $"<br/>•  <font color=""{g.Item1.HexColor}"">{g.Item1.Name}</font>：{g.Item2} 项"
                 End If
             Next
             Dim time = "创建于 " & If(tab.IsDefaultCreatedAt, "未知时间", tab.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
@@ -284,15 +288,15 @@ Public Class HoverCardView
             _titleLabel.Text = $"<b>{title}</b>"
             _contentLabel.EnableMarkup = True
             _contentLabel.Text = body
-            _timeLabel.Text = time
+            _metaLabel.Text = time
         End If
 
         _titleLabel.Location = New Point(_titleHMargin, _titleVMargin)
         _contentLabel.Location = New Point(_contentHMargin, _titleLabel.Top + _titleLabel.Height + _contentVMargin)
-        _timeLabel.Size = New Size(Width, _timeHeight)
-        _timeLabel.Location = New Point(0, _contentLabel.Top + _contentLabel.Height + _timeVMargin)
+        _metaLabel.Size = New Size(Width, _metaHeight + _metaExtraHeight)
+        _metaLabel.Location = New Point(0, _contentLabel.Top + _contentLabel.Height + _metaVMargin)
         _button.Location = New Point(Width - _buttonMargin - _buttonSize, _buttonMargin)
-        Height = _timeLabel.Top + _timeLabel.Height + _bottom
+        Height = _metaLabel.Top + _metaLabel.Height + _bottom
     End Sub
 
 #End Region

@@ -159,7 +159,11 @@ Public Class MainFormTipPresenter
         End If
 
         Dim item2 = GlobalModel.CurrentTab.Tips.ElementAt(newIndex)
-        Dim ok = MessageBoxEx.Show($"是否移动标签{vbNewLine}""{item.Content.Replace(vbNewLine, "↴")}""{vbNewLine}至标签{vbNewLine}""{item2.Content.Replace(vbNewLine, "↴")}""{vbNewLine}之下？",
+        Dim content = item.Content.Replace(vbNewLine, "↴")
+        content = If(content.Length > 300, content.Substring(0, 300) + "...", content)
+        Dim content2 = item2.Content.Replace(vbNewLine, "↴")
+        content2 = If(content2.Length > 300, content2.Substring(0, 300) + "...", content2)
+        Dim ok = MessageBoxEx.Show($"是否移动标签{vbNewLine}""{content}""{vbNewLine}至标签{vbNewLine}""{content2}""{vbNewLine}之下？",
                                    "移动标签", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, _view.GetMe())
         If ok = vbCancel Or ok = vbNo Then
             Return False
@@ -279,8 +283,14 @@ Public Class MainFormTipPresenter
     End Sub
 
     Public Function GetLinks(items As IEnumerable(Of TipItem)) As IEnumerable(Of String) Implements MainFormContract.ITipPresenter.GetLinks
-        Return items.SelectMany(Function(t) t.Content.Split(New Char() {" ", vbTab, vbCrLf, vbCr, vbLf}, StringSplitOptions.RemoveEmptyEntries)).
-            Where(Function(s) s.StartsWith("http://") Or s.StartsWith("https://"))
+        Dim urls As New List(Of String)
+        For Each i In items
+            Dim mc = Regex.Matches(i.Content, "https?://.+?(?:\s|$)")
+            If mc.Count > 0 Then
+                urls.AddRange(mc.Cast(Of Match)().Select(Function(m) m.Value))
+            End If
+        Next
+        Return urls.Distinct()
     End Function
 
     Public Sub ViewAllLinks(items As IEnumerable(Of TipItem)) Implements MainFormContract.ITipPresenter.ViewAllLinks

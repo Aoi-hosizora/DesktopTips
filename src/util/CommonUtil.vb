@@ -89,8 +89,9 @@ Public Class CommonUtil
         s = New Regex("(?<!\\)~~(.+?)~~").Replace(s, "<s>$1</s>")                               ' ~~...~~
         s = New Regex("(?<!\\)==(.+?)==").Replace(s, "<font color=""red"">$1</font>")           ' ==...==
         s = New Regex("(?<!\\)=:(.+?)=(.+?)==").Replace(s, "<font color=""$1"">$2</font>")      ' =:x=...==
-        s = New Regex("(?<=^|\s|>)\+ (.+)").Replace(s, "•　$1")                               ' + x
-        s = New Regex("(?<=^|\s|>)\- (.+)").Replace(s, "◦　$1")                               ' - x
+        s = New Regex("(?<=^|\s|>)\+ (.+)").Replace(s, "•　$1")                                 ' + x
+        s = New Regex("(?<=^|\s|>)\- (.+)").Replace(s, "◦　$1")                                 ' - x
+        s = New Regex("(?<=^|\s|>)&gt; (.+)\n?").Replace(s, "<font color=""#D0D7DE"">▍ $1</font><br/>") ' > x
         s = New Regex("(?<!\\)```(?:\r\n)*([\s\S]+?)(?:\r\n)*```", RegexOptions.Multiline).Replace(s, "<font face=""consolas"">$1</font>")
         s = New Regex("(?<!\\)`(.+?)`").Replace(s, "<font face=""consolas"">$1</font>")
 

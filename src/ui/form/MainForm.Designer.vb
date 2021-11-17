@@ -67,6 +67,7 @@ Partial Class MainForm
         Me.m_popup_TopMost = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_LoadPosition = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_SavePosition = New DevComponents.DotNetBar.ButtonItem()
+        Me.m_popup_ClearPosition = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_Exit = New DevComponents.DotNetBar.ButtonItem()
         Me.m_menu_TabPopupMenu = New DevComponents.DotNetBar.ButtonItem()
         Me.m_popup_CurrentTabLabel = New DevComponents.DotNetBar.LabelItem()
@@ -404,23 +405,23 @@ Partial Class MainForm
         'm_popup_ViewCurrentTips
         '
         Me.m_popup_ViewCurrentTips.Name = "m_popup_ViewCurrentTips"
-        Me.m_popup_ViewCurrentTips.Text = "浏览当前列表内容(&V)"
+        Me.m_popup_ViewCurrentTips.Text = "浏览当前分组内容(&V)"
         '
         'm_popup_ViewCurrentHighlights
         '
         Me.m_popup_ViewCurrentHighlights.Name = "m_popup_ViewCurrentHighlights"
-        Me.m_popup_ViewCurrentHighlights.Text = "浏览当前列表高亮(&H)"
+        Me.m_popup_ViewCurrentHighlights.Text = "浏览当前分组高亮(&H)"
         '
         'm_popup_ViewAllTips
         '
         Me.m_popup_ViewAllTips.BeginGroup = True
         Me.m_popup_ViewAllTips.Name = "m_popup_ViewAllTips"
-        Me.m_popup_ViewAllTips.Text = "浏览所有列表内容(&A)"
+        Me.m_popup_ViewAllTips.Text = "浏览所有分组内容(&A)"
         '
         'm_popup_ViewAllHighlights
         '
         Me.m_popup_ViewAllHighlights.Name = "m_popup_ViewAllHighlights"
-        Me.m_popup_ViewAllHighlights.Text = "浏览所有列表高亮(&I)"
+        Me.m_popup_ViewAllHighlights.Text = "浏览所有分组高亮(&I)"
         '
         'm_popup_OpenDir
         '
@@ -437,7 +438,7 @@ Partial Class MainForm
         '
         Me.m_menu_WindowSubMenu.BeginGroup = True
         Me.m_menu_WindowSubMenu.Name = "m_menu_WindowSubMenu"
-        Me.m_menu_WindowSubMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SetupHotkey, Me.m_menu_OpacitySubMenu, Me.m_popup_TopMost, Me.m_popup_LoadPosition, Me.m_popup_SavePosition})
+        Me.m_menu_WindowSubMenu.SubItems.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_popup_SetupHotkey, Me.m_menu_OpacitySubMenu, Me.m_popup_TopMost, Me.m_popup_LoadPosition, Me.m_popup_SavePosition, Me.m_popup_ClearPosition})
         Me.m_menu_WindowSubMenu.Text = "设置与显示(&S)"
         '
         'm_popup_SetupHotkey
@@ -461,12 +462,17 @@ Partial Class MainForm
         Me.m_popup_LoadPosition.BeginGroup = True
         Me.m_popup_LoadPosition.Name = "m_popup_LoadPosition"
         Me.m_popup_LoadPosition.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlR)
-        Me.m_popup_LoadPosition.Text = "恢复位置(&L)"
+        Me.m_popup_LoadPosition.Text = "恢复位置大小(&L)"
         '
         'm_popup_SavePosition
         '
         Me.m_popup_SavePosition.Name = "m_popup_SavePosition"
-        Me.m_popup_SavePosition.Text = "保存当前位置(&S)"
+        Me.m_popup_SavePosition.Text = "保存当前位置大小(&S)"
+        '
+        'm_popup_ClearPosition
+        '
+        Me.m_popup_ClearPosition.Name = "m_popup_ClearPosition"
+        Me.m_popup_ClearPosition.Text = "清空保存的位置大小(&C)"
         '
         'm_popup_Exit
         '
@@ -708,8 +714,9 @@ Partial Class MainForm
     Friend WithEvents m_menu_WindowSubMenu As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_FindTips As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_CopyTips As DevComponents.DotNetBar.ButtonItem
-    Friend WithEvents m_popup_SavePosition As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_LoadPosition As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents m_popup_SavePosition As DevComponents.DotNetBar.ButtonItem
+    Friend WithEvents m_popup_ClearPosition As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_PasteAppendToTip As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_ViewLinksInTips As DevComponents.DotNetBar.ButtonItem
     Friend WithEvents m_popup_SetupHotkey As DevComponents.DotNetBar.ButtonItem

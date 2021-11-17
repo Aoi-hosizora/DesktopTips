@@ -31,22 +31,25 @@ Public Class MainForm
     ''' 启动后处理，加载设置、更新界面
     ''' </summary>
     Private Sub InitUiFromSetting()
-        ' 大小 位置 透明度 置顶
-        Top = My.Settings.Top
-        Left = My.Settings.Left
-        Width = My.Settings.Width
-        Height = My.Settings.Height
-        MaxOpacity = My.Settings.MaxOpacity
-        TopMost = My.Settings.TopMost
+        With My.Settings
+            ' 大小 位置 透明度 置顶
+            Top = .Top
+            Left = .Left
+            Width = .Width
+            Height = .Height
+            MaxOpacity = .MaxOpacity
+            TopMost = .TopMost
 
-        ' 一些控件状态
-        m_popup_TopMost.Checked = My.Settings.TopMost                                           ' 窗口置顶
-        m_popup_LoadPosition.Enabled = My.Settings.SaveLeft <> -1 And My.Settings.SaveTop <> -1 ' 恢复位置
+            ' 一些控件状态
+            m_popup_TopMost.Checked = .TopMost
+            m_popup_LoadPosition.Enabled = .SaveLeft <> -1 And .SaveTop <> -1 And .SaveWidth <> -1 And .SaveHeight <> -1
+            m_popup_ClearPosition.Enabled = m_popup_LoadPosition.Enabled
 
-        ' 热键，可能会弹出失败
-        If My.Settings.IsUseHotKey Then
-            _globalPresenter.RegisterHotKey(Handle, My.Settings.HotKey, HotkeyId)
-        End If
+            ' 热键，可能会弹出失败
+            If My.Settings.IsUseHotKey Then
+                _globalPresenter.RegisterHotKey(Handle, My.Settings.HotKey, HotkeyId)
+            End If
+        End With
     End Sub
 
     ''' <summary>
@@ -858,26 +861,50 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
-    ''' 加载保存的位置，用于：菜单事件
+    ''' 保存窗口位置大小，用于：菜单事件
     ''' </summary>
-    Private Sub LoadPosition(sender As Object, e As EventArgs) Handles m_popup_LoadPosition.Click
-        If My.Settings.SaveTop >= 0 And My.Settings.SaveLeft >= 0 Then
-            Top = My.Settings.SaveTop
-            Left = My.Settings.SaveLeft
+    Private Sub SavePosition(sender As Object, e As EventArgs) Handles m_popup_SavePosition.Click
+        Dim flag = If(My.Settings.SaveTop >= 0 And My.Settings.SaveLeft >= 0 And My.Settings.SaveHeight > 0 And My.Settings.SaveWidth,
+            "已经保存则窗口的位置大小，并覆盖原先保存的信息？", "是否保存当前窗口的位置和大小？")
+        Dim ok = MessageBoxEx.Show(flag, "保存当前位置大小", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, Me, {"保存", "取消"})
+        If ok = vbOK Then
+            m_popup_LoadPosition.Enabled = True
+            m_popup_ClearPosition.Enabled = True
+            My.Settings.SaveTop = Top
+            My.Settings.SaveLeft = Left
+            My.Settings.SaveHeight = Height
+            My.Settings.SaveWidth = Width
+            My.Settings.Save()
         End If
     End Sub
 
     ''' <summary>
-    ''' 保存窗口位置，用于：菜单事件
+    ''' 加载保存的位置大小，用于：菜单事件
     ''' </summary>
-    Private Sub SavePosition(sender As Object, e As EventArgs) Handles m_popup_SavePosition.Click
-        Dim flag = If(My.Settings.SaveTop >= 0 And My.Settings.SaveLeft >= 0, "是否保存当前窗口的位置，并覆盖原先保存的位置？", "是否保存当前窗口的位置？")
-        Dim ok = MessageBoxEx.Show(flag, "保存位置", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, Me, {"保存并覆盖", "取消"})
-        If ok = vbOK Then
-            m_popup_LoadPosition.Enabled = True
-            My.Settings.SaveTop = Top
-            My.Settings.SaveLeft = Left
-            My.Settings.Save()
+    Private Sub LoadPosition(sender As Object, e As EventArgs) Handles m_popup_LoadPosition.Click
+        If My.Settings.SaveTop >= 0 And My.Settings.SaveLeft >= 0 And My.Settings.SaveHeight > 0 And My.Settings.SaveWidth Then
+            Top = My.Settings.SaveTop
+            Left = My.Settings.SaveLeft
+            Height = My.Settings.SaveHeight
+            Width = My.Settings.SaveWidth
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 清空窗口位置大小，用于：菜单事件
+    ''' </summary>
+    Private Sub ClearPosition(sender As Object, e As EventArgs) Handles m_popup_ClearPosition.Click
+        If My.Settings.SaveTop >= 0 And My.Settings.SaveLeft >= 0 And My.Settings.SaveHeight > 0 And My.Settings.SaveWidth Then
+            Dim ok = MessageBoxEx.Show("是否清空已经保存的位置大小？", "清空保存的位置大小", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, Me, {"清空", "取消"})
+            If ok = vbOK Then
+                m_popup_LoadPosition.Enabled = False
+                m_popup_ClearPosition.Enabled = False
+                My.Settings.SaveTop = -1
+                My.Settings.SaveLeft = -1
+                My.Settings.SaveHeight = -1
+                My.Settings.SaveWidth = -1
+                My.Settings.Save()
+            End If
         End If
     End Sub
 

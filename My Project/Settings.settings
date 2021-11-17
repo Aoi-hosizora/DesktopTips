@@ -26,12 +26,6 @@
     <Setting Name="TopMost" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="IsFold" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="LastMobileIP" Type="System.String" Scope="User">
-      <Value Profile="(Default)">127.0.0.1:8776</Value>
-    </Setting>
     <Setting Name="IsUseHotKey" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
@@ -41,8 +35,14 @@
     <Setting Name="OpenInNewBrowser" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="LastLocalPort" Type="System.String" Scope="User">
-      <Value Profile="(Default)">8455</Value>
+    <Setting Name="Height" Type="System.String" Scope="User">
+      <Value Profile="(Default)">350</Value>
+    </Setting>
+    <Setting Name="SaveHeight" Type="System.String" Scope="User">
+      <Value Profile="(Default)">-1</Value>
+    </Setting>
+    <Setting Name="SaveWidth" Type="System.String" Scope="User">
+      <Value Profile="(Default)">-1</Value>
     </Setting>
   </Settings>
 </SettingsFile>

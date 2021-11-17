@@ -106,10 +106,18 @@ Public Class TipEditDialog
     End Sub
 
     Private Sub TextBoxContent_TextChanged(sender As Object, e As EventArgs) Handles TextBoxContent.TextChanged
+        Dim len = TextBoxContent.Text.Count
+        If len > 9999 Then
+            LabelCount.Text = $"字符总数：超过 {len}"
+        Else
+            LabelCount.Text = $"字符总数：{len}"
+        End If
         ButtonOK.Enabled = TextBoxContent.Text.Trim() <> ""
         _changed = TextBoxContent.Text.Trim() <> _previousContent.Trim()
-        If Not Text.StartsWith("*") Then
+        If _changed AndAlso Not Text.StartsWith("*") Then
             Text = "*" & Text
+        ElseIf Not _changed AndAlso Text.StartsWith("*") Then
+            Text = Text.TrimStart("*")
         End If
     End Sub
 

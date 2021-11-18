@@ -12,7 +12,7 @@ Public Class TipItem
     Public Property Done As Boolean
 
     <JsonProperty("text_type")>
-    Public Property TextType As CommonUtil.TextType
+    Public Property TextType As CommonUtil.TextType ' 0: plain, 1: markdown, 2: html
 
     <JsonProperty("created_at")>
     Public Property CreatedAt As DateTime

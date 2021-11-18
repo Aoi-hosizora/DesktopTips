@@ -3,6 +3,11 @@
 ''' </summary>
 Public Class TipEditDialog
     ''' <summary>
+    ''' 原始标题
+    ''' </summary>
+    Private _originTitle As String = ""
+
+    ''' <summary>
     ''' 未修改前的内容
     ''' </summary>
     Private _originContent As String = ""
@@ -29,6 +34,7 @@ Public Class TipEditDialog
                                                 Optional saveCallback As Action(Of String) = Nothing) As String
         Dim dlg As New TipEditDialog
         With dlg
+            ._originTitle = title
             .Text = title
             .LabelMessage.Text = message
             ._originContent = content
@@ -40,12 +46,11 @@ Public Class TipEditDialog
             .ComboBoxTextType.SelectedIndex = CommonUtil.TextTypeToIndex(textType)
             ._saveCallback = saveCallback
             ._changed = False
-            .Text = .Text.TrimStart("*")
 
             Dim newSize = TextRenderer.MeasureText(content, .Font, Size.Empty)
             Dim maxWidth = Screen.PrimaryScreen.Bounds.Width * 8 / 9
             Dim maxHeight = Screen.PrimaryScreen.Bounds.Height * 3 / 5
-            .Width += Math.Min(newSize.Width + 30, maxWidth) - .TextBoxContent.Width
+            .Width += Math.Min(newSize.Width + 45, maxWidth) - .TextBoxContent.Width
             .Height += Math.Min(newSize.Height + 50, maxHeight) - .TextBoxContent.Height
 
             .TextBoxContent.Focus()
@@ -59,6 +64,21 @@ Public Class TipEditDialog
 
     Private Sub TipEditDialog_Load(sender As Object, e As EventArgs) Handles Me.Load
         MenuSave.Enabled = _saveCallback IsNot Nothing
+    End Sub
+
+    ''' <summary>
+    ''' 更新标题，包括变更和缩放
+    ''' </summary>
+    Private Sub UpdateTitle()
+        If Not _changed Then
+            Text = _originTitle
+        Else
+            Text = "*" & _originTitle
+        End If
+        If TextBoxContent.Font.Size <> Font.Size Then
+            Dim ratio As Single = TextBoxContent.Font.Size / Font.Size
+            Text &= " (" & ratio.ToString("P0") & ")"
+        End If
     End Sub
 
     ''' <summary>
@@ -84,7 +104,7 @@ Public Class TipEditDialog
         _changed = False
         _previousContent = TextBoxContent.Text.Trim()
         _saveCallback?.Invoke(_previousContent)
-        Text = Text.TrimStart("*")
+        UpdateTitle()
     End Sub
 
     Private Sub Cancel_Click(sender As Object, e As EventArgs) Handles ButtonCancel.Click
@@ -106,18 +126,14 @@ Public Class TipEditDialog
     End Sub
 
     Private Sub TextBoxContent_TextChanged(sender As Object, e As EventArgs) Handles TextBoxContent.TextChanged
+        ButtonOK.Enabled = TextBoxContent.Text.Trim() <> ""
+        _changed = TextBoxContent.Text.Trim() <> _previousContent.Trim()
+        UpdateTitle()
         Dim len = TextBoxContent.Text.Count
         If len > 9999 Then
             LabelCount.Text = $"字符总数：超过 {len}"
         Else
             LabelCount.Text = $"字符总数：{len}"
-        End If
-        ButtonOK.Enabled = TextBoxContent.Text.Trim() <> ""
-        _changed = TextBoxContent.Text.Trim() <> _previousContent.Trim()
-        If _changed AndAlso Not Text.StartsWith("*") Then
-            Text = "*" & Text
-        ElseIf Not _changed AndAlso Text.StartsWith("*") Then
-            Text = Text.TrimStart("*")
         End If
     End Sub
 
@@ -144,6 +160,17 @@ Public Class TipEditDialog
             If _saveCallback IsNot Nothing Then
                 e.Handled = True
                 Save_Click(sender, New EventArgs) ' Ctrl+S
+            End If
+        End If
+    End Sub
+
+    Private Sub TextBoxContent_MouseWheel(sender As Object, e As MouseEventArgs) Handles TextBoxContent.MouseWheel
+        If My.Computer.Keyboard.CtrlKeyDown Then
+            Dim origin = TextBoxContent.Font
+            Dim newSize = origin.Size + (e.Delta / 120)
+            If newSize > 1 AndAlso newSize < Single.MaxValue Then
+                TextBoxContent.Font = New Font(origin.FontFamily, newSize)
+                UpdateTitle()
             End If
         End If
     End Sub

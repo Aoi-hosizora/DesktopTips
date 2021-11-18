@@ -11,6 +11,9 @@ Public Class TipColor
     <JsonIgnore>
     Public Property Color As Color
 
+    <JsonProperty("style")>
+    Public Property Style As FontStyle ' 0: Regular, 1: Bold, 2: Italic, 4: Underline
+
     <JsonProperty("color")>
     Public Property HexColor As String
         Get

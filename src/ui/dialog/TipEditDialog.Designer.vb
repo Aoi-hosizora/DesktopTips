@@ -52,7 +52,7 @@ Partial Class TipEditDialog
         Me.LabelMessage.AutoEllipsis = True
         Me.LabelMessage.Location = New System.Drawing.Point(12, 9)
         Me.LabelMessage.Name = "LabelMessage"
-        Me.LabelMessage.Size = New System.Drawing.Size(332, 56)
+        Me.LabelMessage.Size = New System.Drawing.Size(297, 56)
         Me.LabelMessage.TabIndex = 0
         Me.LabelMessage.Text = "内容"
         '
@@ -79,7 +79,7 @@ Partial Class TipEditDialog
         Me.ButtonCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.ButtonCancel.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonCancel.Location = New System.Drawing.Point(350, 39)
+        Me.ButtonCancel.Location = New System.Drawing.Point(315, 39)
         Me.ButtonCancel.Name = "ButtonCancel"
         Me.ButtonCancel.Size = New System.Drawing.Size(75, 25)
         Me.ButtonCancel.TabIndex = 2
@@ -93,7 +93,7 @@ Partial Class TipEditDialog
         Me.TextBoxContent.Multiline = True
         Me.TextBoxContent.Name = "TextBoxContent"
         Me.TextBoxContent.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.TextBoxContent.Size = New System.Drawing.Size(205, 128)
+        Me.TextBoxContent.Size = New System.Drawing.Size(187, 128)
         Me.TextBoxContent.TabIndex = 3
         Me.TextBoxContent.Text = "文本框"
         '
@@ -101,7 +101,7 @@ Partial Class TipEditDialog
         '
         Me.ButtonShowOrigin.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonShowOrigin.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonShowOrigin.Location = New System.Drawing.Point(350, 205)
+        Me.ButtonShowOrigin.Location = New System.Drawing.Point(315, 205)
         Me.ButtonShowOrigin.Name = "ButtonShowOrigin"
         Me.ButtonShowOrigin.Size = New System.Drawing.Size(75, 26)
         Me.ButtonShowOrigin.TabIndex = 6
@@ -116,7 +116,7 @@ Partial Class TipEditDialog
         Me.TextBoxOrigin.Name = "TextBoxOrigin"
         Me.TextBoxOrigin.ReadOnly = True
         Me.TextBoxOrigin.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.TextBoxOrigin.Size = New System.Drawing.Size(201, 128)
+        Me.TextBoxOrigin.Size = New System.Drawing.Size(184, 128)
         Me.TextBoxOrigin.TabIndex = 4
         Me.TextBoxOrigin.Text = "文本框"
         '
@@ -135,8 +135,8 @@ Partial Class TipEditDialog
         'SplitContainerTextBox.Panel2
         '
         Me.SplitContainerTextBox.Panel2.Controls.Add(Me.TextBoxOrigin)
-        Me.SplitContainerTextBox.Size = New System.Drawing.Size(410, 128)
-        Me.SplitContainerTextBox.SplitterDistance = 205
+        Me.SplitContainerTextBox.Size = New System.Drawing.Size(375, 128)
+        Me.SplitContainerTextBox.SplitterDistance = 187
         Me.SplitContainerTextBox.TabIndex = 7
         '
         'SuperTooltip1
@@ -158,24 +158,23 @@ Partial Class TipEditDialog
         '
         Me.ButtonOK.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonOK.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.ButtonOK.Location = New System.Drawing.Point(350, 9)
+        Me.ButtonOK.Location = New System.Drawing.Point(315, 9)
         Me.ButtonOK.Menu = Me.ContextMenuStripOK
         Me.ButtonOK.Name = "ButtonOK"
         Me.ButtonOK.Size = New System.Drawing.Size(75, 25)
-        Me.SuperTooltip1.SetSuperTooltip(Me.ButtonOK, New DevComponents.DotNetBar.SuperTooltipInfo("保存修改并退出", "", "保存时文本会进行一些格式化操作，包括：" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "1. 删除行末的空白符（空格与制表符）" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "2. 最多仅保留两个空行" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "3. Markdown 类型下会将部分全角字符" &
-            "换写为半角（包括＋－＊＿＝＼～｀＃）" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10), Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(285, 128)))
+        Me.SuperTooltip1.SetSuperTooltip(Me.ButtonOK, New DevComponents.DotNetBar.SuperTooltipInfo("保存修改并退出", "", "保存时文本会进行一些格式化操作，包括：" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "1. 删除行末的空白符（空格、制表符）" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "2. 删除文末的所有空行" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "3. 文中最多保留两个连续空行" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "4. Mar" &
+            "kdown 类型下会将部分全角字符换写为半角（包括＋－＊＿＝＼～｀＃）" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10), Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(285, 142)))
         Me.ButtonOK.TabIndex = 1
         Me.ButtonOK.Text = "确定"
         Me.ButtonOK.UseVisualStyleBackColor = True
         '
         'LabelCount
         '
-        Me.LabelCount.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LabelCount.Location = New System.Drawing.Point(220, 209)
+        Me.LabelCount.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.LabelCount.Location = New System.Drawing.Point(185, 209)
         Me.LabelCount.Name = "LabelCount"
         Me.LabelCount.Size = New System.Drawing.Size(124, 17)
-        Me.SuperTooltip1.SetSuperTooltip(Me.LabelCount, New DevComponents.DotNetBar.SuperTooltipInfo("字符总数", "", "字符总数包括空白符、换行符、Markdown 语法与 HTML 标签的任何字符。", Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(310, 75)))
+        Me.SuperTooltip1.SetSuperTooltip(Me.LabelCount, New DevComponents.DotNetBar.SuperTooltipInfo("字符总数", "", "字符总数包括空格、制表符、换行符、Markdown 语法与 HTML 标签的任何字符。", Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(310, 75)))
         Me.LabelCount.TabIndex = 9
         Me.LabelCount.Text = "字符总数：超过 9999"
         Me.LabelCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -189,9 +188,9 @@ Partial Class TipEditDialog
         Me.ComboBoxTextType.FormattingEnabled = True
         Me.ComboBoxTextType.IntegralHeight = False
         Me.ComboBoxTextType.Items.AddRange(New Object() {"纯文本", "Markdown", "HTML"})
-        Me.ComboBoxTextType.Location = New System.Drawing.Point(81, 206)
+        Me.ComboBoxTextType.Location = New System.Drawing.Point(80, 206)
         Me.ComboBoxTextType.Name = "ComboBoxTextType"
-        Me.ComboBoxTextType.Size = New System.Drawing.Size(119, 24)
+        Me.ComboBoxTextType.Size = New System.Drawing.Size(99, 24)
         Me.ComboBoxTextType.TabIndex = 8
         '
         'TipEditDialog
@@ -199,7 +198,7 @@ Partial Class TipEditDialog
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 17.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonCancel
-        Me.ClientSize = New System.Drawing.Size(434, 236)
+        Me.ClientSize = New System.Drawing.Size(399, 236)
         Me.Controls.Add(Me.LabelCount)
         Me.Controls.Add(Me.LabelTextType)
         Me.Controls.Add(Me.ComboBoxTextType)
@@ -213,7 +212,7 @@ Partial Class TipEditDialog
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
-        Me.MinimumSize = New System.Drawing.Size(450, 275)
+        Me.MinimumSize = New System.Drawing.Size(415, 275)
         Me.Name = "TipEditDialog"
         Me.ShowIcon = False
         Me.ShowInTaskbar = False

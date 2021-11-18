@@ -25,7 +25,7 @@ Public Class ColorDialog
         If title <> "" Then
             Dim id As Integer = ColorListView.Items.Count
             Dim now = DateTime.Now
-            Dim tipColor As New TipColor(id, title) With { .CreatedAt = now, .UpdatedAt = now } ' 默认红色
+            Dim tipColor As New TipColor(id, title) With {.CreatedAt = now, .UpdatedAt = now} ' 默认红色、普通样式
             AddToListView(tipColor)
             UpdateListViewColumn()
             SetListViewSelect(id)
@@ -61,18 +61,18 @@ Public Class ColorDialog
             ' 直接删除
             GlobalModel.Tabs.ForEach(Sub(t) t.Tips.RemoveAll(Function(tip) tip.ColorId = delColor.Id))
             RemoveFromListView(delColor)
-        ElseIf ok2 = vbYes
+        ElseIf ok2 = vbYes Then
             ' 修改高亮颜色
             ColorReplaceDialog.SelectedColor = delColor
-            ColorReplaceDialog.AllColors = GlobalModel.Colors.Where(Function (c) c.Id <> delColor.Id).ToList()
+            ColorReplaceDialog.AllColors = GlobalModel.Colors.Where(Function(c) c.Id <> delColor.Id).ToList()
             ColorReplaceDialog.OkCallback = Sub(id As Integer)
-                Dim now = DateTime.Now
-                For Each tip As TipItem In tips
-                    tip.ColorId = id
-                    tip.UpdatedAt = now
-                Next
-                RemoveFromListView(delColor)
-            End Sub
+                                                Dim now = DateTime.Now
+                                                For Each tip As TipItem In tips
+                                                    tip.ColorId = id
+                                                    tip.UpdatedAt = now
+                                                Next
+                                                RemoveFromListView(delColor)
+                                            End Sub
             ColorReplaceDialog.ShowDialog(Me) ' 修改
         End If
     End Sub
@@ -96,8 +96,10 @@ Public Class ColorDialog
 
             If col = ColumnHeaderName.DisplayIndex Then
                 EditColorName(item)
-            ElseIf col = ColumnHeaderHex.DisplayIndex OrElse col = ColumnHeaderRgb.DisplayIndex OrElse col = ColumnHeaderView.DisplayIndex Then
+            ElseIf col = ColumnHeaderHex.DisplayIndex OrElse col = ColumnHeaderRgb.DisplayIndex Then
                 EditColorValue(item)
+            ElseIf col = ColumnHeaderStyle.DisplayIndex Then
+                EditTextStyle(item)
             End If
         End If
     End Sub
@@ -140,15 +142,17 @@ Public Class ColorDialog
         item.Tag = c ' Tag 保存原值
         item.UseItemStyleForSubItems = False
         item.SubItems.Add(c.Name) ' 标签
-        item.SubItems.Add(c.HexColor) ' Hex
         item.SubItems.Add(ColorToRgb(c.Color)) ' RGB
-        Dim subItem As ListViewItem.ListViewSubItem = item.SubItems.Add("") ' 预览
-        subItem.BackColor = c.Color
+        item.SubItems.Add(c.HexColor) ' Hex
+        Dim subItem1 As ListViewItem.ListViewSubItem = item.SubItems.Add(StyleToString(c.Style)) ' 样式
+        subItem1.Font = New Font(Font, c.Style)
+        Dim subItem2 As ListViewItem.ListViewSubItem = item.SubItems.Add("") ' 预览
+        subItem2.BackColor = c.Color
 
-        Dim tooltip = $"{c.Name} - {c.HexColor} / ({ColorToRgb(c.Color)})" & vbNewLine
-        ToolTip &= "创建于 " & If(c.IsDefaultCreatedAt, "未知时间", c.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")) & vbNewLine
-        ToolTip &= "更新于 " & If(c.IsDefaultUpdatedAt, "未知时间", c.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
-        item.ToolTipText = ToolTip
+        Dim tooltip = $"{c.Name} - {c.HexColor}, {StyleToString(c.Style)}" & vbNewLine
+        tooltip &= "创建于 " & If(c.IsDefaultCreatedAt, "未知时间", c.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")) & vbNewLine
+        tooltip &= "更新于 " & If(c.IsDefaultUpdatedAt, "未知时间", c.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
+        item.ToolTipText = tooltip
     End Sub
 
     ''' <summary>
@@ -203,10 +207,45 @@ Public Class ColorDialog
     End Sub
 
     ''' <summary>
+    ''' 编辑文字样式，修改列表显示和 GlobalModel
+    ''' </summary>
+    Private Sub EditTextStyle(item As ListViewItem)
+        Dim tipColor = CType(item.Tag, TipColor)
+        Dim style As FontStyle = ColorStyleDialog.ShowDialog(tipColor.Style)
+
+        tipColor.Style = style
+        item.Tag = tipColor
+        item.SubItems(ColumnHeaderStyle.DisplayIndex).Text = StyleToString(style)
+        item.SubItems(ColumnHeaderStyle.DisplayIndex).Font = New Font(Font, style)
+        UpdateListViewColumn()
+
+        GlobalModel.Colors(tipColor.Id).Style = style ' 修改
+        SaveCallback?.Invoke()
+    End Sub
+
+    ''' <summary>
     ''' Color 转 RGB 字符串
     ''' </summary>
     Private Function ColorToRgb(c As Color) As String
         Return String.Format("{0}, {1}, {2}", c.R, c.G, c.B)
+    End Function
+
+    Private Function StyleToString(style As FontStyle) As String
+        If style = FontStyle.Regular Then
+            Return "常规"
+        Else
+            Dim s = ""
+            If (style And FontStyle.Bold) > 0 Then
+                s &= "Bo"
+            End If
+            If (style And FontStyle.Italic) > 0 Then
+                s &= "It"
+            End If
+            If (style And FontStyle.Underline) > 0 Then
+                s &= "Un"
+            End If
+            Return s
+        End If
     End Function
 
 #End Region

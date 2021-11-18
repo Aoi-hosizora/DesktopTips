@@ -251,22 +251,24 @@ Public Class MainFormTipPresenter
         Return toDone
     End Function
 
-    Public Sub ViewList(items As IEnumerable(Of TipItem), highlight As Boolean) Implements MainFormContract.ITipPresenter.ViewList
-        If highlight Then
-            items = items.Where(Function(t) t.IsHighLight)
+    Public Sub ViewHighlightList(t As Tab) Implements MainFormContract.ITipPresenter.ViewHighlightList
+        Dim items As IEnumerable(Of TipItem)
+        If t IsNot Nothing Then ' 指定分组
+            items = t.Tips
+        Else ' 所有分组
+            Dim f = Function(tab As Tab) tab.Tips.Select(Function(tip) New TipItem($"【{tab.Title}】 {tip.Content}", tip.ColorId))
+            items = GlobalModel.Tabs.SelectMany(f)
         End If
 
         Dim contents As New List(Of Tuple(Of String, Color))
         For Each item In items
-            Dim content = item.Content.Replace(vbNewLine, "↴") & If(item.IsHighLight, $" [{item.Color.Name}]", "")
-            contents.Add(New Tuple(Of String, Color)(content, If(item.Color?.Color, Color.Black)))
+            If item.IsHighLight Then
+                Dim content = $"[{item.Color.Name}]" & item.Content.Replace(vbNewLine, "↴")
+                contents.Add(New Tuple(Of String, Color)(content, If(item.Color?.Color, Color.Black)))
+            End If
         Next
 
-        If Not highlight Then
-            _view.ShowTextForm($"浏览列表 (共 {items.Count} 项)", contents)
-        Else
-            _view.ShowTextForm($"浏览高亮 (共 {items.Count} 项)", contents)
-        End If
+        _view.ShowTextForm($"浏览高亮 (共 {items.Count} 项)", contents)
     End Sub
 
     Private Sub OpenInDefaultBrowser(links As IEnumerable(Of String), inNew As Boolean)

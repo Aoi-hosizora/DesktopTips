@@ -20,19 +20,19 @@
 
     Public Sub ShowTextForm(title As String, contents As List(Of Tuple(Of String, Color))) Implements MainFormContract.IView.ShowTextForm
         Dim formSize = New Size(500, 300)
-        Dim form As New BaseEscCbForm With { .Text = title, .Size = formSize, .TopMost = True, .FormBorderStyle = FormBorderStyle.Sizable}
+        Dim form As New BaseEscCbForm With {.Text = title, .Size = formSize, .TopMost = True, .FormBorderStyle = FormBorderStyle.Sizable}
         Dim f = New Font("Microsoft YaHei UI", 10.0!)
         Dim richBox As New RichTextBox With {
-            .ReadOnly = True, .Multiline = True, .ScrollBars = RichTextBoxScrollBars.ForcedBoth, .WordWrap = False, 
-            .BackColor = Color.White, .Font = f, .HideSelection = False, .DetectUrls = False, .ShortcutsEnabled = True, 
+            .ReadOnly = True, .Multiline = True, .ScrollBars = RichTextBoxScrollBars.ForcedBoth, .WordWrap = False,
+            .BackColor = Color.White, .Font = f, .HideSelection = False, .DetectUrls = False, .ShortcutsEnabled = True,
             .Location = New Point(0, 0), .Anchor = AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Top}
         form.Controls.Add(richBox)
         richBox.Dock = DockStyle.Fill
         AddHandler form.Load, Sub()
-            form.Top = Top
-            form.Left = Left - formSize.Width - 8
-            richBox.Select(0, 0)
-        End Sub
+                                  form.Top = Top
+                                  form.Left = Left - formSize.Width - 8
+                                  richBox.Select(0, 0)
+                              End Sub
 
         For Each content In contents
             richBox.SelectionColor = content.Item2

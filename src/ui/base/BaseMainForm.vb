@@ -23,27 +23,44 @@ Public Class BaseMainForm
     ''' </summary>
     Protected Property MouseLeaveCallback As Func(Of Boolean)
 
+    ''' <summary>
+    ''' 是否在屏幕大小变更时保持（黏贴）到屏幕右边的距离
+    ''' </summary>
+    Protected Property StickToScreenRightBound As Boolean = True
+
     Protected Overrides Sub OnLoad(e As EventArgs)
-        Controls.Add(_labelFocus)
-        Opacity = 0
+        If Not DesignMode Then
+            Controls.Add(_labelFocus)
+            Opacity = 0
+        End If
         RefreshAppearance()
 
         MyBase.OnLoad(e)
-        ShowForm()
-        HideFocus()
+        If Not DesignMode Then
+            ShowForm()
+            RemoveFocus()
+        End If
 
-        Dim ctrls As New List(Of Control)
-        ctrls.Add(Me)
-        ctrls.AddRange(Controls.Cast(Of Control)())
-        AddHandlers(ctrls)
+        If Not DesignMode Then
+            Dim ctrls As New List(Of Control)
+            ctrls.Add(Me)
+            ctrls.AddRange(Controls.Cast(Of Control)())
+            AddHandlers(ctrls)
+        End If
 
-        AddHandler SystemEvents.DisplaySettingsChanged, AddressOf DisplaySettingsChanged
-        DisplaySettingsChanged(Me, New EventArgs())
+        If Not DesignMode Then
+            If StickToScreenRightBound Then
+                AddHandler SystemEvents.DisplaySettingsChanged, AddressOf DisplaySettingsChanged
+                DisplaySettingsChanged(Me, New EventArgs())
+            End If
+        End If
     End Sub
 
     Protected Overrides Sub OnSizeChanged(e As EventArgs)
         MyBase.OnSizeChanged(e)
-        RefreshAppearance()
+        If Not DesignMode Then
+            RefreshAppearance()
+        End If
     End Sub
 
     ''' <summary>
@@ -57,7 +74,7 @@ Public Class BaseMainForm
     ''' <summary>
     ''' 隐藏焦点框
     ''' </summary>
-    Private Sub HideFocus()
+    Private Sub RemoveFocus()
         _labelFocus.Focus()
         _labelFocus.Select()
     End Sub
@@ -80,7 +97,7 @@ Public Class BaseMainForm
 
             ' 按钮: 消除焦点框
             If isBtn Then
-                AddHandler ctrl.MouseDown, Sub(sender As Object, e As EventArgs) HideFocus()
+                AddHandler ctrl.MouseDown, Sub(sender As Object, e As EventArgs) RemoveFocus()
             End If
 
             ' 所有控件: 鼠标移动
@@ -114,9 +131,11 @@ Public Class BaseMainForm
     Protected Overrides ReadOnly Property CreateParams As CreateParams
         Get
             Dim cp As CreateParams = MyBase.CreateParams
-            cp.ExStyle = cp.ExStyle And Not NativeMethod.WS_EX_APPWINDOW ' 不显示在TaskBar
-            cp.ExStyle = cp.ExStyle Or NativeMethod.WS_EX_TOOLWINDOW ' 不显示在Alt-Tab
-            cp.ExStyle = cp.ExStyle Or NativeMethod.WS_EX_LAYERED
+            If Not DesignMode Then
+                cp.ExStyle = cp.ExStyle And Not NativeMethod.WS_EX_APPWINDOW ' 不显示在TaskBar
+                cp.ExStyle = cp.ExStyle Or NativeMethod.WS_EX_TOOLWINDOW ' 不显示在Alt-Tab
+                cp.ExStyle = cp.ExStyle Or NativeMethod.WS_EX_LAYERED
+            End If
             Return cp
         End Get
     End Property
@@ -125,15 +144,17 @@ Public Class BaseMainForm
     ''' 窗口的 WndProc 方法
     ''' </summary>
     Protected Overrides Sub WndProc(ByRef m As Message)
-        Select Case m.Msg
-            Case NativeMethod.WM_NCPAINT
-                If NativeMethod.CheckAeroEnabled() Then
-                    Dim val = NativeMethod.DWMNC_ENABLED
-                    Const intSize = 4
-                    NativeMethod.DwmSetWindowAttribute(Handle, NativeMethod.DWMWA_EXCLUDED_FROM_PEEK, val, intSize)
-                End If
-                Exit Select
-        End Select
+        If Not DesignMode Then
+            Select Case m.Msg
+                Case NativeMethod.WM_NCPAINT
+                    If NativeMethod.CheckAeroEnabled() Then
+                        Dim val = NativeMethod.DWMNC_ENABLED
+                        Const intSize = 4
+                        NativeMethod.DwmSetWindowAttribute(Handle, NativeMethod.DWMWA_EXCLUDED_FROM_PEEK, val, intSize)
+                    End If
+                    Exit Select
+            End Select
+        End If
         MyBase.WndProc(m)
     End Sub
 
@@ -276,7 +297,9 @@ Public Class BaseMainForm
         Dim currWidth = Screen.PrimaryScreen.Bounds.Width
 
         ' 修改窗口位置
-        If _prevHeight <> 0 AndAlso _prevWidth <> 0 Then
+        If Left + Width > currWidth Then
+            Left = currWidth - Width ' 保证窗体仍然在屏幕内
+        ElseIf _prevHeight <> 0 AndAlso _prevWidth <> 0 Then
             Left += currWidth - _prevWidth ' 默认靠右
         End If
 

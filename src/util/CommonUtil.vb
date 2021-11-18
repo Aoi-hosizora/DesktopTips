@@ -82,7 +82,7 @@ Public Class CommonUtil
     ''' </summary>
     Public Shared Function Markdown2Markup(s As String) As String
         s = s.Replace("\\", "＼").Replace("\*", "＊").Replace("\_", "＿").Replace("\~", "～").Replace("\=", "＝")
-        s = s.Replace("\+", "＋").Replace("\-", "－").Replace("\`", "｀").Replace("\#", "＃")
+        s = s.Replace("\+", "＋").Replace("\-", "－").Replace("\`", "｀").Replace("\#", "＃").Replace("\&gt;", "＞")
         s = New Regex("(?<!\\)\*\*(.+?)\*\*").Replace(s, "<b>$1</b>")                           ' **...**
         s = New Regex("(?<!\\)\*(.+?)\*").Replace(s, "<i>$1</i>")                               ' *...*
         s = New Regex("(?<!\\)__(.+?)__").Replace(s, "<u>$1</u>")                               ' __...__
@@ -91,7 +91,7 @@ Public Class CommonUtil
         s = New Regex("(?<!\\)=:(.+?)=(.+?)==").Replace(s, "<font color=""$1"">$2</font>")      ' =:x=...==
         s = New Regex("(?<=^|\s|>)\+ (.+)").Replace(s, "•　$1")                                 ' + x
         s = New Regex("(?<=^|\s|>)\- (.+)").Replace(s, "◦　$1")                                 ' - x
-        s = New Regex("(?<=^|\s|>)&gt; (.+)\n?").Replace(s, "<font color=""#D0D7DE"">▍ $1</font><br/>") ' > x
+        s = New Regex("(?<=^|\s|>)&gt; (.+)\n?").Replace(s, "<font color=""#D0D7DE"">┃ $1</font><br/>") ' > x
         s = New Regex("(?<!\\)```(?:\r\n)*([\s\S]+?)(?:\r\n)*```", RegexOptions.Multiline).Replace(s, "<font face=""consolas"">$1</font>")
         s = New Regex("(?<!\\)`(.+?)`").Replace(s, "<font face=""consolas"">$1</font>")
 
@@ -103,7 +103,7 @@ Public Class CommonUtil
         s = New Regex("(?<=^|\n|>)# (.+)\n?").Replace(s, "<h1>$1</h1>")
 
         s = s.Replace("＼", "\").Replace("＊", "*").Replace("＿", "_").Replace("～", "~").Replace("＝", "=")
-        s = s.Replace("＋", "+").Replace("－", "-").Replace("｀", "`").Replace("＃", "#")
+        s = s.Replace("＋", "+").Replace("－", "-").Replace("｀", "`").Replace("＃", "#").Replace("＞", "&gt;")
         s = s.Replace(vbNewLine, "<br/>")
         Return s
     End Function

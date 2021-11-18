@@ -182,9 +182,10 @@ Public Class TipListBox
     ''' 重绘列表颜色和高亮
     ''' </summary>
     Protected Overrides Sub OnDrawItem(e As DrawItemEventArgs)
-        If e.Index <0 OrElse e.Index >= ItemCount Then Return
+        If e.Index < 0 OrElse e.Index >= ItemCount Then Return
         Dim item = Items.ElementAt(e.Index)
         Dim itemColor = If(item.Color?.Color, Color.Black)
+        Dim itemStyle = If(item.Color?.Style, FontStyle.Regular)
 
         Dim g = e.Graphics
         Dim b = New Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Width - 1, e.Bounds.Height)
@@ -208,15 +209,14 @@ Public Class TipListBox
         End If
 
         Dim t = item.ToString().Replace(vbNewLine, "↴") ' ¬ ↴ ⇁ ¶
-        g.DrawString(t, e.Font, New SolidBrush(itemColor), b, StringFormat.GenericDefault)
-
-        If item.Done Then
-            Dim lineY = e.Bounds.Y + e.Bounds.Height \ 2
-            Dim lineX = TextRenderer.MeasureText(t, e.Font).Width - 2
-            If lineX > e.Bounds.Width - 2 Then
-                lineX = e.Bounds.Width - 2
+        If itemStyle = FontStyle.Regular AndAlso Not item.Done Then
+            g.DrawString(t, e.Font, New SolidBrush(itemColor), b, StringFormat.GenericDefault)
+        Else
+            Dim style As FontStyle = itemStyle
+            If item.Done Then
+                style = style Or FontStyle.Strikeout
             End If
-            g.DrawLine(New Pen(itemColor), 2, lineY, lineX, lineY)
+            g.DrawString(t, New Font(e.Font, style), New SolidBrush(itemColor), b, StringFormat.GenericDefault)
         End If
     End Sub
 
@@ -254,10 +254,10 @@ Public Class TipListBox
                 HideTooltip() ' Ctrl 没按下时隐藏悬浮卡片
                 If e.Button = MouseButtons.None Then
                     _hoverThread = New Thread(New ParameterizedThreadStart(Sub(idx As Integer)
-                        If _hoverIndex <> idx Then Return
-                        Thread.Sleep(_hoverWaitingDuration)
-                        Invoke(Sub() ShowTooltip(Items(idx))) ' 显示悬浮卡片
-                    End Sub))
+                                                                               If _hoverIndex <> idx Then Return
+                                                                               Thread.Sleep(_hoverWaitingDuration)
+                                                                               Invoke(Sub() ShowTooltip(Items(idx))) ' 显示悬浮卡片
+                                                                           End Sub))
                     _hoverThread.Start(_hoverIndex) ' 启动计时线程，准备显示悬浮卡片
                 End If
             End If

@@ -42,6 +42,8 @@ Public Class MainForm
 
             ' 一些控件状态
             m_popup_TopMost.Checked = .TopMost
+            m_popup_NotifyIcon.Checked = .ShowNotifyIcon
+            m_NotifyIcon.Visible = .ShowNotifyIcon
             m_popup_LoadPosition.Enabled = .SaveLeft <> -1 And .SaveTop <> -1 And .SaveWidth <> -1 And .SaveHeight <> -1
             m_popup_ClearPosition.Enabled = m_popup_LoadPosition.Enabled
 
@@ -85,6 +87,8 @@ Public Class MainForm
     ''' </summary>
     Private Sub On_Form_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' 加载设置，初始化UI，包括窗口属性、菜单、辅助按钮
+        Icon = My.Resources.IconSmall
+        m_NotifyIcon.Icon = My.Resources.IconSmall
         InitUiFromSetting()
         SetupOpacityButtons()
         SetupAssistButtons()
@@ -99,7 +103,7 @@ Public Class MainForm
     ''' <summary>
     ''' 退出应用，用于：按钮事件、菜单事件
     ''' </summary>
-    Private Sub ExitApplication(sender As Object, e As EventArgs) Handles m_btn_Exit.Click, m_popup_Exit.Click
+    Private Sub ExitApplication(sender As Object, e As EventArgs) Handles m_btn_Exit.Click, m_popup_Exit.Click, m_popup_IconExit.Click
         Dim ok = MessageBoxEx.Show("确定退出 DesktopTips 吗？", "关闭", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, Me)
         If ok = vbYes Then
             Close()
@@ -123,13 +127,20 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
+    ''' 从背景中显示窗口
+    ''' </summary>
+    Private Sub ShowMeFromBackground()
+        NativeMethod.SetForegroundWindow(Handle)
+        Activate()
+        FormOpacityUp()
+    End Sub
+
+    ''' <summary>
     ''' 响应热键，置窗口前台并激活
     ''' </summary>
     Protected Overrides Sub WndProc(ByRef m As Message)
         If m.Msg = NativeMethod.WM_HOTKEY AndAlso m.WParam.ToInt32() = HotkeyId Then
-            NativeMethod.SetForegroundWindow(Handle)
-            Activate()
-            FormOpacityUp()
+            ShowMeFromBackground()
         End If
         MyBase.WndProc(m)
     End Sub
@@ -295,13 +306,13 @@ Public Class MainForm
     ''' <summary>
     ''' 查找，用于：菜单事件
     ''' </summary>
-    Private Sub FindTips(sender As Object, e As EventArgs) Handles m_popup_FindTips.Click
+    Private Sub FindTips(sender As Object, e As EventArgs) Handles m_popup_FindTips.Click, m_popup_FileTips.Click
         _tipPresenter.Search()
     End Sub
 
 #End Region
 
-#Region "标签: 高亮 设置颜色 高亮菜单 打开 浏览 刷新 上传图片" ' REGION
+#Region "标签: 高亮 设置颜色 高亮菜单 打开 浏览 刷新" ' REGION
 
     ''' <summary>
     ''' 高亮或取消高亮，用于：菜单事件
@@ -357,35 +368,17 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
-    ''' 浏览当前列表内容，用于：菜单事件
-    ''' </summary>
-    Private Sub ViewCurrentTips(sender As Object, e As EventArgs) Handles m_popup_ViewCurrentTips.Click
-        _tipPresenter.ViewList(m_ListView.Items, False)
-    End Sub
-
-    ''' <summary>
-    ''' 浏览当前列表高亮内容，用于：菜单事件
+    ''' 浏览当前分组高亮，用于：菜单事件
     ''' </summary>
     Private Sub ViewCurrentHighlights(sender As Object, e As EventArgs) Handles m_popup_ViewCurrentHighlights.Click
-        _tipPresenter.ViewList(m_ListView.Items, True)
+        _tipPresenter.ViewHighlightList(GlobalModel.CurrentTab)
     End Sub
 
     ''' <summary>
-    ''' 浏览所有列表内容，用于：菜单事件
-    ''' </summary>
-    Private Sub ViewAllTips(sender As Object, e As EventArgs) Handles m_popup_ViewAllTips.Click
-        _tipPresenter.ViewList(GlobalModel.Tabs.SelectMany(Function(tab)
-                                                               Return tab.Tips.Select(Function(tip) New TipItem($"[{tab.Title}] - {tip.Content}", tip.ColorId))
-                                                           End Function), False)
-    End Sub
-
-    ''' <summary>
-    ''' 浏览所有列表高亮内容，用于：菜单事件
+    ''' 浏览所有分组高亮，用于：菜单事件
     ''' </summary>
     Private Sub ViewAllHighlights(sender As Object, e As EventArgs) Handles m_popup_ViewAllHighlights.Click
-        _tipPresenter.ViewList(GlobalModel.Tabs.SelectMany(Function(tab)
-                                                               Return tab.Tips.Select(Function(tip) New TipItem($"[{tab.Title}] - {tip.Content}", tip.ColorId))
-                                                           End Function), True)
+        _tipPresenter.ViewHighlightList(Nothing)
     End Sub
 
     ''' <summary>
@@ -724,14 +717,14 @@ Public Class MainForm
         m_menu_OpacitySubMenu.SubItems.Clear()
         For Each op As Double In _opacities
             ' 创建按钮以及绑定事件
-            Dim btn As New DD.ButtonItem With { .Text = $"{CInt(op * 100)}%", .Tag = op }
+            Dim btn As New DD.ButtonItem With {.Text = $"{CInt(op * 100)}%", .Tag = op}
             AddHandler btn.Click, Sub(sender As DD.ButtonItem, e As EventArgs)
-                MaxOpacity = sender.Tag ' 修改窗口属性
-                My.Settings.MaxOpacity = MaxOpacity
-                My.Settings.Save()
-                _opacityButtons.ForEach(Sub(b) b.Checked = False)
-                sender.Checked = True
-            End Sub
+                                      MaxOpacity = sender.Tag ' 修改窗口属性
+                                      My.Settings.MaxOpacity = MaxOpacity
+                                      My.Settings.Save()
+                                      _opacityButtons.ForEach(Sub(b) b.Checked = False)
+                                      sender.Checked = True
+                                  End Sub
             _opacityButtons.Add(btn)
 
             ' 插入到界面
@@ -787,7 +780,7 @@ Public Class MainForm
         If m_btn_MoveTipUp.Visible OrElse m_btn_MoveTipDown.Visible Then
             If m_btn_MoveTipUp.Top >= m_ListView.Top + m_ListView.Height - 3 Then
                 HideAssistButtons() ' 超过范围，隐藏辅助按钮
-            Else If m_btn_MoveTipDown.Top >= m_ListView.Top + m_ListView.Height - 3 Then ' + X
+            ElseIf m_btn_MoveTipDown.Top >= m_ListView.Top + m_ListView.Height - 3 Then ' + X
                 HideAssistButtons()
             End If
         End If
@@ -799,7 +792,7 @@ Public Class MainForm
     Private Sub MouseDownBtnResize(sender As Object, e As MouseEventArgs) Handles m_btn_Resize.MouseDown
         If e.Button = MouseButtons.Left Then
             m_btn_Resize.Cursor = Cursors.SizeWE
-        Else If e.Button = MouseButtons.Right Then
+        ElseIf e.Button = MouseButtons.Right Then
             m_btn_Resize.Cursor = Cursors.SizeNS
         End If
     End Sub
@@ -811,7 +804,7 @@ Public Class MainForm
         If e.Button = MouseButtons.Left Then
             Width = PushDownWindowSize.Width + Cursor.Position.X - PushDownMousePosition.X
             m_ListView.Refresh()
-        Else If e.Button = MouseButtons.Right Then
+        ElseIf e.Button = MouseButtons.Right Then
             Dim newHeight = PushDownWindowSize.Height + Cursor.Position.Y - PushDownMousePosition.Y
             newHeight = (CInt((newHeight - ListOutHeight) / ListItemHeight) * ListItemHeight) + ListOutHeight
             If newHeight <> Height Then
@@ -841,7 +834,7 @@ Public Class MainForm
 
 #End Region
 
-#Region "热键 Token 置顶 加载保存位置" ' REGION
+#Region "热键 置顶 加载保存位置 托盘图标事件" ' REGION
 
     ''' <summary>
     ''' 设置激活窗口热键，用于：菜单事件
@@ -906,6 +899,34 @@ Public Class MainForm
                 My.Settings.Save()
             End If
         End If
+    End Sub
+
+    ''' <summary>
+    ''' 设置调整置顶，用于：菜单事件
+    ''' </summary>
+    Private Sub SetNotifyIcon(sender As Object, e As EventArgs) Handles m_popup_NotifyIcon.Click
+        m_popup_NotifyIcon.Checked = Not m_popup_NotifyIcon.Checked
+        m_NotifyIcon.Visible = m_popup_NotifyIcon.Checked
+        My.Settings.ShowNotifyIcon = m_NotifyIcon.Visible
+        My.Settings.Save()
+    End Sub
+
+    ''' <summary>
+    ''' 托盘图标点击
+    ''' </summary>
+    Private Sub On_NotifyIcon_MouseClick(sender As Object, e As MouseEventArgs) Handles m_NotifyIcon.MouseClick
+        If e.Button = MouseButtons.Left Then
+            ShowMeFromBackground()
+        ElseIf e.Button = MouseButtons.Right Then
+            m_menu_IconPopupMenu.Popup(Cursor.Position)
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 托盘图标显示窗口
+    ''' </summary>
+    Private Sub On_popupIconShow_Click(sender As Object, e As EventArgs) Handles m_popup_IconShow.Click
+        ShowMeFromBackground()
     End Sub
 
 #End Region

@@ -68,7 +68,7 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Resources\Icon_157.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\IconLarge.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
@@ -158,6 +158,12 @@
     <Compile Include="src\ui\dialog\ColorReplaceDialog.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="src\ui\dialog\ColorStyleDialog.Designer.vb">
+      <DependentUpon>ColorStyleDialog.vb</DependentUpon>
+    </Compile>
+    <Compile Include="src\ui\dialog\ColorStyleDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="src\ui\dialog\TipEditDialog.Designer.vb">
       <DependentUpon>TipEditDialog.vb</DependentUpon>
     </Compile>
@@ -234,6 +240,9 @@
     <EmbeddedResource Include="src\ui\dialog\ColorReplaceDialog.resx">
       <DependentUpon>ColorReplaceDialog.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\ui\dialog\ColorStyleDialog.resx">
+      <DependentUpon>ColorStyleDialog.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\ui\dialog\HotKeyDialog.resx">
       <DependentUpon>HotkeyDialog.vb</DependentUpon>
     </EmbeddedResource>
@@ -254,6 +263,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\ui\form\MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -288,13 +298,14 @@
     <None Include="Resources\FileLinksToFiles.png" />
     <None Include="Resources\Done.png" />
     <None Include="Resources\Image.png" />
+    <None Include="Resources\IconLarge.ico" />
+    <None Include="Resources\IconSmall.ico" />
     <Content Include="src\ui\view\MessageBoxEx.Ref.cs" />
     <None Include="Resources\SelectAll.png" />
     <None Include="Resources\Star.png" />
     <None Include="Resources\Edit.png" />
     <None Include="Resources\Right.png" />
     <None Include="Resources\Pin.png" />
-    <Content Include="Resources\Icon_157.ico" />
     <None Include="Resources\Minus.png" />
     <None Include="Resources\Plus.png" />
     <None Include="Resources\Down.png" />

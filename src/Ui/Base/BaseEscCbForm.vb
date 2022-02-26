@@ -1,4 +1,7 @@
-﻿''' <summary>
+﻿' Namespace Global.DesktopTips.Ui.Base
+' End Namespace
+
+''' <summary>
 ''' 实现 Esc 按键回调
 ''' </summary>
 Public Class BaseEscCbForm

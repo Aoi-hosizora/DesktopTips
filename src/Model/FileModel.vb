@@ -1,5 +1,8 @@
 ﻿Imports Newtonsoft.Json
 
+' Namespace Global.DesktopTips.Model
+' End Namespace
+
 <Serializable, JsonObject>
 Public Class FileModel
     <JsonProperty("colors")>

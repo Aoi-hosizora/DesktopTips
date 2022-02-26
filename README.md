@@ -16,10 +16,8 @@
 
 ### Functions (v3.1)
 
-+ [x] Tip CRUD
-+ [x] Color CRUD
-+ [x] Tab CRUD
-+ [x] Tip with highlight color, tab grouped, done check, time record
++ [x] CRUD for tip item, tab group and highlight color
++ [x] Tip with highlight, tab grouped, simple markdown style
 + [ ] ...
 
 ### Tips
@@ -60,6 +58,6 @@
 
 ### Screenshots
 
-|![Screenshots_1](./assets/screenshot1.png)|![Screenshots_2](./assets/screenshot2.png)|![Screenshots_3](./assets/screenshot3.png)|
-|---|---|---|
-|![Screenshots_4](./assets/screenshot4.png)|![Screenshots_5](./assets/screenshot5.png)|![Screenshots_6](./assets/screenshot6.png)|
+| ![Screenshots_1](./assets/screenshot1.png) | ![Screenshots_2](./assets/screenshot2.png) | ![Screenshots_3](./assets/screenshot3.png) |
+|--------------------------------------------|--------------------------------------------|--------------------------------------------|
+| ![Screenshots_4](./assets/screenshot4.png) | ![Screenshots_5](./assets/screenshot5.png) | ![Screenshots_6](./assets/screenshot6.png) |

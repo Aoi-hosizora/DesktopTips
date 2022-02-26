@@ -1,4 +1,7 @@
-﻿Public Class GlobalModel
+﻿' Namespace Global.DesktopTips.Global
+' End Namespace
+
+Public Class GlobalModel
     ''' <summary>
     ''' 分组集合
     ''' </summary>

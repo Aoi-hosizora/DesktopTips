@@ -134,72 +134,72 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="src\global\GlobalModel.Assist.vb" />
-    <Compile Include="src\global\GlobalModel.vb" />
-    <Compile Include="src\model\FileModel.vb" />
-    <Compile Include="src\model\Tab.vb" />
-    <Compile Include="src\model\TipColor.vb" />
-    <Compile Include="src\model\TipItem.vb" />
-    <Compile Include="src\ui\base\BaseMainForm.vb">
+    <Compile Include="src\Global\GlobalModel.Assist.vb" />
+    <Compile Include="src\Global\GlobalModel.vb" />
+    <Compile Include="src\Model\FileModel.vb" />
+    <Compile Include="src\Model\Tab.vb" />
+    <Compile Include="src\Model\TipColor.vb" />
+    <Compile Include="src\Model\TipItem.vb" />
+    <Compile Include="src\Ui\Base\BaseMainForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\base\BaseEscCbForm.vb">
+    <Compile Include="src\Ui\Base\BaseEscCbForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\dialog\ColorDialog.Designer.vb">
+    <Compile Include="src\Ui\Dlg\ColorDialog.Designer.vb">
       <DependentUpon>ColorDialog.vb</DependentUpon>
     </Compile>
-    <Compile Include="src\ui\dialog\ColorDialog.vb">
+    <Compile Include="src\Ui\Dlg\ColorDialog.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\dialog\ColorReplaceDialog.Designer.vb">
+    <Compile Include="src\Ui\Dlg\ColorReplaceDialog.Designer.vb">
       <DependentUpon>ColorReplaceDialog.vb</DependentUpon>
     </Compile>
-    <Compile Include="src\ui\dialog\ColorReplaceDialog.vb">
+    <Compile Include="src\Ui\Dlg\ColorReplaceDialog.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\dialog\ColorStyleDialog.Designer.vb">
+    <Compile Include="src\Ui\Dlg\ColorStyleDialog.Designer.vb">
       <DependentUpon>ColorStyleDialog.vb</DependentUpon>
     </Compile>
-    <Compile Include="src\ui\dialog\ColorStyleDialog.vb">
+    <Compile Include="src\Ui\Dlg\ColorStyleDialog.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\dialog\TipEditDialog.Designer.vb">
+    <Compile Include="src\Ui\Dlg\TipEditDialog.Designer.vb">
       <DependentUpon>TipEditDialog.vb</DependentUpon>
     </Compile>
-    <Compile Include="src\ui\dialog\TipEditDialog.vb">
+    <Compile Include="src\Ui\Dlg\TipEditDialog.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\form\MainForm.Designer.vb">
+    <Compile Include="src\Ui\Frm\MainForm.Designer.vb">
       <DependentUpon>MainForm.vb</DependentUpon>
     </Compile>
-    <Compile Include="src\ui\form\MainForm.vb">
+    <Compile Include="src\Ui\Frm\MainForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\form\MainForm.View.vb">
+    <Compile Include="src\Ui\Frm\MainForm.View.vb">
       <DependentUpon>MainForm.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\form\MainFormContract.vb" />
-    <Compile Include="src\ui\form\MainFormGlobalPresenter.vb" />
-    <Compile Include="src\ui\form\MainFormTabPresenter.vb" />
-    <Compile Include="src\ui\form\MainFormTipPresenter.vb" />
-    <Compile Include="src\ui\view\CommandLink.vb">
+    <Compile Include="src\Ui\Frm\MainFormContract.vb" />
+    <Compile Include="src\Ui\Frm\MainFormGlobalPresenter.vb" />
+    <Compile Include="src\Ui\Frm\MainFormTabPresenter.vb" />
+    <Compile Include="src\Ui\Frm\MainFormTipPresenter.vb" />
+    <Compile Include="src\Ui\View\CommandLink.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="src\ui\view\HotkeyBox.vb">
+    <Compile Include="src\Ui\View\HotkeyBox.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="src\ui\dialog\HotKeyDialog.Designer.vb">
+    <Compile Include="src\Ui\Dlg\HotKeyDialog.Designer.vb">
       <DependentUpon>HotkeyDialog.vb</DependentUpon>
     </Compile>
-    <Compile Include="src\ui\dialog\HotkeyDialog.vb">
+    <Compile Include="src\Ui\Dlg\HotkeyDialog.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\dialog\LinkDialog.Designer.vb">
+    <Compile Include="src\Ui\Dlg\LinkDialog.Designer.vb">
       <DependentUpon>LinkDialog.vb</DependentUpon>
     </Compile>
-    <Compile Include="src\ui\dialog\LinkDialog.vb">
+    <Compile Include="src\Ui\Dlg\LinkDialog.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -212,41 +212,41 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="src\ui\dialog\SearchDialog.Designer.vb">
+    <Compile Include="src\Ui\Dlg\SearchDialog.Designer.vb">
       <DependentUpon>SearchDialog.vb</DependentUpon>
     </Compile>
-    <Compile Include="src\ui\dialog\SearchDialog.vb">
+    <Compile Include="src\Ui\Dlg\SearchDialog.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\view\HoverCardView.vb">
+    <Compile Include="src\Ui\View\HoverCardView.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\ui\view\MenuButton.vb">
+    <Compile Include="src\Ui\View\MenuButton.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="src\ui\view\TipListBox.vb">
+    <Compile Include="src\Ui\View\TipListBox.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="src\util\CommonUtil.vb" />
-    <Compile Include="src\ui\view\MessageBoxEx.vb">
+    <Compile Include="src\Util\CommonUtil.vb" />
+    <Compile Include="src\Ui\View\MessageBoxEx.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\util\NativeMethod.vb" />
+    <Compile Include="src\Util\NativeMethod.vb" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="src\ui\dialog\ColorDialog.resx">
+    <EmbeddedResource Include="src\Ui\Dlg\ColorDialog.resx">
       <DependentUpon>ColorDialog.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ui\dialog\ColorReplaceDialog.resx">
+    <EmbeddedResource Include="src\Ui\Dlg\ColorReplaceDialog.resx">
       <DependentUpon>ColorReplaceDialog.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ui\dialog\ColorStyleDialog.resx">
+    <EmbeddedResource Include="src\Ui\Dlg\ColorStyleDialog.resx">
       <DependentUpon>ColorStyleDialog.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ui\dialog\HotKeyDialog.resx">
+    <EmbeddedResource Include="src\Ui\Dlg\HotKeyDialog.resx">
       <DependentUpon>HotkeyDialog.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ui\dialog\LinkDialog.resx">
+    <EmbeddedResource Include="src\Ui\Dlg\LinkDialog.resx">
       <DependentUpon>LinkDialog.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -255,13 +255,13 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ui\dialog\SearchDialog.resx">
+    <EmbeddedResource Include="src\Ui\Dlg\SearchDialog.resx">
       <DependentUpon>SearchDialog.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ui\dialog\TipEditDialog.resx">
+    <EmbeddedResource Include="src\Ui\Dlg\TipEditDialog.resx">
       <DependentUpon>TipEditDialog.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\ui\form\MainForm.resx">
+    <EmbeddedResource Include="src\Ui\Frm\MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -281,7 +281,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\ui\view\TabView.vb">
+    <Compile Include="src\Ui\View\TabView.vb">
       <SubType>Component</SubType>
     </Compile>
     <None Include="README.md" />
@@ -292,7 +292,7 @@
     <None Include="Resources\Copy.png" />
     <None Include="Resources\PasteHS.png" />
     <Content Include=".gitignore" />
-    <Compile Include="src\ui\base\BaseItemsCollection.vb" />
+    <Compile Include="src\Ui\Base\BaseItemsCollection.vb" />
     <None Include="Resources\Bottom.png" />
     <None Include="Resources\Top.png" />
     <None Include="Resources\FileLinksToFiles.png" />
@@ -300,7 +300,7 @@
     <None Include="Resources\Image.png" />
     <None Include="Resources\IconLarge.ico" />
     <None Include="Resources\IconSmall.ico" />
-    <Content Include="src\ui\view\MessageBoxEx.Ref.cs" />
+    <Content Include="src\Ui\View\MessageBoxEx.Ref.cs" />
     <None Include="Resources\SelectAll.png" />
     <None Include="Resources\Star.png" />
     <None Include="Resources\Edit.png" />

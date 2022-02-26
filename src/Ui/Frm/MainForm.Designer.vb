@@ -376,7 +376,8 @@ Partial Class MainForm
         '
         Me.m_menu_CheckDone.Image = Global.DesktopTips.My.Resources.Resources.Done
         Me.m_menu_CheckDone.Name = "m_menu_CheckDone"
-        Me.m_menu_CheckDone.Text = "标记为完成(&H)"
+        Me.m_menu_CheckDone.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlG)
+        Me.m_menu_CheckDone.Text = "标记为完成(&G)"
         '
         'm_popup_ViewLinksInTips
         '
@@ -437,7 +438,8 @@ Partial Class MainForm
         'm_popup_Refresh
         '
         Me.m_popup_Refresh.Name = "m_popup_Refresh"
-        Me.m_popup_Refresh.Text = "刷新数据(&R)"
+        Me.m_popup_Refresh.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlR)
+        Me.m_popup_Refresh.Text = "重新加载(&R)"
         '
         'm_menu_WindowSubMenu
         '

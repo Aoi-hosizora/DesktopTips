@@ -118,6 +118,11 @@ Public Class TabView
     ''' </summary>
     Private _hoverThread As Thread
 
+    ''' <summary>
+    ''' 取消等待显示悬浮卡片一次
+    ''' </summary>
+    Public AbortHoverWaitingOnce As Boolean = False
+
     Protected Overrides Sub OnMouseMove(e As MouseEventArgs)
         MyBase.OnMouseMove(e)
         Dim sel As TabViewItem = GetItemFromPoint(e.Location)
@@ -135,11 +140,19 @@ Public Class TabView
             ' <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             HideTooltip() ' Ctrl 没按下时隐藏悬浮卡片
             If e.Button = MouseButtons.None Then
+                AbortHoverWaitingOnce = False
                 _hoverThread = New Thread(New ParameterizedThreadStart(Sub (idx As Integer)
-                    If _hoverIndex <> idx Then Return
-                    Thread.Sleep(_hoverWaitingDuration)
-                    Invoke(Sub() ShowTooltip(Tabs(idx).TabSource)) ' 显示悬浮卡片
-                End Sub))
+                                                                           If _hoverIndex <> idx Then Return
+                                                                           Thread.Sleep(_hoverWaitingDuration)
+                                                                           Invoke(Sub()
+                                                                                      If _hoverIndex <> idx Then Return
+                                                                                      If AbortHoverWaitingOnce Then
+                                                                                          AbortHoverWaitingOnce = False
+                                                                                          Return
+                                                                                      End If
+                                                                                      ShowTooltip(Tabs(idx).TabSource)
+                                                                                  End Sub) ' 显示悬浮卡片
+                                                                       End Sub))
                 _hoverThread.Start(_hoverIndex) ' 启动计时线程，准备显示悬浮卡片
             End If
         End If

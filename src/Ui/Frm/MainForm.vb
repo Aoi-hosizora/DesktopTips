@@ -101,12 +101,32 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
+    ''' 是否已经通过 ExitApplication 请求退出程序
+    ''' </summary>
+    Private closeRequest As Boolean = False
+
+    ''' <summary>
     ''' 退出应用，用于：按钮事件、菜单事件
     ''' </summary>
     Private Sub ExitApplication(sender As Object, e As EventArgs) Handles m_btn_Exit.Click, m_popup_Exit.Click, m_popup_IconExit.Click
         Dim ok = MessageBoxEx.Show("确定退出 DesktopTips 吗？", "关闭", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, Me)
         If ok = vbYes Then
+            closeRequest = True
             Close()
+        Else
+            closeRequest = False
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' 窗口关闭确认，除非是通过 ExitApplication 退出的
+    ''' </summary>
+    Private Sub On_MainForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+        e.Cancel = True
+        If Not closeRequest Then
+            ExitApplication(m_btn_Exit, EventArgs.Empty)
+        Else
+            e.Cancel = False
         End If
     End Sub
 
@@ -930,4 +950,5 @@ Public Class MainForm
     End Sub
 
 #End Region
+
 End Class

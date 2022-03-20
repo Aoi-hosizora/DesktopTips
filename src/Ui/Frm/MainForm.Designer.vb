@@ -194,11 +194,11 @@ Partial Class MainForm
         'm_menu_ContextMenuBar
         '
         Me.m_menu_ContextMenuBar.AntiAlias = True
-        Me.m_menu_ContextMenuBar.Font = New System.Drawing.Font("Yu Gothic UI", 9.0!)
+        Me.m_menu_ContextMenuBar.Font = New System.Drawing.Font("Microsoft YaHei UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.m_menu_ContextMenuBar.Items.AddRange(New DevComponents.DotNetBar.BaseItem() {Me.m_menu_ListPopupMenu, Me.m_menu_TabPopupMenu, Me.m_menu_IconPopupMenu})
         Me.m_menu_ContextMenuBar.Location = New System.Drawing.Point(39, 45)
         Me.m_menu_ContextMenuBar.Name = "m_menu_ContextMenuBar"
-        Me.m_menu_ContextMenuBar.Size = New System.Drawing.Size(275, 27)
+        Me.m_menu_ContextMenuBar.Size = New System.Drawing.Size(275, 26)
         Me.m_menu_ContextMenuBar.Stretch = True
         Me.m_menu_ContextMenuBar.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled
         Me.m_menu_ContextMenuBar.TabIndex = 4
@@ -433,12 +433,13 @@ Partial Class MainForm
         '
         Me.m_popup_OpenDir.BeginGroup = True
         Me.m_popup_OpenDir.Name = "m_popup_OpenDir"
+        Me.m_popup_OpenDir.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.ShiftAltR)
         Me.m_popup_OpenDir.Text = "打开文件所在位置(&O)"
         '
         'm_popup_Refresh
         '
         Me.m_popup_Refresh.Name = "m_popup_Refresh"
-        Me.m_popup_Refresh.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlR)
+        Me.m_popup_Refresh.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.F5)
         Me.m_popup_Refresh.Text = "重新加载(&R)"
         '
         'm_menu_WindowSubMenu

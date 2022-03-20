@@ -184,9 +184,9 @@ Public Class HoverCardView
 #Region "布局"
 
     Private ReadOnly _borderColor As Color = Color.FromArgb(200, 200, 200)
-    Private ReadOnly _startColor As Color = Color.white
-    Private ReadOnly _endColor As Color = Color.FromArgb(229, 229, 240)
-    Private ReadOnly _splitterColor As Color = Color.FromArgb(40, 66, 139)
+    Private ReadOnly _startColor As Color = Color.White
+    Private ReadOnly _endColor As Color = Color.FromArgb(240, 240, 252)
+    Private ReadOnly _splitterColor As Color = Color.FromArgb(184, 184, 192)
 
     Protected Overrides Sub OnPaint(e As PaintEventArgs)
         MyBase.OnPaint(e)
@@ -243,7 +243,7 @@ Public Class HoverCardView
             Dim title1 = tab.Title
             Dim title2 = "未高亮"
             If tip.IsHighLight Then
-                title2 = $"{TipColorToString(tip.Color)}高亮"
+                title2 = $"{tip.Color.StyledMarkupName}高亮"
             End If
             If tip.Done Then
                 title2 &= " 已完成"
@@ -278,7 +278,7 @@ Public Class HoverCardView
                 If g.Item1 Is Nothing Then
                     body &= $"<br/>•  <font>无高亮</font>：{g.Item2} 项"
                 Else
-                    body &= $"<br/>•  {TipColorToString(g.Item1)}：{g.Item2} 项"
+                    body &= $"<br/>•  {g.Item1.StyledMarkupName}：{g.Item2} 项"
                 End If
             Next
             Dim time = "创建于 " & If(tab.IsDefaultCreatedAt, "未知时间", tab.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"))
@@ -298,20 +298,6 @@ Public Class HoverCardView
         _button.Location = New Point(Width - _buttonMargin - _buttonSize, _buttonMargin)
         Height = _metaLabel.Top + _metaLabel.Height + _bottom
     End Sub
-
-    Private Function TipColorToString(tc As TipColor) As String
-        Dim r = tc.Name
-        If (tc.Style And FontStyle.Bold) > 0 Then
-            r = $"<b>{r}</b>"
-        End If
-        If (tc.Style And FontStyle.Italic) > 0 Then
-            r = $"<i>{r}</i>"
-        End If
-        If (tc.Style And FontStyle.Underline) > 0 Then
-            r = $"<u>{r}</u>"
-        End If
-        Return $"<font color=""{tc.HexColor}"">{r}</font>"
-    End Function
 
 #End Region
 End Class

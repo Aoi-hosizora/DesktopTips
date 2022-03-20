@@ -35,8 +35,8 @@ Partial Class TipEditDialog
         Me.SplitContainerTextBox = New System.Windows.Forms.SplitContainer()
         Me.SuperTooltip1 = New DevComponents.DotNetBar.SuperTooltip()
         Me.LabelTextType = New System.Windows.Forms.Label()
-        Me.ButtonOK = New DesktopTips.MenuButton()
         Me.LabelCount = New System.Windows.Forms.Label()
+        Me.ButtonOK = New DesktopTips.MenuButton()
         Me.ComboBoxTextType = New System.Windows.Forms.ComboBox()
         Me.ContextMenuStripOK.SuspendLayout()
         CType(Me.SplitContainerTextBox, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -150,9 +150,20 @@ Partial Class TipEditDialog
         Me.LabelTextType.Location = New System.Drawing.Point(12, 209)
         Me.LabelTextType.Name = "LabelTextType"
         Me.LabelTextType.Size = New System.Drawing.Size(68, 17)
-        Me.SuperTooltip1.SetSuperTooltip(Me.LabelTextType, New DevComponents.DotNetBar.SuperTooltipInfo("文本类型", "", resources.GetString("LabelTextType.SuperTooltip"), Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, False, New System.Drawing.Size(405, 425)))
+        Me.SuperTooltip1.SetSuperTooltip(Me.LabelTextType, New DevComponents.DotNetBar.SuperTooltipInfo("文本类型", "", resources.GetString("LabelTextType.SuperTooltip"), Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, False, New System.Drawing.Size(405, 430)))
         Me.LabelTextType.TabIndex = 4
         Me.LabelTextType.Text = "文本类型："
+        '
+        'LabelCount
+        '
+        Me.LabelCount.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.LabelCount.Location = New System.Drawing.Point(171, 210)
+        Me.LabelCount.Name = "LabelCount"
+        Me.LabelCount.Size = New System.Drawing.Size(138, 17)
+        Me.SuperTooltip1.SetSuperTooltip(Me.LabelCount, New DevComponents.DotNetBar.SuperTooltipInfo("字符总数", "", "字符总数包括空格、制表符、换行符、Markdown 语法与 HTML 标签的任何字符。", Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(310, 75)))
+        Me.LabelCount.TabIndex = 9
+        Me.LabelCount.Text = "字符数：超过 9999"
+        Me.LabelCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'ButtonOK
         '
@@ -168,17 +179,6 @@ Partial Class TipEditDialog
         Me.ButtonOK.Text = "确定"
         Me.ButtonOK.UseVisualStyleBackColor = True
         '
-        'LabelCount
-        '
-        Me.LabelCount.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LabelCount.Location = New System.Drawing.Point(185, 209)
-        Me.LabelCount.Name = "LabelCount"
-        Me.LabelCount.Size = New System.Drawing.Size(124, 17)
-        Me.SuperTooltip1.SetSuperTooltip(Me.LabelCount, New DevComponents.DotNetBar.SuperTooltipInfo("字符总数", "", "字符总数包括空格、制表符、换行符、Markdown 语法与 HTML 标签的任何字符。", Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(310, 75)))
-        Me.LabelCount.TabIndex = 9
-        Me.LabelCount.Text = "字符总数：超过 9999"
-        Me.LabelCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
         'ComboBoxTextType
         '
         Me.ComboBoxTextType.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
@@ -188,9 +188,9 @@ Partial Class TipEditDialog
         Me.ComboBoxTextType.FormattingEnabled = True
         Me.ComboBoxTextType.IntegralHeight = False
         Me.ComboBoxTextType.Items.AddRange(New Object() {"纯文本", "Markdown", "HTML"})
-        Me.ComboBoxTextType.Location = New System.Drawing.Point(80, 206)
+        Me.ComboBoxTextType.Location = New System.Drawing.Point(80, 205)
         Me.ComboBoxTextType.Name = "ComboBoxTextType"
-        Me.ComboBoxTextType.Size = New System.Drawing.Size(99, 24)
+        Me.ComboBoxTextType.Size = New System.Drawing.Size(85, 24)
         Me.ComboBoxTextType.TabIndex = 8
         '
         'TipEditDialog

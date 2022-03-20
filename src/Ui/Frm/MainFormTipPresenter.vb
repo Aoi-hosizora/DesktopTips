@@ -13,6 +13,7 @@ Public Class MainFormTipPresenter
     End Sub
 
     Public Function Insert() As Boolean Implements MainFormContract.ITipPresenter.Insert
+        _view.AbortHoverCardViewOnce() ' Abort card first
         Dim type = CommonUtil.TextType.Plain
         Dim msg As String = TipEditDialog.ShowDialog("新的标签：", "添加", textType:=type)
         msg = CommonUtil.FormatText(msg)
@@ -27,6 +28,7 @@ Public Class MainFormTipPresenter
     End Function
 
     Public Function Delete(items As IEnumerable(Of TipItem)) As Boolean Implements MainFormContract.ITipPresenter.Delete
+        _view.AbortHoverCardViewOnce() ' Abort card first
         items = items.ToList()
         Dim sb As New StringBuilder
         Dim toMany = False
@@ -60,6 +62,7 @@ Public Class MainFormTipPresenter
     End Function
 
     Public Function Update(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.Update
+        _view.AbortHoverCardViewOnce() ' Abort card first
         Dim content = item.Content
         If content.Length > 600 Then
             content = content.Substring(0, 600) + "..."
@@ -92,6 +95,7 @@ Public Class MainFormTipPresenter
     Public Function Paste(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.Paste
         Dim clip As String = Clipboard.GetText().Trim()
         If clip <> "" Then
+            _view.AbortHoverCardViewOnce() ' Abort card first
             Dim content = item.Content
             If content.Length > 600 Then
                 content = content.Substring(0, 600) + "..."
@@ -116,6 +120,7 @@ Public Class MainFormTipPresenter
     Public Function MoveUp(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.MoveUp
         Dim idx = GlobalModel.CurrentTab.Tips.IndexOf(item)
         If idx >= 1 Then
+            _view.AbortHoverCardViewOnce() ' Abort card first
             GlobalModel.CurrentTab.Tips.RemoveAt(idx)
             GlobalModel.CurrentTab.Tips.Insert(idx - 1, item)
             _globalPresenter.SaveFile()
@@ -127,6 +132,7 @@ Public Class MainFormTipPresenter
     Public Function MoveDown(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.MoveDown
         Dim idx = GlobalModel.CurrentTab.Tips.IndexOf(item)
         If idx <= GlobalModel.CurrentTab.Tips.Count - 2 Then
+            _view.AbortHoverCardViewOnce() ' Abort card first
             GlobalModel.CurrentTab.Tips.RemoveAt(idx)
             GlobalModel.CurrentTab.Tips.Insert(idx + 1, item)
             _globalPresenter.SaveFile()
@@ -136,6 +142,7 @@ Public Class MainFormTipPresenter
     End Function
 
     Public Function MoveTop(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.MoveTop
+        _view.AbortHoverCardViewOnce() ' Abort card first
         Dim idx = GlobalModel.CurrentTab.Tips.IndexOf(item)
         GlobalModel.CurrentTab.Tips.RemoveAt(idx)
         GlobalModel.CurrentTab.Tips.Insert(0, item)
@@ -144,6 +151,7 @@ Public Class MainFormTipPresenter
     End Function
 
     Public Function MoveBottom(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.MoveBottom
+        _view.AbortHoverCardViewOnce() ' Abort card first
         Dim idx = GlobalModel.CurrentTab.Tips.IndexOf(item)
         GlobalModel.CurrentTab.Tips.RemoveAt(idx)
         GlobalModel.CurrentTab.Tips.Add(item)
@@ -152,6 +160,7 @@ Public Class MainFormTipPresenter
     End Function
 
     Public Function MoveTo(item As TipItem, ByRef newIndex As Integer) As Boolean Implements MainFormContract.ITipPresenter.MoveTo
+        _view.AbortHoverCardViewOnce() ' Abort card first
         Dim oldIndex = GlobalModel.CurrentTab.Tips.IndexOf(item)
         If oldIndex = newIndex Or oldIndex = newIndex + 1 Then
             MessageBoxEx.Show("标签位置未移动。", "移动标签", MessageBoxButtons.OK, MessageBoxIcon.Information, _view.GetMe())
@@ -180,6 +189,7 @@ Public Class MainFormTipPresenter
     End Function
 
     Public Sub Search() Implements MainFormContract.ITipPresenter.Search
+        _view.AbortHoverCardViewOnce() ' Abort card first
         Dim text As String = InputBox("请输入搜索内容 (使用 || 和 &&&& 分隔关键字)：", "搜索").Trim().ToLower()
         If text = "" Then Return
 
@@ -252,6 +262,8 @@ Public Class MainFormTipPresenter
     End Function
 
     Public Sub ViewHighlightList(t As Tab) Implements MainFormContract.ITipPresenter.ViewHighlightList
+        _view.AbortHoverCardViewOnce() ' Abort card first
+
         Dim items As IEnumerable(Of TipItem)
         If t IsNot Nothing Then ' 指定分组
             items = t.Tips
@@ -296,6 +308,7 @@ Public Class MainFormTipPresenter
     End Function
 
     Public Sub ViewAllLinks(items As IEnumerable(Of TipItem)) Implements MainFormContract.ITipPresenter.ViewAllLinks
+        _view.AbortHoverCardViewOnce() ' Abort card first
         Dim itemList = items.ToList()
         Dim links As List(Of String) = GetLinks(itemList).ToList()
         If links.Count = 0 Then
@@ -317,6 +330,7 @@ Public Class MainFormTipPresenter
     End Sub
 
     Public Sub SetupHighlightColor(cb As Action) Implements MainFormContract.ITipPresenter.SetupHighlightColor
+        _view.AbortHoverCardViewOnce() ' Abort card first
         ColorDialog.SaveCallback = Sub()
                                        _globalPresenter.SaveFile()
                                        cb()

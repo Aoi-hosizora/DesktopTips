@@ -41,4 +41,10 @@
         Next
         form.Show()
     End Sub
+
+    Public Sub AbortHoverCardViewOnce() Implements MainFormContract.IView.AbortHoverCardViewOnce
+        HoverCardView.Close()
+        m_ListView.AbortHoverWaitingOnce = True
+        m_TabView.AbortHoverWaitingOnce = True
+    End Sub
 End Class

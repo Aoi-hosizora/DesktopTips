@@ -44,6 +44,24 @@ Public Class TipColor
         End Get
     End Property
 
+    <JsonIgnore>
+    Public ReadOnly Property StyledMarkupName As String
+        Get
+            Dim r = Name
+            If (Style And FontStyle.Bold) > 0 Then
+                r = $"<b>{r}</b>"
+            End If
+            If (Style And FontStyle.Italic) > 0 Then
+                r = $"<i>{r}</i>"
+            End If
+            If (Style And FontStyle.Underline) > 0 Then
+                r = $"<u>{r}</u>"
+            End If
+            Return $"<font color=""{HexColor}"">{r}</font>"
+        End Get
+    End Property
+
+
     Public Sub New()
         Me.New(0, "默认高亮", Color.Red) ' Json 序列化需要默认构造函数
     End Sub

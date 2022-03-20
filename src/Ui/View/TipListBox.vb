@@ -226,6 +226,11 @@ Public Class TipListBox
     Private _hoverThread As Thread
 
     ''' <summary>
+    ''' 取消等待显示悬浮卡片一次
+    ''' </summary>
+    Public AbortHoverWaitingOnce As Boolean = False
+
+    ''' <summary>
     ''' 鼠标移动，超过列表范围的渲染，记录 _hoverIndex，显示 ToolTip，更新界面显示
     ''' </summary>
     Protected Overrides Sub OnMouseMove(e As MouseEventArgs)
@@ -253,10 +258,18 @@ Public Class TipListBox
                 ' <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                 HideTooltip() ' Ctrl 没按下时隐藏悬浮卡片
                 If e.Button = MouseButtons.None Then
+                    AbortHoverWaitingOnce = False
                     _hoverThread = New Thread(New ParameterizedThreadStart(Sub(idx As Integer)
                                                                                If _hoverIndex <> idx Then Return
                                                                                Thread.Sleep(_hoverWaitingDuration)
-                                                                               Invoke(Sub() ShowTooltip(Items(idx))) ' 显示悬浮卡片
+                                                                               Invoke(Sub()
+                                                                                          If _hoverIndex <> idx Then Return
+                                                                                          If AbortHoverWaitingOnce Then
+                                                                                              AbortHoverWaitingOnce = False
+                                                                                              Return
+                                                                                          End If
+                                                                                          ShowTooltip(Items(idx))
+                                                                                      End Sub) ' 显示悬浮卡片
                                                                            End Sub))
                     _hoverThread.Start(_hoverIndex) ' 启动计时线程，准备显示悬浮卡片
                 End If

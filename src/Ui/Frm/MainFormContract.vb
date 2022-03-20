@@ -3,6 +3,7 @@
         Function GetMe() As MainForm                                                        ' 获得本窗口
         Sub FocusItem(tabIndex As Integer, tipIndex As Integer)                             ' 选择某一搜索结果
         Sub ShowTextForm(title As String, contents As List(Of Tuple(Of String, Color)))     ' 显示文本对话框
+        Sub AbortHoverCardViewOnce()                                                        ' 取消显示悬浮卡片一次
     End Interface
 
     Public Interface IGlobalPresenter
@@ -40,6 +41,6 @@
         Function Delete(tab As Tab) As Boolean                                                      ' 删除
         Function Update(tab As Tab) As Boolean                                                      ' 修改
         Function MoveItems(items As IEnumerable(Of TipItem), src As Tab, dest As Tab) As Boolean    ' 修改
-        Function GetTabLabel(tab As Tab) As String                 ' 获取菜单的标签文本
+        Function GetTabLabel(tab As Tab) As String                                                  ' 获取菜单的标签文本
     End Interface
 End Interface

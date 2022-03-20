@@ -222,9 +222,11 @@ Public Class BaseMainForm
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
         MyBase.OnFormClosing(e)
-        _closing = True
-        e.Cancel = Opacity > 0
-        CloseForm()
+        If Not e.Cancel Then
+            _closing = True
+            e.Cancel = Opacity > 0
+            CloseForm()
+        End If
     End Sub
 
     Private Sub ShowForm()

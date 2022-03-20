@@ -177,7 +177,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\Ui\Frm\MainForm.View.vb">
-      <DependentUpon>MainForm.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\Ui\Frm\MainFormContract.vb" />
@@ -224,6 +223,7 @@
     <Compile Include="src\Ui\View\MenuButton.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="src\Ui\View\MenuNativeRenderer.vb" />
     <Compile Include="src\Ui\View\TipListBox.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -300,6 +300,7 @@
     <None Include="Resources\Image.png" />
     <None Include="Resources\IconLarge.ico" />
     <None Include="Resources\IconSmall.ico" />
+    <Content Include="src\Ui\View\MenuNativeRenderer.Ref.cs" />
     <Content Include="src\Ui\View\MessageBoxEx.Ref.cs" />
     <None Include="Resources\SelectAll.png" />
     <None Include="Resources\Star.png" />

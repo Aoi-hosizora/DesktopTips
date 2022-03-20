@@ -11,17 +11,17 @@ Public Class LinkDialog
     ''' 链接
     ''' </summary>
     Public Property Links As IEnumerable(Of String)
-    
+
     ''' <summary>
     ''' 选择框文本
     ''' </summary>
     Public Property CheckBoxText As String
-    
+
     ''' <summary>
     ''' 选择框选中
     ''' </summary>
     Public Property CheckBoxChecked As Boolean
-    
+
     ''' <summary>
     ''' 选择框回调
     ''' </summary>

@@ -46,6 +46,7 @@ Public Class TipEditDialog
             .ComboBoxTextType.SelectedIndex = CommonUtil.TextTypeToIndex(textType)
             ._saveCallback = saveCallback
             ._changed = False
+            .ContextMenuStripOK.Renderer = New MenuNativeRenderer()
 
             Dim newSize = TextRenderer.MeasureText(content, .Font, Size.Empty)
             Dim maxWidth = Screen.PrimaryScreen.Bounds.Width * 8 / 9

@@ -157,6 +157,10 @@ Public Class NativeMethod
     Public Shared Function SendMessage(hWnd As IntPtr, msg As Integer, wParam As IntPtr, <MarshalAs(UnmanagedType.LPWStr)> lParam As String) As IntPtr
     End Function
 
+    <DllImport("uxtheme.dll", ExactSpelling:=True, CharSet:=CharSet.Unicode)>
+    Public Shared Function SetWindowTheme(hwnd As IntPtr, pszSubAppName As String, pszSubIdList As String) As Integer
+    End Function
+
 #End Region
 
 #Region "DWM"

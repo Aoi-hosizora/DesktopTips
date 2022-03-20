@@ -10,6 +10,7 @@
     End Sub
 
     Public Function Insert() As Boolean Implements MainFormContract.ITabPresenter.Insert
+        _view.AbortHoverCardViewOnce() ' Abort card first
         Dim tabName As String = InputBox("新分组的标题：", "新建", "新建分组").Trim()
         If tabName <> "" Then
             If GlobalModel.CheckDuplicateTab(tabName, GlobalModel.Tabs) Then
@@ -26,6 +27,7 @@
     End Function
 
     Public Function Delete(tab As Tab) As Boolean Implements MainFormContract.ITabPresenter.Delete
+        _view.AbortHoverCardViewOnce() ' Abort card first
         If GlobalModel.Tabs.Count = 1 Then
             MessageBoxEx.Show("无法删除最后一个分组。", "删除",
                 MessageBoxButtons.OK, MessageBoxIcon.Error, _view.GetMe())
@@ -45,6 +47,7 @@
     End Function
 
     Public Function Update(tab As Tab) As Boolean Implements MainFormContract.ITabPresenter.Update
+        _view.AbortHoverCardViewOnce() ' Abort card first
         Dim newName As String = InputBox($"重命名分组 ""{tab.Title}"" 为: ", "重命名", tab.Title).Trim()
         If newName <> "" Then
             If GlobalModel.CheckDuplicateTab(newName, GlobalModel.Tabs) Then
@@ -61,6 +64,7 @@
     End Function
 
     Public Function MoveItems(items As IEnumerable(Of TipItem), src As Tab, dest As Tab) As Boolean Implements MainFormContract.ITabPresenter.MoveItems
+        _view.AbortHoverCardViewOnce() ' Abort card first
         items = items.ToList()
         Dim flag As String
         If src.Tips.Count = items.Count Then
@@ -92,7 +96,7 @@
             If g.Item1 Is Nothing Then
                 Return current & $"<br/>无高亮 {g.Item2} 项"
             Else
-                Return current & $"<br/><font color=""{g.Item1.HexColor}"">{g.Item1.Name}</font> {g.Item2} 项"
+                Return current & $"<br/>{g.Item1.StyledMarkupName} {g.Item2} 项"
             End If
         End Function)
     End Function

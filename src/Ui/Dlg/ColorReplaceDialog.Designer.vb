@@ -43,7 +43,7 @@ Partial Class ColorReplaceDialog
         '
         'TitleWarningBox
         '
-        Me.TitleWarningBox.BackColor = System.Drawing.Color.FromArgb(CType(CType(196, Byte), Integer), CType(CType(219, Byte), Integer), CType(CType(249, Byte), Integer))
+        Me.TitleWarningBox.BackColor = System.Drawing.Color.FromArgb(CType(CType(241, Byte), Integer), CType(CType(219, Byte), Integer), CType(CType(249, Byte), Integer))
         Me.TitleWarningBox.CloseButtonVisible = False
         Me.TitleWarningBox.Dock = System.Windows.Forms.DockStyle.Top
         Me.TitleWarningBox.Image = CType(resources.GetObject("TitleWarningBox.Image"), System.Drawing.Image)
@@ -84,7 +84,7 @@ Partial Class ColorReplaceDialog
         Me.MinimizeBox = False
         Me.Name = "ColorReplaceDialog"
         Me.ShowInTaskbar = False
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "替换颜色"
         Me.ResumeLayout(False)
 

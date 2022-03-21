@@ -308,7 +308,7 @@ Public Class MainForm
     ''' <summary>
     ''' 标记为完成，用于：菜单事件
     ''' </summary>
-    Private Sub CheckDoneTip(sender As Object, e As EventArgs) Handles m_menu_CheckDone.Click
+    Private Sub CheckDoneTip(sender As Object, e As EventArgs) Handles m_popup_CheckDone.Click
         Dim indices = m_ListView.SelectedIndices.Cast(Of Integer)().ToList()
         If m_ListView.SelectedItems IsNot Nothing AndAlso _tipPresenter.CheckTipsDone(m_ListView.SelectedItems) Then
             m_ListView.Update()
@@ -388,18 +388,25 @@ Public Class MainForm
     End Sub
 
     ''' <summary>
-    ''' 浏览当前分组高亮，用于：菜单事件
+    ''' 显示高亮标签列表，用于：菜单事件
     ''' </summary>
-    Private Sub ViewCurrentHighlights(sender As Object, e As EventArgs) Handles m_popup_ViewCurrentHighlights.Click
-        _tipPresenter.ViewHighlightList(GlobalModel.CurrentTab)
+    Private Sub ViewHighlightTipList(sender As Object, e As EventArgs) Handles m_popup_ShowHighlightList.Click
+        _tipPresenter.ViewHighlightList()
     End Sub
 
-    ''' <summary>
-    ''' 浏览所有分组高亮，用于：菜单事件
-    ''' </summary>
-    Private Sub ViewAllHighlights(sender As Object, e As EventArgs) Handles m_popup_ViewAllHighlights.Click
-        _tipPresenter.ViewHighlightList(Nothing)
-    End Sub
+    '''' <summary>
+    '''' 浏览当前分组高亮，用于：菜单事件
+    '''' </summary>
+    'Private Sub ViewCurrentHighlights(sender As Object, e As EventArgs) Handles m_popup_ViewCurrentHighlights.Click
+    '    _tipPresenter.ViewHighlightList(GlobalModel.CurrentTab)
+    'End Sub
+
+    '''' <summary>
+    '''' 浏览所有分组高亮，用于：菜单事件
+    '''' </summary>
+    'Private Sub ViewAllHighlights(sender As Object, e As EventArgs) Handles m_popup_ViewAllHighlights.Click
+    '    _tipPresenter.ViewHighlightList(Nothing)
+    'End Sub
 
     ''' <summary>
     ''' 刷新数据，用于：菜单事件
@@ -582,8 +589,8 @@ Public Class MainForm
 
         ' 链接 图片 标记完成
         m_popup_ViewLinksInTips.Enabled = _tipPresenter.GetLinks(m_ListView.SelectedItems).Count >= 1
-        m_menu_CheckDone.Enabled = isNotEmpty
-        m_menu_CheckDone.Checked = m_ListView.SelectedItems.Any(Function(item) item.Done)
+        m_popup_CheckDone.Enabled = isNotEmpty
+        m_popup_CheckDone.Checked = m_ListView.SelectedItems.Any(Function(item) item.Done)
 
         ' 高亮 移动至 - 使用 PopupOpen 事件
 
@@ -597,7 +604,7 @@ Public Class MainForm
     ''' </summary>
     Private ReadOnly Property CommonMenus As DD.BaseItem()
         Get
-            Return New DD.BaseItem() {m_popup_OtherLabel, m_menu_FileSubMenu, m_popup_Refresh, m_menu_WindowSubMenu, m_popup_Exit}
+            Return New DD.BaseItem() {m_popup_OtherLabel, m_popup_OpenDir, m_popup_Refresh, m_menu_WindowSubMenu, m_popup_Exit}
         End Get
     End Property
 

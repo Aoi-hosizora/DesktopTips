@@ -117,24 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="m_StyleManager.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>278, 17</value>
-  </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="m_popup_ViewLinksInTips.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAARdJREFUOE+l
-        UKFSAzEUvD+4/kEd1F0dsjhk7g/isPmEYBhkTgEucciLxDUSR2Tlk8iTuMe+u2lVCmQqNjNvd7Nvk4aZ
-        L0KRrEGRrEGRrMF8OL/vgQCQfRnJPPmgre//0uYAMfjxkzJNmJmnb+b4QQwjGeuHc5rSdg6RgEhfE8Oc
-        2muVuzud3duewnvmEDPHRIyQad0tmnVjEn6nTDwGzPG4TN1Ob2HOMgspizMxp8PE7ZUalHFbeYbM8Iql
-        aezzGPMBtdAAhow5rzY9rza3J2AzHTW0S0NIvL7RSwPz6HtJjaickZzwxofXKBVJ3dvhnIZGyx/IoY3r
-        8SlBBFQjpIe2Wwy/aaeAS1Aka1Aka1Aka1Ak/w9ufgBCPMlh2Q9BFAAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <metadata name="m_SuperTooltip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>141, 17</value>
-  </metadata>
-  <metadata name="m_NotifyIcon.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
 </root>

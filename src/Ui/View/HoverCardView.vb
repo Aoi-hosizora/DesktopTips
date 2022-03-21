@@ -186,7 +186,7 @@ Public Class HoverCardView
     Private ReadOnly _borderColor As Color = Color.FromArgb(200, 200, 200)
     Private ReadOnly _startColor As Color = Color.White
     Private ReadOnly _endColor As Color = Color.FromArgb(240, 240, 252)
-    Private ReadOnly _splitterColor As Color = Color.FromArgb(184, 184, 192)
+    Private ReadOnly _splitterColor As Color = Color.FromArgb(75, 0, 0, 0)
 
     Protected Overrides Sub OnPaint(e As PaintEventArgs)
         MyBase.OnPaint(e)

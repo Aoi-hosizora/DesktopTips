@@ -26,13 +26,13 @@ Partial Class ColorDialog
         Me.ColorListView = New System.Windows.Forms.ListView()
         Me.ColumnHeaderId = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeaderName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-        Me.ColumnHeaderHex = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeaderRgb = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeaderHex = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeaderStyle = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ColumnHeaderView = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.ButtonAdd = New System.Windows.Forms.Button()
         Me.ButtonRemove = New System.Windows.Forms.Button()
         Me.ButtonCancel = New System.Windows.Forms.Button()
-        Me.ColumnHeaderStyle = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.SuspendLayout()
         '
         'LabelColor
@@ -69,13 +69,17 @@ Partial Class ColorDialog
         '
         Me.ColumnHeaderName.Text = "标签"
         '
+        'ColumnHeaderRgb
+        '
+        Me.ColumnHeaderRgb.Text = "RGB"
+        '
         'ColumnHeaderHex
         '
         Me.ColumnHeaderHex.Text = "Hex"
         '
-        'ColumnHeaderRgb
+        'ColumnHeaderStyle
         '
-        Me.ColumnHeaderRgb.Text = "RGB"
+        Me.ColumnHeaderStyle.Text = "样式"
         '
         'ColumnHeaderView
         '
@@ -115,10 +119,6 @@ Partial Class ColorDialog
         Me.ButtonCancel.Text = "返回(&X)"
         Me.ButtonCancel.UseVisualStyleBackColor = True
         '
-        'ColumnHeaderStyle
-        '
-        Me.ColumnHeaderStyle.Text = "样式"
-        '
         'ColorDialog
         '
         Me.AcceptButton = Me.ButtonCancel
@@ -136,9 +136,11 @@ Partial Class ColorDialog
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "ColorDialog"
+        Me.ShowIcon = False
         Me.ShowInTaskbar = False
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = "设置高亮颜色"
+        Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.Text = "高亮颜色管理"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

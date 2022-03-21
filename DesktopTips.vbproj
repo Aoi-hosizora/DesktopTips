@@ -164,6 +164,18 @@
     <Compile Include="src\Ui\Dlg\ColorStyleDialog.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="src\Ui\Dlg\HighlightTipsDialog.Designer.vb">
+      <DependentUpon>HighlightTipsDialog.vb</DependentUpon>
+    </Compile>
+    <Compile Include="src\Ui\Dlg\HighlightTipsDialog.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Ui\Dlg\HighlightSelectForm.Designer.vb">
+      <DependentUpon>HighlightSelectForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="src\Ui\Dlg\HighlightSelectForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="src\Ui\Dlg\TipEditDialog.Designer.vb">
       <DependentUpon>TipEditDialog.vb</DependentUpon>
     </Compile>
@@ -205,6 +217,7 @@
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="My Project\Settings.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -242,6 +255,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\Ui\Dlg\ColorStyleDialog.resx">
       <DependentUpon>ColorStyleDialog.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Ui\Dlg\HighlightSelectForm.resx">
+      <DependentUpon>HighlightSelectForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Ui\Dlg\HighlightTipsDialog.resx">
+      <DependentUpon>HighlightTipsDialog.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Ui\Dlg\HotKeyDialog.resx">
       <DependentUpon>HotkeyDialog.vb</DependentUpon>
@@ -295,11 +314,16 @@
     <Compile Include="src\Ui\Base\BaseItemsCollection.vb" />
     <None Include="Resources\Bottom.png" />
     <None Include="Resources\Top.png" />
-    <None Include="Resources\FileLinksToFiles.png" />
     <None Include="Resources\Done.png" />
     <None Include="Resources\Image.png" />
     <None Include="Resources\IconLarge.ico" />
     <None Include="Resources\IconSmall.ico" />
+    <None Include="Resources\Browser.png" />
+    <None Include="Resources\Opacity.png" />
+    <None Include="Resources\OpenFolder.png" />
+    <None Include="Resources\Refresh.png" />
+    <None Include="Resources\WindowPosition.png" />
+    <None Include="Resources\Close.png" />
     <Content Include="src\Ui\View\MenuNativeRenderer.Ref.cs" />
     <Content Include="src\Ui\View\MessageBoxEx.Ref.cs" />
     <None Include="Resources\SelectAll.png" />

@@ -29,7 +29,7 @@
         Sub Search()                                                                                        ' 搜索
         Function HighlightTips(items As IEnumerable(Of TipItem), color As TipColor) As boolean              ' 设置高亮
         Function CheckTipsDone(items As IEnumerable(Of TipItem)) As Boolean                                 ' 设置已完成
-        Sub ViewHighlightList(t As Tab)                                                                     ' 浏览高亮列表
+        Sub ViewHighlightList()                                                                             ' 浏览高亮列表
         Function GetLinks(items As IEnumerable(Of TipItem)) As IEnumerable(Of String)                       ' 获取链接列表
         Sub ViewAllLinks(items As IEnumerable(Of TipItem))                                                  ' 浏览所有链接
         Sub SetupHighlightColor(cb As Action)                                                               ' 设置高亮颜色集合

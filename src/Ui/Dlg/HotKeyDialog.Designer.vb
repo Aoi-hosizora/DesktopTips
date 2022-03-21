@@ -60,9 +60,10 @@ Partial Class HotkeyDialog
         Me.CheckBoxIsValid.AutoSize = True
         Me.CheckBoxIsValid.Checked = True
         Me.CheckBoxIsValid.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.CheckBoxIsValid.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.CheckBoxIsValid.Location = New System.Drawing.Point(12, 12)
         Me.CheckBoxIsValid.Name = "CheckBoxIsValid"
-        Me.CheckBoxIsValid.Size = New System.Drawing.Size(164, 21)
+        Me.CheckBoxIsValid.Size = New System.Drawing.Size(170, 22)
         Me.CheckBoxIsValid.TabIndex = 0
         Me.CheckBoxIsValid.Text = "是否启用快捷显示热键(&H)"
         Me.CheckBoxIsValid.UseVisualStyleBackColor = True
@@ -76,13 +77,6 @@ Partial Class HotkeyDialog
         Me.LabelHint.TabIndex = 1
         Me.LabelHint.Text = "请键入快捷显示热键："
         '
-        'HotkeyEditBox
-        '
-        Me.HotkeyEditBox.Location = New System.Drawing.Point(12, 69)
-        Me.HotkeyEditBox.Name = "HotkeyEditBox"
-        Me.HotkeyEditBox.Size = New System.Drawing.Size(237, 23)
-        Me.HotkeyEditBox.TabIndex = 2
-        '
         'ButtonDefault
         '
         Me.ButtonDefault.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -94,6 +88,14 @@ Partial Class HotkeyDialog
         Me.ButtonDefault.TabIndex = 3
         Me.ButtonDefault.Text = "默认(&D)"
         Me.ButtonDefault.UseVisualStyleBackColor = True
+        '
+        'HotkeyEditBox
+        '
+        Me.HotkeyEditBox.CurrentKey = System.Windows.Forms.Keys.None
+        Me.HotkeyEditBox.Location = New System.Drawing.Point(12, 69)
+        Me.HotkeyEditBox.Name = "HotkeyEditBox"
+        Me.HotkeyEditBox.Size = New System.Drawing.Size(237, 23)
+        Me.HotkeyEditBox.TabIndex = 2
         '
         'HotkeyDialog
         '

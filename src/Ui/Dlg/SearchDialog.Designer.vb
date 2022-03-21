@@ -96,8 +96,9 @@ Partial Class SearchDialog
         Me.Name = "SearchDialog"
         Me.ShowIcon = False
         Me.ShowInTaskbar = False
+        Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "搜索"
+        Me.Text = "搜索结果"
         Me.TopMost = True
         Me.ResumeLayout(False)
 

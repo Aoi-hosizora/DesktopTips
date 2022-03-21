@@ -190,7 +190,7 @@ Partial Class TipEditDialog
         Me.ComboBoxTextType.Items.AddRange(New Object() {"纯文本", "Markdown", "HTML"})
         Me.ComboBoxTextType.Location = New System.Drawing.Point(80, 205)
         Me.ComboBoxTextType.Name = "ComboBoxTextType"
-        Me.ComboBoxTextType.Size = New System.Drawing.Size(85, 24)
+        Me.ComboBoxTextType.Size = New System.Drawing.Size(90, 24)
         Me.ComboBoxTextType.TabIndex = 8
         '
         'TipEditDialog
@@ -216,6 +216,7 @@ Partial Class TipEditDialog
         Me.Name = "TipEditDialog"
         Me.ShowIcon = False
         Me.ShowInTaskbar = False
+        Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "标题"
         Me.ContextMenuStripOK.ResumeLayout(False)

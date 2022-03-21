@@ -44,7 +44,7 @@ Partial Class LinkDialog
         Me.ListView.Name = "ListView"
         Me.ListView.ScrollAlwaysVisible = True
         Me.ListView.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.ListView.Size = New System.Drawing.Size(370, 209)
+        Me.ListView.Size = New System.Drawing.Size(370, 211)
         Me.ListView.TabIndex = 0
         '
         'LabelTitle
@@ -61,7 +61,7 @@ Partial Class LinkDialog
         '
         Me.ButtonOpen.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonOpen.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonOpen.Location = New System.Drawing.Point(140, 274)
+        Me.ButtonOpen.Location = New System.Drawing.Point(140, 277)
         Me.ButtonOpen.Name = "ButtonOpen"
         Me.ButtonOpen.Size = New System.Drawing.Size(75, 25)
         Me.ButtonOpen.TabIndex = 2
@@ -73,7 +73,7 @@ Partial Class LinkDialog
         Me.ButtonBack.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonBack.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.ButtonBack.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonBack.Location = New System.Drawing.Point(302, 274)
+        Me.ButtonBack.Location = New System.Drawing.Point(302, 277)
         Me.ButtonBack.Name = "ButtonBack"
         Me.ButtonBack.Size = New System.Drawing.Size(75, 25)
         Me.ButtonBack.TabIndex = 4
@@ -84,7 +84,7 @@ Partial Class LinkDialog
         '
         Me.ButtonOpenAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.ButtonOpenAll.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonOpenAll.Location = New System.Drawing.Point(221, 274)
+        Me.ButtonOpenAll.Location = New System.Drawing.Point(221, 277)
         Me.ButtonOpenAll.Name = "ButtonOpenAll"
         Me.ButtonOpenAll.Size = New System.Drawing.Size(75, 25)
         Me.ButtonOpenAll.TabIndex = 3
@@ -96,7 +96,7 @@ Partial Class LinkDialog
         Me.CheckBoxOption.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.CheckBoxOption.AutoSize = True
         Me.CheckBoxOption.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.CheckBoxOption.Location = New System.Drawing.Point(12, 246)
+        Me.CheckBoxOption.Location = New System.Drawing.Point(12, 249)
         Me.CheckBoxOption.Name = "CheckBoxOption"
         Me.CheckBoxOption.Size = New System.Drawing.Size(141, 22)
         Me.CheckBoxOption.TabIndex = 1
@@ -124,8 +124,9 @@ Partial Class LinkDialog
         Me.Name = "LinkDialog"
         Me.ShowIcon = False
         Me.ShowInTaskbar = False
+        Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "包含的链接"
+        Me.Text = "浏览链接"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

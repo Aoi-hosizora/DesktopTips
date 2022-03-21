@@ -174,9 +174,12 @@ Public Class TipListBox
     ''' </summary>
     Private _hoverIndex As Integer = -1
 
-    Private ReadOnly _hoverBackColor As Color = Color.FromArgb(229, 243, 255)
-    Private ReadOnly _focusBackColor As Color = Color.FromArgb(205, 232, 255)
-    Private ReadOnly _focusBorderColor As Color = Color.FromArgb(153, 209, 255)
+    Private ReadOnly _hoverBackColor As Color = Color.FromArgb(229, 243, 251)
+    Private ReadOnly _hoverBorderColor As Color = Color.FromArgb(111, 192, 231)
+    Private ReadOnly _focusBackColor As Color = Color.FromArgb(209, 232, 255)
+    Private ReadOnly _focusBorderColor As Color = Color.FromArgb(102, 167, 232)
+    Private ReadOnly _hoverFocusBackColor As Color = Color.FromArgb(203, 232, 246)
+    Private ReadOnly _hoverFocusBorderColor As Color = Color.FromArgb(38, 160, 218)
 
     ''' <summary>
     ''' 重绘列表颜色和高亮
@@ -186,29 +189,29 @@ Public Class TipListBox
         Dim item = Items.ElementAt(e.Index)
         Dim itemColor = If(item.Color?.Color, Color.Black)
         Dim itemStyle = If(item.Color?.Style, FontStyle.Regular)
+        Dim t = item.ToString().Replace(vbNewLine, "↴") ' ¬ ↴ ⇁ ¶
 
         Dim g = e.Graphics
-        Dim b = New Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Width - 1, e.Bounds.Height)
-        g.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
+        Dim b = New Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Width - 1, e.Bounds.Height - 1)
+        g.SmoothingMode = Drawing2D.SmoothingMode.Default
 
-        e.DrawBackground()
+        ' e.DrawBackground()
         If e.Index = _hoverIndex Then ' Hover
             If e.State And DrawItemState.Selected Then ' Selected + Hover
-                g.FillRectangle(New SolidBrush(_focusBackColor), b)
-                g.DrawRectangle(New Pen(_focusBorderColor), b)
+                g.FillRectangle(New SolidBrush(_hoverFocusBackColor), b)
+                g.DrawRectangle(New Pen(_hoverFocusBorderColor), b)
             Else ' Only Hover
                 g.FillRectangle(New SolidBrush(_hoverBackColor), b)
-                g.DrawRectangle(New Pen(_hoverBackColor), b)
+                g.DrawRectangle(New Pen(_hoverBorderColor), b)
             End If
         ElseIf e.State And DrawItemState.Selected Then ' Selected
             g.FillRectangle(New SolidBrush(_focusBackColor), b)
-            g.DrawRectangle(New Pen(_focusBackColor), b)
+            g.DrawRectangle(New Pen(_focusBorderColor), b)
         Else ' Normal
             g.FillRectangle(New SolidBrush(e.BackColor), b)
             g.DrawRectangle(New Pen(e.BackColor), b)
         End If
 
-        Dim t = item.ToString().Replace(vbNewLine, "↴") ' ¬ ↴ ⇁ ¶
         If itemStyle = FontStyle.Regular AndAlso Not item.Done Then
             g.DrawString(t, e.Font, New SolidBrush(itemColor), b, StringFormat.GenericDefault)
         Else

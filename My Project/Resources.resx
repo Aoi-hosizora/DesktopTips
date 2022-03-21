@@ -169,9 +169,6 @@
   <data name="Top" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Top.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Browser" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\FileLinksToFiles.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Done" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Done.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -183,5 +180,23 @@
   </data>
   <data name="IconSmall" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\IconSmall.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Browser" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Browser.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Close" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Close.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Opacity" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Opacity.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="OpenFolder" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\OpenFolder.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Refresh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Refresh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="WindowPosition" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\WindowPosition.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

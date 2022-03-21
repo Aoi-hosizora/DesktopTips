@@ -37,8 +37,8 @@ Public Class ColorReplaceDialog
             Dim btnTitle = If(c?.Name, "取消高亮")
             Dim hint = If(c Is Nothing, "", $"{c.HexColor} | {ColorToRgb(c.Color)}")
             Dim button As New CommandLink() With {
-                .Text = btnTitle, .Tag = c, .CommandLinkNote = hint, 
-                .TabIndex = i + 1,.Location = currentPos, .Size = New Size(buttonWidth - 20, buttonHeight) }
+                .Text = btnTitle, .Tag = c, .CommandLinkNote = hint,
+                .TabIndex = i + 1, .Location = currentPos, .Size = New Size(buttonWidth - 20, buttonHeight)}
             currentPos.Y += buttonHeight + marginInPanel.Height
             AddHandler button.Click, AddressOf ColorCommandLink_Click
             CommandPanel.Controls.Add(button)

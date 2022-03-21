@@ -57,7 +57,7 @@ Public Class TipEditDialog
             .TextBoxContent.Focus()
             .TextBoxContent.Select()
 
-            If .ShowDialog() = vbCancel Then Return ""
+            If .ShowDialog() = DialogResult.Cancel Then Return ""
             textType = CommonUtil.IndexToTextType(.ComboBoxTextType.SelectedIndex)
             Return .TextBoxContent.Text.Trim()
         End With

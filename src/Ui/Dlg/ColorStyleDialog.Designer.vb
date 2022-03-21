@@ -173,6 +173,7 @@ Partial Class ColorStyleDialog
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "ColorStyleDialog"
+        Me.ShowIcon = False
         Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "设置高亮字体样式"

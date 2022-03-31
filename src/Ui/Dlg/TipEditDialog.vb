@@ -95,6 +95,17 @@ Public Class TipEditDialog
         End If
     End Sub
 
+    ''' <summary>
+    ''' 更新字符总数提示
+    ''' </summary>
+    Private Sub RefreshCountLabel()
+        Dim totalLen = TextBoxContent.Text.Count
+        Dim total = If(totalLen > 9999, $"超过 {totalLen}", totalLen.ToString())
+        Dim currLen = TextBoxContent.SelectedText.Count
+        Dim curr = If(currLen > 9999, $"超过 {currLen}", currLen.ToString())
+        LabelCount.Text = If(currLen > 0, $"字符总数：{curr} / {total}", $"字符总数：{total}")
+    End Sub
+
     Private Sub OK_Click(sender As Object, e As EventArgs) Handles ButtonOK.Click, MenuOK.Click
         _changed = False
         DialogResult = DialogResult.OK
@@ -114,15 +125,14 @@ Public Class TipEditDialog
         Close()
     End Sub
 
-    Private Sub ShowOrigin_Click(sender As Object, e As EventArgs) Handles ButtonShowOrigin.Click
-        If SplitContainerTextBox.Panel2Collapsed Then
+    Private Sub MenuShowOrigin_Click(sender As Object, e As EventArgs) Handles MenuShowOrigin.Click
+        MenuShowOrigin.Checked = Not MenuShowOrigin.Checked
+        If MenuShowOrigin.Checked Then
             SplitContainerTextBox.Panel2Collapsed = False
             Width = Width * 2 - 40
-            ButtonShowOrigin.Text = "隐藏原文"
         Else
             SplitContainerTextBox.Panel2Collapsed = True
             Width = (Width + 40) / 2
-            ButtonShowOrigin.Text = "显示原文"
         End If
     End Sub
 
@@ -130,12 +140,21 @@ Public Class TipEditDialog
         ButtonOK.Enabled = TextBoxContent.Text.Trim() <> ""
         _changed = TextBoxContent.Text.Trim() <> _previousContent.Trim()
         UpdateTitle()
-        Dim len = TextBoxContent.Text.Count
-        If len > 9999 Then
-            LabelCount.Text = $"字符总数：超过 {len}"
-        Else
-            LabelCount.Text = $"字符总数：{len}"
+        RefreshCountLabel()
+    End Sub
+
+    Private Sub TextBoxContent_MouseXXX(sender As Object, e As MouseEventArgs) Handles TextBoxContent.MouseDown, TextBoxContent.MouseUp, TextBoxContent.MouseMove
+        If e.Button = MouseButtons.Left Then
+            RefreshCountLabel()
         End If
+    End Sub
+
+    Private Sub TextBoxContent_KeyPress(sender As Object, e As KeyPressEventArgs) Handles TextBoxContent.KeyPress
+        RefreshCountLabel()
+    End Sub
+
+    Private Sub TextBoxContent_KeyUp(sender As Object, e As KeyEventArgs) Handles TextBoxContent.KeyUp
+        RefreshCountLabel()
     End Sub
 
     Private Sub TipEditDialog_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
@@ -165,14 +184,35 @@ Public Class TipEditDialog
         End If
     End Sub
 
-    Private Sub TextBoxContent_MouseWheel(sender As Object, e As MouseEventArgs) Handles TextBoxContent.MouseWheel
-        If My.Computer.Keyboard.CtrlKeyDown Then
-            Dim origin = TextBoxContent.Font
-            Dim newSize = origin.Size + (e.Delta / 120)
-            If newSize > 1 AndAlso newSize < Single.MaxValue Then
-                TextBoxContent.Font = New Font(origin.FontFamily, newSize)
-                UpdateTitle()
-            End If
+    ''' <summary>
+    ''' 缩放文本框，输入 MouseWheel 的 Delta
+    ''' </summary>
+    Private Sub ZoomTextBox(delta As Double)
+        Dim origin = TextBoxContent.Font
+        Dim newSize = origin.Size + (delta / 120)
+        If newSize > 1 AndAlso newSize < Single.MaxValue Then
+            TextBoxContent.Font = New Font(origin.FontFamily, newSize)
+            UpdateTitle()
         End If
+    End Sub
+
+    Private Sub TextBoxContent_MouseWheel(sender As Object, e As MouseEventArgs) Handles TextBoxContent.MouseWheel
+        Console.WriteLine(e.Delta)
+        If My.Computer.Keyboard.CtrlKeyDown Then
+            ZoomTextBox(e.Delta)
+        End If
+    End Sub
+
+    Private Sub MenuZoomUp_Click(sender As Object, e As EventArgs) Handles MenuZoomUp.Click
+        ZoomTextBox(SystemInformation.MouseWheelScrollDelta)
+    End Sub
+
+    Private Sub MenuZoomDown_Click(sender As Object, e As EventArgs) Handles MenuZoomDown.Click
+        ZoomTextBox(-SystemInformation.MouseWheelScrollDelta)
+    End Sub
+
+    Private Sub MenuZoomRestore_Click(sender As Object, e As EventArgs) Handles MenuZoomRestore.Click
+        TextBoxContent.Font = Font
+        UpdateTitle()
     End Sub
 End Class

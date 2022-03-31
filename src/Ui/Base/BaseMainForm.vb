@@ -84,11 +84,15 @@ Public Class BaseMainForm
     ''' </summary>
     Private Sub AddHandlers(ctrls As IEnumerable(Of Control))
         For Each ctrl As Control In ctrls
-            Dim isFrm As Boolean = ctrl.GetType() = GetType(MainForm) OrElse ctrl.GetType() = GetType(Form)
-            Dim isBtn As Boolean = ctrl.GetType() = GetType(Button) OrElse ctrl.GetType() = GetType(DD.ButtonX)
+            Dim isFrm As Boolean = ctrl.GetType() = GetType(MainForm) OrElse 
+                                   ctrl.GetType() = GetType(Form)
+            Dim isBtn As Boolean = ctrl.GetType() = GetType(Button) OrElse 
+                                   ctrl.GetType() = GetType(DD.ButtonX)
             Dim isNum As Boolean = ctrl.GetType() = GetType(NumericUpDown)
-            Dim isTab As Boolean = ctrl.GetType() = GetType(TabView) OrElse ctrl.GetType() = GetType(TabView.TabViewItem) OrElse
-                ctrl.GetType() = GetType(DD.SuperTabStrip) OrElse ctrl.GetType() = GetType(DD.SuperTabItem)
+            Dim isTab As Boolean = ctrl.GetType() = GetType(TabView) OrElse
+                                   ctrl.GetType() = GetType(TabView.TabViewItem) OrElse
+                                   ctrl.GetType() = GetType(DD.SuperTabStrip) OrElse
+                                   ctrl.GetType() = GetType(DD.SuperTabItem)
 
             ' 窗口: 取消活动窗口
             If isFrm Then
@@ -220,14 +224,30 @@ Public Class BaseMainForm
         End If
     End Sub
 
+    ''' <summary>
+    ''' 窗口退出前的判断，会被本类中的 TimerCloseForm_Tick() 方法触发，或被子类的 Close() 触发
+    ''' </summary>
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
         MyBase.OnFormClosing(e)
-        If Not e.Cancel Then
-            _closing = True
-            e.Cancel = Opacity > 0
+        If e.Cancel Then
+            Return ' e.Cancel -> Ignore
+        End If
+        _closing = True
+        If Opacity > 0 Then
+            e.Cancel = True
             CloseForm()
+        Else
+            e.Cancel = False
+            ' Close directly
         End If
     End Sub
+
+    ''' <summary>
+    ''' 判断给定的 CloseReason 为用户关闭的行为，原因包括点击关闭按钮、父窗口关闭、MDI 窗口关闭
+    ''' </summary>
+    Protected Function IsClientCloseReason(reason As CloseReason) As Boolean
+        Return reason = CloseReason.UserClosing OrElse reason = CloseReason.FormOwnerClosing OrElse reason = CloseReason.MdiFormClosing
+    End Function
 
     Private Sub ShowForm()
         _timerMouseIn.Enabled = False

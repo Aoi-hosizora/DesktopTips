@@ -28,16 +28,21 @@ Partial Class TipEditDialog
         Me.ContextMenuStripOK = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.MenuOK = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuSave = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.MenuShowOrigin = New System.Windows.Forms.ToolStripMenuItem()
         Me.ButtonCancel = New System.Windows.Forms.Button()
         Me.TextBoxContent = New System.Windows.Forms.TextBox()
-        Me.ButtonShowOrigin = New System.Windows.Forms.Button()
         Me.TextBoxOrigin = New System.Windows.Forms.TextBox()
         Me.SplitContainerTextBox = New System.Windows.Forms.SplitContainer()
         Me.SuperTooltip1 = New DevComponents.DotNetBar.SuperTooltip()
         Me.LabelTextType = New System.Windows.Forms.Label()
         Me.LabelCount = New System.Windows.Forms.Label()
-        Me.ButtonOK = New DesktopTips.MenuButton()
         Me.ComboBoxTextType = New System.Windows.Forms.ComboBox()
+        Me.MenuZoomUp = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuZoomDown = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ButtonOK = New DesktopTips.MenuButton()
+        Me.MenuZoomRestore = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.ContextMenuStripOK.SuspendLayout()
         CType(Me.SplitContainerTextBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainerTextBox.Panel1.SuspendLayout()
@@ -58,21 +63,32 @@ Partial Class TipEditDialog
         '
         'ContextMenuStripOK
         '
-        Me.ContextMenuStripOK.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MenuOK, Me.MenuSave})
+        Me.ContextMenuStripOK.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MenuOK, Me.MenuSave, Me.ToolStripSeparator1, Me.MenuShowOrigin, Me.ToolStripSeparator2, Me.MenuZoomUp, Me.MenuZoomDown, Me.MenuZoomRestore})
         Me.ContextMenuStripOK.Name = "ContextMenuStripOK"
-        Me.ContextMenuStripOK.Size = New System.Drawing.Size(116, 48)
+        Me.ContextMenuStripOK.Size = New System.Drawing.Size(181, 170)
         '
         'MenuOK
         '
         Me.MenuOK.Name = "MenuOK"
-        Me.MenuOK.Size = New System.Drawing.Size(115, 22)
-        Me.MenuOK.Text = "确定(&O)"
+        Me.MenuOK.Size = New System.Drawing.Size(180, 22)
+        Me.MenuOK.Text = "保存并退出(&O)"
         '
         'MenuSave
         '
         Me.MenuSave.Name = "MenuSave"
-        Me.MenuSave.Size = New System.Drawing.Size(115, 22)
+        Me.MenuSave.Size = New System.Drawing.Size(180, 22)
         Me.MenuSave.Text = "保存(&S)"
+        '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(177, 6)
+        '
+        'MenuShowOrigin
+        '
+        Me.MenuShowOrigin.Name = "MenuShowOrigin"
+        Me.MenuShowOrigin.Size = New System.Drawing.Size(180, 22)
+        Me.MenuShowOrigin.Text = "显示原文(&G)"
         '
         'ButtonCancel
         '
@@ -94,19 +110,8 @@ Partial Class TipEditDialog
         Me.TextBoxContent.Name = "TextBoxContent"
         Me.TextBoxContent.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.TextBoxContent.Size = New System.Drawing.Size(187, 128)
-        Me.TextBoxContent.TabIndex = 3
+        Me.TextBoxContent.TabIndex = 4
         Me.TextBoxContent.Text = "文本框"
-        '
-        'ButtonShowOrigin
-        '
-        Me.ButtonShowOrigin.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ButtonShowOrigin.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ButtonShowOrigin.Location = New System.Drawing.Point(315, 205)
-        Me.ButtonShowOrigin.Name = "ButtonShowOrigin"
-        Me.ButtonShowOrigin.Size = New System.Drawing.Size(75, 26)
-        Me.ButtonShowOrigin.TabIndex = 6
-        Me.ButtonShowOrigin.Text = "显示原文"
-        Me.ButtonShowOrigin.UseVisualStyleBackColor = True
         '
         'TextBoxOrigin
         '
@@ -116,8 +121,8 @@ Partial Class TipEditDialog
         Me.TextBoxOrigin.Name = "TextBoxOrigin"
         Me.TextBoxOrigin.ReadOnly = True
         Me.TextBoxOrigin.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.TextBoxOrigin.Size = New System.Drawing.Size(184, 128)
-        Me.TextBoxOrigin.TabIndex = 4
+        Me.TextBoxOrigin.Size = New System.Drawing.Size(187, 128)
+        Me.TextBoxOrigin.TabIndex = 5
         Me.TextBoxOrigin.Text = "文本框"
         '
         'SplitContainerTextBox
@@ -135,9 +140,9 @@ Partial Class TipEditDialog
         'SplitContainerTextBox.Panel2
         '
         Me.SplitContainerTextBox.Panel2.Controls.Add(Me.TextBoxOrigin)
-        Me.SplitContainerTextBox.Size = New System.Drawing.Size(375, 128)
+        Me.SplitContainerTextBox.Size = New System.Drawing.Size(378, 128)
         Me.SplitContainerTextBox.SplitterDistance = 187
-        Me.SplitContainerTextBox.TabIndex = 7
+        Me.SplitContainerTextBox.TabIndex = 3
         '
         'SuperTooltip1
         '
@@ -151,19 +156,45 @@ Partial Class TipEditDialog
         Me.LabelTextType.Name = "LabelTextType"
         Me.LabelTextType.Size = New System.Drawing.Size(68, 17)
         Me.SuperTooltip1.SetSuperTooltip(Me.LabelTextType, New DevComponents.DotNetBar.SuperTooltipInfo("文本类型", "", resources.GetString("LabelTextType.SuperTooltip"), Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, False, New System.Drawing.Size(405, 430)))
-        Me.LabelTextType.TabIndex = 4
+        Me.LabelTextType.TabIndex = 6
         Me.LabelTextType.Text = "文本类型："
         '
         'LabelCount
         '
         Me.LabelCount.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.LabelCount.Location = New System.Drawing.Point(171, 210)
+        Me.LabelCount.Location = New System.Drawing.Point(176, 210)
         Me.LabelCount.Name = "LabelCount"
-        Me.LabelCount.Size = New System.Drawing.Size(138, 17)
+        Me.LabelCount.Size = New System.Drawing.Size(211, 17)
         Me.SuperTooltip1.SetSuperTooltip(Me.LabelCount, New DevComponents.DotNetBar.SuperTooltipInfo("字符总数", "", "字符总数包括空格、制表符、换行符、Markdown 语法与 HTML 标签的任何字符。", Nothing, Nothing, DevComponents.DotNetBar.eTooltipColor.Gray, True, True, New System.Drawing.Size(310, 75)))
-        Me.LabelCount.TabIndex = 9
+        Me.LabelCount.TabIndex = 8
         Me.LabelCount.Text = "字符数：超过 9999"
         Me.LabelCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'ComboBoxTextType
+        '
+        Me.ComboBoxTextType.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.ComboBoxTextType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.ComboBoxTextType.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.ComboBoxTextType.Font = New System.Drawing.Font("Microsoft YaHei", 8.0!)
+        Me.ComboBoxTextType.FormattingEnabled = True
+        Me.ComboBoxTextType.IntegralHeight = False
+        Me.ComboBoxTextType.Items.AddRange(New Object() {"纯文本", "Markdown", "HTML"})
+        Me.ComboBoxTextType.Location = New System.Drawing.Point(80, 205)
+        Me.ComboBoxTextType.Name = "ComboBoxTextType"
+        Me.ComboBoxTextType.Size = New System.Drawing.Size(90, 24)
+        Me.ComboBoxTextType.TabIndex = 7
+        '
+        'MenuZoomUp
+        '
+        Me.MenuZoomUp.Name = "MenuZoomUp"
+        Me.MenuZoomUp.Size = New System.Drawing.Size(180, 22)
+        Me.MenuZoomUp.Text = "放大显示(&U)"
+        '
+        'MenuZoomDown
+        '
+        Me.MenuZoomDown.Name = "MenuZoomDown"
+        Me.MenuZoomDown.Size = New System.Drawing.Size(180, 22)
+        Me.MenuZoomDown.Text = "缩小显示(&D)"
         '
         'ButtonOK
         '
@@ -179,19 +210,16 @@ Partial Class TipEditDialog
         Me.ButtonOK.Text = "确定"
         Me.ButtonOK.UseVisualStyleBackColor = True
         '
-        'ComboBoxTextType
+        'MenuZoomRestore
         '
-        Me.ComboBoxTextType.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.ComboBoxTextType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.ComboBoxTextType.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.ComboBoxTextType.Font = New System.Drawing.Font("Microsoft YaHei", 8.0!)
-        Me.ComboBoxTextType.FormattingEnabled = True
-        Me.ComboBoxTextType.IntegralHeight = False
-        Me.ComboBoxTextType.Items.AddRange(New Object() {"纯文本", "Markdown", "HTML"})
-        Me.ComboBoxTextType.Location = New System.Drawing.Point(80, 205)
-        Me.ComboBoxTextType.Name = "ComboBoxTextType"
-        Me.ComboBoxTextType.Size = New System.Drawing.Size(90, 24)
-        Me.ComboBoxTextType.TabIndex = 8
+        Me.MenuZoomRestore.Name = "MenuZoomRestore"
+        Me.MenuZoomRestore.Size = New System.Drawing.Size(180, 22)
+        Me.MenuZoomRestore.Text = "恢复显示(&R)"
+        '
+        'ToolStripSeparator2
+        '
+        Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(177, 6)
         '
         'TipEditDialog
         '
@@ -205,7 +233,6 @@ Partial Class TipEditDialog
         Me.Controls.Add(Me.SplitContainerTextBox)
         Me.Controls.Add(Me.LabelMessage)
         Me.Controls.Add(Me.ButtonOK)
-        Me.Controls.Add(Me.ButtonShowOrigin)
         Me.Controls.Add(Me.ButtonCancel)
         Me.Font = New System.Drawing.Font("Microsoft YaHei", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.KeyPreview = True
@@ -237,11 +264,16 @@ Partial Class TipEditDialog
     Friend WithEvents ContextMenuStripOK As System.Windows.Forms.ContextMenuStrip
     Friend WithEvents MenuOK As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents MenuSave As System.Windows.Forms.ToolStripMenuItem
-    Friend WithEvents ButtonShowOrigin As Button
     Friend WithEvents TextBoxOrigin As TextBox
     Friend WithEvents SplitContainerTextBox As SplitContainer
     Friend WithEvents SuperTooltip1 As DevComponents.DotNetBar.SuperTooltip
     Friend WithEvents ComboBoxTextType As ComboBox
     Friend WithEvents LabelTextType As Label
     Friend WithEvents LabelCount As Label
+    Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
+    Friend WithEvents MenuShowOrigin As ToolStripMenuItem
+    Friend WithEvents MenuZoomUp As ToolStripMenuItem
+    Friend WithEvents MenuZoomDown As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator2 As ToolStripSeparator
+    Friend WithEvents MenuZoomRestore As ToolStripMenuItem
 End Class

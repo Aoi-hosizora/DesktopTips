@@ -142,17 +142,17 @@ Public Class TabView
             If e.Button = MouseButtons.None Then
                 AbortHoverWaitingOnce = False
                 _hoverThread = New Thread(New ParameterizedThreadStart(Sub (idx As Integer)
-                                                                           If _hoverIndex <> idx Then Return
-                                                                           Thread.Sleep(_hoverWaitingDuration)
-                                                                           Invoke(Sub()
-                                                                                      If _hoverIndex <> idx Then Return
-                                                                                      If AbortHoverWaitingOnce Then
-                                                                                          AbortHoverWaitingOnce = False
-                                                                                          Return
-                                                                                      End If
-                                                                                      ShowTooltip(Tabs(idx).TabSource)
-                                                                                  End Sub) ' 显示悬浮卡片
-                                                                       End Sub))
+                    If _hoverIndex <> idx Then Return
+                    Thread.Sleep(_hoverWaitingDuration)
+                    Invoke(Sub()
+                        If _hoverIndex <> idx Then Return
+                        If AbortHoverWaitingOnce Then
+                            AbortHoverWaitingOnce = False
+                            Return
+                        End If
+                        ShowTooltip(Tabs(idx).TabSource)
+                    End Sub) ' 显示悬浮卡片
+                End Sub))
                 _hoverThread.Start(_hoverIndex) ' 启动计时线程，准备显示悬浮卡片
             End If
         End If
@@ -178,13 +178,9 @@ Public Class TabView
     ''' 显示悬浮卡片
     ''' </summary>
     Private Sub ShowTooltip(item As Tab)
-        Dim curPos =  Cursor.Position
-        HoverCardView.HoverCursorPosition = curPos
-        HoverCardView.HoverParentPosition = Parent.PointToClient(curPos)
-        HoverCardView.HoverParentSize = Parent.Size
-        HoverCardView.HoverTab = item
-        HoverCardView.Opacity = 0
-        HoverCardView.Show()
+        Dim curPos = Cursor.Position
+        Dim parPos = Parent.PointToClient(curPos)
+        HoverCardView.ShowCardView(curPos, parPos, Parent.Size, Nothing, item)
     End Sub
 
     ''' <summary>

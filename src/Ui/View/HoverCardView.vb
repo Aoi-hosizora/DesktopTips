@@ -7,53 +7,67 @@ Imports DD = DevComponents.DotNetBar
 Public Class HoverCardView
     Inherits BaseEscCbForm
 
-#Region "属性"
-
-    ''' <summary>
-    ''' 悬浮卡片的 TipItem 内容，可为 Nothing
-    ''' </summary>
-    Public Property HoverTipItem As TipItem
-
-    ''' <summary>
-    ''' 悬浮卡片的 Tab 内容，不能为 Nothing
-    ''' </summary>
-    Public Property HoverTab As Tab
+#Region "成员和属性"
 
     ''' <summary>
     ''' 悬浮卡片显示时的光标位置
     ''' </summary>
-    Public Property HoverCursorPosition As Point
+    Private _cursorPositionBefore As Point
 
     ''' <summary>
     ''' 悬浮卡片显示时 Parent 的光标位置
     ''' </summary>
-    Public Property HoverParentPosition As Point
+    Private _cursorPositionInParentBefore As Point
 
     ''' <summary>
     ''' 悬浮卡片显示时 Parent 的大小
     ''' </summary>
-    Public Property HoverParentSize As Size
+    Private _parentSizeBefore As Size
 
     ''' <summary>
-    ''' 悬浮卡片显示的间隙
+    ''' 悬浮卡片的 TipItem 内容
     ''' </summary>
-    Private ReadOnly Property HoverGapDistance As Integer = 7
+    Private _hoverTipItem As TipItem
+
+    ''' <summary>
+    ''' 悬浮卡片的 Tab 内容
+    ''' </summary>
+    Private _hoverTab As Tab
+
+    ''' <summary>
+    ''' 悬浮卡片与 Parent 的显示间隔距离
+    ''' </summary>
+    Private Const HoverGapDistance As Integer = 7
+    
+    ''' <summary>
+    ''' 悬浮窗口与屏幕边界的最小间隔距离
+    ''' </summary>
+    Private Const MinScreenGap As Integer = 1
+
+    ''' <summary>
+    ''' 卡片最小宽度
+    ''' </summary>
+    Private Const MinWidth = 200
+
+    ''' <summary>
+    ''' 显示窗口时不激活窗口
+    ''' </summary>
+    Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean = True
 
     ''' <summary>
     ''' 卡片窗口大小
     ''' </summary>
     Private ReadOnly Property CardWidth As Integer
         Get
-            If HoverTipItem IsNot Nothing Then
-                Dim sze = TextRenderer.MeasureText(HoverTipItem.Content, Font, Size.Empty)
-                Dim wantWidth = sze.Width + _contentHMargin * 2 + 30
-                Dim maxWidth = Screen.PrimaryScreen.Bounds.Width * 5 / 7
-                Dim minWidth = 200
-                Return Math.Max(Math.Min(wantWidth, maxWidth), minWidth)
-            ElseIf HoverTab IsNot Nothing Then
-                Return 200
+            If _hoverTipItem IsNot Nothing Then
+                Dim sze = TextRenderer.MeasureText(_hoverTipItem.Content, Font, Size.Empty)
+                Dim wantWidth = sze.Width + _contentHMargin * 2 + 45
+                Dim maxWidth = Screen.FromPoint(_cursorPositionBefore).Bounds.Width * 5 / 7
+                Return Math.Max(Math.Min(wantWidth, maxWidth), MinWidth)
+            ElseIf _hoverTab IsNot Nothing Then
+                Return MinWidth
             End If
-            Return 1
+            Return -1
         End Get
     End Property
 
@@ -62,38 +76,54 @@ Public Class HoverCardView
     ''' </summary>
     Private ReadOnly Property CardPosition As Point
         Get
-            If CardWidth < 0 Then
-                Return New Point(0, 0)
-            End If
-            Dim curPos = HoverCursorPosition
+            Dim curPos = _cursorPositionBefore,
+                parCurPos = _cursorPositionInParentBefore
 
-            ' 出现在右边
-            Dim x = curPos.X - HoverParentPosition.X + HoverParentSize.Width + HoverGapDistance
-            If Screen.AllScreens.Length > 1 AndAlso curPos.X > Screen.PrimaryScreen.Bounds.Width Then
-                x -= Screen.PrimaryScreen.Bounds.Width ' 扩展屏幕
+            ' 默认出现在右边
+            Dim x = curPos.X - parCurPos.X + _parentSizeBefore.Width + HoverGapDistance ' 右
+            Dim overflow As Boolean, scr = Screen.FromPoint(curPos)
+            If scr.Primary Then
+                overflow = x >= Screen.PrimaryScreen.Bounds.Width - CardWidth
+            Else ' 存在扩展屏幕
+                overflow = x >= Screen.PrimaryScreen.Bounds.Width + scr.Bounds.Width - CardWidth
             End If
 
             ' 出现在左边
-            If HoverTipItem Is Nothing Or x >= Screen.PrimaryScreen.Bounds.Width - CardWidth Then
-                x = curPos.X - HoverParentPosition.X - CardWidth - HoverGapDistance
-                If Screen.AllScreens.Length > 1 AndAlso curPos.X > Screen.PrimaryScreen.Bounds.Width Then
-                    x += Screen.PrimaryScreen.Bounds.Width ' 扩展屏幕
-                End If
-                If x < 0 Then
-                    x = 0 ' 极端情况
-                    curPos.Y += 10
-                End If
+            If _hoverTipItem Is Nothing Or overflow Then
+                x = curPos.X - parCurPos.X - CardWidth - HoverGapDistance ' 左
             End If
 
+            ' 极端情况
+            If x < MinScreenGap Then
+                Return New Point(MinScreenGap, curPos.Y + 20)
+            End If
             Return New Point(x, curPos.Y)
         End Get
     End Property
 
-    Protected Overrides ReadOnly Property ShowWithoutActivation As Boolean = True
-
 #End Region
 
+#Region "显示相关的方法和属性"
+
+
+    ''' <summary>
+    ''' 使用 TipItem 或 Tab 显示悬浮卡片
+    ''' </summary>
+    Public Shared Sub ShowCardView(cursor As Point, cursorInParent As Point, parentSize As Size, Optional ti As TipItem = Nothing, Optional ta As Tab = Nothing)
+        ' Dim view As New HoverCardView
+        HoverCardView._cursorPositionBefore = cursor
+        HoverCardView._cursorPositionInParentBefore = cursorInParent
+        HoverCardView._parentSizeBefore = parentSize
+        HoverCardView._hoverTipItem = ti
+        HoverCardView._hoverTab = ta
+        HoverCardView.Opacity = 0
+        HoverCardView.Show()
+    End Sub
+
     Protected Overrides Sub OnLoad(e As EventArgs)
+        If CardWidth <= 0 Then
+            Return
+        End If
         MyBase.OnLoad(e)
         AutoScaleMode = AutoScaleMode.Font
         Font = New Font("Microsoft YaHei UI", 9.0!)
@@ -101,19 +131,21 @@ Public Class HoverCardView
         ShowInTaskbar = false
         Opacity = 0
 
-        If CardWidth <= 0 Then
-            Close()
-            Return
-        End If
         Width = CardWidth ' <<<
         InitialLayout()
-        Dim pos = CardPosition
-        Left = pos.X ' <<<
-        Top = pos.Y ' <<<
-        If Height + Top > Screen.PrimaryScreen.Bounds.Height - 10 Then
-            Top = Screen.PrimaryScreen.Bounds.Height - Height - 10
+        Dim pos = CardPosition ' <<<
+        Left = pos.X
+        Top = pos.Y
+
+        Dim scr = Screen.FromPoint(_cursorPositionBefore)
+        If Height > scr.Bounds.Height - MinScreenGap * 2 Then
+            Top = MinScreenGap
+            Height = scr.Bounds.Height - MinScreenGap * 2
+            Width += 17
+            Left = Math.Max(Left - 17, MinScreenGap)
+        ElseIf Height + Top > scr.Bounds.Height - MinScreenGap Then
+            Top = Math.Max(MinScreenGap, scr.Bounds.Height - Height - MinScreenGap)
         End If
-        If Top < 0 Then Top = 0
         Top -= 1 / OpacitySpeed
 
         _timerCloseForm.Enabled = false
@@ -148,6 +180,8 @@ Public Class HoverCardView
         MyBase.WndProc(m)
     End Sub
 
+#End Region
+
 #Region "Timer"
 
     Private Const OpacitySpeed = 0.1
@@ -166,6 +200,10 @@ Public Class HoverCardView
         Top += 1
         If Opacity >= 1 Then
             Opacity = 1
+            Dim scr = Screen.FromPoint(_cursorPositionBefore)
+            If Height + Top > scr.Bounds.Height - MinScreenGap Then
+                Top = Math.Max(MinScreenGap, scr.Bounds.Height - Height - MinScreenGap)
+            End If
             _timerShowForm.Enabled = False
         End If
     End Sub
@@ -196,6 +234,7 @@ Public Class HoverCardView
         ControlPaint.DrawBorder(e.Graphics, ClientRectangle, _borderColor, ButtonBorderStyle.Solid)
     End Sub
 
+    Private ReadOnly _mainPanel As New Panel With {.AutoScroll = True, .BackColor = Color.Transparent}
     Private ReadOnly _titleLabel As New DD.LabelX With {.BackColor = Color.Transparent, .AutoSize = True, .WordWrap = False}
     Private ReadOnly _contentLabel As New DD.LabelX With {.BackColor = Color.Transparent, .AutoSize = True, .WordWrap = True}
     Private ReadOnly _metaLabel As New DD.LabelX With {.BackColor = Color.Transparent, .AutoSize = False, .WordWrap = False, .Font = New Font("微软雅黑", 8.0!), .TextLineAlignment = StringAlignment.Far}
@@ -232,13 +271,17 @@ Public Class HoverCardView
         AddHandler _button.Click, Sub() Close()
 
         Controls.Clear()
-        Controls.Add(_button)
-        Controls.Add(_titleLabel)
-        Controls.Add(_contentLabel)
-        Controls.Add(_metaLabel)
+        Controls.Add(_mainPanel)
+        _mainPanel.Controls.Add(_button)
+        _mainPanel.Controls.Add(_titleLabel)
+        _mainPanel.Controls.Add(_contentLabel)
+        _mainPanel.Controls.Add(_metaLabel)
+        _mainPanel.Dock = DockStyle.Fill
+        _mainPanel.HorizontalScroll.Visible = False
+        AddHandler _mainPanel.Scroll, Sub() Refresh()
 
-        Dim tip = HoverTipItem
-        Dim tab = HoverTab
+        Dim tip = _hoverTipItem
+        Dim tab = _hoverTab
         If tip IsNot Nothing Then ' For Tip
             Dim title1 = tab.Title
             Dim title2 = "未高亮"

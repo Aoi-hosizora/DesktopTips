@@ -1,5 +1,4 @@
 ﻿Public Class HighlightSelectForm
-
     Public Overloads Shared Function ShowDialog(tab As Tab) As Tuple(Of Tab, Integer)
         Dim dlg As New HighlightSelectForm
         With dlg

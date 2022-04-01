@@ -88,7 +88,7 @@
     End Function
 
     Public Function GetTabLabel(tab As Tab) As String Implements MainFormContract.ITabPresenter.GetTabLabel
-        Dim result = $"总共 {tab.Tips.Count} 项"
+        Dim result = $"总共有 {tab.Tips.Count} 项：其中"
         Dim counts = tab.Tips.GroupBy(Function(t) t.Color).
             Select(Function(g) New Tuple(Of TipColor, Integer)(g.Key, g.Count())).
             OrderBy(Function(g) g.Item1?.Id)

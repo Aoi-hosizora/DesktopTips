@@ -84,15 +84,15 @@ Public Class BaseMainForm
     ''' </summary>
     Private Sub AddHandlers(ctrls As IEnumerable(Of Control))
         For Each ctrl As Control In ctrls
-            Dim isFrm As Boolean = ctrl.GetType() = GetType(MainForm) OrElse 
-                                   ctrl.GetType() = GetType(Form)
-            Dim isBtn As Boolean = ctrl.GetType() = GetType(Button) OrElse 
-                                   ctrl.GetType() = GetType(DD.ButtonX)
+            Dim isFrm As Boolean = ctrl.GetType() = GetType(MainForm) OrElse
+                ctrl.GetType() = GetType(Form)
+            Dim isBtn As Boolean = ctrl.GetType() = GetType(Button) OrElse
+                ctrl.GetType() = GetType(DD.ButtonX)
             Dim isNum As Boolean = ctrl.GetType() = GetType(NumericUpDown)
             Dim isTab As Boolean = ctrl.GetType() = GetType(TabView) OrElse
-                                   ctrl.GetType() = GetType(TabView.TabViewItem) OrElse
-                                   ctrl.GetType() = GetType(DD.SuperTabStrip) OrElse
-                                   ctrl.GetType() = GetType(DD.SuperTabItem)
+                ctrl.GetType() = GetType(TabView.TabViewItem) OrElse
+                ctrl.GetType() = GetType(DD.SuperTabStrip) OrElse
+                ctrl.GetType() = GetType(DD.SuperTabItem)
 
             ' 窗口: 取消活动窗口
             If isFrm Then
@@ -229,6 +229,13 @@ Public Class BaseMainForm
     ''' </summary>
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
         MyBase.OnFormClosing(e)
+        If Not IsClientCloseReason(e.CloseReason) Then
+            _closing = True
+            e.Cancel = False
+            ' Close directly
+            Return
+        End If
+        
         If e.Cancel Then
             Return ' e.Cancel -> Ignore
         End If

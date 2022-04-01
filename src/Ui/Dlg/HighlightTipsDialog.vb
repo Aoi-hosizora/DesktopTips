@@ -1,5 +1,4 @@
 ﻿Public Class HighlightTipsDialog
-
     Private _selectedCallback As Action(Of Integer, Integer) ' 参数为 TabIndex, TipIndex
     Private _currentTab As Tab
     Private _currentColorId As Integer

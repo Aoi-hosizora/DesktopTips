@@ -76,7 +76,7 @@ Public Class TipEditDialog
         Else
             Text = "*" & _originTitle
         End If
-        If TextBoxContent.Font.Size <> Font.Size Then
+        If Math.Abs(TextBoxContent.Font.Size - Font.Size) > 0.01 Then
             Dim ratio As Single = TextBoxContent.Font.Size / Font.Size
             Text &= " (" & ratio.ToString("P0") & ")"
         End If

@@ -263,17 +263,17 @@ Public Class TipListBox
                 If e.Button = MouseButtons.None Then
                     AbortHoverWaitingOnce = False
                     _hoverThread = New Thread(New ParameterizedThreadStart(Sub(idx As Integer)
-                                                                               If _hoverIndex <> idx Then Return
-                                                                               Thread.Sleep(_hoverWaitingDuration)
-                                                                               Invoke(Sub()
-                                                                                          If _hoverIndex <> idx Then Return
-                                                                                          If AbortHoverWaitingOnce Then
-                                                                                              AbortHoverWaitingOnce = False
-                                                                                              Return
-                                                                                          End If
-                                                                                          ShowTooltip(Items(idx))
-                                                                                      End Sub) ' 显示悬浮卡片
-                                                                           End Sub))
+                        If _hoverIndex <> idx Then Return
+                        Thread.Sleep(_hoverWaitingDuration)
+                        Invoke(Sub()
+                            If _hoverIndex <> idx Then Return
+                            If AbortHoverWaitingOnce Then
+                                AbortHoverWaitingOnce = False
+                                Return
+                            End If
+                            ShowTooltip(Items(idx))
+                        End Sub) ' 显示悬浮卡片
+                    End Sub))
                     _hoverThread.Start(_hoverIndex) ' 启动计时线程，准备显示悬浮卡片
                 End If
             End If
@@ -306,13 +306,8 @@ Public Class TipListBox
     ''' </summary>
     Private Sub ShowTooltip(item As TipItem)
         Dim curPos = Cursor.Position
-        HoverCardView.HoverCursorPosition = curPos
-        HoverCardView.HoverParentPosition = Parent.PointToClient(curPos)
-        HoverCardView.HoverParentSize = Parent.Size
-        HoverCardView.HoverTipItem = item
-        HoverCardView.HoverTab = GlobalModel.CurrentTab
-        HoverCardView.Opacity = 0
-        HoverCardView.Show()
+        Dim parPos = Parent.PointToClient(curPos)
+        HoverCardView.ShowCardView(curPos, parPos, Parent.Size, item, GlobalModel.CurrentTab)
     End Sub
 
     ''' <summary>

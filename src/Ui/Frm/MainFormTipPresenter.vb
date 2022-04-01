@@ -15,7 +15,7 @@ Public Class MainFormTipPresenter
     Public Function Insert() As Boolean Implements MainFormContract.ITipPresenter.Insert
         _view.AbortHoverCardViewOnce() ' Abort card first
         Dim type = CommonUtil.TextType.Plain
-        Dim msg As String = TipEditDialog.ShowDialog("新的标签：", "添加", textType:=type)
+        Dim msg As String = TipEditDialog.ShowDialog("新的标签：", "添加", textType := type)
         msg = CommonUtil.FormatText(msg)
         If msg <> "" Then
             Dim now = DateTime.Now
@@ -63,19 +63,15 @@ Public Class MainFormTipPresenter
 
     Public Function Update(item As TipItem) As Boolean Implements MainFormContract.ITipPresenter.Update
         _view.AbortHoverCardViewOnce() ' Abort card first
-        Dim content = item.Content
-        If content.Length > 600 Then
-            content = content.Substring(0, 600) + "..."
-        End If
         Dim saveCallback = Sub(text As String)
-                               If text <> "" And text <> item.Content Then
-                                   item.Content = text
-                                   item.UpdatedAt = DateTime.Now
-                                   _globalPresenter.SaveFile()
-                               End If
-                           End Sub
+            If text <> "" And text <> item.Content Then
+                item.Content = text
+                item.UpdatedAt = DateTime.Now
+                _globalPresenter.SaveFile()
+            End If
+        End Sub
         Dim type = item.TextType
-        Dim newStr As String = TipEditDialog.ShowDialog($"修改标签为：", "修改", item.Content, textType:=type, saveCallback:=saveCallback)
+        Dim newStr As String = TipEditDialog.ShowDialog($"修改标签为：", "修改", item.Content, textType := type, saveCallback := saveCallback)
         newStr = CommonUtil.FormatText(newStr)
         If newStr <> "" And (newStr <> item.Content OrElse type <> item.TextType) Then
             item.Content = newStr
@@ -173,7 +169,7 @@ Public Class MainFormTipPresenter
         Dim content2 = item2.Content.Replace(vbNewLine, "↴")
         content2 = If(content2.Length > 300, content2.Substring(0, 300) + "...", content2)
         Dim ok = MessageBoxEx.Show($"是否移动标签{vbNewLine}""{content}""{vbNewLine}至标签{vbNewLine}""{content2}""{vbNewLine}之下？",
-                                   "移动标签", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, _view.GetMe())
+            "移动标签", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, _view.GetMe())
         If ok = vbCancel Or ok = vbNo Then
             Return False
         End If
@@ -200,13 +196,13 @@ Public Class MainFormTipPresenter
         Dim results As List(Of Tuple(Of Integer, Integer)) = GlobalModel.Tabs.SelectMany(
             Function(tab)
                 Return tab.Tips.
-                Where(Function(tip)
-                          Dim content = tip.Content.ToLower()
-                          Return ors.Any(Function(ands) ands.All(Function(a) content.Contains(a))) ' 先 || 后 &&
-                      End Function).
-                Select(Function(tip)
-                           Return New Tuple(Of Integer, Integer)(GlobalModel.Tabs.IndexOf(tab), tab.Tips.IndexOf(tip)) ' tabIdx, tipIdx
-                       End Function)
+                    Where(Function(tip)
+                        Dim content = tip.Content.ToLower()
+                        Return ors.Any(Function(ands) ands.All(Function(a) content.Contains(a))) ' 先 || 后 &&
+                    End Function).
+                    Select(Function(tip)
+                        Return New Tuple(Of Integer, Integer)(GlobalModel.Tabs.IndexOf(tab), tab.Tips.IndexOf(tip)) ' tabIdx, tipIdx
+                    End Function)
             End Function).ToList()
 
         If results.Count = 0 Then
@@ -215,13 +211,13 @@ Public Class MainFormTipPresenter
             SearchDialog.SearchText = text
             SearchDialog.SearchResult = results
             SearchDialog.NewSearchCallback = Sub()
-                                                 Search()
-                                             End Sub
+                Search()
+            End Sub
             SearchDialog.SelectCallback = Sub(tabIndex As Integer, tipIndex As Integer)
-                                              _view.GetMe().Focus()
-                                              _view.GetMe().FormOpacityUp()
-                                              _view.FocusItem(tabIndex, tipIndex)
-                                          End Sub
+                _view.GetMe().Focus()
+                _view.GetMe().FormOpacityUp()
+                _view.FocusItem(tabIndex, tipIndex)
+            End Sub
             SearchDialog.ShowDialog()
         End If
     End Sub
@@ -265,7 +261,7 @@ Public Class MainFormTipPresenter
         _view.AbortHoverCardViewOnce() ' Abort card first
 
         Dim tt = HighlightSelectForm.ShowDialog(GlobalModel.CurrentTab)
-        If tt IsNot Nothing Then 
+        If tt IsNot Nothing Then
             HighlightTipsDialog.ShowDialog(tt, Sub(tabIndex As Integer, tipIndex As Integer)
                 _view.GetMe().Focus()
                 _view.GetMe().FormOpacityUp()
@@ -312,9 +308,9 @@ Public Class MainFormTipPresenter
             LinkDialog.CheckBoxText = "在新窗口打开浏览器"
             LinkDialog.CheckBoxChecked = My.Settings.OpenInNewBrowser
             LinkDialog.CheckBoxChangedCallback = Sub(c)
-                                                     My.Settings.OpenInNewBrowser = c
-                                                     My.Settings.Save()
-                                                 End Sub
+                My.Settings.OpenInNewBrowser = c
+                My.Settings.Save()
+            End Sub
             LinkDialog.OkCallback = Sub(l As IEnumerable(Of String), inNew As Boolean) OpenInDefaultBrowser(l, inNew)
             LinkDialog.ShowDialog(_view.GetMe())
         End If
@@ -323,9 +319,9 @@ Public Class MainFormTipPresenter
     Public Sub SetupHighlightColor(cb As Action) Implements MainFormContract.ITipPresenter.SetupHighlightColor
         _view.AbortHoverCardViewOnce() ' Abort card first
         ColorDialog.SaveCallback = Sub()
-                                       _globalPresenter.SaveFile()
-                                       cb()
-                                   End Sub
+            _globalPresenter.SaveFile()
+            cb()
+        End Sub
         ColorDialog.ShowDialog(_view.GetMe())
     End Sub
 

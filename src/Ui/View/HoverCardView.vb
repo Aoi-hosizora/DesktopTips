@@ -38,7 +38,7 @@ Public Class HoverCardView
     ''' 悬浮卡片与 Parent 的显示间隔距离
     ''' </summary>
     Private Const HoverGapDistance As Integer = 7
-    
+
     ''' <summary>
     ''' 悬浮窗口与屏幕边界的最小间隔距离
     ''' </summary>
@@ -57,49 +57,46 @@ Public Class HoverCardView
     ''' <summary>
     ''' 卡片窗口大小
     ''' </summary>
-    Private ReadOnly Property CardWidth As Integer
-        Get
-            If _hoverTipItem IsNot Nothing Then
-                Dim sze = TextRenderer.MeasureText(_hoverTipItem.Content, Font, Size.Empty)
-                Dim wantWidth = sze.Width + _contentHMargin * 2 + 45
-                Dim maxWidth = Screen.FromPoint(_cursorPositionBefore).Bounds.Width * 5 / 7
-                Return Math.Max(Math.Min(wantWidth, maxWidth), MinWidth)
-            ElseIf _hoverTab IsNot Nothing Then
-                Return MinWidth
-            End If
-            Return -1
-        End Get
-    End Property
+    Private Function CalculateCardWidth() As Integer
+        If _hoverTipItem IsNot Nothing Then
+            Dim sze = TextRenderer.MeasureText(_hoverTipItem.Content, Font, Size.Empty)
+            Dim wantWidth% = sze.Width + _contentHMargin * 2 + 45
+            Dim maxWidth% = Screen.FromPoint(_cursorPositionBefore).Bounds.Width * 5 / 7
+            Return Math.Max(Math.Min(wantWidth, maxWidth), MinWidth)
+        End If
+        If _hoverTab IsNot Nothing Then
+            Return MinWidth
+        End If
+        Return -1
+    End Function
 
     ''' <summary>
     ''' 卡片窗口位置
     ''' </summary>
-    Private ReadOnly Property CardPosition As Point
-        Get
-            Dim curPos = _cursorPositionBefore,
-                parCurPos = _cursorPositionInParentBefore
+    Private Function CalculateCardPosition(cardWidth As Integer) As Point
+        Dim curPos = _cursorPositionBefore,
+            parCurPos = _cursorPositionInParentBefore
 
-            ' 默认出现在右边
-            Dim x = curPos.X - parCurPos.X + _parentSizeBefore.Width + HoverGapDistance ' 右
-            Dim overflow As Boolean, scr = Screen.FromPoint(curPos)
-            If scr.Primary Then
-                overflow = x >= Screen.PrimaryScreen.Bounds.Width - CardWidth
-            Else ' 存在扩展屏幕
-                overflow = x >= Screen.PrimaryScreen.Bounds.Width + scr.Bounds.Width - CardWidth
-            End If
+        ' 默认出现在右边
+        Dim x = curPos.X - parCurPos.X + _parentSizeBefore.Width + HoverGapDistance ' 右
+        Dim overflow As Boolean, scr = Screen.FromPoint(curPos)
+        If scr.Primary Then
+            overflow = x >= Screen.PrimaryScreen.Bounds.Width - cardWidth
+        Else ' 存在扩展屏幕
+            overflow = x >= Screen.PrimaryScreen.Bounds.Width + scr.Bounds.Width - cardWidth
+        End If
 
-            ' 出现在左边
-            If _hoverTipItem Is Nothing Or overflow Then
-                x = curPos.X - parCurPos.X - CardWidth - HoverGapDistance ' 左
-            End If
+        ' 出现在左边
+        If _hoverTipItem Is Nothing Or overflow Then
+            x = curPos.X - parCurPos.X - cardWidth - HoverGapDistance ' 左
+        End If
 
-            ' 极端情况
-            If x < MinScreenGap Then
-                Return New Point(MinScreenGap, curPos.Y + 20)
-            End If
-            Return New Point(x, curPos.Y)
-        End Get
-    End Property
+        ' 极端情况
+        If x < MinScreenGap Then
+            Return New Point(MinScreenGap, curPos.Y + 20)
+        End If
+        Return New Point(x, curPos.Y)
+    End Function
 
 #End Region
 
@@ -121,19 +118,25 @@ Public Class HoverCardView
     End Sub
 
     Protected Overrides Sub OnLoad(e As EventArgs)
-        If CardWidth <= 0 Then
-            Return
-        End If
         MyBase.OnLoad(e)
         AutoScaleMode = AutoScaleMode.Font
         Font = New Font("Microsoft YaHei UI", 9.0!)
         FormBorderStyle = FormBorderStyle.None
         ShowInTaskbar = false
         Opacity = 0
+        HorizontalScroll.Maximum = 0
+        AutoScroll = True
+        AddHandler Scroll, Sub() If VerticalScroll.Visible Then Refresh()
+        AddHandler MouseWheel, Sub() If VerticalScroll.Visible Then Refresh()
 
-        Width = CardWidth ' <<<
-        InitialLayout()
-        Dim pos = CardPosition ' <<<
+        Dim cardWidth = CalculateCardWidth()
+        If cardWidth <= 0 Then
+            MessageBox.Show("Something wrong with HoverCardView.")
+            Return
+        End If
+        Width = cardWidth ' <<<
+        Height = InitialLayout()
+        Dim pos = CalculateCardPosition(cardWidth) ' <<<
         Left = pos.X
         Top = pos.Y
 
@@ -234,7 +237,6 @@ Public Class HoverCardView
         ControlPaint.DrawBorder(e.Graphics, ClientRectangle, _borderColor, ButtonBorderStyle.Solid)
     End Sub
 
-    Private ReadOnly _mainPanel As New Panel With {.AutoScroll = True, .BackColor = Color.Transparent}
     Private ReadOnly _titleLabel As New DD.LabelX With {.BackColor = Color.Transparent, .AutoSize = True, .WordWrap = False}
     Private ReadOnly _contentLabel As New DD.LabelX With {.BackColor = Color.Transparent, .AutoSize = True, .WordWrap = True}
     Private ReadOnly _metaLabel As New DD.LabelX With {.BackColor = Color.Transparent, .AutoSize = False, .WordWrap = False, .Font = New Font("微软雅黑", 8.0!), .TextLineAlignment = StringAlignment.Far}
@@ -255,7 +257,7 @@ Public Class HoverCardView
     ''' <summary>
     ''' 加载布局
     ''' </summary>
-    Private Sub InitialLayout()
+    Private Function InitialLayout() As Integer
         _titleLabel.BackgroundStyle.CornerType = DD.eCornerType.Square
         _titleLabel.MaximumSize = New Size(Width - _titleHMargin * 2 - 2 * _buttonMargin, 0)
         _contentLabel.BackgroundStyle.CornerType = DD.eCornerType.Square
@@ -271,14 +273,10 @@ Public Class HoverCardView
         AddHandler _button.Click, Sub() Close()
 
         Controls.Clear()
-        Controls.Add(_mainPanel)
-        _mainPanel.Controls.Add(_button)
-        _mainPanel.Controls.Add(_titleLabel)
-        _mainPanel.Controls.Add(_contentLabel)
-        _mainPanel.Controls.Add(_metaLabel)
-        _mainPanel.Dock = DockStyle.Fill
-        _mainPanel.HorizontalScroll.Visible = False
-        AddHandler _mainPanel.Scroll, Sub() Refresh()
+        Controls.Add(_button)
+        Controls.Add(_titleLabel)
+        Controls.Add(_contentLabel)
+        Controls.Add(_metaLabel)
 
         Dim tip = _hoverTipItem
         Dim tab = _hoverTab
@@ -339,8 +337,8 @@ Public Class HoverCardView
         _metaLabel.Size = New Size(Width, _metaHeight + _metaExtraHeight)
         _metaLabel.Location = New Point(0, _contentLabel.Top + _contentLabel.Height + _metaVMargin)
         _button.Location = New Point(Width - _buttonMargin - _buttonSize, _buttonMargin)
-        Height = _metaLabel.Top + _metaLabel.Height + _bottom
-    End Sub
+        Return _metaLabel.Top + _metaLabel.Height + _bottom
+    End Function
 
 #End Region
 End Class

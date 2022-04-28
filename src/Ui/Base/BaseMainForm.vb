@@ -283,6 +283,10 @@ Public Class BaseMainForm
         _timerMouseIn.Enabled = False
         _timerMouseOut.Enabled = True
     End Sub
+    
+    Public Function IsFormOpacityGettingUp() As Boolean
+        Return _timerMouseIn.Enabled
+    End Function
 
 #End Region
 

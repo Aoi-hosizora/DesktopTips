@@ -176,7 +176,7 @@ Public Class TipListBox
 
     Private ReadOnly _hoverBackColor As Color = Color.FromArgb(229, 243, 251)
     Private ReadOnly _hoverBorderColor As Color = Color.FromArgb(111, 192, 231)
-    Private ReadOnly _focusBackColor As Color = Color.FromArgb(209, 232, 255)
+    Private ReadOnly _focusBackColor As Color = Color.FromArgb(200, 232, 255)
     Private ReadOnly _focusBorderColor As Color = Color.FromArgb(102, 167, 232)
     Private ReadOnly _hoverFocusBackColor As Color = Color.FromArgb(203, 232, 246)
     Private ReadOnly _hoverFocusBorderColor As Color = Color.FromArgb(38, 160, 218)
@@ -207,6 +207,9 @@ Public Class TipListBox
         ElseIf e.State And DrawItemState.Selected Then ' Selected
             g.FillRectangle(New SolidBrush(_focusBackColor), b)
             g.DrawRectangle(New Pen(_focusBorderColor), b)
+        ElseIf _hoverShowingIndex = e.Index Then ' Showing HoverCardView
+            g.FillRectangle(New SolidBrush(e.BackColor), b)
+            g.DrawRectangle(New Pen(_hoverBorderColor), b)
         Else ' Normal
             g.FillRectangle(New SolidBrush(e.BackColor), b)
             g.DrawRectangle(New Pen(e.BackColor), b)
@@ -271,7 +274,7 @@ Public Class TipListBox
                                 AbortHoverWaitingOnce = False
                                 Return
                             End If
-                            ShowTooltip(Items(idx))
+                            ShowTooltip(Items(idx), idx)
                         End Sub) ' 显示悬浮卡片
                     End Sub))
                     _hoverThread.Start(_hoverIndex) ' 启动计时线程，准备显示悬浮卡片
@@ -301,13 +304,23 @@ Public Class TipListBox
 
     Private ReadOnly _hoverWaitingDuration = 350 ' ms
 
+    Private _hoverShowingIndex As Integer = -1
+
     ''' <summary>
     ''' 显示悬浮卡片
     ''' </summary>
-    Private Sub ShowTooltip(item As TipItem)
+    Private Sub ShowTooltip(item As TipItem, idx As Integer)
         Dim curPos = Cursor.Position
         Dim parPos = Parent.PointToClient(curPos)
-        HoverCardView.ShowCardView(curPos, parPos, Parent.Size, item, GlobalModel.CurrentTab)
+        Dim onClose = Sub() 
+            Dim last = _hoverShowingIndex
+            _hoverShowingIndex = -1
+            If last > -1 Then
+                Invalidate(GetItemRectangle(last)) ' 更新悬浮窗口对应着的高亮
+            End If
+        End Sub
+        HoverCardView.ShowCardView(curPos, parPos, Parent.Size, item, GlobalModel.CurrentTab, onClose := onClose)
+        _hoverShowingIndex = idx
     End Sub
 
     ''' <summary>

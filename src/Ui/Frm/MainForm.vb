@@ -161,7 +161,12 @@ Public Class MainForm
     ''' </summary>
     Protected Overrides Sub WndProc(ByRef m As Message)
         If m.Msg = NativeMethod.WM_HOTKEY AndAlso m.WParam.ToInt32() = HotkeyId Then
-            ShowMeFromBackground()
+            If NativeMethod.GetForegroundWindow() <> Handle OrElse (Opacity < 1 AndAlso Not IsFormOpacityGettingUp()) Then
+                ShowMeFromBackground()
+            Else If TipEditDialog.IsShowing Then
+                NativeMethod.SetForegroundWindow(TipEditDialog.CurrentHandle)
+                TipEditDialog.Activate()
+            End If
         End If
         MyBase.WndProc(m)
     End Sub
@@ -255,6 +260,7 @@ Public Class MainForm
     ''' 选择标签新位置模式
     ''' </summary>
     Private _selectingTipNewIndex As Boolean = False
+
     Private _previousTipItem As TipItem = Nothing
 
     ''' <summary>
@@ -531,13 +537,13 @@ Public Class MainForm
     Private Sub PopupOpenMoveToMenu(sender As Object, e As DD.PopupOpenEventArgs) Handles m_menu_MoveTipsSubMenu.PopupOpen, m_menu_MoveToTabSubMenu.PopupOpen
         ' 生成当前未选择的按钮列表
         Dim generateFunc = Function(moveAll As Boolean) As IEnumerable(Of DD.ButtonItem)
-                               Return GlobalModel.Tabs.Where(Function(tab) m_TabView.SelectedTab IsNot Nothing AndAlso m_TabView.SelectedTab.TabSource.Title <> tab.Title).ToList().Select(
+            Return GlobalModel.Tabs.Where(Function(tab) m_TabView.SelectedTab IsNot Nothing AndAlso m_TabView.SelectedTab.TabSource.Title <> tab.Title).ToList().Select(
                 Function(tab) As DD.ButtonItem
                     Dim btn As New DD.ButtonItem With {.Text = tab.Title, .Tag = New Object() {tab, moveAll}} ' Tag 包括：分组、移动对象
                     AddHandler btn.Click, AddressOf MoveTipsToTab
                     Return btn
                 End Function)
-                           End Function
+        End Function
 
         ' 列表菜单
         Dim moveSomeBtns = generateFunc(False)
@@ -747,12 +753,12 @@ Public Class MainForm
             ' 创建按钮以及绑定事件
             Dim btn As New DD.ButtonItem With {.Text = $"{CInt(op * 100)}%", .Tag = op}
             AddHandler btn.Click, Sub(sender As DD.ButtonItem, e As EventArgs)
-                                      MaxOpacity = sender.Tag ' 修改窗口属性
-                                      My.Settings.MaxOpacity = MaxOpacity
-                                      My.Settings.Save()
-                                      _opacityButtons.ForEach(Sub(b) b.Checked = False)
-                                      sender.Checked = True
-                                  End Sub
+                MaxOpacity = sender.Tag ' 修改窗口属性
+                My.Settings.MaxOpacity = MaxOpacity
+                My.Settings.Save()
+                _opacityButtons.ForEach(Sub(b) b.Checked = False)
+                sender.Checked = True
+            End Sub
             _opacityButtons.Add(btn)
 
             ' 插入到界面
@@ -958,5 +964,4 @@ Public Class MainForm
     End Sub
 
 #End Region
-
 End Class

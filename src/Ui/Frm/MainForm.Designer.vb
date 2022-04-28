@@ -339,15 +339,15 @@ Partial Class MainForm
         Me.m_popup_MoveTipTop.Image = Global.DesktopTips.My.Resources.Resources.Top
         Me.m_popup_MoveTipTop.ItemAlignment = DevComponents.DotNetBar.eItemAlignment.Far
         Me.m_popup_MoveTipTop.Name = "m_popup_MoveTipTop"
-        Me.m_popup_MoveTipTop.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlT)
-        Me.m_popup_MoveTipTop.Text = "移至顶部(&T)"
+        Me.m_popup_MoveTipTop.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlShiftT)
+        Me.m_popup_MoveTipTop.Text = "置顶(&T)"
         '
         'm_popup_MoveTipBottom
         '
         Me.m_popup_MoveTipBottom.Image = Global.DesktopTips.My.Resources.Resources.Bottom
         Me.m_popup_MoveTipBottom.Name = "m_popup_MoveTipBottom"
-        Me.m_popup_MoveTipBottom.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlB)
-        Me.m_popup_MoveTipBottom.Text = "移至底部(&B)"
+        Me.m_popup_MoveTipBottom.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlShiftB)
+        Me.m_popup_MoveTipBottom.Text = "置底(&B)"
         '
         'm_popup_MoveTipTo
         '
@@ -375,8 +375,8 @@ Partial Class MainForm
         '
         Me.m_popup_CheckDone.Image = Global.DesktopTips.My.Resources.Resources.Done
         Me.m_popup_CheckDone.Name = "m_popup_CheckDone"
-        Me.m_popup_CheckDone.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlG)
-        Me.m_popup_CheckDone.Text = "标记为完成(&G)"
+        Me.m_popup_CheckDone.Shortcuts.Add(DevComponents.DotNetBar.eShortcut.CtrlJ)
+        Me.m_popup_CheckDone.Text = "标记为完成(&J)"
         '
         'm_popup_ShowHighlightList
         '

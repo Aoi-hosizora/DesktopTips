@@ -115,6 +115,10 @@ Public Class NativeMethod
     End Function
 
     <DllImport("user32.dll")>
+    Public Shared Function GetForegroundWindow() As IntPtr
+    End Function
+
+    <DllImport("user32.dll")>
     Public Shared Function GetWindow(hWnd As IntPtr, uCmd As UInt32) As IntPtr
     End Function
 
@@ -157,7 +161,7 @@ Public Class NativeMethod
     Public Shared Function SendMessage(hWnd As IntPtr, msg As Integer, wParam As IntPtr, <MarshalAs(UnmanagedType.LPWStr)> lParam As String) As IntPtr
     End Function
 
-    <DllImport("uxtheme.dll", ExactSpelling:=True, CharSet:=CharSet.Unicode)>
+    <DllImport("uxtheme.dll", ExactSpelling := True, CharSet := CharSet.Unicode)>
     Public Shared Function SetWindowTheme(hwnd As IntPtr, pszSubAppName As String, pszSubIdList As String) As Integer
     End Function
 

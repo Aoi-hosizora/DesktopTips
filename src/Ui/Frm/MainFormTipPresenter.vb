@@ -254,7 +254,7 @@ Public Class MainFormTipPresenter
             item.UpdatedAt = now
         Next
         _globalPresenter.SaveFile()
-        Return toDone
+        Return True
     End Function
 
     Public Sub ViewHighlightList() Implements MainFormContract.ITipPresenter.ViewHighlightList

@@ -28,6 +28,34 @@ Public Class TipEditDialog
     Private _saveCallback As Action(Of String)
 
     ''' <summary>
+    ''' 当前窗口是否显示着
+    ''' </summary>
+    Public Shared ReadOnly Property IsShowing As Boolean
+        Get
+            Return _isShowing
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' 当前窗口的 Handle
+    ''' </summary>
+    Public Shared ReadOnly Property CurrentHandle As IntPtr
+        Get
+            Return If(IsShowing, _currentHandle, 0)
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' Internal variable for IsShowing property.
+    ''' </summary
+    Private Shared _isShowing As Boolean
+
+    ''' <summary>
+    ''' Internal variable for CurrentHandle property.
+    ''' </summary
+    Private Shared _currentHandle As IntPtr
+
+    ''' <summary>
     ''' 显示编辑对话框
     ''' </summary>
     Public Overloads Shared Function ShowDialog(message As String, title As String, Optional content As String = "", Optional ByRef textType As CommonUtil.TextType = CommonUtil.TextType.Plain,
@@ -65,6 +93,12 @@ Public Class TipEditDialog
 
     Private Sub TipEditDialog_Load(sender As Object, e As EventArgs) Handles Me.Load
         MenuSave.Enabled = _saveCallback IsNot Nothing
+        _isShowing = True
+        _currentHandle = Handle
+    End Sub
+
+    Private Sub TipEditDialog_FormClosed(sender As Object, e As FormClosedEventArgs) Handles Me.FormClosed
+        _isShowing = False
     End Sub
 
     ''' <summary>

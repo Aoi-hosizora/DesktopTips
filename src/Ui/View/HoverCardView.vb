@@ -35,6 +35,11 @@ Public Class HoverCardView
     Private _hoverTab As Tab
 
     ''' <summary>
+    ''' 关闭回调
+    ''' </summary>
+    Private _onClose As Action
+
+    ''' <summary>
     ''' 悬浮卡片与 Parent 的显示间隔距离
     ''' </summary>
     Private Const HoverGapDistance As Integer = 7
@@ -106,13 +111,15 @@ Public Class HoverCardView
     ''' <summary>
     ''' 使用 TipItem 或 Tab 显示悬浮卡片
     ''' </summary>
-    Public Shared Sub ShowCardView(cursor As Point, cursorInParent As Point, parentSize As Size, Optional ti As TipItem = Nothing, Optional ta As Tab = Nothing)
+    Public Shared Sub ShowCardView(cursor As Point, cursorInParent As Point, parentSize As Size,
+                                   Optional ti As TipItem = Nothing, Optional ta As Tab = Nothing, Optional onClose As Action = Nothing)
         ' Dim view As New HoverCardView
         HoverCardView._cursorPositionBefore = cursor
         HoverCardView._cursorPositionInParentBefore = cursorInParent
         HoverCardView._parentSizeBefore = parentSize
         HoverCardView._hoverTipItem = ti
         HoverCardView._hoverTab = ta
+        HoverCardView._onClose = onClose
         HoverCardView.Opacity = 0
         HoverCardView.Show()
     End Sub
@@ -193,6 +200,7 @@ Public Class HoverCardView
 
     Protected Overrides Sub OnFormClosing(e As FormClosingEventArgs)
         MyBase.OnFormClosing(e)
+        _onClose?.Invoke()
         e.Cancel = Opacity > 0
         _timerShowForm.Enabled = False
         _timerCloseForm.Enabled = true
